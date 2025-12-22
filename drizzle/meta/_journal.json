@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1766433952647,
+      "tag": "0000_previous_silver_samurai",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1766435058181,
+      "tag": "0001_secret_lorna_dane",
+      "breakpoints": true
+    }
+  ]
+}
