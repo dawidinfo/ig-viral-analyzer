@@ -106,6 +106,9 @@ export default function Home() {
               <ArrowLeftRight className="w-3 h-3" />
               Vergleichen
             </button>
+            <button onClick={() => setLocation('/pricing')} className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
+              Preise
+            </button>
           </div>
 
           <Button 

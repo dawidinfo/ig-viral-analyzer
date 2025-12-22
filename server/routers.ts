@@ -4,6 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import { analyzeInstagramAccount, fetchInstagramProfile, fetchInstagramPosts, fetchInstagramReels, InstagramAnalysis } from "./instagram";
+import { analyzeReel } from "./reelAnalysis";
 import { getDb } from "./db";
 import { instagramCache } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
@@ -154,6 +155,16 @@ export const appRouter = router({
         } catch (error) {
           return { success: false, error: String(error) };
         }
+      }),
+
+    analyzeReel: publicProcedure
+      .input(z.object({ 
+        username: z.string().min(1),
+        reelUrl: z.string().optional()
+      }))
+      .query(async ({ input }) => {
+        const analysis = await analyzeReel(input.username, input.reelUrl);
+        return analysis;
       }),
   }),
 });

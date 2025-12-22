@@ -43,3 +43,19 @@
 ## Logo Fix
 - [x] Create new logo with truly transparent background (no gray)
 - [x] Update logo in the app
+
+## AI Reels Transkription & Analyse
+- [x] Create Reel transcription service using AI
+- [x] Implement Hook analysis (first 3 seconds)
+- [x] Implement AIDA framework analysis (Attention, Interest, Desire, Action)
+- [x] Implement HAPSS framework analysis (Hook, Agitate, Problem, Solution, Story)
+- [x] Create pattern recognition for virality factors
+- [x] Add AI analysis UI component to Analysis page
+
+## Pricing Page
+- [x] Create Pricing page with three tiers
+- [x] Starter tier (~9€/month) - Basic analytics
+- [x] Pro tier (~29€/month) - AI transcription & analysis
+- [x] Business tier (~49€/month) - All features + API access
+- [x] Add Pricing link to navigation
+- [x] Design feature comparison table

@@ -30,6 +30,7 @@ import {
   ImageIcon
 } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
+import ReelAnalysis from "@/components/ReelAnalysis";
 import { useLocation, useSearch } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -410,6 +411,10 @@ export default function Analysis() {
                     <Zap className="w-4 h-4 mr-2" />
                     Viral Faktoren
                   </TabsTrigger>
+                  <TabsTrigger value="ai" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white">
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    AI Analyse
+                  </TabsTrigger>
                 </TabsList>
 
                 {/* Overview Tab */}
@@ -723,6 +728,11 @@ export default function Analysis() {
                       </div>
                     </div>
                   </div>
+                </TabsContent>
+
+                {/* AI Analysis Tab */}
+                <TabsContent value="ai" className="space-y-6">
+                  <ReelAnalysis username={analysisData.profile.username} />
                 </TabsContent>
               </Tabs>
 
