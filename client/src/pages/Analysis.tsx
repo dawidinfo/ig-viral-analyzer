@@ -216,7 +216,7 @@ export default function Analysis() {
               <ArrowLeft className="w-5 h-5" />
             </Button>
             <div className="flex items-center gap-3 cursor-pointer" onClick={() => setLocation("/")}>
-              <img src="/logo.png" alt="ReelSpy.ai" className="h-8 w-auto" />
+              <img src="/logo.svg" alt="ReelSpy.ai" className="h-8 w-auto" />
             </div>
           </div>
           

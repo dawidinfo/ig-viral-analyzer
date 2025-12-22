@@ -39,3 +39,7 @@
 - [x] Create new ReelSpy.ai logo
 - [x] Update favicon
 - [x] Update VITE_APP_TITLE environment variable (handled in HTML)
+
+## Logo Fix
+- [x] Create new logo with truly transparent background (no gray)
+- [x] Update logo in the app

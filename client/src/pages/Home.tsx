@@ -95,7 +95,7 @@ export default function Home() {
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
         <div className="container flex items-center justify-between h-16">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => setLocation('/')}>
-            <img src="/logo.png" alt="ReelSpy.ai" className="h-10 w-auto" />
+            <img src="/logo.svg" alt="ReelSpy.ai" className="h-10 w-auto" />
           </div>
           
           <div className="hidden md:flex items-center gap-8">

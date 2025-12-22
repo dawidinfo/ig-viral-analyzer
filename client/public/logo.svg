@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 50" fill="none">
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6"/>
+      <stop offset="100%" style="stop-color:#06B6D4"/>
+    </linearGradient>
+  </defs>
+  <!-- Eye Icon -->
+  <g transform="translate(5, 5)">
+    <!-- Outer eye shape -->
+    <path d="M20 8C12 8 5 20 5 20C5 20 12 32 20 32C28 32 35 20 35 20C35 20 28 8 20 8Z" 
+          stroke="url(#logoGradient)" stroke-width="2.5" fill="none"/>
+    <!-- Inner circle (pupil) -->
+    <circle cx="20" cy="20" r="7" stroke="url(#logoGradient)" stroke-width="2" fill="none"/>
+    <!-- Play triangle -->
+    <path d="M17 16L17 24L24 20Z" fill="url(#logoGradient)"/>
+  </g>
+  <!-- Text: ReelSpy.ai -->
+  <text x="50" y="32" font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="700" fill="url(#logoGradient)">
+    ReelSpy<tspan fill="#06B6D4">.ai</tspan>
+  </text>
+</svg>
