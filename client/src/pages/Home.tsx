@@ -94,11 +94,8 @@ export default function Home() {
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
         <div className="container flex items-center justify-between h-16">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center glow-purple">
-              <BarChart3 className="w-5 h-5 text-white" />
-            </div>
-            <span className="font-bold text-xl">IG Viral Analyzer</span>
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => setLocation('/')}>
+            <img src="/logo.png" alt="ReelSpy.ai" className="h-10 w-auto" />
           </div>
           
           <div className="hidden md:flex items-center gap-8">
@@ -425,11 +422,11 @@ export default function Home() {
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
                 <BarChart3 className="w-4 h-4 text-white" />
               </div>
-              <span className="font-semibold">IG Viral Analyzer</span>
+              <span className="font-semibold">ReelSpy.ai</span>
             </div>
             
             <p className="text-sm text-muted-foreground">
-              © 2024 IG Viral Analyzer. Alle Rechte vorbehalten.
+              © 2024 ReelSpy.ai. Alle Rechte vorbehalten.
             </p>
 
             <div className="flex items-center gap-6 text-sm text-muted-foreground">

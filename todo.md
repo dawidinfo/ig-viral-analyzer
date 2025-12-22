@@ -29,3 +29,13 @@
 - [x] Add difference indicators (better/worse)
 - [x] Create comparison radar chart overlay
 - [x] Add navigation link to Compare page
+
+## Rebranding to ReelSpy.ai
+- [x] Update app name from "IG Viral Analyzer" to "ReelSpy.ai"
+- [x] Update all page titles and meta tags
+- [x] Update navigation and header branding
+- [x] Update footer text and copyright
+- [x] Update all text references throughout the app
+- [x] Create new ReelSpy.ai logo
+- [x] Update favicon
+- [x] Update VITE_APP_TITLE environment variable (handled in HTML)

@@ -216,10 +216,7 @@ export default function Analysis() {
               <ArrowLeft className="w-5 h-5" />
             </Button>
             <div className="flex items-center gap-3 cursor-pointer" onClick={() => setLocation("/")}>
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                <BarChart3 className="w-4 h-4 text-white" />
-              </div>
-              <span className="font-bold text-lg hidden sm:block">IG Viral Analyzer</span>
+              <img src="/logo.png" alt="ReelSpy.ai" className="h-8 w-auto" />
             </div>
           </div>
           
@@ -771,7 +768,7 @@ export default function Analysis() {
       {/* Footer */}
       <footer className="py-6 border-t border-border/50 relative z-10">
         <div className="container text-center text-sm text-muted-foreground">
-          <p>© 2024 IG Viral Analyzer. Live-Daten von Instagram.</p>
+          <p>© 2024 ReelSpy.ai. Live-Daten von Instagram.</p>
         </div>
       </footer>
     </div>
