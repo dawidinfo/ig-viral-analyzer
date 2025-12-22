@@ -21,3 +21,11 @@
 - [x] Implement Demo Mode as fallback when API is unavailable
 - [x] Show clear indicator for Live vs Demo data
 - [x] Generate realistic demo data based on username
+
+## Account Comparison Feature
+- [x] Create Compare page with side-by-side layout
+- [x] Add dual username input fields
+- [x] Implement comparison metrics visualization
+- [x] Add difference indicators (better/worse)
+- [x] Create comparison radar chart overlay
+- [x] Add navigation link to Compare page

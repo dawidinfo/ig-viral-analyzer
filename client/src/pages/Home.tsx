@@ -18,7 +18,8 @@ import {
   Star,
   Users,
   Hash,
-  Clock
+  Clock,
+  ArrowLeftRight
 } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
@@ -104,6 +105,10 @@ export default function Home() {
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</a>
             <a href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Wie es funktioniert</a>
             <a href="#niches" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Nischen</a>
+            <button onClick={() => setLocation('/compare')} className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
+              <ArrowLeftRight className="w-3 h-3" />
+              Vergleichen
+            </button>
           </div>
 
           <Button 
