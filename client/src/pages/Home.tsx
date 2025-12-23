@@ -93,30 +93,35 @@ export default function Home() {
       
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
-        <div className="container flex items-center justify-between h-16">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => setLocation('/')}>
-            <img src="/logo.svg" alt="ReelSpy.ai" className="h-10 w-auto" />
+        <div className="container flex items-center justify-between h-16 gap-4">
+          {/* Logo */}
+          <div className="flex items-center gap-3 cursor-pointer shrink-0" onClick={() => setLocation('/')}>
+            <img src="/logo.svg" alt="ReelSpy.ai" className="h-8 lg:h-10 w-auto" />
           </div>
           
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</a>
-            <a href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Wie es funktioniert</a>
-            <a href="#niches" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Nischen</a>
-            <button onClick={() => setLocation('/compare')} className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
+          {/* Navigation Links - Hidden on mobile and tablet */}
+          <div className="hidden lg:flex items-center gap-6 xl:gap-8">
+            <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">Features</a>
+            <a href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">Wie es funktioniert</a>
+            <a href="#niches" className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">Nischen</a>
+            <button onClick={() => setLocation('/compare')} className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 whitespace-nowrap">
               <ArrowLeftRight className="w-3 h-3" />
               Vergleichen
             </button>
-            <button onClick={() => setLocation('/pricing')} className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
+            <button onClick={() => setLocation('/pricing')} className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">
               Preise
             </button>
           </div>
 
+          {/* CTA Button */}
           <Button 
             onClick={() => document.getElementById('hero-input')?.focus()}
-            className="btn-gradient text-white border-0"
+            className="btn-gradient text-white border-0 shrink-0 text-sm lg:text-base"
+            size="sm"
           >
-            <Sparkles className="w-4 h-4 mr-2" />
-            Jetzt analysieren
+            <Sparkles className="w-4 h-4 mr-1 lg:mr-2" />
+            <span className="hidden sm:inline">Jetzt analysieren</span>
+            <span className="sm:hidden">Analyse</span>
           </Button>
         </div>
       </nav>
