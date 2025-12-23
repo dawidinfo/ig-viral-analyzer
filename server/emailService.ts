@@ -1,15 +1,20 @@
-import { getDb } from "./db";
-import { users } from "../drizzle/schema";
-import { eq } from "drizzle-orm";
+import { Resend } from "resend";
 
 /**
  * Email Service
- * Sends notifications to admins for important events
- * Uses the built-in notification system
+ * Sends notifications to admins for important events using Resend
  */
+
+// Initialize Resend client
+const resend = process.env.RESEND_API_KEY 
+  ? new Resend(process.env.RESEND_API_KEY)
+  : null;
 
 // Admin email for notifications
 const ADMIN_EMAIL = "qliq.marketing@proton.me";
+
+// Sender email (verified domain at Resend)
+const FROM_EMAIL = "ReelSpy.ai <noreply@reelspy.ai>";
 
 // Notification types
 export type NotificationType = 
@@ -28,8 +33,117 @@ interface NotificationPayload {
   timestamp: Date;
 }
 
-// Store notifications in memory (will be persisted to DB later)
+// Store notifications in memory for dashboard
 const notificationQueue: NotificationPayload[] = [];
+
+/**
+ * Send email via Resend
+ */
+async function sendEmail(
+  to: string,
+  subject: string,
+  html: string
+): Promise<boolean> {
+  if (!resend) {
+    console.warn("[Email] Resend not configured - logging email instead");
+    console.log(`[Email] To: ${to}`);
+    console.log(`[Email] Subject: ${subject}`);
+    console.log(`[Email] Body: ${html}`);
+    return false;
+  }
+
+  try {
+    const { data, error } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: [to],
+      subject: subject,
+      html: html,
+    });
+
+    if (error) {
+      console.error("[Email] Resend error:", error);
+      return false;
+    }
+
+    console.log(`[Email] Sent successfully: ${data?.id}`);
+    return true;
+  } catch (error) {
+    console.error("[Email] Failed to send:", error);
+    return false;
+  }
+}
+
+/**
+ * Create HTML email template
+ */
+function createEmailTemplate(title: string, content: string, type: NotificationType): string {
+  const typeColors: Record<NotificationType, string> = {
+    new_signup: "#10B981",
+    purchase: "#8B5CF6",
+    suspicious_activity: "#F59E0B",
+    account_banned: "#EF4444",
+    high_usage: "#3B82F6",
+    error: "#EF4444",
+  };
+
+  const typeEmojis: Record<NotificationType, string> = {
+    new_signup: "🎉",
+    purchase: "💰",
+    suspicious_activity: "⚠️",
+    account_banned: "🚫",
+    high_usage: "📊",
+    error: "❌",
+  };
+
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0a0a0a; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #1a1a1a; border-radius: 12px; overflow: hidden; border: 1px solid #333;">
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, ${typeColors[type]} 0%, #1a1a1a 100%); padding: 30px; text-align: center;">
+              <div style="font-size: 48px; margin-bottom: 10px;">${typeEmojis[type]}</div>
+              <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 600;">${title}</h1>
+            </td>
+          </tr>
+          
+          <!-- Content -->
+          <tr>
+            <td style="padding: 30px;">
+              <div style="color: #e5e5e5; font-size: 15px; line-height: 1.6; white-space: pre-line;">
+${content}
+              </div>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #111; padding: 20px; text-align: center; border-top: 1px solid #333;">
+              <p style="color: #666; font-size: 12px; margin: 0;">
+                Diese E-Mail wurde automatisch von ReelSpy.ai gesendet.
+              </p>
+              <p style="color: #666; font-size: 12px; margin: 10px 0 0 0;">
+                <a href="https://reelspy.ai/admin" style="color: #8B5CF6; text-decoration: none;">Admin Dashboard öffnen</a>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `;
+}
 
 /**
  * Send notification to admin
@@ -51,38 +165,24 @@ export async function sendAdminNotification(
 
     // Add to queue
     notificationQueue.push(notification);
-
-    // Log notification
-    console.log(`[Email] Admin notification: ${type} - ${subject}`);
-    console.log(`[Email] Message: ${message}`);
-    if (data) {
-      console.log(`[Email] Data:`, JSON.stringify(data, null, 2));
+    
+    // Keep only last 100 notifications
+    if (notificationQueue.length > 100) {
+      notificationQueue.shift();
     }
 
-    // In production, this would send via email service
-    // For now, we store in the notification system
-    await storeNotification(notification);
+    // Create HTML email
+    const html = createEmailTemplate(subject, message, type);
 
-    return true;
+    // Send email
+    const sent = await sendEmail(ADMIN_EMAIL, subject, html);
+
+    console.log(`[Email] Admin notification: ${type} - ${subject} (sent: ${sent})`);
+
+    return sent;
   } catch (error) {
     console.error("[Email] Error sending notification:", error);
     return false;
-  }
-}
-
-/**
- * Store notification in database
- */
-async function storeNotification(notification: NotificationPayload): Promise<void> {
-  try {
-    const db = await getDb();
-    if (!db) return;
-
-    // Store in a notifications table or log
-    // For now, we just log it
-    console.log(`[Email] Notification stored: ${notification.type}`);
-  } catch (error) {
-    console.error("[Email] Error storing notification:", error);
   }
 }
 
@@ -98,7 +198,7 @@ export async function notifyNewSignup(
     "new_signup",
     "🎉 Neue Anmeldung bei ReelSpy.ai",
     `Ein neuer Benutzer hat sich registriert:
-    
+
 • Name: ${name || "Nicht angegeben"}
 • E-Mail: ${email || "Nicht angegeben"}
 • User ID: ${userId}
@@ -123,7 +223,7 @@ export async function notifyPurchase(
     "purchase",
     `💰 Neuer Kauf: ${plan} Plan`,
     `Ein Benutzer hat ein Upgrade durchgeführt:
-    
+
 • E-Mail: ${email || "Nicht angegeben"}
 • User ID: ${userId}
 • Plan: ${plan}
@@ -149,7 +249,7 @@ export async function notifySuspiciousActivity(
     "suspicious_activity",
     "⚠️ Verdächtige Aktivität erkannt",
     `Verdächtige Aktivität wurde erkannt:
-    
+
 • E-Mail: ${email || "Nicht angegeben"}
 • User ID: ${userId}
 • Grund: ${reason}
@@ -173,7 +273,7 @@ export async function notifyAccountBanned(
     "account_banned",
     "🚫 Account gesperrt",
     `Ein Account wurde gesperrt:
-    
+
 • E-Mail: ${email || "Nicht angegeben"}
 • User ID: ${userId}
 • Grund: ${reason}
@@ -195,7 +295,7 @@ export async function notifyHighUsage(
     "high_usage",
     "📊 Hohe Nutzung erkannt",
     `Ein Benutzer zeigt ungewöhnlich hohe Nutzung:
-    
+
 • E-Mail: ${email || "Nicht angegeben"}
 • User ID: ${userId}
 • Analysen: ${analysesCount} in ${timeframe}
@@ -218,7 +318,7 @@ export async function notifyError(
     "error",
     `❌ Systemfehler: ${errorType}`,
     `Ein Fehler ist aufgetreten:
-    
+
 • Typ: ${errorType}
 • Nachricht: ${errorMessage}
 • Zeitpunkt: ${new Date().toLocaleString("de-DE")}
@@ -252,4 +352,44 @@ export function getNotificationStats(): Record<NotificationType, number> {
   }
 
   return stats;
+}
+
+/**
+ * Test email sending (for validation)
+ */
+export async function testEmailConnection(): Promise<{ success: boolean; error?: string }> {
+  if (!resend) {
+    return { success: false, error: "Resend not configured - RESEND_API_KEY missing" };
+  }
+
+  try {
+    const { data, error } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: [ADMIN_EMAIL],
+      subject: "✅ ReelSpy.ai E-Mail-Test",
+      html: createEmailTemplate(
+        "E-Mail-Test erfolgreich",
+        `Die E-Mail-Konfiguration funktioniert korrekt.
+
+• Zeitpunkt: ${new Date().toLocaleString("de-DE")}
+• Service: Resend
+• Status: Aktiv
+
+Du erhältst ab jetzt automatische Benachrichtigungen bei:
+- Neuen Anmeldungen
+- Käufen und Upgrades
+- Verdächtigen Aktivitäten
+- Account-Sperrungen`,
+        "new_signup"
+      ),
+    });
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message || "Unknown error" };
+  }
 }

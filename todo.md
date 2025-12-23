@@ -256,3 +256,10 @@
 - [x] Benachrichtigung bei Käufen/Upgrades (in creditService.ts integriert)
 - [x] Benachrichtigung bei verdächtigen Aktivitäten (in adminService.ts integriert)
 - [x] Admin-E-Mail qliq.marketing@proton.me konfiguriert
+
+## Resend E-Mail-Integration
+- [x] Resend SDK installiert
+- [x] emailService.ts für echten E-Mail-Versand aktualisiert
+- [x] RESEND_API_KEY als Secret konfiguriert
+- [x] Professionelle HTML E-Mail-Templates erstellt
+- [x] E-Mail-Versand erfolgreich getestet
