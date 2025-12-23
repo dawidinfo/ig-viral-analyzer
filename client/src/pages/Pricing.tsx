@@ -34,6 +34,10 @@ import {
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { trpc } from "@/lib/trpc";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { toast } from "sonner";
+import { getLoginUrl } from "@/const";
 
 interface PricingTier {
   name: string;
@@ -500,6 +504,55 @@ const featureCategories = [
 export default function Pricing() {
   const [, setLocation] = useLocation();
   const [isYearly, setIsYearly] = useState(false);
+  const { user } = useAuth();
+
+  // Stripe checkout mutation
+  const checkoutMutation = trpc.credits.createCheckout.useMutation({
+    onSuccess: (data) => {
+      toast.success("Weiterleitung zum Checkout...");
+      window.open(data.url, "_blank");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Fehler beim Erstellen des Checkouts");
+    },
+  });
+
+  const handlePurchase = (tierName: string) => {
+    // Free tier - just go to dashboard
+    if (tierName === "free") {
+      setLocation("/dashboard");
+      return;
+    }
+
+    // Enterprise - contact form
+    if (tierName === "enterprise") {
+      window.open("mailto:enterprise@reelspy.ai?subject=Enterprise%20Anfrage", "_blank");
+      return;
+    }
+
+    // Check if user is logged in
+    if (!user) {
+      toast.info("Bitte melde dich zuerst an");
+      window.location.href = getLoginUrl();
+      return;
+    }
+
+    // Map tier names to package IDs
+    const packageMap: Record<string, "starter" | "pro" | "business"> = {
+      starter: "starter",
+      pro: "pro",
+      business: "business",
+    };
+
+    const packageId = packageMap[tierName];
+    if (!packageId) {
+      toast.error("Ungültiger Plan");
+      return;
+    }
+
+    // Create checkout session
+    checkoutMutation.mutate({ packageId });
+  };
 
   const getTierValue = (tierValue: boolean | string) => {
     if (tierValue === true) {
@@ -646,8 +699,10 @@ export default function Pricing() {
                         : ''
                     }`}
                     variant={tier.popular ? "default" : "outline"}
+                    onClick={() => handlePurchase(tier.name.toLowerCase())}
+                    disabled={checkoutMutation.isPending}
                   >
-                    {tier.cta}
+                    {checkoutMutation.isPending ? "Wird geladen..." : tier.cta}
                   </Button>
                 </div>
               </motion.div>

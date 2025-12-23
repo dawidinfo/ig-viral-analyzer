@@ -343,3 +343,13 @@
 - [x] Pricing-Pläne übersetzen
 - [x] FAQ-Fragen übersetzen
 - [x] Social Proof Bar übersetzen
+
+## Stripe-Zahlungsintegration
+- [x] Stripe Feature zum Projekt hinzufügen
+- [x] Stripe API-Keys automatisch konfiguriert
+- [x] Checkout-Session für Credit-Pakete erstellen (Starter €19, Pro €49, Business €99)
+- [x] Pricing-Seite mit Stripe Checkout verbinden
+- [x] Webhook für erfolgreiche Zahlungen einrichten (/api/stripe/webhook)
+- [x] Credits nach Zahlung automatisch gutschreiben
+- [x] Zahlungshistorie API implementiert
+- [x] 15 Stripe Tests bestanden

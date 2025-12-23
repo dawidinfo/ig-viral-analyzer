@@ -14,6 +14,8 @@ import { isUserAdmin, getAllUsers, getAdminStats, banUser, unbanUser, setUserRol
 import { runScheduledTracking, getTrackingStats, getSavedAccountsForTracking, getTopGrowingAccounts, getDecliningAccounts, getPlatformDistribution, getAccountHistory } from "./scheduledTracking";
 import { getDb } from "./db";
 import { getUserCredits, useCredits, addCredits, getCreditHistory, getCreditStats, canPerformAction, getActionCost } from "./creditService";
+import { createCheckoutSession, getPaymentHistory, getOrCreateCustomer } from "./stripe/checkout";
+import { CREDIT_PACKAGES as STRIPE_PACKAGES } from "./stripe/products";
 import { instagramCache, savedAnalyses, usageTracking, users, CREDIT_COSTS, CREDIT_PACKAGES, creditTransactions, PLAN_LIMITS } from "../drizzle/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
 
@@ -638,6 +640,61 @@ export const appRouter = router({
     getCosts: publicProcedure.query(() => {
       return CREDIT_COSTS;
     }),
+
+    // Create Stripe checkout session for credit purchase
+    createCheckout: publicProcedure
+      .input(z.object({
+        packageId: z.enum(["starter", "pro", "business"]),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        if (!ctx.user) {
+          throw new Error("Authentication required");
+        }
+
+        const result = await createCheckoutSession({
+          packageId: input.packageId,
+          userId: ctx.user.id,
+          userEmail: ctx.user.email || "",
+          userName: ctx.user.name || undefined,
+          origin: ctx.req.headers.origin || "https://reelspy.ai",
+        });
+
+        return result;
+      }),
+
+    // Get Stripe packages (for frontend)
+    getStripePackages: publicProcedure.query(() => {
+      return STRIPE_PACKAGES;
+    }),
+
+    // Get payment history for user
+    getPaymentHistory: publicProcedure
+      .input(z.object({ limit: z.number().min(1).max(50).default(10) }))
+      .query(async ({ input, ctx }) => {
+        if (!ctx.user) {
+          throw new Error("Authentication required");
+        }
+
+        const db = await getDb();
+        if (!db) return [];
+
+        const [user] = await db.select().from(users).where(eq(users.id, ctx.user.id));
+        if (!user?.stripeCustomerId) return [];
+
+        try {
+          const payments = await getPaymentHistory(user.stripeCustomerId, input.limit);
+          return payments.map(p => ({
+            id: p.id,
+            amount: p.amount / 100,
+            currency: p.currency,
+            status: p.status,
+            created: new Date(p.created * 1000).toISOString(),
+          }));
+        } catch (error) {
+          console.error("[Stripe] Error fetching payment history:", error);
+          return [];
+        }
+      }),
   }),
 
   // TikTok Router
