@@ -36,6 +36,13 @@
       "when": 1766481484639,
       "tag": "0004_rich_grim_reaper",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1766512401324,
+      "tag": "0005_dapper_arclight",
+      "breakpoints": true
     }
   ]
 }

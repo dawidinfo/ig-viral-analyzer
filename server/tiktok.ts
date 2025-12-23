@@ -1,6 +1,7 @@
 import { callDataApi } from "./_core/dataApi";
 import { getDb } from "./db";
 import { tiktokCache } from "../drizzle/schema";
+import { storeFollowerSnapshot } from "./followerHistory";
 import { eq } from "drizzle-orm";
 
 /**
@@ -442,6 +443,15 @@ export async function analyzeTikTokAccount(username: string): Promise<TikTokAnal
         analytics,
         isDemo: false,
       };
+
+      // Store follower snapshot for tracking history
+      storeFollowerSnapshot('tiktok', cleanUsername, {
+        followerCount: profile.followerCount,
+        followingCount: profile.followingCount,
+        postCount: profile.videoCount,
+        totalLikes: profile.heartCount,
+        engagementRate: analytics.engagementRate,
+      }, true).catch(err => console.error('[TikTok] Failed to store snapshot:', err.message));
 
       // Store in cache
       await setCachedAnalysis(cleanUsername, analysis);

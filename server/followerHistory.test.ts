@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { getFollowerHistory, getTimeRanges } from './followerHistory';
+import { 
+  getFollowerHistory, 
+  getTimeRanges, 
+  storeFollowerSnapshot,
+  getTrackedAccountsCount 
+} from './followerHistory';
 
 describe('Follower History Service', () => {
   describe('getTimeRanges', () => {
@@ -32,13 +37,14 @@ describe('Follower History Service', () => {
 
   describe('getFollowerHistory', () => {
     it('should return follower history data for a username', async () => {
-      const history = await getFollowerHistory('testuser', 100000, '1m');
+      const history = await getFollowerHistory('testuser', 100000, '1m', 'instagram');
       
       expect(history).toBeDefined();
       expect(history.username).toBe('testuser');
       expect(history.currentFollowers).toBe(100000);
       expect(history.timeRange).toBe('1m');
-      expect(history.isDemo).toBe(true);
+      expect(history.platform).toBe('instagram');
+      expect(history).toHaveProperty('realDataPoints');
     });
 
     it('should return correct number of data points for 7 days', async () => {
@@ -120,6 +126,70 @@ describe('Follower History Service', () => {
       const today = new Date().toISOString().split('T')[0];
       
       expect(lastPoint.date).toBe(today);
+    });
+
+    it('should work with TikTok platform', async () => {
+      const history = await getFollowerHistory('tiktokuser', 50000, '1m', 'tiktok');
+      
+      expect(history.platform).toBe('tiktok');
+      expect(history.dataPoints).toHaveLength(30);
+    });
+
+    it('should work with YouTube platform', async () => {
+      const history = await getFollowerHistory('@youtubechannel', 100000, '1m', 'youtube');
+      
+      expect(history.platform).toBe('youtube');
+      expect(history.dataPoints).toHaveLength(30);
+    });
+  });
+
+  describe('storeFollowerSnapshot', () => {
+    it('should store Instagram snapshot without errors', async () => {
+      await expect(
+        storeFollowerSnapshot('instagram', 'test_snapshot_ig', {
+          followerCount: 10000,
+          followingCount: 500,
+          postCount: 100,
+          engagementRate: 3.5,
+        }, true)
+      ).resolves.not.toThrow();
+    });
+
+    it('should store TikTok snapshot without errors', async () => {
+      await expect(
+        storeFollowerSnapshot('tiktok', 'test_snapshot_tt', {
+          followerCount: 50000,
+          followingCount: 200,
+          postCount: 150,
+          totalLikes: 1000000,
+        }, true)
+      ).resolves.not.toThrow();
+    });
+
+    it('should store YouTube snapshot without errors', async () => {
+      await expect(
+        storeFollowerSnapshot('youtube', '@test_snapshot_yt', {
+          followerCount: 100000,
+          postCount: 200,
+          totalViews: 5000000,
+        }, true)
+      ).resolves.not.toThrow();
+    });
+  });
+
+  describe('getTrackedAccountsCount', () => {
+    it('should return tracked accounts count with correct structure', async () => {
+      const counts = await getTrackedAccountsCount();
+
+      expect(counts).toHaveProperty('instagram');
+      expect(counts).toHaveProperty('tiktok');
+      expect(counts).toHaveProperty('youtube');
+      expect(counts).toHaveProperty('total');
+
+      expect(typeof counts.instagram).toBe('number');
+      expect(typeof counts.tiktok).toBe('number');
+      expect(typeof counts.youtube).toBe('number');
+      expect(typeof counts.total).toBe('number');
     });
   });
 });

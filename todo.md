@@ -278,3 +278,10 @@
 - [x] YouTube API: Echte Kanal- und Video-Daten abrufen (mit Demo-Fallback)
 - [x] Error-Handling für API-Rate-Limits verbessern
 - [x] Caching-Strategie für API-Aufrufe (1h Cache für TikTok/YouTube)
+
+## Follower-Tracking-System für echte historische Daten
+- [x] Datenbank-Schema für Follower-Snapshots erstellen (Instagram, TikTok, YouTube)
+- [x] Follower-History Service mit DB-Integration aktualisieren
+- [x] Automatisches Tracking bei jeder Analyse einbauen
+- [x] Demo-Fallback für neue Accounts ohne Historie beibehalten
+- [x] Tests für Follower-Tracking schreiben (19 Tests bestanden)

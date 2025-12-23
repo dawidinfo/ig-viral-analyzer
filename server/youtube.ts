@@ -1,6 +1,7 @@
 import { callDataApi } from "./_core/dataApi";
 import { getDb } from "./db";
 import { youtubeCache } from "../drizzle/schema";
+import { storeFollowerSnapshot } from "./followerHistory";
 import { eq } from "drizzle-orm";
 
 /**
@@ -453,6 +454,14 @@ export async function analyzeYouTubeChannel(channelIdOrUrl: string): Promise<You
         analytics,
         isDemo: false,
       };
+
+      // Store follower snapshot for tracking history
+      storeFollowerSnapshot('youtube', channel.handle || channel.customUrl || cleanId, {
+        followerCount: channel.subscriberCount,
+        postCount: channel.videoCount,
+        totalViews: channel.viewCount,
+        engagementRate: analytics.engagementRate,
+      }, true).catch(err => console.error('[YouTube] Failed to store snapshot:', err.message));
 
       // Store in cache
       await setCachedAnalysis(cleanId, analysis);

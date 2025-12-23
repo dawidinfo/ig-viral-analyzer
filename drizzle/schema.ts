@@ -409,3 +409,36 @@ export const PLAN_LIMITS = {
     savedAnalyses: -1,
   },
 } as const;
+
+
+/**
+ * Follower snapshots - stores daily follower counts for tracking history
+ * This enables real historical data over time instead of demo data
+ */
+export const followerSnapshots = mysqlTable("follower_snapshots", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Platform: instagram, tiktok, youtube */
+  platform: mysqlEnum("platform", ["instagram", "tiktok", "youtube"]).notNull(),
+  /** Username or channel ID */
+  username: varchar("username", { length: 128 }).notNull(),
+  /** Follower/subscriber count at snapshot time */
+  followerCount: int("followerCount").notNull(),
+  /** Following count (Instagram/TikTok) */
+  followingCount: int("followingCount"),
+  /** Post/video count */
+  postCount: int("postCount"),
+  /** Total likes/hearts (TikTok) */
+  totalLikes: int("totalLikes"),
+  /** Total views (YouTube) */
+  totalViews: int("totalViews"),
+  /** Engagement rate at time of snapshot */
+  engagementRate: decimal("engagementRate", { precision: 5, scale: 2 }),
+  /** Date of snapshot (YYYY-MM-DD) */
+  snapshotDate: varchar("snapshotDate", { length: 10 }).notNull(),
+  /** Is this from real API data or demo? */
+  isRealData: int("isRealData").default(1).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type FollowerSnapshot = typeof followerSnapshots.$inferSelect;
+export type InsertFollowerSnapshot = typeof followerSnapshots.$inferInsert;

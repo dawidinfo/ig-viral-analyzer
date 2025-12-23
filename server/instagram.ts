@@ -1,5 +1,6 @@
 import axios, { AxiosError } from "axios";
 import { callDataApi } from "./_core/dataApi";
+import { storeFollowerSnapshot } from "./followerHistory";
 
 const RAPIDAPI_HOST = "instagram-scraper-stable-api.p.rapidapi.com";
 
@@ -722,6 +723,14 @@ export async function analyzeInstagramAccount(username: string): Promise<Instagr
     const avgSaves = Math.round(avgLikes * 0.12);
 
     const { score: viralScore, factors: viralFactors } = calculateViralScore(profile, posts, reels);
+
+    // Store follower snapshot for tracking history
+    storeFollowerSnapshot('instagram', username, {
+      followerCount: profile.followerCount,
+      followingCount: profile.followingCount,
+      postCount: profile.mediaCount,
+      engagementRate: engagementRate,
+    }, true).catch(err => console.error('[Instagram] Failed to store snapshot:', err.message));
 
     return {
       profile,
