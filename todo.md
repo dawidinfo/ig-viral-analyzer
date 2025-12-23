@@ -142,3 +142,9 @@
 - [x] Zeitraum-Auswahl (7d, 1m, 3m, 6m, 1y, max)
 - [x] Tägliche Wachstumstabelle mit +/- Anzeige
 - [x] Integration in Analyse-Seite
+
+## Posting-Zeit-Analyse
+- [x] Backend-Service für Posting-Zeit-Analyse erstellen
+- [x] Heatmap-Komponente (Wochentag x Uhrzeit)
+- [x] Beste Posting-Zeiten Empfehlungen
+- [x] Integration in Analyse-Seite

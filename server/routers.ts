@@ -5,6 +5,7 @@ import { publicProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import { analyzeInstagramAccount, fetchInstagramProfile, fetchInstagramPosts, fetchInstagramReels, InstagramAnalysis } from "./instagram";
 import { getFollowerHistory, getTimeRanges } from "./followerHistory";
+import { generatePostingTimeAnalysis } from "./postingTimeAnalysis";
 import { analyzeReel } from "./reelAnalysis";
 import { generateDeepAnalysis, DeepAnalysis } from "./deepAnalysis";
 import { getDb } from "./db";
@@ -235,6 +236,19 @@ export const appRouter = router({
     timeRanges: publicProcedure.query(() => {
       return getTimeRanges();
     }),
+
+    // Posting time analysis
+    postingTimeAnalysis: publicProcedure
+      .input(z.object({ username: z.string().min(1) }))
+      .query(async ({ input }) => {
+        // Get cached analysis data if available
+        const cached = await getCachedAnalysis(input.username);
+        const posts = cached?.posts || [];
+        const reels = cached?.reels || [];
+        
+        const analysis = generatePostingTimeAnalysis(input.username, posts, reels);
+        return analysis;
+      }),
   }),
 
   // Dashboard routes

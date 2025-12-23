@@ -42,6 +42,7 @@ import { useState, useMemo } from "react";
 import ReelAnalysis from "@/components/ReelAnalysis";
 import DeepAnalysis from "@/components/DeepAnalysis";
 import FollowerGrowthChart from "@/components/FollowerGrowthChart";
+import PostingTimeAnalysis from "@/components/PostingTimeAnalysis";
 import { generateAnalysisPDF } from "@/lib/pdfExport";
 import { useLocation, useSearch } from "wouter";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -623,7 +624,19 @@ export default function Analysis() {
               </div>
             </section>
 
-            {/* ==================== SECTION 4: VIRAL FAKTOREN ==================== */}
+            {/* ==================== SECTION 4: POSTING-ZEIT-ANALYSE ==================== */}
+            <section className="space-y-6">
+              <SectionHeader
+                title="Posting-Zeit-Analyse"
+                icon={<Clock className="w-6 h-6 text-purple-400" />}
+                isPinned={pinnedSections.has('posting-time')}
+                onTogglePin={() => togglePin('posting-time')}
+              />
+              
+              <PostingTimeAnalysis username={analysisData.profile.username} />
+            </section>
+
+            {/* ==================== SECTION 5: VIRAL FAKTOREN ==================== */}
             <section className="space-y-6">
               <SectionHeader
                 title="Viral Faktoren"
