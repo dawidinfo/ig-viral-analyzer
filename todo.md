@@ -402,3 +402,15 @@
 - [ ] 500 Credits Gutschrift wenn Geworbener zahlt und 500 Credits überschreitet
 - [ ] Affiliate-Dashboard im Profil
 - [ ] Referral-Link teilen Funktion
+
+## Dashboard-Eingabefeld Styling
+- [x] Eingabefeld im Dashboard-Header mit Gradient-Border wie auf Startseite
+
+## Login-Redirect Fix
+- [x] Nach OAuth-Login direkt zum Dashboard statt Startseite redirecten
+
+## Dokumentation Live-Betrieb
+- [x] Anleitung für echte Daten (API-Keys, Rate-Limits)
+- [x] Deployment-Anleitung (Manus Publish)
+- [x] Sichere Weiterentwicklung ohne User-Datenverlust
+- [x] Zahlungs-Status und was noch fehlt

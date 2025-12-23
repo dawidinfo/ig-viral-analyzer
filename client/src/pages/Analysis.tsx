@@ -328,22 +328,26 @@ export default function Analysis() {
             </div>
           </div>
           
-          {/* Search Bar */}
-          <div className="flex items-center gap-2 max-w-md flex-1 mx-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="@username analysieren..."
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleAnalyze()}
-                className="pl-10 bg-muted/50 border-border/50 input-glow"
-              />
+          {/* Search Bar with Gradient Border */}
+          <div className="flex items-center gap-2 max-w-lg flex-1 mx-4">
+            <div className="relative gradient-border rounded-xl p-[2px] flex-1">
+              <div className="flex items-center gap-2 bg-background rounded-xl">
+                <div className="flex-1 relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    type="text"
+                    placeholder="@username analysieren..."
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleAnalyze()}
+                    className="pl-10 h-10 bg-transparent border-0 focus-visible:ring-0 input-glow"
+                  />
+                </div>
+                <Button onClick={handleAnalyze} className="btn-gradient text-white border-0 h-8 px-3 mr-1">
+                  <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                </Button>
+              </div>
             </div>
-            <Button onClick={handleAnalyze} className="btn-gradient text-white border-0">
-              <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
-            </Button>
           </div>
 
           {/* Action Buttons */}
