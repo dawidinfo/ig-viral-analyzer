@@ -285,3 +285,15 @@
 - [x] Automatisches Tracking bei jeder Analyse einbauen
 - [x] Demo-Fallback für neue Accounts ohne Historie beibehalten
 - [x] Tests für Follower-Tracking schreiben (19 Tests bestanden)
+
+## Scheduled Follower Tracking (Cron-Job)
+- [ ] Scheduled Tracking Service erstellen
+- [ ] Funktion zum Abrufen aller gespeicherten Accounts
+- [ ] Batch-Processing für API-Rate-Limits
+- [ ] Cron-Job für tägliches Tracking (z.B. 3:00 Uhr nachts)
+- [ ] Logging und Fehlerbehandlung
+- [ ] Tests für Scheduled Tracking
+
+## UI-Verbesserungen
+- [x] Klaren Login-Button für User hinzufügen (Desktop + Mobile)
+- [x] HAPSS-Formel korrigieren: Story und Solution vertauschen (korrekte Reihenfolge: Hook, Attention, Problem, Story, Solution)

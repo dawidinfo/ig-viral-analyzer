@@ -212,7 +212,7 @@ export default function DeepAnalysis({ username }: DeepAnalysisProps) {
             <CardHeader>
               <CardTitle>HAPSS Framework Analyse</CardTitle>
               <CardDescription>
-                Hook, Attention, Problem, Solution, Story - Die Formel von Dawid Przybylski
+                Hook, Attention, Problem, Story, Solution - Die Formel von Dawid Przybylski
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">

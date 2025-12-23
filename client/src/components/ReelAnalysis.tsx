@@ -593,7 +593,7 @@ export default function ReelAnalysis({ username }: ReelAnalysisProps) {
           <div className="flex items-center gap-3">
             <Play className="w-6 h-6 text-green-400" />
             <h4 className="font-bold text-lg">HAPSS-Framework</h4>
-            <span className="text-sm text-muted-foreground">(Hook, Attention, Problem, Solution, Story)</span>
+            <span className="text-sm text-muted-foreground">(Hook, Attention, Problem, Story, Solution)</span>
           </div>
           {expandedSections.has('hapss') ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
         </div>
@@ -611,8 +611,8 @@ export default function ReelAnalysis({ username }: ReelAnalysisProps) {
                   { key: 'hook', label: 'Hook', icon: '🎣', data: analysis.hapssAnalysis.hook, desc: 'Aufmerksamkeit in den ersten 3 Sekunden' },
                   { key: 'attention', label: 'Attention', icon: '👀', data: analysis.hapssAnalysis.attention, desc: 'Aufmerksamkeit halten & Zuschauer binden' },
                   { key: 'problem', label: 'Problem', icon: '❓', data: analysis.hapssAnalysis.problem, desc: 'Schmerzpunkt klar identifizieren' },
-                  { key: 'solution', label: 'Solution', icon: '💡', data: analysis.hapssAnalysis.solution, desc: 'Lösung präsentieren' },
                   { key: 'story', label: 'Story', icon: '📖', data: analysis.hapssAnalysis.story, desc: 'Persönliche Geschichte einbinden' },
+                  { key: 'solution', label: 'Solution', icon: '💡', data: analysis.hapssAnalysis.solution, desc: 'Lösung präsentieren' },
                 ].map((item) => (
                   <div key={item.key} className="flex items-center gap-4 p-4 bg-muted/30 rounded-xl hover:bg-muted/50 transition-colors">
                     <span className="text-2xl">{item.icon}</span>

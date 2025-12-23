@@ -1,4 +1,5 @@
 import { useAuth } from "@/_core/hooks/useAuth";
+import { getLoginUrl } from "@/const";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -47,6 +48,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
+import { LogIn, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const features = [
@@ -188,7 +190,7 @@ const faqs = [
   },
   {
     question: "Was ist das HAPSS-Framework?",
-    answer: "HAPSS steht für Hook, Attention, Problem, Solution, Story - ein bewährtes Framework für viralen Content. Unsere KI analysiert, wie gut deine Reels diese Elemente umsetzen."
+    answer: "HAPSS steht für Hook, Attention, Problem, Story, Solution - ein bewährtes Framework für viralen Content. Unsere KI analysiert, wie gut deine Reels diese Elemente umsetzen."
   }
 ];
 
@@ -269,14 +271,46 @@ export default function Home() {
 
           {/* Right side */}
           <div className="flex items-center gap-2">
-            <Button 
-              onClick={() => document.getElementById('hero-input')?.focus()}
-              className="btn-gradient text-white border-0 shrink-0 text-sm lg:text-base hidden sm:flex"
-              size="sm"
-            >
-              <Sparkles className="w-4 h-4 mr-1 lg:mr-2" />
-              Jetzt analysieren
-            </Button>
+            {isAuthenticated ? (
+              <div className="hidden sm:flex items-center gap-2">
+                <Button 
+                  onClick={() => setLocation('/dashboard')}
+                  variant="outline"
+                  size="sm"
+                  className="border-border/50 hover:bg-muted/50"
+                >
+                  Dashboard
+                </Button>
+                <Button 
+                  onClick={() => document.getElementById('hero-input')?.focus()}
+                  className="btn-gradient text-white border-0 shrink-0 text-sm lg:text-base"
+                  size="sm"
+                >
+                  <Sparkles className="w-4 h-4 mr-1 lg:mr-2" />
+                  Jetzt analysieren
+                </Button>
+              </div>
+            ) : (
+              <div className="hidden sm:flex items-center gap-2">
+                <Button 
+                  onClick={() => window.location.href = getLoginUrl()}
+                  variant="outline"
+                  size="sm"
+                  className="border-border/50 hover:bg-muted/50"
+                >
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Anmelden
+                </Button>
+                <Button 
+                  onClick={() => document.getElementById('hero-input')?.focus()}
+                  className="btn-gradient text-white border-0 shrink-0 text-sm lg:text-base"
+                  size="sm"
+                >
+                  <Sparkles className="w-4 h-4 mr-1 lg:mr-2" />
+                  Jetzt analysieren
+                </Button>
+              </div>
+            )}
 
             <button
               type="button"
@@ -344,10 +378,28 @@ export default function Home() {
                 </button>
               )}
               <div className="h-px bg-border/50 my-4" />
-              <Button onClick={() => { document.getElementById('hero-input')?.focus(); closeMobileMenu(); }} className="btn-gradient text-white border-0 w-full justify-center">
-                <Sparkles className="w-4 h-4 mr-2" />
-                Jetzt analysieren
-              </Button>
+              {isAuthenticated ? (
+                <>
+                  <Button onClick={() => { setLocation('/dashboard'); closeMobileMenu(); }} variant="outline" className="w-full justify-center mb-2">
+                    Dashboard
+                  </Button>
+                  <Button onClick={() => { document.getElementById('hero-input')?.focus(); closeMobileMenu(); }} className="btn-gradient text-white border-0 w-full justify-center">
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Jetzt analysieren
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button onClick={() => { window.location.href = getLoginUrl(); }} variant="outline" className="w-full justify-center mb-2">
+                    <LogIn className="w-4 h-4 mr-2" />
+                    Anmelden
+                  </Button>
+                  <Button onClick={() => { document.getElementById('hero-input')?.focus(); closeMobileMenu(); }} className="btn-gradient text-white border-0 w-full justify-center">
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Jetzt analysieren
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </>

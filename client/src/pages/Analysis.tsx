@@ -494,7 +494,7 @@ export default function Analysis() {
                 icon={<Target className="w-6 h-6 text-cyan-400" />}
                 isPinned={pinnedSections.has('deep')}
                 onTogglePin={() => togglePin('deep')}
-                badge="Hook, Agitate, Problem, Solution, Story"
+                badge="Hook, Attention, Problem, Story, Solution"
                 badgeColor="bg-cyan-500/20 text-cyan-400 border border-cyan-500/30"
               />
               <div className="glass-card rounded-2xl p-8">
