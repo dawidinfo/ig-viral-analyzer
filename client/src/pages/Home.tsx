@@ -48,8 +48,10 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { LogIn, LogOut } from "lucide-react";
+import { LogIn, LogOut, Globe } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { LanguageSelector } from "@/components/LanguageSelector";
 
 const features = [
   {
@@ -223,6 +225,7 @@ const useCases = [
 
 export default function Home() {
   let { user, loading, error, isAuthenticated, logout } = useAuth();
+  const { t } = useLanguage();
 
   const [, setLocation] = useLocation();
   const [username, setUsername] = useState("");
@@ -253,19 +256,20 @@ export default function Home() {
           
           {/* Navigation Links */}
           <div className="hidden lg:flex items-center gap-6 xl:gap-8">
-            <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">Features</a>
-            <a href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">Wie es funktioniert</a>
-            <a href="#testimonials" className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">Erfolge</a>
-            <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">Preise</a>
-            <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">FAQ</a>
+            <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">{t.nav.features}</a>
+            <a href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">{t.nav.howItWorks}</a>
+            <a href="#testimonials" className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">{t.nav.success}</a>
+            <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">{t.nav.pricing}</a>
+            <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">{t.nav.faq}</a>
             <button onClick={() => setLocation('/compare')} className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 whitespace-nowrap">
               <ArrowLeftRight className="w-3 h-3" />
-              Vergleichen
+              {t.nav.compare}
             </button>
           </div>
 
           {/* Right side */}
           <div className="flex items-center gap-2">
+            <LanguageSelector />
             {isAuthenticated ? (
               <div className="hidden sm:flex items-center gap-2">
                 <Button 
@@ -274,7 +278,7 @@ export default function Home() {
                   size="sm"
                   className="border-border/50 hover:bg-muted/50"
                 >
-                  Dashboard
+                  {t.nav.dashboard}
                 </Button>
                 <Button 
                   onClick={() => document.getElementById('hero-input')?.focus()}
@@ -282,7 +286,7 @@ export default function Home() {
                   size="sm"
                 >
                   <Sparkles className="w-4 h-4 mr-1 lg:mr-2" />
-                  Jetzt analysieren
+                  {t.nav.analyze}
                 </Button>
               </div>
             ) : (
@@ -294,7 +298,7 @@ export default function Home() {
                   className="border-border/50 hover:bg-muted/50"
                 >
                   <LogIn className="w-4 h-4 mr-2" />
-                  Anmelden
+                  {t.nav.login}
                 </Button>
                 <Button 
                   onClick={() => document.getElementById('hero-input')?.focus()}
@@ -302,7 +306,7 @@ export default function Home() {
                   size="sm"
                 >
                   <Sparkles className="w-4 h-4 mr-1 lg:mr-2" />
-                  Jetzt analysieren
+                  {t.nav.analyze}
                 </Button>
               </div>
             )}
@@ -411,19 +415,18 @@ export default function Home() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8"
             >
               <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium">KI-gestützte Instagram Analyse</span>
+              <span className="text-sm font-medium">{t.hero.badge}</span>
             </motion.div>
 
             {/* Headline */}
             <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6">
-              Entdecke warum
+              {t.hero.title}
               <br />
-              <span className="text-gradient">Content viral geht</span>
+              <span className="text-gradient">{t.hero.titleHighlight}</span>
             </h1>
 
             <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
-              Analysiere jeden Instagram-Account. Verstehe Engagement-Muster, 
-              optimiere deine Captions und steigere deine Reichweite mit datengestützten Insights.
+              {t.hero.subtitle}
             </p>
 
             {/* Search Input */}
@@ -440,7 +443,7 @@ export default function Home() {
                     <Input
                       id="hero-input"
                       type="text"
-                      placeholder="@username eingeben..."
+                      placeholder={t.hero.placeholder}
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && handleAnalyze()}
@@ -452,7 +455,7 @@ export default function Home() {
                     size="lg"
                     className="btn-gradient h-12 px-8 text-white border-0"
                   >
-                    Analysieren
+                    {t.hero.cta}
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </div>
@@ -468,15 +471,15 @@ export default function Home() {
             >
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-accent" />
-                <span>Kostenlos testen</span>
+                <span>{t.hero.features.free}</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-accent" />
-                <span>Keine Anmeldung nötig</span>
+                <span>{t.hero.features.noSignup}</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-accent" />
-                <span>Sofortige Ergebnisse</span>
+                <span>{t.hero.features.instant}</span>
               </div>
             </motion.div>
           </motion.div>
@@ -647,14 +650,14 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <Badge className="badge-neon mb-4">FEATURES</Badge>
+            <Badge className="badge-neon mb-4">{t.nav.features.toUpperCase()}</Badge>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Alles was du brauchst für
+              {t.features.title.split(' ').slice(0, -2).join(' ')}
               <br />
-              <span className="text-gradient">viralen Content</span>
+              <span className="text-gradient">{t.features.title.split(' ').slice(-2).join(' ')}</span>
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Umfassende Analyse-Tools die dir helfen, die Geheimnisse viraler Instagram-Posts zu verstehen.
+              {t.features.subtitle}
             </p>
           </motion.div>
 
@@ -881,14 +884,14 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <Badge className="badge-neon mb-4">EINFACHES PRICING</Badge>
+            <Badge className="badge-neon mb-4">{t.nav.pricing.toUpperCase()}</Badge>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Wähle deinen Plan
+              {t.pricing.title}
               <br />
-              <span className="text-gradient">3 KI-Analysen kostenlos</span>
+              <span className="text-gradient">{t.pricing.free.features[0]}</span>
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Starte kostenlos mit 3 KI-Analysen. Upgrade jederzeit für mehr Power.
+              {t.pricing.subtitle}
             </p>
           </motion.div>
 
@@ -1120,11 +1123,11 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <Badge className="badge-neon mb-4">FAQ</Badge>
+            <Badge className="badge-neon mb-4">{t.nav.faq}</Badge>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Häufig gestellte
+              {t.faq.title.split(' ').slice(0, 2).join(' ')}
               <br />
-              <span className="text-gradient">Fragen</span>
+              <span className="text-gradient">{t.faq.title.split(' ').slice(2).join(' ')}</span>
             </h2>
           </motion.div>
 
@@ -1183,13 +1186,13 @@ export default function Home() {
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-primary/20 rounded-full blur-[100px] pointer-events-none" />
               
               <div className="relative z-10">
-                <Badge className="badge-neon mb-6">STARTE JETZT</Badge>
+                <Badge className="badge-neon mb-6">{t.cta.button.toUpperCase()}</Badge>
                 <h2 className="text-4xl md:text-5xl font-bold mb-4">
-                  Bereit für mehr
-                  <span className="text-gradient"> Reichweite?</span>
+                  {t.cta.title.split('?')[0]}
+                  <span className="text-gradient">?</span>
                 </h2>
                 <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
-                  Schließe dich über 2.500 Creatorn an, die bereits mit ReelSpy ihre Reichweite steigern.
+                  {t.cta.subtitle}
                 </p>
                 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -1258,7 +1261,7 @@ export default function Home() {
                 <img src="/logo.svg" alt="ReelSpy.ai" className="h-8 w-auto" />
               </div>
               <p className="text-sm text-muted-foreground mb-4">
-                Die KI-gestützte Instagram-Analyse für Creator, Influencer und Brands.
+                {t.footer.description}
               </p>
               <div className="flex items-center gap-1">
                 {[1,2,3,4,5].map((i) => (
@@ -1270,12 +1273,12 @@ export default function Home() {
 
             {/* Product */}
             <div>
-              <h4 className="font-semibold mb-4">Produkt</h4>
+              <h4 className="font-semibold mb-4">{t.footer.product}</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#features" className="hover:text-foreground transition-colors">Features</a></li>
-                <li><a href="#pricing" className="hover:text-foreground transition-colors">Preise</a></li>
-                <li><button onClick={() => setLocation('/compare')} className="hover:text-foreground transition-colors">Vergleichen</button></li>
-                <li><a href="#faq" className="hover:text-foreground transition-colors">FAQ</a></li>
+                <li><a href="#features" className="hover:text-foreground transition-colors">{t.nav.features}</a></li>
+                <li><a href="#pricing" className="hover:text-foreground transition-colors">{t.nav.pricing}</a></li>
+                <li><button onClick={() => setLocation('/compare')} className="hover:text-foreground transition-colors">{t.nav.compare}</button></li>
+                <li><a href="#faq" className="hover:text-foreground transition-colors">{t.nav.faq}</a></li>
               </ul>
             </div>
 
@@ -1292,11 +1295,11 @@ export default function Home() {
 
             {/* Legal */}
             <div>
-              <h4 className="font-semibold mb-4">Rechtliches</h4>
+              <h4 className="font-semibold mb-4">{t.footer.legal}</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-colors">Datenschutz</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">AGB</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Impressum</a></li>
+                <li><a href="/privacy" className="hover:text-foreground transition-colors">{t.footer.privacy}</a></li>
+                <li><a href="/terms" className="hover:text-foreground transition-colors">{t.footer.terms}</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">{t.footer.imprint}</a></li>
                 <li><a href="#" className="hover:text-foreground transition-colors">Kontakt</a></li>
               </ul>
             </div>
@@ -1304,7 +1307,7 @@ export default function Home() {
 
           <div className="pt-8 border-t border-border/50 flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-muted-foreground">
-              © 2024 ReelSpy.ai. Alle Rechte vorbehalten.
+              © 2024 ReelSpy.ai. {t.footer.copyright}
             </p>
             <div className="flex items-center gap-4">
               <Shield className="w-5 h-5 text-muted-foreground" />

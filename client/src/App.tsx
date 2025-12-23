@@ -4,6 +4,7 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { LanguageProvider } from "./contexts/LanguageContext";
 import Home from "./pages/Home";
 import Analysis from "./pages/Analysis";
 import Compare from "./pages/Compare";
@@ -12,6 +13,7 @@ import Dashboard from "./pages/Dashboard";
 import Admin from "./pages/Admin";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
+
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
@@ -34,19 +36,21 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="dark">
-        <TooltipProvider>
-          <Toaster 
-            position="top-center"
-            toastOptions={{
-              style: {
-                background: 'oklch(0.14 0.015 260)',
-                border: '1px solid oklch(0.25 0.02 260 / 0.5)',
-                color: 'oklch(0.98 0 0)',
-              },
-            }}
-          />
-          <Router />
-        </TooltipProvider>
+        <LanguageProvider>
+          <TooltipProvider>
+            <Toaster 
+              position="top-center"
+              toastOptions={{
+                style: {
+                  background: 'oklch(0.14 0.015 260)',
+                  border: '1px solid oklch(0.25 0.02 260 / 0.5)',
+                  color: 'oklch(0.98 0 0)',
+                },
+              }}
+            />
+            <Router />
+          </TooltipProvider>
+        </LanguageProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

@@ -317,3 +317,12 @@
 - [x] Frontend: Filter nach Plattform und Zeitraum
 - [x] Frontend: Responsive Design für Mobile
 - [x] Tests für Tracking-Dashboard API (12 Tests bestanden)
+
+## Mehrsprachigkeit (i18n) mit Geo-Targeting
+- [x] i18n-System und Übersetzungsdateien erstellen (DE, EN, FR, ES)
+- [x] Geo-Targeting API für automatische Spracherkennung (ipapi.co)
+- [x] Language Context Provider erstellen
+- [x] Sprachauswahl-Dropdown in Navigation
+- [x] Home.tsx Navigation, Hero, Features, Pricing, FAQ, CTA, Footer übersetzen
+- [x] Sprache in localStorage speichern
+- [x] Tests für i18n-System (17 Tests bestanden)
