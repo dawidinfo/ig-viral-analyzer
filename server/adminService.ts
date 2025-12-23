@@ -1,6 +1,7 @@
 import { getDb } from "./db";
 import { users, creditTransactions, usageTracking, savedAnalyses } from "../drizzle/schema";
 import { eq, desc, sql, and, gte, lte, like, or } from "drizzle-orm";
+import { notifySuspiciousActivity, notifyAccountBanned } from "./emailService";
 
 /**
  * Admin Service
@@ -117,6 +118,30 @@ export function isSuspiciousContent(text: string): { suspicious: boolean; reason
   }
   
   return { suspicious: false, reason: null };
+}
+
+/**
+ * Check user for suspicious content and notify admin if found
+ */
+export async function checkAndNotifySuspiciousUser(
+  userId: number,
+  email: string | null,
+  name: string | null,
+  analyzedUsername?: string
+): Promise<void> {
+  const textToCheck = `${name || ""} ${email || ""} ${analyzedUsername || ""}`;
+  const result = isSuspiciousContent(textToCheck);
+  
+  if (result.suspicious && result.reason) {
+    notifySuspiciousActivity(
+      userId,
+      email,
+      result.reason,
+      `Analysierter Account: ${analyzedUsername || "Unbekannt"}`
+    ).catch(err => {
+      console.error("[Admin] Failed to send suspicious activity notification:", err);
+    });
+  }
 }
 
 /**
@@ -370,6 +395,10 @@ export async function banUser(userId: number, reason: string): Promise<boolean> 
     const db = await getDb();
     if (!db) return false;
 
+    // Get user email before banning
+    const user = await db.select({ email: users.email }).from(users).where(eq(users.id, userId)).limit(1);
+    const userEmail = user.length > 0 ? user[0].email : null;
+
     await db
       .update(users)
       .set({
@@ -377,6 +406,11 @@ export async function banUser(userId: number, reason: string): Promise<boolean> 
         statusReason: reason,
       })
       .where(eq(users.id, userId));
+
+    // Send notification
+    notifyAccountBanned(userId, userEmail, reason).catch(err => {
+      console.error("[Admin] Failed to send ban notification:", err);
+    });
 
     console.log(`[Admin] User ${userId} banned: ${reason}`);
     return true;

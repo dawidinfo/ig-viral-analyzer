@@ -249,3 +249,10 @@
 
 ## Admin-Konfiguration
 - [x] qliq.marketing@proton.me als Administrator konfiguriert (Auto-Promotion bei Login)
+
+## E-Mail-Benachrichtigungen
+- [x] E-Mail-Service erstellt (emailService.ts)
+- [x] Benachrichtigung bei neuen Anmeldungen (in db.ts integriert)
+- [x] Benachrichtigung bei Käufen/Upgrades (in creditService.ts integriert)
+- [x] Benachrichtigung bei verdächtigen Aktivitäten (in adminService.ts integriert)
+- [x] Admin-E-Mail qliq.marketing@proton.me konfiguriert

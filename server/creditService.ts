@@ -1,6 +1,7 @@
 import { getDb } from "./db";
 import { users, creditTransactions, CREDIT_COSTS, CreditAction } from "../drizzle/schema";
 import { eq, sql, desc } from "drizzle-orm";
+import { notifyPurchase } from "./emailService";
 
 /**
  * Credit Service - Manages user credits, transactions, and usage tracking
@@ -160,6 +161,19 @@ export async function addCredits(
     referenceId,
     adminId,
   });
+
+  // Send notification for purchases
+  if (type === "purchase") {
+    const user = await db.select({ email: users.email, plan: users.plan }).from(users).where(eq(users.id, userId)).limit(1);
+    if (user.length > 0) {
+      // Estimate price based on credits (rough calculation)
+      const pricePerCredit = 0.29; // Average price per credit
+      const estimatedPrice = amount * pricePerCredit;
+      notifyPurchase(userId, user[0].email, user[0].plan, estimatedPrice, amount).catch(err => {
+        console.error("[Credits] Failed to send purchase notification:", err);
+      });
+    }
+  }
 
   return { success: true, newBalance };
 }

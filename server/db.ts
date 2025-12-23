@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { InsertUser, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
+import { notifyNewSignup } from "./emailService";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
@@ -68,9 +69,23 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       updateSet.lastSignedIn = new Date();
     }
 
+    // Check if user exists before insert
+    const existingUser = await db.select({ id: users.id }).from(users).where(eq(users.openId, user.openId)).limit(1);
+    const isNewUser = existingUser.length === 0;
+
     await db.insert(users).values(values).onDuplicateKeyUpdate({
       set: updateSet,
     });
+
+    // Send notification for new signups
+    if (isNewUser) {
+      const newUser = await db.select({ id: users.id }).from(users).where(eq(users.openId, user.openId)).limit(1);
+      if (newUser.length > 0) {
+        notifyNewSignup(newUser[0].id, user.email || null, user.name || null).catch(err => {
+          console.error("[Database] Failed to send signup notification:", err);
+        });
+      }
+    }
   } catch (error) {
     console.error("[Database] Failed to upsert user:", error);
     throw error;
