@@ -13,6 +13,7 @@ import {
   MessageSquare,
   Share2,
   Bookmark,
+  BookmarkCheck,
   Play,
   Search,
   Clock,
@@ -29,12 +30,15 @@ import {
   ExternalLink,
   ImageIcon,
   Download,
-  FileText
+  FileText,
+  Save,
+  Loader2
 } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import ReelAnalysis from "@/components/ReelAnalysis";
 import { generateAnalysisPDF } from "@/lib/pdfExport";
 import { useLocation, useSearch } from "wouter";
+import { useAuth } from "@/_core/hooks/useAuth";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   AreaChart,
@@ -111,6 +115,43 @@ export default function Analysis() {
   const usernameParam = params.get('username') || '';
   
   const [username, setUsername] = useState(usernameParam);
+  const [isSaved, setIsSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Save analysis mutation
+  const saveAnalysisMutation = trpc.dashboard.saveAnalysis.useMutation({
+    onSuccess: () => {
+      setIsSaved(true);
+      setIsSaving(false);
+    },
+    onError: () => {
+      setIsSaving(false);
+    }
+  });
+
+  const { user } = useAuth();
+
+  const handleSaveAnalysis = async () => {
+    if (!analysisData || isSaved || isSaving || !user) return;
+    
+    const userId = user.id;
+    
+    setIsSaving(true);
+    saveAnalysisMutation.mutate({
+      userId,
+      username: analysisData.profile.username,
+      profilePicUrl: analysisData.profile.profilePicUrl || '',
+      fullName: analysisData.profile.fullName || '',
+      followerCount: analysisData.profile.followerCount,
+      viralScore: analysisData.viralScore,
+      engagementRate: analysisData.metrics.engagementRate.toFixed(2),
+      analysisData: {
+        metrics: analysisData.metrics,
+        viralFactors: analysisData.viralFactors,
+        profile: analysisData.profile
+      }
+    });
+  };
 
   // Fetch Instagram analysis data
   const { data: analysisData, isLoading, error, refetch } = trpc.instagram.analyze.useQuery(
@@ -373,30 +414,48 @@ export default function Analysis() {
                       <CircularProgress value={analysisData.viralScore} size={100} color="viral" />
                       <p className="text-sm text-muted-foreground mt-2">Viral Score</p>
                     </div>
-                    <Button
-                      onClick={() => generateAnalysisPDF({
-                        profile: {
-                          username: analysisData.profile.username,
-                          fullName: analysisData.profile.fullName || analysisData.profile.username,
-                          bio: analysisData.profile.biography || '',
-                          followerCount: analysisData.profile.followerCount,
-                          followingCount: analysisData.profile.followingCount,
-                          postCount: analysisData.profile.mediaCount,
-                          isVerified: analysisData.profile.isVerified,
-                          isBusinessAccount: analysisData.profile.isBusinessAccount
-                        },
-                        metrics: analysisData.metrics,
-                        viralScore: analysisData.viralScore,
-                        viralFactors: analysisData.viralFactors,
-                        isDemo: analysisData.isDemo
-                      })}
-                      variant="outline"
-                      size="sm"
-                      className="border-primary/50 hover:bg-primary/20 text-primary"
-                    >
-                      <Download className="w-4 h-4 mr-2" />
-                      PDF Export
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={handleSaveAnalysis}
+                        disabled={isSaved || isSaving}
+                        variant="outline"
+                        size="sm"
+                        className={isSaved ? "border-green-500/50 text-green-500" : "border-accent/50 hover:bg-accent/20 text-accent"}
+                      >
+                        {isSaving ? (
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        ) : isSaved ? (
+                          <BookmarkCheck className="w-4 h-4 mr-2" />
+                        ) : (
+                          <Bookmark className="w-4 h-4 mr-2" />
+                        )}
+                        {isSaved ? "Gespeichert" : "Speichern"}
+                      </Button>
+                      <Button
+                        onClick={() => generateAnalysisPDF({
+                          profile: {
+                            username: analysisData.profile.username,
+                            fullName: analysisData.profile.fullName || analysisData.profile.username,
+                            bio: analysisData.profile.biography || '',
+                            followerCount: analysisData.profile.followerCount,
+                            followingCount: analysisData.profile.followingCount,
+                            postCount: analysisData.profile.mediaCount,
+                            isVerified: analysisData.profile.isVerified,
+                            isBusinessAccount: analysisData.profile.isBusinessAccount
+                          },
+                          metrics: analysisData.metrics,
+                          viralScore: analysisData.viralScore,
+                          viralFactors: analysisData.viralFactors,
+                          isDemo: analysisData.isDemo
+                        })}
+                        variant="outline"
+                        size="sm"
+                        className="border-primary/50 hover:bg-primary/20 text-primary"
+                      >
+                        <Download className="w-4 h-4 mr-2" />
+                        PDF
+                      </Button>
+                    </div>
                   </div>
                 </div>
 

@@ -91,3 +91,9 @@
 
 ## Bug Fixes
 - [x] Fix mobile hamburger menu not opening on click (moved menu outside nav, conditional rendering)
+
+## Save Analysis Feature
+- [x] Add "Save Analysis" button to Analysis page
+- [x] Implement save functionality in backend router
+- [x] Show success/error feedback to user
+- [x] Update saved analyses count in Dashboard
