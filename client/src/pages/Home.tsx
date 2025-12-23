@@ -138,33 +138,42 @@ export default function Home() {
             {/* Hamburger Button - Visible on mobile/tablet */}
             <button
               type="button"
-              className="lg:hidden p-2 rounded-md hover:bg-muted/50 transition-colors"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setMobileMenuOpen(!mobileMenuOpen);
-              }}
-              aria-label="Menü öffnen"
-              style={{ position: 'relative', zIndex: 101 }}
+              className="flex lg:hidden items-center justify-center w-10 h-10 rounded-md hover:bg-white/10"
+              onClick={() => setMobileMenuOpen(prev => !prev)}
+              aria-label="Menü"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
+      </nav>
 
-        {/* Mobile Menu Overlay */}
-        <div 
-          className={`fixed inset-0 top-16 bg-black/60 backdrop-blur-sm lg:hidden transition-opacity duration-300 ${mobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-          style={{ zIndex: 9998 }}
-          onClick={closeMobileMenu}
-        />
-
-        {/* Mobile Menu Panel */}
-        <div
-          className={`fixed top-16 right-0 bottom-0 w-72 bg-background border-l border-border/50 lg:hidden overflow-y-auto transition-transform duration-300 ease-out ${mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
-          style={{ zIndex: 9999 }}
-        >
-          <div className="flex flex-col p-6 gap-2">
+      {/* Mobile Menu - Completely outside nav */}
+      {mobileMenuOpen && (
+        <>
+          {/* Overlay */}
+          <div 
+            className="fixed inset-0 bg-black/70 lg:hidden"
+            style={{ zIndex: 200 }}
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          {/* Menu Panel */}
+          <div
+            className="fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-background lg:hidden shadow-2xl"
+            style={{ zIndex: 201 }}
+          >
+            {/* Menu Header */}
+            <div className="flex items-center justify-between p-4 border-b border-border/50">
+              <img src="/logo.svg" alt="ReelSpy.ai" className="h-8 w-auto" />
+              <button
+                type="button"
+                className="p-2 rounded-md hover:bg-white/10"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="flex flex-col p-6 gap-2">
             {/* Mobile Nav Links */}
             <a 
               href="#features" 
@@ -226,8 +235,9 @@ export default function Home() {
               Jetzt analysieren
             </Button>
           </div>
-        </div>
-      </nav>
+          </div>
+        </>
+      )}
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 overflow-hidden">

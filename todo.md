@@ -90,4 +90,4 @@
 - [x] Add navigation link to Dashboard
 
 ## Bug Fixes
-- [x] Fix mobile hamburger menu not opening on click (replaced Framer Motion with CSS transitions)
+- [x] Fix mobile hamburger menu not opening on click (moved menu outside nav, conditional rendering)
