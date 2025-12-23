@@ -116,6 +116,11 @@ export default function Home() {
             <button onClick={() => setLocation('/pricing')} className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">
               Preise
             </button>
+            {isAuthenticated && (
+              <button onClick={() => setLocation('/dashboard')} className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">
+                Dashboard
+              </button>
+            )}
           </div>
 
           {/* Right side: CTA + Hamburger */}
@@ -199,6 +204,15 @@ export default function Home() {
               <Star className="w-5 h-5 text-primary" />
               Preise
             </button>
+            {isAuthenticated && (
+              <button 
+                onClick={() => { setLocation('/dashboard'); closeMobileMenu(); }}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors text-left"
+              >
+                <Users className="w-5 h-5 text-primary" />
+                Dashboard
+              </button>
+            )}
 
             {/* Divider */}
             <div className="h-px bg-border/50 my-4" />

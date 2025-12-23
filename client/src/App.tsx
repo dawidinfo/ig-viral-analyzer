@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Analysis from "./pages/Analysis";
 import Compare from "./pages/Compare";
 import Pricing from "./pages/Pricing";
+import Dashboard from "./pages/Dashboard";
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
@@ -16,6 +17,7 @@ function Router() {
       <Route path={"/analysis"} component={Analysis} />
       <Route path={"/compare"} component={Compare} />
       <Route path={"/pricing"} component={Pricing} />
+      <Route path={"/dashboard"} component={Dashboard} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

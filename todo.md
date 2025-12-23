@@ -78,3 +78,13 @@
 - [x] Add all navigation links to mobile menu
 - [x] Close menu on link click or outside click
 - [x] Add smooth open/close animations
+
+## User Dashboard
+- [x] Extend database schema for saved analyses
+- [x] Create usage tracking table for limits
+- [x] Build API endpoints for dashboard data
+- [x] Create Dashboard page with tabs navigation
+- [x] Implement saved analyses list with search/filter
+- [x] Add usage limits display with progress bars
+- [x] Create account settings section
+- [x] Add navigation link to Dashboard

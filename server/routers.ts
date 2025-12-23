@@ -6,8 +6,8 @@ import { z } from "zod";
 import { analyzeInstagramAccount, fetchInstagramProfile, fetchInstagramPosts, fetchInstagramReels, InstagramAnalysis } from "./instagram";
 import { analyzeReel } from "./reelAnalysis";
 import { getDb } from "./db";
-import { instagramCache } from "../drizzle/schema";
-import { eq } from "drizzle-orm";
+import { instagramCache, savedAnalyses, usageTracking, PLAN_LIMITS, users } from "../drizzle/schema";
+import { eq, and, desc, sql } from "drizzle-orm";
 
 // Cache duration: 1 hour
 const CACHE_DURATION_MS = 60 * 60 * 1000;
@@ -165,6 +165,313 @@ export const appRouter = router({
       .query(async ({ input }) => {
         const analysis = await analyzeReel(input.username, input.reelUrl);
         return analysis;
+      }),
+  }),
+
+  // Dashboard routes
+  dashboard: router({
+    // Get user's dashboard data (saved analyses, usage, plan info)
+    getData: publicProcedure
+      .input(z.object({ userId: z.number() }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        // Get user info
+        const userResult = await db
+          .select()
+          .from(users)
+          .where(eq(users.id, input.userId))
+          .limit(1);
+        
+        const user = userResult[0];
+        if (!user) throw new Error("User not found");
+
+        // Get saved analyses
+        const analyses = await db
+          .select()
+          .from(savedAnalyses)
+          .where(eq(savedAnalyses.userId, input.userId))
+          .orderBy(desc(savedAnalyses.createdAt))
+          .limit(50);
+
+        // Get current month usage
+        const currentMonth = new Date().toISOString().slice(0, 7);
+        const usage = await db
+          .select()
+          .from(usageTracking)
+          .where(and(
+            eq(usageTracking.userId, input.userId),
+            eq(usageTracking.usageMonth, currentMonth)
+          ));
+
+        // Calculate usage stats
+        const usageStats = {
+          analyses: 0,
+          aiAnalyses: 0,
+          pdfExports: 0,
+          comparisons: 0,
+        };
+
+        usage.forEach(u => {
+          if (u.actionType === 'analysis') usageStats.analyses = u.count;
+          if (u.actionType === 'ai_analysis') usageStats.aiAnalyses = u.count;
+          if (u.actionType === 'pdf_export') usageStats.pdfExports = u.count;
+          if (u.actionType === 'comparison') usageStats.comparisons = u.count;
+        });
+
+        const plan = (user.plan || 'free') as keyof typeof PLAN_LIMITS;
+        const limits = PLAN_LIMITS[plan];
+
+        return {
+          user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            plan: plan,
+            subscriptionEndsAt: user.subscriptionEndsAt,
+          },
+          savedAnalyses: analyses,
+          usage: usageStats,
+          limits: limits,
+          savedAnalysesCount: analyses.length,
+          savedAnalysesLimit: limits.savedAnalyses,
+        };
+      }),
+
+    // Save an analysis
+    saveAnalysis: publicProcedure
+      .input(z.object({
+        userId: z.number(),
+        username: z.string(),
+        profilePicUrl: z.string().optional(),
+        fullName: z.string().optional(),
+        followerCount: z.number().optional(),
+        viralScore: z.number().optional(),
+        engagementRate: z.string().optional(),
+        analysisData: z.any().optional(),
+        notes: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        // Check if user has reached saved analyses limit
+        const userResult = await db
+          .select()
+          .from(users)
+          .where(eq(users.id, input.userId))
+          .limit(1);
+        
+        const user = userResult[0];
+        if (!user) throw new Error("User not found");
+
+        const plan = (user.plan || 'free') as keyof typeof PLAN_LIMITS;
+        const limit = PLAN_LIMITS[plan].savedAnalyses;
+
+        if (limit !== -1) {
+          const countResult = await db
+            .select({ count: sql<number>`count(*)` })
+            .from(savedAnalyses)
+            .where(eq(savedAnalyses.userId, input.userId));
+          
+          if (countResult[0].count >= limit) {
+            throw new Error(`Limit erreicht: Du kannst maximal ${limit} Analysen speichern. Upgrade deinen Plan für mehr.`);
+          }
+        }
+
+        // Check if already saved
+        const existing = await db
+          .select()
+          .from(savedAnalyses)
+          .where(and(
+            eq(savedAnalyses.userId, input.userId),
+            eq(savedAnalyses.username, input.username.toLowerCase())
+          ))
+          .limit(1);
+
+        if (existing.length > 0) {
+          // Update existing
+          await db
+            .update(savedAnalyses)
+            .set({
+              profilePicUrl: input.profilePicUrl,
+              fullName: input.fullName,
+              followerCount: input.followerCount,
+              viralScore: input.viralScore,
+              engagementRate: input.engagementRate,
+              analysisData: input.analysisData,
+              notes: input.notes,
+            })
+            .where(eq(savedAnalyses.id, existing[0].id));
+          return { success: true, id: existing[0].id, updated: true };
+        }
+
+        // Insert new
+        const result = await db.insert(savedAnalyses).values({
+          userId: input.userId,
+          username: input.username.toLowerCase(),
+          profilePicUrl: input.profilePicUrl,
+          fullName: input.fullName,
+          followerCount: input.followerCount,
+          viralScore: input.viralScore,
+          engagementRate: input.engagementRate,
+          analysisData: input.analysisData,
+          notes: input.notes,
+        });
+
+        return { success: true, id: result[0].insertId, updated: false };
+      }),
+
+    // Delete a saved analysis
+    deleteAnalysis: publicProcedure
+      .input(z.object({
+        userId: z.number(),
+        analysisId: z.number(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        await db
+          .delete(savedAnalyses)
+          .where(and(
+            eq(savedAnalyses.id, input.analysisId),
+            eq(savedAnalyses.userId, input.userId)
+          ));
+
+        return { success: true };
+      }),
+
+    // Toggle favorite status
+    toggleFavorite: publicProcedure
+      .input(z.object({
+        userId: z.number(),
+        analysisId: z.number(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        const existing = await db
+          .select()
+          .from(savedAnalyses)
+          .where(and(
+            eq(savedAnalyses.id, input.analysisId),
+            eq(savedAnalyses.userId, input.userId)
+          ))
+          .limit(1);
+
+        if (existing.length === 0) throw new Error("Analysis not found");
+
+        const newFavorite = existing[0].isFavorite === 1 ? 0 : 1;
+        await db
+          .update(savedAnalyses)
+          .set({ isFavorite: newFavorite })
+          .where(eq(savedAnalyses.id, input.analysisId));
+
+        return { success: true, isFavorite: newFavorite === 1 };
+      }),
+
+    // Track usage
+    trackUsage: publicProcedure
+      .input(z.object({
+        userId: z.number(),
+        actionType: z.enum(['analysis', 'ai_analysis', 'pdf_export', 'comparison']),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        const currentMonth = new Date().toISOString().slice(0, 7);
+
+        // Check if record exists
+        const existing = await db
+          .select()
+          .from(usageTracking)
+          .where(and(
+            eq(usageTracking.userId, input.userId),
+            eq(usageTracking.actionType, input.actionType),
+            eq(usageTracking.usageMonth, currentMonth)
+          ))
+          .limit(1);
+
+        if (existing.length > 0) {
+          // Increment count
+          await db
+            .update(usageTracking)
+            .set({ count: existing[0].count + 1 })
+            .where(eq(usageTracking.id, existing[0].id));
+        } else {
+          // Create new record
+          await db.insert(usageTracking).values({
+            userId: input.userId,
+            actionType: input.actionType,
+            usageMonth: currentMonth,
+            count: 1,
+          });
+        }
+
+        return { success: true };
+      }),
+
+    // Check if user can perform action (within limits)
+    checkLimit: publicProcedure
+      .input(z.object({
+        userId: z.number(),
+        actionType: z.enum(['analysis', 'ai_analysis', 'pdf_export', 'comparison']),
+      }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        // Get user's plan
+        const userResult = await db
+          .select()
+          .from(users)
+          .where(eq(users.id, input.userId))
+          .limit(1);
+        
+        const user = userResult[0];
+        if (!user) throw new Error("User not found");
+
+        const plan = (user.plan || 'free') as keyof typeof PLAN_LIMITS;
+        const limits = PLAN_LIMITS[plan];
+        
+        // Map action type to limit key
+        const limitKey = {
+          'analysis': 'analyses',
+          'ai_analysis': 'aiAnalyses',
+          'pdf_export': 'pdfExports',
+          'comparison': 'comparisons',
+        }[input.actionType] as keyof typeof limits;
+
+        const limit = limits[limitKey];
+        
+        // Unlimited
+        if (limit === -1) return { allowed: true, remaining: -1, limit: -1 };
+
+        // Get current usage
+        const currentMonth = new Date().toISOString().slice(0, 7);
+        const usage = await db
+          .select()
+          .from(usageTracking)
+          .where(and(
+            eq(usageTracking.userId, input.userId),
+            eq(usageTracking.actionType, input.actionType),
+            eq(usageTracking.usageMonth, currentMonth)
+          ))
+          .limit(1);
+
+        const used = usage.length > 0 ? usage[0].count : 0;
+        const remaining = limit - used;
+
+        return {
+          allowed: remaining > 0,
+          remaining,
+          limit,
+          used,
+        };
       }),
   }),
 });
