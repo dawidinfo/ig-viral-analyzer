@@ -43,7 +43,7 @@ export interface HAPSSAnalysis {
     timestamp: string;
     description: string;
   };
-  agitate: {
+  attention: {
     score: number;
     timestamp: string;
     description: string;
@@ -283,10 +283,10 @@ function analyzeHAPSS(transcription: ReelTranscription): HAPSSAnalysis {
       timestamp: '0:00-0:03',
       description: 'Initialer Hook um Scroll zu stoppen'
     },
-    agitate: {
+    attention: {
       score: Math.min(100, attentionScore),
       timestamp: '0:03-0:08',
-      description: hasAttention ? 'Emotionen werden geweckt und Probleme verstärkt' : 'Agitation-Elemente könnten stärker sein'
+      description: hasAttention ? 'Aufmerksamkeit wird durch visuelle Elemente gehalten' : 'Attention-Elemente könnten stärker sein'
     },
     problem: {
       score: Math.min(100, problemScore),
@@ -398,8 +398,8 @@ function generateRecommendations(
   }
 
   // HAPSS recommendations
-  if (hapssAnalysis.agitate.score < 65) {
-    recommendations.push('🔥 Agitation verstärken: Wecke mehr Emotionen und verstärke die Schmerzpunkte');
+  if (hapssAnalysis.attention.score < 65) {
+    recommendations.push('👀 Attention verstärken: Halte die Aufmerksamkeit mit visuellen Pattern Interrupts');
   }
   if (hapssAnalysis.solution.score < 70) {
     recommendations.push('💡 Lösung konkretisieren: Gib spezifische, umsetzbare Tipps');

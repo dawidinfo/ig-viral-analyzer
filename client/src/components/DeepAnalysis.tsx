@@ -212,7 +212,7 @@ export default function DeepAnalysis({ username }: DeepAnalysisProps) {
             <CardHeader>
               <CardTitle>HAPSS Framework Analyse</CardTitle>
               <CardDescription>
-                Hook, Agitate, Problem, Solution, Story - Die Formel von Dawid Przybylski
+                Hook, Attention, Problem, Solution, Story - Die Formel von Dawid Przybylski
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -264,19 +264,19 @@ export default function DeepAnalysis({ username }: DeepAnalysisProps) {
                   </div>
                 </div>
 
-                {/* Agitate */}
+                {/* Attention */}
                 <div className="p-4 bg-white/5 rounded-xl">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center text-cyan-400 font-bold">A</div>
-                      <span className="font-semibold">Agitate</span>
+                      <span className="font-semibold">Attention</span>
                     </div>
-                    <span className="text-2xl font-bold text-cyan-400">{hapss.agitate.score}%</span>
+                    <span className="text-2xl font-bold text-cyan-400">{hapss.attention.score}%</span>
                   </div>
-                  <Progress value={hapss.agitate.score} className="h-2 mb-3" />
-                  <p className="text-sm text-gray-400 mb-2">{hapss.agitate.description}</p>
+                  <Progress value={hapss.attention.score} className="h-2 mb-3" />
+                  <p className="text-sm text-gray-400 mb-2">{hapss.attention.description}</p>
                   <div className="space-y-1">
-                    {hapss.agitate.techniques.map((tech: string, i: number) => (
+                    {hapss.attention.techniques.map((tech: string, i: number) => (
                       <div key={i} className="flex items-center gap-2 text-xs text-gray-500">
                         <CheckCircle className="w-3 h-3 text-cyan-400" />
                         {tech}

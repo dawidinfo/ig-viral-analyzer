@@ -148,3 +148,6 @@
 - [x] Heatmap-Komponente (Wochentag x Uhrzeit)
 - [x] Beste Posting-Zeiten Empfehlungen
 - [x] Integration in Analyse-Seite
+
+## HAPSS-Framework Korrektur
+- [x] Ändere "Agitate" zurück zu "Attention" (HAPSS = Hook, Attention, Problem, Solution, Story)

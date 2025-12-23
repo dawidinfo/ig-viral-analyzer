@@ -1,5 +1,5 @@
 // Deep Viral Analysis Service
-// HAPSS Framework by Dawid Przybylski: Hook, Agitate, Problem, Solution, Story
+// HAPSS Framework by Dawid Przybylski: Hook, Attention, Problem, Solution, Story
 
 export interface HAPSSAnalysis {
   hook: {
@@ -7,7 +7,7 @@ export interface HAPSSAnalysis {
     description: string;
     examples: string[];
   };
-  agitate: {
+  attention: {
     score: number;
     description: string;
     techniques: string[];
@@ -173,14 +173,14 @@ export function generateHAPSSAnalysis(
         "\"Ich zeige dir in 30 Sekunden...\""
       ]
     },
-    agitate: {
+    attention: {
       score: attentionScore,
-      description: "Emotionen werden geweckt und Probleme verstärkt dargestellt",
+      description: "Aufmerksamkeit wird durch visuelle und emotionale Elemente gehalten",
       techniques: [
-        "Schmerzpunkte werden emotional verstärkt",
-        "Konsequenzen von Inaktivität werden aufgezeigt",
-        "FOMO (Fear of Missing Out) wird erzeugt",
-        "Dringlichkeit wird kommuniziert"
+        "Visuelle Pattern Interrupts halten die Aufmerksamkeit",
+        "Schnelle Schnitte verhindern Abspringen",
+        "Emotionale Trigger binden den Zuschauer",
+        "Spannung wird aufgebaut und gehalten"
       ].slice(0, 3 + (seed % 2))
     },
     problem: {
@@ -641,8 +641,8 @@ export function generateOverallInsights(
     insights.push(`Exzellente Hook-Strategie mit ${hapss.hook.score}% Effektivität - die ersten 3 Sekunden fesseln sofort die Aufmerksamkeit.`);
   }
   
-  if (hapss.agitate.score > 75) {
-    insights.push(`Agitation-Strategie ist überdurchschnittlich (${hapss.agitate.score}%) - Emotionen werden effektiv geweckt und Probleme verstärkt.`);
+  if (hapss.attention.score > 75) {
+    insights.push(`Attention-Strategie ist überdurchschnittlich (${hapss.attention.score}%) - Aufmerksamkeit wird effektiv gehalten und Zuschauer bleiben dran.`);
   }
 
   // Based on patterns
