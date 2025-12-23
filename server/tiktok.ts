@@ -6,10 +6,18 @@ import { eq } from "drizzle-orm";
 /**
  * TikTok API Service
  * Provides TikTok profile and video analysis functionality
+ * Uses Manus Data API for real data with demo fallback
  */
 
 // Cache duration: 1 hour
 const CACHE_DURATION_MS = 60 * 60 * 1000;
+
+// Retry configuration
+const MAX_RETRIES = 2;
+const RETRY_DELAY_MS = 1000;
+
+// Helper function to delay execution
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export interface TikTokProfile {
   id: string;
@@ -64,6 +72,82 @@ export interface TikTokAnalysis {
     topHashtags: { tag: string; count: number }[];
     postingFrequency: string;
   };
+}
+
+/**
+ * Generate demo TikTok profile based on username
+ */
+function generateDemoTikTokProfile(username: string): TikTokProfile {
+  const cleanUsername = username.replace("@", "").toLowerCase().trim();
+  const seed = cleanUsername.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const random = (min: number, max: number, offset: number = 0) => {
+    const val = ((seed + offset) % 100) / 100;
+    return Math.floor(min + val * (max - min));
+  };
+
+  const isLargeAccount = cleanUsername.length < 8;
+  const followerMultiplier = isLargeAccount ? 1000000 : 100000;
+
+  return {
+    id: `demo_${seed}`,
+    uniqueId: cleanUsername,
+    nickname: cleanUsername.split(/[._-]/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" "),
+    signature: `✨ Content Creator | ${cleanUsername} 🎬\n📱 TikTok & Social Media\n💌 DM for collabs`,
+    avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(cleanUsername)}&size=200&background=FF0050&color=fff&bold=true`,
+    verified: isLargeAccount || random(0, 100, 1) > 85,
+    privateAccount: false,
+    secUid: `demo_secuid_${seed}`,
+    followerCount: random(1, 50, 2) * followerMultiplier,
+    followingCount: random(100, 2000, 3),
+    heartCount: random(1, 100, 4) * followerMultiplier * 10,
+    videoCount: random(50, 500, 5),
+    diggCount: random(1000, 50000, 6),
+  };
+}
+
+/**
+ * Generate demo TikTok videos based on profile
+ */
+function generateDemoTikTokVideos(profile: TikTokProfile, count: number): TikTokVideo[] {
+  const seed = profile.uniqueId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const random = (min: number, max: number, offset: number = 0) => {
+    const val = ((seed + offset) % 100) / 100;
+    return Math.floor(min + val * (max - min));
+  };
+
+  const avgViews = Math.round(profile.followerCount * 0.15);
+  const avgLikes = Math.round(avgViews * 0.08);
+
+  const captions = [
+    "Wait for it... 👀🔥 #fyp #viral #trending",
+    "POV: When it hits different 🎬 #relatable #foryou",
+    "This took me 3 hours to make 😅 Worth it? #behindthescenes",
+    "Drop a 🔥 if you want more! #tiktok #viralvideo",
+    "The secret nobody talks about... 🤫 #tips #secrets",
+    "This is your sign to start creating! ✨ #motivation",
+  ];
+
+  return Array.from({ length: count }, (_, i) => ({
+    id: `demo_video_${i}_${seed}`,
+    description: captions[i % captions.length],
+    createTime: Math.floor(Date.now() / 1000) - i * 86400 * random(1, 5, 10 + i),
+    duration: random(15, 60, 20 + i),
+    coverUrl: `https://picsum.photos/seed/${profile.uniqueId}${i}/400/700`,
+    playUrl: "",
+    stats: {
+      playCount: random(avgViews * 0.5, avgViews * 2, 30 + i),
+      diggCount: random(avgLikes * 0.5, avgLikes * 2, 40 + i),
+      commentCount: random(avgLikes * 0.02, avgLikes * 0.1, 50 + i),
+      shareCount: random(avgLikes * 0.01, avgLikes * 0.05, 60 + i),
+      collectCount: random(avgLikes * 0.02, avgLikes * 0.08, 70 + i),
+    },
+    music: {
+      id: `music_${i}`,
+      title: "Original Sound",
+      authorName: profile.nickname,
+    },
+    hashtags: ["fyp", "viral", "trending", "tiktok"],
+  }));
 }
 
 /**
@@ -320,37 +404,73 @@ async function setCachedAnalysis(username: string, analysis: TikTokAnalysis): Pr
 }
 
 /**
- * Analyze TikTok account
+ * Analyze TikTok account with retry logic and demo fallback
  */
-export async function analyzeTikTokAccount(username: string): Promise<TikTokAnalysis> {
+export async function analyzeTikTokAccount(username: string): Promise<TikTokAnalysis & { isDemo?: boolean }> {
+  const cleanUsername = username.replace("@", "").toLowerCase().trim();
+  
   // Check cache first
-  const cached = await getCachedAnalysis(username);
+  const cached = await getCachedAnalysis(cleanUsername);
   if (cached) {
+    console.log(`[TikTok] Using cached data for @${cleanUsername}`);
     return cached;
   }
 
-  // Fetch profile
-  const profile = await fetchTikTokProfile(username);
-  if (!profile) {
-    throw new Error(`TikTok Profil @${username} nicht gefunden`);
+  // Try to fetch real data with retries
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      console.log(`[TikTok] API attempt ${attempt}/${MAX_RETRIES} for @${cleanUsername}`);
+      
+      // Fetch profile
+      const profile = await fetchTikTokProfile(cleanUsername);
+      if (!profile) {
+        throw new Error(`Profile not found`);
+      }
+
+      // Fetch videos using secUid
+      const videos = await fetchTikTokVideos(profile.secUid, 30);
+      
+      // If we got profile but no videos, still return with empty videos
+      console.log(`[TikTok] API success: ${videos.length} videos for @${cleanUsername}`);
+
+      // Calculate analytics
+      const analytics = calculateAnalytics(profile, videos);
+
+      const analysis: TikTokAnalysis & { isDemo?: boolean } = {
+        profile,
+        videos,
+        analytics,
+        isDemo: false,
+      };
+
+      // Store in cache
+      await setCachedAnalysis(cleanUsername, analysis);
+
+      return analysis;
+    } catch (error: any) {
+      console.error(`[TikTok] API attempt ${attempt} failed:`, error.message);
+      
+      if (attempt < MAX_RETRIES) {
+        const delayMs = RETRY_DELAY_MS * Math.pow(2, attempt - 1);
+        console.log(`[TikTok] Retrying in ${delayMs}ms...`);
+        await delay(delayMs);
+      }
+    }
   }
 
-  // Fetch videos using secUid
-  const videos = await fetchTikTokVideos(profile.secUid, 30);
+  // All API attempts failed - use demo data
+  console.log(`[TikTok] All API attempts failed, using demo data for @${cleanUsername}`);
+  
+  const demoProfile = generateDemoTikTokProfile(cleanUsername);
+  const demoVideos = generateDemoTikTokVideos(demoProfile, 20);
+  const analytics = calculateAnalytics(demoProfile, demoVideos);
 
-  // Calculate analytics
-  const analytics = calculateAnalytics(profile, videos);
-
-  const analysis: TikTokAnalysis = {
-    profile,
-    videos,
+  return {
+    profile: demoProfile,
+    videos: demoVideos,
     analytics,
+    isDemo: true,
   };
-
-  // Store in cache
-  await setCachedAnalysis(username, analysis);
-
-  return analysis;
 }
 
 /**

@@ -1,6 +1,24 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import { callDataApi } from "./_core/dataApi";
 
 const RAPIDAPI_HOST = "instagram-scraper-stable-api.p.rapidapi.com";
+
+// Retry configuration
+const MAX_RETRIES = 3;
+const RETRY_DELAY_MS = 1000;
+
+// Helper function to delay execution
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Helper function to check if error is retryable
+function isRetryableError(error: any): boolean {
+  if (error instanceof AxiosError) {
+    const status = error.response?.status;
+    // Retry on rate limits (429), server errors (5xx), or network errors
+    return status === 429 || (status && status >= 500) || !status;
+  }
+  return false;
+}
 
 interface InstagramProfile {
   username: string;
@@ -228,143 +246,373 @@ function getDemoReelCaption(index: number, username: string): string {
   return captions[index % captions.length];
 }
 
-export async function fetchInstagramProfile(username: string): Promise<InstagramProfile> {
-  const cleanUsername = username.replace("@", "").trim();
+/**
+ * Fetch Instagram profile using RapidAPI with retry logic
+ */
+async function fetchProfileFromRapidAPI(cleanUsername: string): Promise<InstagramProfile | null> {
+  let lastError: Error | null = null;
   
-  try {
-    const response = await axios.post(
-      `https://${RAPIDAPI_HOST}/ig_get_fb_profile_v3.php`,
-      new URLSearchParams({ username_or_url: cleanUsername }),
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "x-rapidapi-host": RAPIDAPI_HOST,
-          "x-rapidapi-key": getApiKey(),
-        },
-        timeout: 30000,
-      }
-    );
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      console.log(`[Instagram] RapidAPI attempt ${attempt}/${MAX_RETRIES} for @${cleanUsername}`);
+      
+      const response = await axios.post(
+        `https://${RAPIDAPI_HOST}/ig_get_fb_profile_v3.php`,
+        new URLSearchParams({ username_or_url: cleanUsername }),
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "x-rapidapi-host": RAPIDAPI_HOST,
+            "x-rapidapi-key": getApiKey(),
+          },
+          timeout: 30000,
+        }
+      );
 
-    const data = response.data;
+      const data = response.data;
+      
+      if (!data || data.error) {
+        throw new Error(data?.error || "Failed to fetch profile");
+      }
+
+      console.log(`[Instagram] RapidAPI success for @${cleanUsername}`);
+      return {
+        username: data.username || cleanUsername,
+        fullName: data.full_name || "",
+        biography: data.biography || "",
+        profilePicUrl: data.profile_pic_url_hd || data.hd_profile_pic_url_info?.url || data.profile_pic_url || "",
+        followerCount: data.follower_count || 0,
+        followingCount: data.following_count || 0,
+        mediaCount: data.media_count || 0,
+        isVerified: data.is_verified || false,
+        isBusinessAccount: data.is_business || data.is_business_account || false,
+        externalUrl: data.external_url || data.bio_links?.[0]?.url || undefined,
+      };
+    } catch (error: any) {
+      lastError = error;
+      console.error(`[Instagram] RapidAPI attempt ${attempt} failed:`, error.message);
+      
+      if (attempt < MAX_RETRIES && isRetryableError(error)) {
+        const delayMs = RETRY_DELAY_MS * Math.pow(2, attempt - 1); // Exponential backoff
+        console.log(`[Instagram] Retrying in ${delayMs}ms...`);
+        await delay(delayMs);
+      }
+    }
+  }
+  
+  console.error(`[Instagram] RapidAPI failed after ${MAX_RETRIES} attempts`);
+  return null;
+}
+
+/**
+ * Fetch Instagram profile using Manus Data API as fallback
+ */
+async function fetchProfileFromManusAPI(cleanUsername: string): Promise<InstagramProfile | null> {
+  try {
+    console.log(`[Instagram] Trying Manus Data API for @${cleanUsername}`);
     
-    if (!data || data.error) {
-      throw new Error(data?.error || "Failed to fetch profile");
+    const result = await callDataApi("Instagram/get_user_info", {
+      query: { username: cleanUsername }
+    }) as any;
+
+    if (!result || !result.user) {
+      console.error("[Instagram] Manus API: User not found");
+      return null;
     }
 
+    const user = result.user;
+    console.log(`[Instagram] Manus API success for @${cleanUsername}`);
+    
     return {
-      username: data.username || cleanUsername,
-      fullName: data.full_name || "",
-      biography: data.biography || "",
-      profilePicUrl: data.profile_pic_url_hd || data.hd_profile_pic_url_info?.url || data.profile_pic_url || "",
-      followerCount: data.follower_count || 0,
-      followingCount: data.following_count || 0,
-      mediaCount: data.media_count || 0,
-      isVerified: data.is_verified || false,
-      isBusinessAccount: data.is_business || data.is_business_account || false,
-      externalUrl: data.external_url || data.bio_links?.[0]?.url || undefined,
+      username: user.username || cleanUsername,
+      fullName: user.full_name || "",
+      biography: user.biography || "",
+      profilePicUrl: user.profile_pic_url_hd || user.profile_pic_url || "",
+      followerCount: user.follower_count || user.edge_followed_by?.count || 0,
+      followingCount: user.following_count || user.edge_follow?.count || 0,
+      mediaCount: user.media_count || user.edge_owner_to_timeline_media?.count || 0,
+      isVerified: user.is_verified || false,
+      isBusinessAccount: user.is_business_account || user.is_professional_account || false,
+      externalUrl: user.external_url || user.bio_links?.[0]?.url || undefined,
     };
   } catch (error: any) {
-    console.error("Error fetching Instagram profile:", error.message);
-    throw new Error(`Failed to fetch profile for @${cleanUsername}: ${error.message}`);
+    console.error("[Instagram] Manus API failed:", error.message);
+    return null;
+  }
+}
+
+export async function fetchInstagramProfile(username: string): Promise<InstagramProfile> {
+  const cleanUsername = username.replace("@", "").trim().toLowerCase();
+  
+  // Try RapidAPI first with retries
+  const rapidApiResult = await fetchProfileFromRapidAPI(cleanUsername);
+  if (rapidApiResult) {
+    return rapidApiResult;
+  }
+  
+  // Try Manus Data API as fallback
+  const manusApiResult = await fetchProfileFromManusAPI(cleanUsername);
+  if (manusApiResult) {
+    return manusApiResult;
+  }
+  
+  // Both APIs failed
+  throw new Error(`Failed to fetch profile for @${cleanUsername}: All API sources exhausted`);
+}
+
+/**
+ * Fetch Instagram posts using RapidAPI with retry logic
+ */
+async function fetchPostsFromRapidAPI(cleanUsername: string, count: number): Promise<InstagramPost[] | null> {
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      console.log(`[Instagram] Fetching posts via RapidAPI attempt ${attempt}/${MAX_RETRIES}`);
+      
+      const response = await axios.post(
+        `https://${RAPIDAPI_HOST}/get_ig_user_posts.php`,
+        new URLSearchParams({ username_or_url: cleanUsername }),
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "x-rapidapi-host": RAPIDAPI_HOST,
+            "x-rapidapi-key": getApiKey(),
+          },
+          timeout: 30000,
+        }
+      );
+
+      const data = response.data;
+      
+      if (!data || data.error) {
+        throw new Error(data?.error || "Failed to fetch posts");
+      }
+
+      const posts = data.posts || [];
+      console.log(`[Instagram] RapidAPI returned ${posts.length} posts`);
+      
+      return posts.slice(0, count).map((item: any) => {
+        const post = item.node || item;
+        return {
+          id: post.id || post.pk || "",
+          shortcode: post.code || post.shortcode || "",
+          caption: post.caption?.text || post.caption || "",
+          likeCount: post.like_count || 0,
+          commentCount: post.comment_count || 0,
+          viewCount: post.view_count || post.play_count || undefined,
+          playCount: post.play_count || undefined,
+          isVideo: post.media_type === 2 || post.product_type === "clips" || !!post.video_versions,
+          timestamp: post.taken_at || 0,
+          thumbnailUrl: post.image_versions2?.candidates?.[0]?.url || post.display_uri || post.thumbnail_url || "",
+          videoUrl: post.video_versions?.[0]?.url || undefined,
+        };
+      });
+    } catch (error: any) {
+      console.error(`[Instagram] Posts RapidAPI attempt ${attempt} failed:`, error.message);
+      
+      if (attempt < MAX_RETRIES && isRetryableError(error)) {
+        const delayMs = RETRY_DELAY_MS * Math.pow(2, attempt - 1);
+        await delay(delayMs);
+      }
+    }
+  }
+  return null;
+}
+
+/**
+ * Fetch Instagram posts using Manus Data API as fallback
+ */
+async function fetchPostsFromManusAPI(cleanUsername: string, count: number): Promise<InstagramPost[] | null> {
+  try {
+    console.log(`[Instagram] Fetching posts via Manus API for @${cleanUsername}`);
+    
+    const result = await callDataApi("Instagram/get_user_posts", {
+      query: { username: cleanUsername, count: String(count) }
+    }) as any;
+
+    if (!result || !result.edges) {
+      // Try alternative response structure
+      if (result?.data?.user?.edge_owner_to_timeline_media?.edges) {
+        const edges = result.data.user.edge_owner_to_timeline_media.edges;
+        return edges.slice(0, count).map((edge: any) => {
+          const node = edge.node;
+          return {
+            id: node.id || "",
+            shortcode: node.shortcode || "",
+            caption: node.edge_media_to_caption?.edges?.[0]?.node?.text || "",
+            likeCount: node.edge_liked_by?.count || node.edge_media_preview_like?.count || 0,
+            commentCount: node.edge_media_to_comment?.count || 0,
+            viewCount: node.video_view_count || undefined,
+            playCount: node.video_view_count || undefined,
+            isVideo: node.is_video || false,
+            timestamp: node.taken_at_timestamp || 0,
+            thumbnailUrl: node.display_url || node.thumbnail_src || "",
+            videoUrl: node.video_url || undefined,
+          };
+        });
+      }
+      console.error("[Instagram] Manus API: No posts found");
+      return null;
+    }
+
+    return result.edges.slice(0, count).map((edge: any) => {
+      const node = edge.node || edge;
+      return {
+        id: node.id || "",
+        shortcode: node.shortcode || "",
+        caption: node.caption || node.edge_media_to_caption?.edges?.[0]?.node?.text || "",
+        likeCount: node.like_count || node.edge_liked_by?.count || 0,
+        commentCount: node.comment_count || node.edge_media_to_comment?.count || 0,
+        viewCount: node.view_count || node.video_view_count || undefined,
+        playCount: node.play_count || node.video_view_count || undefined,
+        isVideo: node.is_video || false,
+        timestamp: node.taken_at || node.taken_at_timestamp || 0,
+        thumbnailUrl: node.display_url || node.thumbnail_url || "",
+        videoUrl: node.video_url || undefined,
+      };
+    });
+  } catch (error: any) {
+    console.error("[Instagram] Manus API posts failed:", error.message);
+    return null;
   }
 }
 
 export async function fetchInstagramPosts(username: string, count: number = 12): Promise<InstagramPost[]> {
-  const cleanUsername = username.replace("@", "").trim();
+  const cleanUsername = username.replace("@", "").trim().toLowerCase();
   
-  try {
-    const response = await axios.post(
-      `https://${RAPIDAPI_HOST}/get_ig_user_posts.php`,
-      new URLSearchParams({ username_or_url: cleanUsername }),
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "x-rapidapi-host": RAPIDAPI_HOST,
-          "x-rapidapi-key": getApiKey(),
-        },
-        timeout: 30000,
-      }
-    );
-
-    const data = response.data;
-    
-    if (!data || data.error) {
-      console.error("Posts API error:", data?.error);
-      return [];
-    }
-
-    const posts = data.posts || [];
-    
-    return posts.slice(0, count).map((item: any) => {
-      const post = item.node || item;
-      return {
-        id: post.id || post.pk || "",
-        shortcode: post.code || post.shortcode || "",
-        caption: post.caption?.text || "",
-        likeCount: post.like_count || 0,
-        commentCount: post.comment_count || 0,
-        viewCount: post.view_count || post.play_count || undefined,
-        playCount: post.play_count || undefined,
-        isVideo: post.media_type === 2 || post.product_type === "clips" || !!post.video_versions,
-        timestamp: post.taken_at || 0,
-        thumbnailUrl: post.image_versions2?.candidates?.[0]?.url || post.display_uri || "",
-        videoUrl: post.video_versions?.[0]?.url || undefined,
-      };
-    });
-  } catch (error: any) {
-    console.error("Error fetching Instagram posts:", error.message);
-    return [];
+  // Try RapidAPI first
+  const rapidApiPosts = await fetchPostsFromRapidAPI(cleanUsername, count);
+  if (rapidApiPosts && rapidApiPosts.length > 0) {
+    return rapidApiPosts;
   }
+  
+  // Try Manus API as fallback
+  const manusPosts = await fetchPostsFromManusAPI(cleanUsername, count);
+  if (manusPosts && manusPosts.length > 0) {
+    return manusPosts;
+  }
+  
+  console.warn(`[Instagram] No posts found for @${cleanUsername} from any API`);
+  return [];
 }
 
-export async function fetchInstagramReels(username: string, count: number = 12): Promise<InstagramReel[]> {
-  const cleanUsername = username.replace("@", "").trim();
-  
-  try {
-    const response = await axios.post(
-      `https://${RAPIDAPI_HOST}/get_ig_user_reels.php`,
-      new URLSearchParams({ username_or_url: cleanUsername }),
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "x-rapidapi-host": RAPIDAPI_HOST,
-          "x-rapidapi-key": getApiKey(),
-        },
-        timeout: 30000,
-      }
-    );
+/**
+ * Fetch Instagram reels using RapidAPI with retry logic
+ */
+async function fetchReelsFromRapidAPI(cleanUsername: string, count: number): Promise<InstagramReel[] | null> {
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      console.log(`[Instagram] Fetching reels via RapidAPI attempt ${attempt}/${MAX_RETRIES}`);
+      
+      const response = await axios.post(
+        `https://${RAPIDAPI_HOST}/get_ig_user_reels.php`,
+        new URLSearchParams({ username_or_url: cleanUsername }),
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "x-rapidapi-host": RAPIDAPI_HOST,
+            "x-rapidapi-key": getApiKey(),
+          },
+          timeout: 30000,
+        }
+      );
 
-    const data = response.data;
+      const data = response.data;
+      
+      if (!data || data.error) {
+        throw new Error(data?.error || "Failed to fetch reels");
+      }
+
+      const reels = data.reels || data.items || [];
+      console.log(`[Instagram] RapidAPI returned ${reels.length} reels`);
+      
+      return reels.slice(0, count).map((item: any) => {
+        const node = item.node || item;
+        const media = node.media || node;
+        
+        return {
+          id: media.id || media.pk || "",
+          shortcode: media.code || media.shortcode || "",
+          caption: media.caption?.text || media.caption || "",
+          likeCount: media.like_count || 0,
+          commentCount: media.comment_count || 0,
+          playCount: media.play_count || media.view_count || 0,
+          viewCount: media.view_count || media.play_count || 0,
+          timestamp: media.taken_at || 0,
+          thumbnailUrl: media.image_versions2?.candidates?.[0]?.url || media.display_uri || media.thumbnail_url || "",
+          videoUrl: media.video_versions?.[0]?.url || "",
+          duration: media.video_duration || 0,
+        };
+      });
+    } catch (error: any) {
+      console.error(`[Instagram] Reels RapidAPI attempt ${attempt} failed:`, error.message);
+      
+      if (attempt < MAX_RETRIES && isRetryableError(error)) {
+        const delayMs = RETRY_DELAY_MS * Math.pow(2, attempt - 1);
+        await delay(delayMs);
+      }
+    }
+  }
+  return null;
+}
+
+/**
+ * Fetch Instagram reels using Manus Data API as fallback
+ */
+async function fetchReelsFromManusAPI(cleanUsername: string, count: number): Promise<InstagramReel[] | null> {
+  try {
+    console.log(`[Instagram] Fetching reels via Manus API for @${cleanUsername}`);
     
-    if (!data || data.error) {
-      console.error("Reels API error:", data?.error);
-      return [];
+    const result = await callDataApi("Instagram/get_user_reels", {
+      query: { username: cleanUsername, count: String(count) }
+    }) as any;
+
+    if (!result || (!result.items && !result.reels)) {
+      console.error("[Instagram] Manus API: No reels found");
+      return null;
     }
 
-    const reels = data.reels || data.items || [];
+    const reels = result.items || result.reels || [];
+    console.log(`[Instagram] Manus API returned ${reels.length} reels`);
     
     return reels.slice(0, count).map((item: any) => {
-      const node = item.node || item;
-      const media = node.media || node;
-      
+      const media = item.media || item;
       return {
         id: media.id || media.pk || "",
         shortcode: media.code || media.shortcode || "",
-        caption: media.caption?.text || "",
+        caption: media.caption?.text || media.caption || "",
         likeCount: media.like_count || 0,
         commentCount: media.comment_count || 0,
         playCount: media.play_count || media.view_count || 0,
         viewCount: media.view_count || media.play_count || 0,
-        timestamp: media.taken_at || 0,
-        thumbnailUrl: media.image_versions2?.candidates?.[0]?.url || media.display_uri || "",
-        videoUrl: media.video_versions?.[0]?.url || "",
+        timestamp: media.taken_at || media.taken_at_timestamp || 0,
+        thumbnailUrl: media.image_versions2?.candidates?.[0]?.url || media.display_url || media.thumbnail_url || "",
+        videoUrl: media.video_versions?.[0]?.url || media.video_url || "",
         duration: media.video_duration || 0,
       };
     });
   } catch (error: any) {
-    console.error("Error fetching Instagram reels:", error.message);
-    return [];
+    console.error("[Instagram] Manus API reels failed:", error.message);
+    return null;
   }
+}
+
+export async function fetchInstagramReels(username: string, count: number = 12): Promise<InstagramReel[]> {
+  const cleanUsername = username.replace("@", "").trim().toLowerCase();
+  
+  // Try RapidAPI first
+  const rapidApiReels = await fetchReelsFromRapidAPI(cleanUsername, count);
+  if (rapidApiReels && rapidApiReels.length > 0) {
+    return rapidApiReels;
+  }
+  
+  // Try Manus API as fallback
+  const manusReels = await fetchReelsFromManusAPI(cleanUsername, count);
+  if (manusReels && manusReels.length > 0) {
+    return manusReels;
+  }
+  
+  console.warn(`[Instagram] No reels found for @${cleanUsername} from any API`);
+  return [];
 }
 
 function calculateViralScore(

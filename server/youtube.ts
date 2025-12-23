@@ -6,10 +6,18 @@ import { eq } from "drizzle-orm";
 /**
  * YouTube API Service
  * Provides YouTube channel and video analysis functionality
+ * Uses Manus Data API for real data with demo fallback
  */
 
 // Cache duration: 1 hour
 const CACHE_DURATION_MS = 60 * 60 * 1000;
+
+// Retry configuration
+const MAX_RETRIES = 2;
+const RETRY_DELAY_MS = 1000;
+
+// Helper function to delay execution
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export interface YouTubeChannel {
   channelId: string;
@@ -326,41 +334,156 @@ async function setCachedAnalysis(channelId: string, analysis: YouTubeAnalysis): 
 }
 
 /**
- * Analyze YouTube channel
+ * Generate demo YouTube channel based on identifier
  */
-export async function analyzeYouTubeChannel(channelIdOrUrl: string): Promise<YouTubeAnalysis> {
+function generateDemoYouTubeChannel(identifier: string): YouTubeChannel {
+  const cleanId = identifier.replace("@", "").toLowerCase().trim();
+  const seed = cleanId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const random = (min: number, max: number, offset: number = 0) => {
+    const val = ((seed + offset) % 100) / 100;
+    return Math.floor(min + val * (max - min));
+  };
+
+  const isLargeChannel = cleanId.length < 10;
+  const subMultiplier = isLargeChannel ? 1000000 : 100000;
+  const subscriberCount = random(1, 50, 1) * subMultiplier;
+
+  return {
+    channelId: `demo_${seed}`,
+    title: cleanId.split(/[._-]/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" "),
+    customUrl: `@${cleanId}`,
+    handle: `@${cleanId}`,
+    description: `Willkommen auf meinem Kanal! 🌟\n🎬 Videos über Content Creation & Social Media\n🔔 Abonniere für mehr Content`,
+    country: "DE",
+    joinedDate: "2020",
+    avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(cleanId)}&size=200&background=FF0000&color=fff&bold=true`,
+    bannerUrl: `https://picsum.photos/seed/${cleanId}banner/2560/1440`,
+    subscriberCount,
+    subscriberText: subscriberCount >= 1000000 ? `${(subscriberCount / 1000000).toFixed(1)}M` : `${Math.round(subscriberCount / 1000)}K`,
+    videoCount: random(50, 500, 2),
+    viewCount: subscriberCount * random(50, 200, 3),
+    badges: isLargeChannel ? ["Verified"] : [],
+    keywords: ["content", "creator", "youtube", "viral", "tutorial"],
+    links: [{ title: "Instagram", url: `https://instagram.com/${cleanId}` }],
+  };
+}
+
+/**
+ * Generate demo YouTube videos based on channel
+ */
+function generateDemoYouTubeVideos(channel: YouTubeChannel, count: number, isShort: boolean = false): YouTubeVideo[] {
+  const seed = channel.channelId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const random = (min: number, max: number, offset: number = 0) => {
+    const val = ((seed + offset) % 100) / 100;
+    return Math.floor(min + val * (max - min));
+  };
+
+  const avgViews = Math.round(channel.subscriberCount * 0.1);
+
+  const titles = isShort ? [
+    "Wait for it... 🔥 #shorts",
+    "POV: When it hits different #shorts",
+    "This hack changed everything #shorts",
+    "You won't believe this! #shorts",
+  ] : [
+    "Das MUSST du wissen! (Komplette Anleitung)",
+    "Ich habe 30 Tage lang getestet...",
+    "Die Wahrheit über Social Media Erfolg",
+    "So verdienst du online Geld (Ehrlich)",
+    "Meine Top 10 Tipps für Anfänger",
+  ];
+
+  return Array.from({ length: count }, (_, i) => ({
+    videoId: `demo_video_${isShort ? 'short_' : ''}${i}_${seed}`,
+    title: titles[i % titles.length],
+    description: "In diesem Video zeige ich dir...",
+    publishedTime: `vor ${random(1, 30, 10 + i)} Tagen`,
+    duration: isShort ? random(15, 60, 20 + i) : random(300, 1200, 20 + i),
+    durationText: isShort ? `0:${random(15, 59, 20 + i)}` : `${random(5, 20, 20 + i)}:${random(10, 59, 30 + i).toString().padStart(2, '0')}`,
+    thumbnailUrl: `https://picsum.photos/seed/${channel.channelId}${i}/1280/720`,
+    viewCount: random(avgViews * 0.3, avgViews * 2, 40 + i),
+    viewCountText: "",
+    likeCount: random(avgViews * 0.03, avgViews * 0.1, 50 + i),
+    commentCount: random(avgViews * 0.005, avgViews * 0.02, 60 + i),
+    isLive: false,
+    isShort,
+    badges: [],
+  }));
+}
+
+/**
+ * Analyze YouTube channel with retry logic and demo fallback
+ */
+export async function analyzeYouTubeChannel(channelIdOrUrl: string): Promise<YouTubeAnalysis & { isDemo?: boolean }> {
+  const cleanId = channelIdOrUrl.toLowerCase().trim();
+  
   // Check cache first
-  const cached = await getCachedAnalysis(channelIdOrUrl);
+  const cached = await getCachedAnalysis(cleanId);
   if (cached) {
+    console.log(`[YouTube] Using cached data for ${cleanId}`);
     return cached;
   }
 
-  // Fetch channel
-  const channel = await fetchYouTubeChannel(channelIdOrUrl);
-  if (!channel) {
-    throw new Error(`YouTube Kanal nicht gefunden: ${channelIdOrUrl}`);
+  // Try to fetch real data with retries
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      console.log(`[YouTube] API attempt ${attempt}/${MAX_RETRIES} for ${cleanId}`);
+      
+      // Fetch channel
+      const channel = await fetchYouTubeChannel(channelIdOrUrl);
+      if (!channel) {
+        throw new Error(`Channel not found`);
+      }
+
+      // Fetch videos and shorts
+      const [videos, shorts] = await Promise.all([
+        fetchYouTubeVideos(channel.channelId, "videos_latest", 20),
+        fetchYouTubeVideos(channel.channelId, "shorts_latest", 10),
+      ]);
+
+      console.log(`[YouTube] API success: ${videos.length} videos, ${shorts.length} shorts`);
+
+      // Calculate analytics
+      const analytics = calculateAnalytics(channel, videos, shorts);
+
+      const analysis: YouTubeAnalysis & { isDemo?: boolean } = {
+        channel,
+        videos,
+        shorts,
+        analytics,
+        isDemo: false,
+      };
+
+      // Store in cache
+      await setCachedAnalysis(cleanId, analysis);
+
+      return analysis;
+    } catch (error: any) {
+      console.error(`[YouTube] API attempt ${attempt} failed:`, error.message);
+      
+      if (attempt < MAX_RETRIES) {
+        const delayMs = RETRY_DELAY_MS * Math.pow(2, attempt - 1);
+        console.log(`[YouTube] Retrying in ${delayMs}ms...`);
+        await delay(delayMs);
+      }
+    }
   }
 
-  // Fetch videos and shorts
-  const [videos, shorts] = await Promise.all([
-    fetchYouTubeVideos(channel.channelId, "videos_latest", 20),
-    fetchYouTubeVideos(channel.channelId, "shorts_latest", 10),
-  ]);
+  // All API attempts failed - use demo data
+  console.log(`[YouTube] All API attempts failed, using demo data for ${cleanId}`);
+  
+  const demoChannel = generateDemoYouTubeChannel(cleanId);
+  const demoVideos = generateDemoYouTubeVideos(demoChannel, 15, false);
+  const demoShorts = generateDemoYouTubeVideos(demoChannel, 8, true);
+  const analytics = calculateAnalytics(demoChannel, demoVideos, demoShorts);
 
-  // Calculate analytics
-  const analytics = calculateAnalytics(channel, videos, shorts);
-
-  const analysis: YouTubeAnalysis = {
-    channel,
-    videos,
-    shorts,
+  return {
+    channel: demoChannel,
+    videos: demoVideos,
+    shorts: demoShorts,
     analytics,
+    isDemo: true,
   };
-
-  // Store in cache
-  await setCachedAnalysis(channelIdOrUrl, analysis);
-
-  return analysis;
 }
 
 /**

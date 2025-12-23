@@ -269,3 +269,12 @@
 - [x] Onboarding-Tipps und erste Schritte einbauen
 - [x] E-Mail bei Registrierung automatisch auslösen
 - [x] An User-E-Mail senden (nicht nur Admin)
+
+## Echte API-Integration (Live-Daten statt Demo)
+- [x] Instagram API: Demo-Fallback durch echte RapidAPI-Aufrufe ersetzen
+- [x] Instagram API: Retry-Logik mit exponential backoff
+- [x] Instagram API: Manus Data API als Fallback
+- [x] TikTok API: Echte Profil- und Video-Daten abrufen (mit Demo-Fallback)
+- [x] YouTube API: Echte Kanal- und Video-Daten abrufen (mit Demo-Fallback)
+- [x] Error-Handling für API-Rate-Limits verbessern
+- [x] Caching-Strategie für API-Aufrufe (1h Cache für TikTok/YouTube)
