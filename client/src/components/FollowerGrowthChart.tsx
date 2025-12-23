@@ -1,0 +1,401 @@
+import { useState, useMemo } from "react";
+import { trpc } from "@/lib/trpc";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { 
+  TrendingUp, 
+  TrendingDown, 
+  Minus,
+  Calendar,
+  Users,
+  ArrowUp,
+  ArrowDown,
+  Sparkles,
+  ChevronLeft,
+  ChevronRight
+} from "lucide-react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Area,
+  AreaChart,
+  ReferenceLine
+} from "recharts";
+
+interface FollowerGrowthChartProps {
+  username: string;
+}
+
+type TimeRange = '7d' | '1m' | '3m' | '6m' | '1y' | 'max';
+
+const TIME_RANGE_OPTIONS: { value: TimeRange; label: string }[] = [
+  { value: '7d', label: '7 Tage' },
+  { value: '1m', label: '1 Monat' },
+  { value: '3m', label: '3 Monate' },
+  { value: '6m', label: '6 Monate' },
+  { value: '1y', label: '1 Jahr' },
+  { value: 'max', label: 'Max' },
+];
+
+function formatNumber(num: number): string {
+  if (Math.abs(num) >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+  if (Math.abs(num) >= 1000) return (num / 1000).toFixed(1) + 'K';
+  return num.toLocaleString('de-DE');
+}
+
+function formatDate(dateStr: string, timeRange: TimeRange): string {
+  const date = new Date(dateStr);
+  if (timeRange === '7d') {
+    return date.toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric' });
+  }
+  if (timeRange === '1m') {
+    return date.toLocaleDateString('de-DE', { day: 'numeric', month: 'short' });
+  }
+  return date.toLocaleDateString('de-DE', { day: 'numeric', month: 'short' });
+}
+
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    return (
+      <div className="bg-background/95 backdrop-blur-sm border border-border rounded-lg p-4 shadow-xl">
+        <p className="font-semibold text-sm mb-2">
+          {new Date(data.date).toLocaleDateString('de-DE', { 
+            weekday: 'long', 
+            day: 'numeric', 
+            month: 'long', 
+            year: 'numeric' 
+          })}
+        </p>
+        <div className="space-y-1">
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-muted-foreground text-sm">Follower:</span>
+            <span className="font-bold">{formatNumber(data.followers)}</span>
+          </div>
+          {data.change !== 0 && (
+            <div className="flex items-center justify-between gap-4">
+              <span className="text-muted-foreground text-sm">Änderung:</span>
+              <span className={`font-bold flex items-center gap-1 ${
+                data.change > 0 ? 'text-green-400' : data.change < 0 ? 'text-red-400' : ''
+              }`}>
+                {data.change > 0 ? <ArrowUp className="w-3 h-3" /> : data.change < 0 ? <ArrowDown className="w-3 h-3" /> : null}
+                {data.change > 0 ? '+' : ''}{formatNumber(data.change)}
+                <span className="text-xs opacity-70">
+                  ({data.changePercent > 0 ? '+' : ''}{data.changePercent.toFixed(2)}%)
+                </span>
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+  return null;
+};
+
+export default function FollowerGrowthChart({ username }: FollowerGrowthChartProps) {
+  const [timeRange, setTimeRange] = useState<TimeRange>('1m');
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 10;
+
+  const { data: historyData, isLoading, error } = trpc.instagram.followerHistory.useQuery(
+    { username, timeRange },
+    { enabled: !!username }
+  );
+
+  // Prepare chart data
+  const chartData = useMemo(() => {
+    if (!historyData?.dataPoints) return [];
+    
+    // Sample data points for better visualization
+    const points = historyData.dataPoints;
+    if (points.length <= 30) return points;
+    
+    // Sample every nth point for longer ranges
+    const step = Math.ceil(points.length / 30);
+    return points.filter((_, i) => i % step === 0 || i === points.length - 1);
+  }, [historyData]);
+
+  // Paginated table data
+  const tableData = useMemo(() => {
+    if (!historyData?.dataPoints) return [];
+    const reversed = [...historyData.dataPoints].reverse();
+    const start = currentPage * itemsPerPage;
+    return reversed.slice(start, start + itemsPerPage);
+  }, [historyData, currentPage]);
+
+  const totalPages = Math.ceil((historyData?.dataPoints.length || 0) / itemsPerPage);
+
+  if (isLoading) {
+    return (
+      <Card className="bg-gradient-to-br from-blue-500/5 to-cyan-500/5 border-blue-500/20">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Users className="w-5 h-5 text-blue-400" />
+            Follower-Wachstum
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[300px] flex items-center justify-center">
+            <div className="animate-pulse flex flex-col items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-blue-500/20 animate-spin" />
+              <span className="text-sm text-muted-foreground">Lade Verlaufsdaten...</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error || !historyData) {
+    return (
+      <Card className="bg-gradient-to-br from-red-500/5 to-orange-500/5 border-red-500/20">
+        <CardContent className="p-6">
+          <p className="text-red-400">Fehler beim Laden der Follower-Daten</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const { summary, isDemo } = historyData;
+  const trendIcon = summary.trend === 'rising' ? TrendingUp : summary.trend === 'declining' ? TrendingDown : Minus;
+  const trendColor = summary.trend === 'rising' ? 'text-green-400' : summary.trend === 'declining' ? 'text-red-400' : 'text-yellow-400';
+  const trendBg = summary.trend === 'rising' ? 'bg-green-500/20 border-green-500/30' : summary.trend === 'declining' ? 'bg-red-500/20 border-red-500/30' : 'bg-yellow-500/20 border-yellow-500/30';
+
+  return (
+    <div className="space-y-6">
+      {/* Main Chart Card */}
+      <Card className="bg-gradient-to-br from-blue-500/5 to-cyan-500/5 border-blue-500/20">
+        <CardHeader>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <Users className="w-6 h-6 text-blue-400" />
+                Follower-Wachstum
+                {isDemo && (
+                  <Badge variant="outline" className="bg-amber-500/20 border-amber-500/30 text-amber-400 text-xs">
+                    Demo
+                  </Badge>
+                )}
+              </CardTitle>
+              <CardDescription>
+                Historische Entwicklung der Follower-Zahlen
+              </CardDescription>
+            </div>
+            
+            {/* Time Range Selector */}
+            <div className="flex flex-wrap gap-2">
+              {TIME_RANGE_OPTIONS.map((option) => (
+                <Button
+                  key={option.value}
+                  variant={timeRange === option.value ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => {
+                    setTimeRange(option.value);
+                    setCurrentPage(0);
+                  }}
+                  className={timeRange === option.value 
+                    ? "bg-blue-500 hover:bg-blue-600" 
+                    : "bg-white/5 border-white/10 hover:bg-white/10"
+                  }
+                >
+                  {option.label}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </CardHeader>
+        
+        <CardContent>
+          {/* Summary Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+            <div className="bg-white/5 rounded-xl p-4 text-center">
+              <p className="text-xs text-muted-foreground mb-1">Aktuell</p>
+              <p className="text-2xl font-bold">{formatNumber(historyData.currentFollowers)}</p>
+            </div>
+            <div className="bg-white/5 rounded-xl p-4 text-center">
+              <p className="text-xs text-muted-foreground mb-1">Wachstum</p>
+              <p className={`text-2xl font-bold ${summary.totalGrowth >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                {summary.totalGrowth >= 0 ? '+' : ''}{formatNumber(summary.totalGrowth)}
+              </p>
+            </div>
+            <div className="bg-white/5 rounded-xl p-4 text-center">
+              <p className="text-xs text-muted-foreground mb-1">Prozent</p>
+              <p className={`text-2xl font-bold ${summary.totalGrowthPercent >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                {summary.totalGrowthPercent >= 0 ? '+' : ''}{summary.totalGrowthPercent}%
+              </p>
+            </div>
+            <div className="bg-white/5 rounded-xl p-4 text-center">
+              <p className="text-xs text-muted-foreground mb-1">Ø Täglich</p>
+              <p className={`text-2xl font-bold ${summary.avgDailyGrowth >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                {summary.avgDailyGrowth >= 0 ? '+' : ''}{formatNumber(summary.avgDailyGrowth)}
+              </p>
+            </div>
+            <div className={`rounded-xl p-4 text-center border ${trendBg}`}>
+              <p className="text-xs text-muted-foreground mb-1">Trend</p>
+              <div className={`flex items-center justify-center gap-2 ${trendColor}`}>
+                {summary.trend === 'rising' && <TrendingUp className="w-5 h-5" />}
+                {summary.trend === 'declining' && <TrendingDown className="w-5 h-5" />}
+                {summary.trend === 'stable' && <Minus className="w-5 h-5" />}
+                <span className="font-bold capitalize">
+                  {summary.trend === 'rising' ? 'Steigend' : summary.trend === 'declining' ? 'Fallend' : 'Stabil'}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Chart */}
+          <div className="h-[300px] mt-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="followerGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                <XAxis 
+                  dataKey="date" 
+                  tickFormatter={(val) => formatDate(val, timeRange)}
+                  stroke="rgba(255,255,255,0.5)"
+                  tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }}
+                  axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
+                />
+                <YAxis 
+                  tickFormatter={(val) => formatNumber(val)}
+                  stroke="rgba(255,255,255,0.5)"
+                  tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }}
+                  axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
+                  width={60}
+                />
+                <Tooltip content={<CustomTooltip />} />
+                <Area
+                  type="monotone"
+                  dataKey="followers"
+                  stroke="#3b82f6"
+                  strokeWidth={2}
+                  fill="url(#followerGradient)"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Best/Worst Days */}
+          <div className="grid md:grid-cols-2 gap-4 mt-6">
+            <div className="bg-green-500/10 border border-green-500/20 rounded-xl p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Sparkles className="w-4 h-4 text-green-400" />
+                <span className="text-sm font-semibold text-green-400">Bester Tag</span>
+              </div>
+              <p className="text-lg font-bold">+{formatNumber(summary.bestDay.growth)} Follower</p>
+              <p className="text-xs text-muted-foreground">
+                {new Date(summary.bestDay.date).toLocaleDateString('de-DE', { 
+                  weekday: 'long', day: 'numeric', month: 'long' 
+                })}
+              </p>
+            </div>
+            <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <TrendingDown className="w-4 h-4 text-red-400" />
+                <span className="text-sm font-semibold text-red-400">Schwächster Tag</span>
+              </div>
+              <p className="text-lg font-bold">{formatNumber(summary.worstDay.growth)} Follower</p>
+              <p className="text-xs text-muted-foreground">
+                {new Date(summary.worstDay.date).toLocaleDateString('de-DE', { 
+                  weekday: 'long', day: 'numeric', month: 'long' 
+                })}
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Daily Growth Table */}
+      <Card className="bg-white/5 border-white/10">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Calendar className="w-5 h-5 text-cyan-400" />
+            Tägliches Wachstum
+          </CardTitle>
+          <CardDescription>
+            Detaillierte Übersicht der täglichen Follower-Änderungen
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-white/10">
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-muted-foreground">Datum</th>
+                  <th className="text-right py-3 px-4 text-sm font-semibold text-muted-foreground">Follower</th>
+                  <th className="text-right py-3 px-4 text-sm font-semibold text-muted-foreground">Änderung</th>
+                  <th className="text-right py-3 px-4 text-sm font-semibold text-muted-foreground">%</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tableData.map((point, idx) => (
+                  <tr key={point.date} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                    <td className="py-3 px-4 text-sm">
+                      {new Date(point.date).toLocaleDateString('de-DE', { 
+                        weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' 
+                      })}
+                    </td>
+                    <td className="py-3 px-4 text-sm text-right font-mono">
+                      {formatNumber(point.followers)}
+                    </td>
+                    <td className={`py-3 px-4 text-sm text-right font-mono font-semibold ${
+                      point.change > 0 ? 'text-green-400' : point.change < 0 ? 'text-red-400' : 'text-muted-foreground'
+                    }`}>
+                      {point.change > 0 ? '+' : ''}{formatNumber(point.change)}
+                    </td>
+                    <td className={`py-3 px-4 text-sm text-right font-mono ${
+                      point.changePercent > 0 ? 'text-green-400' : point.changePercent < 0 ? 'text-red-400' : 'text-muted-foreground'
+                    }`}>
+                      {point.changePercent > 0 ? '+' : ''}{point.changePercent.toFixed(2)}%
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
+              <p className="text-sm text-muted-foreground">
+                Seite {currentPage + 1} von {totalPages}
+              </p>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(p => Math.max(0, p - 1))}
+                  disabled={currentPage === 0}
+                  className="bg-white/5 border-white/10"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(p => Math.min(totalPages - 1, p + 1))}
+                  disabled={currentPage >= totalPages - 1}
+                  className="bg-white/5 border-white/10"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

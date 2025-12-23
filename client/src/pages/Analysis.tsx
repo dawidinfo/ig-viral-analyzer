@@ -41,6 +41,7 @@ import {
 import { useState, useMemo } from "react";
 import ReelAnalysis from "@/components/ReelAnalysis";
 import DeepAnalysis from "@/components/DeepAnalysis";
+import FollowerGrowthChart from "@/components/FollowerGrowthChart";
 import { generateAnalysisPDF } from "@/lib/pdfExport";
 import { useLocation, useSearch } from "wouter";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -583,6 +584,9 @@ export default function Analysis() {
                   <p className="text-sm text-muted-foreground mt-1">Posts analysiert</p>
                 </div>
               </div>
+
+              {/* Follower Growth Chart */}
+              <FollowerGrowthChart username={analysisData.profile.username} />
 
               {/* Engagement Chart */}
               <div className="glass-card rounded-xl p-6">

@@ -134,3 +134,11 @@
 - [x] Klassische Copywriting-Formeln hinzufügen (Hopkins, Ogilvy, Schwartz)
 - [x] Statistiken nach oben verschieben (nach AI Reel-Analyse)
 - [x] Anpinn-Funktion für Sektionen implementieren
+
+## Follower-Wachstums-Charts (wie NotJustAnalytics)
+- [x] Backend-Service für historische Follower-Daten erstellen
+- [x] Datenbank-Schema für historische Daten erweitern (Demo-Daten)
+- [x] Follower-Growth-Chart Komponente mit Recharts
+- [x] Zeitraum-Auswahl (7d, 1m, 3m, 6m, 1y, max)
+- [x] Tägliche Wachstumstabelle mit +/- Anzeige
+- [x] Integration in Analyse-Seite
