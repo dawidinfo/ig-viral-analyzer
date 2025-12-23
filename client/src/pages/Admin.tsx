@@ -34,6 +34,7 @@ import {
   Users, 
   DollarSign, 
   TrendingUp, 
+  TrendingDown,
   Activity,
   Shield,
   Ban,
@@ -47,6 +48,9 @@ import {
   CreditCard,
   ChevronLeft,
   ChevronRight,
+  Instagram,
+  Youtube,
+  Filter,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -63,6 +67,8 @@ export default function Admin() {
   const [roleDialogOpen, setRoleDialogOpen] = useState(false);
   const [newRole, setNewRole] = useState<"user" | "admin" | "support">("user");
   const [trackingResult, setTrackingResult] = useState<{ totalAccounts: number; successful: number; failed: number } | null>(null);
+  const [trackingPlatformFilter, setTrackingPlatformFilter] = useState<string>("all");
+  const [trackingDaysFilter, setTrackingDaysFilter] = useState<number>(30);
 
   // Check if user is admin
   const { data: isAdmin, isLoading: checkingAdmin } = trpc.admin.isAdmin.useQuery(
@@ -108,6 +114,28 @@ export default function Admin() {
 
   // Get tracking accounts
   const { data: trackingAccounts } = trpc.admin.getTrackingAccounts.useQuery(
+    undefined,
+    { enabled: isAdmin === true }
+  );
+
+  // Get top growing accounts
+  const { data: topGrowingAccounts } = trpc.admin.getTopGrowing.useQuery(
+    {
+      platform: trackingPlatformFilter !== "all" ? trackingPlatformFilter : undefined,
+      days: trackingDaysFilter,
+      limit: 10,
+    },
+    { enabled: isAdmin === true }
+  );
+
+  // Get declining accounts
+  const { data: decliningAccounts } = trpc.admin.getDeclining.useQuery(
+    { days: trackingDaysFilter, limit: 5 },
+    { enabled: isAdmin === true }
+  );
+
+  // Get platform distribution
+  const { data: platformDistribution } = trpc.admin.getPlatformDistribution.useQuery(
     undefined,
     { enabled: isAdmin === true }
   );
@@ -656,44 +684,38 @@ export default function Admin() {
           </TabsContent>
 
           {/* Tracking Tab */}
-          <TabsContent value="tracking">
+          <TabsContent value="tracking" className="space-y-6">
+            {/* Status Cards Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Activity className="h-5 w-5" />
-                    Follower-Tracking Status
+                    Tracking Status
                   </CardTitle>
                   <CardDescription>
                     Automatisches tägliches Tracking aller gespeicherten Accounts
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex justify-between items-center p-4 bg-muted rounded-lg">
-                    <span>Gesamt Snapshots</span>
-                    <span className="text-2xl font-bold">
-                      {trackingStats?.totalSnapshots || 0}
-                    </span>
+                <CardContent className="space-y-3">
+                  <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
+                    <span className="text-sm">Gesamt Snapshots</span>
+                    <span className="text-xl font-bold">{trackingStats?.totalSnapshots || 0}</span>
                   </div>
-                  <div className="flex justify-between items-center p-4 bg-muted rounded-lg">
-                    <span>Getrackte Accounts</span>
-                    <span className="text-2xl font-bold">
-                      {trackingStats?.uniqueAccounts || 0}
-                    </span>
+                  <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
+                    <span className="text-sm">Getrackte Accounts</span>
+                    <span className="text-xl font-bold">{trackingStats?.uniqueAccounts || 0}</span>
                   </div>
-                  <div className="flex justify-between items-center p-4 bg-muted rounded-lg">
-                    <span>Snapshots heute</span>
-                    <span className="text-2xl font-bold text-green-500">
-                      {trackingStats?.snapshotsToday || 0}
-                    </span>
+                  <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
+                    <span className="text-sm">Snapshots heute</span>
+                    <span className="text-xl font-bold text-green-500">{trackingStats?.snapshotsToday || 0}</span>
                   </div>
-                  <div className="flex justify-between items-center p-4 bg-muted rounded-lg">
-                    <span>Letzter Tracking-Lauf</span>
+                  <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
+                    <span className="text-sm">Letzter Lauf</span>
                     <span className="text-sm">
                       {trackingStats?.lastTrackingRun 
                         ? new Date(trackingStats.lastTrackingRun).toLocaleString('de-DE')
-                        : 'Noch nie'
-                      }
+                        : 'Noch nie'}
                     </span>
                   </div>
                 </CardContent>
@@ -702,41 +724,219 @@ export default function Admin() {
               <Card>
                 <CardHeader>
                   <CardTitle>Manuelles Tracking</CardTitle>
-                  <CardDescription>
-                    Starte das Tracking manuell für alle gespeicherten Accounts
-                  </CardDescription>
+                  <CardDescription>Tracking jetzt für alle Accounts starten</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="p-4 bg-muted rounded-lg">
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Das automatische Tracking läuft täglich um 03:00 Uhr nachts.
-                      Du kannst es hier auch manuell starten.
-                    </p>
-                    <div className="flex items-center gap-4">
-                      <Button 
-                        onClick={() => runTrackingMutation.mutate()}
-                        disabled={runTrackingMutation.isPending}
-                        className="gap-2"
-                      >
-                        {runTrackingMutation.isPending ? (
-                          <RefreshCw className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <Activity className="h-4 w-4" />
-                        )}
-                        {runTrackingMutation.isPending ? 'Läuft...' : 'Tracking starten'}
-                      </Button>
-                      <span className="text-sm text-muted-foreground">
-                        {trackingAccounts?.length || 0} Accounts werden getrackt
-                      </span>
-                    </div>
+                  <p className="text-sm text-muted-foreground">
+                    Das automatische Tracking läuft täglich um 03:00 Uhr.
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <Button 
+                      onClick={() => runTrackingMutation.mutate()}
+                      disabled={runTrackingMutation.isPending}
+                      className="gap-2"
+                    >
+                      {runTrackingMutation.isPending ? (
+                        <RefreshCw className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Activity className="h-4 w-4" />
+                      )}
+                      {runTrackingMutation.isPending ? 'Läuft...' : 'Tracking starten'}
+                    </Button>
+                    <span className="text-sm text-muted-foreground">
+                      {trackingAccounts?.length || 0} Accounts
+                    </span>
                   </div>
                   {trackingResult && (
-                    <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
-                      <p className="font-medium text-green-500 mb-2">Tracking abgeschlossen</p>
-                      <p className="text-sm">
-                        {trackingResult.successful} von {trackingResult.totalAccounts} Accounts erfolgreich getrackt
+                    <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
+                      <p className="font-medium text-green-500 text-sm">Tracking abgeschlossen</p>
+                      <p className="text-xs text-muted-foreground">
+                        {trackingResult.successful}/{trackingResult.totalAccounts} erfolgreich
                       </p>
                     </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Top Growing Accounts */}
+            <Card>
+              <CardHeader>
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5 text-green-500" />
+                      Top Wachstums-Accounts
+                    </CardTitle>
+                    <CardDescription>Accounts mit dem stärksten Follower-Wachstum</CardDescription>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Select value={trackingPlatformFilter} onValueChange={setTrackingPlatformFilter}>
+                      <SelectTrigger className="w-[140px]">
+                        <Filter className="h-4 w-4 mr-2" />
+                        <SelectValue placeholder="Plattform" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Alle</SelectItem>
+                        <SelectItem value="instagram">Instagram</SelectItem>
+                        <SelectItem value="tiktok">TikTok</SelectItem>
+                        <SelectItem value="youtube">YouTube</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select value={trackingDaysFilter.toString()} onValueChange={(v) => setTrackingDaysFilter(Number(v))}>
+                      <SelectTrigger className="w-[120px]">
+                        <SelectValue placeholder="Zeitraum" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="7">7 Tage</SelectItem>
+                        <SelectItem value="14">14 Tage</SelectItem>
+                        <SelectItem value="30">30 Tage</SelectItem>
+                        <SelectItem value="90">90 Tage</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {topGrowingAccounts && topGrowingAccounts.length > 0 ? (
+                  <div className="space-y-3">
+                    {topGrowingAccounts.map((account, index) => (
+                      <div key={`${account.platform}-${account.username}`} className="p-4 bg-muted rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <span className="text-lg font-bold text-muted-foreground">#{index + 1}</span>
+                            <div className="flex items-center gap-2">
+                              {account.platform === 'instagram' && <Instagram className="h-4 w-4 text-pink-500" />}
+                              {account.platform === 'tiktok' && <span className="text-sm">🎵</span>}
+                              {account.platform === 'youtube' && <Youtube className="h-4 w-4 text-red-500" />}
+                              <span className="font-medium">@{account.username}</span>
+                            </div>
+                            <Badge variant="outline" className="text-xs">
+                              {account.platform}
+                            </Badge>
+                          </div>
+                          <div className="text-right">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm text-muted-foreground">
+                                {formatNumber(account.startFollowers)} → {formatNumber(account.currentFollowers)}
+                              </span>
+                              <span className="font-bold text-green-500">
+                                +{account.growthPercent.toFixed(1)}%
+                              </span>
+                            </div>
+                            <span className="text-xs text-green-500">
+                              +{formatNumber(account.growth)} Follower
+                            </span>
+                          </div>
+                        </div>
+                        {/* Sparkline */}
+                        {account.sparklineData && account.sparklineData.length > 1 && (
+                          <div className="mt-3 h-12 flex items-end gap-[2px]">
+                            {account.sparklineData.map((value, i) => {
+                              const min = Math.min(...account.sparklineData);
+                              const max = Math.max(...account.sparklineData);
+                              const range = max - min || 1;
+                              const height = ((value - min) / range) * 100;
+                              return (
+                                <div
+                                  key={i}
+                                  className="flex-1 bg-green-500/60 rounded-t transition-all hover:bg-green-500"
+                                  style={{ height: `${Math.max(height, 5)}%` }}
+                                  title={`${formatNumber(value)} Follower`}
+                                />
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <TrendingUp className="h-12 w-12 mx-auto mb-3 opacity-30" />
+                    <p>Noch keine Wachstumsdaten verfügbar</p>
+                    <p className="text-sm">Starte das Tracking, um Daten zu sammeln</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Bottom Row: Declining + Platform Distribution */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Declining Accounts */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingDown className="h-5 w-5 text-red-500" />
+                    Accounts mit Rückgang
+                  </CardTitle>
+                  <CardDescription>Accounts mit negativem Wachstum</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {decliningAccounts && decliningAccounts.length > 0 ? (
+                    <div className="space-y-2">
+                      {decliningAccounts.map((account) => (
+                        <div key={`${account.platform}-${account.username}`} className="flex items-center justify-between p-3 bg-red-500/5 border border-red-500/10 rounded-lg">
+                          <div className="flex items-center gap-2">
+                            {account.platform === 'instagram' && <Instagram className="h-4 w-4 text-pink-500" />}
+                            {account.platform === 'tiktok' && <span className="text-sm">🎵</span>}
+                            {account.platform === 'youtube' && <Youtube className="h-4 w-4 text-red-500" />}
+                            <span className="text-sm">@{account.username}</span>
+                          </div>
+                          <span className="font-medium text-red-500">-{account.declinePercent.toFixed(1)}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground text-center py-4">
+                      Keine Accounts mit Rückgang
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Platform Distribution */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BarChart3 className="h-5 w-5" />
+                    Plattform-Verteilung
+                  </CardTitle>
+                  <CardDescription>Verteilung der getrackten Accounts</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {platformDistribution && platformDistribution.length > 0 ? (
+                    <div className="space-y-3">
+                      {platformDistribution.map((item) => (
+                        <div key={item.platform} className="space-y-1">
+                          <div className="flex items-center justify-between text-sm">
+                            <div className="flex items-center gap-2">
+                              {item.platform === 'instagram' && <Instagram className="h-4 w-4 text-pink-500" />}
+                              {item.platform === 'tiktok' && <span>🎵</span>}
+                              {item.platform === 'youtube' && <Youtube className="h-4 w-4 text-red-500" />}
+                              <span className="capitalize">{item.platform}</span>
+                            </div>
+                            <span className="text-muted-foreground">
+                              {item.count} ({item.percentage.toFixed(0)}%)
+                            </span>
+                          </div>
+                          <div className="h-2 bg-muted rounded-full overflow-hidden">
+                            <div 
+                              className={`h-full rounded-full transition-all ${
+                                item.platform === 'instagram' ? 'bg-gradient-to-r from-pink-500 to-orange-500' :
+                                item.platform === 'tiktok' ? 'bg-gradient-to-r from-cyan-500 to-black' :
+                                'bg-red-500'
+                              }`}
+                              style={{ width: `${item.percentage}%` }}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground text-center py-4">
+                      Keine Plattform-Daten verfügbar
+                    </p>
                   )}
                 </CardContent>
               </Card>

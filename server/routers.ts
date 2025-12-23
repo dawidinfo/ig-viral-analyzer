@@ -11,7 +11,7 @@ import { generateDeepAnalysis, DeepAnalysis } from "./deepAnalysis";
 import { analyzeTikTokAccount, fetchTikTokProfile, searchTikTokVideos, TikTokAnalysis } from "./tiktok";
 import { analyzeYouTubeChannel, fetchYouTubeChannel, searchYouTubeVideos, YouTubeAnalysis } from "./youtube";
 import { isUserAdmin, getAllUsers, getAdminStats, banUser, unbanUser, setUserRole, updateUserPlan, getUserActivity, getTopUsers, scanForSuspiciousUsers } from "./adminService";
-import { runScheduledTracking, getTrackingStats, getSavedAccountsForTracking } from "./scheduledTracking";
+import { runScheduledTracking, getTrackingStats, getSavedAccountsForTracking, getTopGrowingAccounts, getDecliningAccounts, getPlatformDistribution, getAccountHistory } from "./scheduledTracking";
 import { getDb } from "./db";
 import { getUserCredits, useCredits, addCredits, getCreditHistory, getCreditStats, canPerformAction, getActionCost } from "./creditService";
 import { instagramCache, savedAnalyses, usageTracking, users, CREDIT_COSTS, CREDIT_PACKAGES, creditTransactions, PLAN_LIMITS } from "../drizzle/schema";
@@ -808,6 +808,43 @@ export const appRouter = router({
     runTracking: publicProcedure.mutation(async () => {
       return await runScheduledTracking();
     }),
+
+    // Get top growing accounts
+    getTopGrowing: publicProcedure
+      .input(z.object({
+        platform: z.string().optional(),
+        days: z.number().optional().default(30),
+        limit: z.number().optional().default(10),
+      }))
+      .query(async ({ input }) => {
+        return await getTopGrowingAccounts(input);
+      }),
+
+    // Get declining accounts
+    getDeclining: publicProcedure
+      .input(z.object({
+        days: z.number().optional().default(30),
+        limit: z.number().optional().default(5),
+      }))
+      .query(async ({ input }) => {
+        return await getDecliningAccounts(input);
+      }),
+
+    // Get platform distribution
+    getPlatformDistribution: publicProcedure.query(async () => {
+      return await getPlatformDistribution();
+    }),
+
+    // Get account history
+    getAccountHistory: publicProcedure
+      .input(z.object({
+        platform: z.string(),
+        username: z.string(),
+        days: z.number().optional().default(90),
+      }))
+      .query(async ({ input }) => {
+        return await getAccountHistory(input.platform, input.username, input.days);
+      }),
   }),
 });
 

@@ -307,3 +307,13 @@
 - [ ] Feature-Nutzung pro Kunde anzeigen
 - [ ] Credit-Verbrauch und Transaktionen einsehen
 - [ ] Admin-Zugang für Owner sicherstellen
+
+## Tracking-Dashboard mit Wachstumskurven
+- [x] Backend: API für Top-Wachstums-Accounts erstellen
+- [x] Backend: API für Accounts mit Rückgang erstellen
+- [x] Backend: API für Plattform-Verteilung erstellen
+- [x] Frontend: Tracking-Tab mit Wachstumskurven erweitern
+- [x] Frontend: Sparkline-Charts für jeden Account
+- [x] Frontend: Filter nach Plattform und Zeitraum
+- [x] Frontend: Responsive Design für Mobile
+- [x] Tests für Tracking-Dashboard API (12 Tests bestanden)
