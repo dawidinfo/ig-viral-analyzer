@@ -171,3 +171,57 @@
 - [x] Pro-Tier in der Mitte hervorheben als "Beliebteste Wahl"
 - [x] Analyse-Limits klar kommunizieren
 - [x] Pricing-Seite aktualisieren
+
+## Credit-System & Multi-Plattform Update
+
+### Credit-System
+- [x] Datenbank-Schema für Credits (user_credits, credit_transactions, credit_packages)
+- [x] Credit-Tracking Service (Verbrauch, Aufladung, History)
+- [x] Credit-Verbrauch pro Aktion (Basis: 1, KI-Tiefenanalyse: 3, PDF: 1, etc.)
+- [x] Credit-Anzeige im Dashboard
+- [x] Warnung bei niedrigem Credit-Stand
+
+### Neues Pricing (Credit-Pakete)
+- [x] Starter €9 (25 Credits)
+- [x] Pro €29 (100 Credits)
+- [x] Business €79 (350 Credits)
+- [x] Enterprise €199 (1000 Credits)
+
+### Plattform-Module
+- [x] Instagram Modul (Basis, inkludiert)
+- [x] TikTok Modul (+€9/Monat)
+- [x] YouTube Modul (+€9/Monat)
+- [x] All-in-One Bundle (+€15/Monat)
+
+### TikTok Integration
+- [x] TikTok API Recherche und Auswahl
+- [x] TikTok Profil-Analyse
+- [x] TikTok Video-Analyse
+- [x] TikTok KI-Tiefenanalyse
+
+### YouTube Integration
+- [x] YouTube Data API Integration
+- [x] YouTube Kanal-Analyse
+- [x] YouTube Video-Analyse
+- [x] YouTube KI-Tiefenanalyse
+
+### Admin Dashboard
+- [x] Admin-Authentifizierung (nur bestimmte E-Mails)
+- [x] User-Übersicht mit Statistiken
+- [x] Umsatz- und Margen-Tracking
+- [x] Verdächtige Accounts (Adult-Content Filter)
+- [x] User-Verwaltung (Sperren, Credits anpassen)
+- [x] Rechtevergabe für Support-Mitarbeiter
+
+### Sicherheit
+- [x] Rate Limiting pro User und IP
+- [x] Input-Validierung verschärfen
+- [x] SQL-Injection Schutz prüfen
+- [x] CSRF-Protection
+- [x] Logging für verdächtige Aktivitäten
+
+### Rechtliches
+- [x] AGB anpassen (wie short.io)
+- [x] Datenschutzerklärung anpassen
+- [x] Verbotene Inhalte definieren (Adult, etc.)
+- [x] Account-Sperrung bei Verstoß

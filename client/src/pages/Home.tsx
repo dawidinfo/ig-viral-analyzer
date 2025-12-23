@@ -844,10 +844,10 @@ export default function Home() {
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
               Wähle deinen Plan
               <br />
-              <span className="text-gradient">3 Analysen kostenlos</span>
+              <span className="text-gradient">10 Credits kostenlos</span>
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Starte mit 3 kostenlosen Analysen pro Monat. Upgrade jederzeit für mehr Power.
+              Starte mit 10 kostenlosen Credits. 1 Analyse = 1-3 Credits. Upgrade jederzeit für mehr Power.
             </p>
           </motion.div>
 
@@ -865,9 +865,9 @@ export default function Home() {
                 <h3 className="text-xl font-bold mb-1">Kostenlos</h3>
                 <p className="text-xs text-muted-foreground mb-4">Zum Ausprobieren</p>
                 <div className="text-3xl font-black mb-1">
-                  €0
+                  10 Credits
                 </div>
-                <p className="text-xs text-muted-foreground mb-6">für immer</p>
+                <p className="text-xs text-muted-foreground mb-6">einmalig geschenkt</p>
                 <Button 
                   onClick={() => document.getElementById('hero-input')?.focus()}
                   variant="outline" 
@@ -879,7 +879,7 @@ export default function Home() {
                 <ul className="space-y-2 text-sm">
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-accent shrink-0" />
-                    <span><strong>3 Analysen</strong>/Monat</span>
+                    <span><strong>10 Credits</strong> einmalig</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-accent shrink-0" />
@@ -916,9 +916,9 @@ export default function Home() {
                 <h3 className="text-xl font-bold mb-1">Starter</h3>
                 <p className="text-xs text-muted-foreground mb-4">Für Einsteiger</p>
                 <div className="text-3xl font-black mb-1">
-                  €9<span className="text-lg font-normal text-muted-foreground">/mo</span>
+                  €19<span className="text-lg font-normal text-muted-foreground">/mo</span>
                 </div>
-                <p className="text-xs text-muted-foreground mb-6">monatlich kündbar</p>
+                <p className="text-xs text-muted-foreground mb-6">30 Credits • €0.63/Credit</p>
                 <Button 
                   onClick={() => setLocation('/pricing')}
                   variant="outline" 
@@ -930,7 +930,7 @@ export default function Home() {
                 <ul className="space-y-2 text-sm">
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-accent shrink-0" />
-                    <span><strong>15 Analysen</strong>/Monat</span>
+                    <span><strong>30 Credits</strong>/Monat</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-accent shrink-0" />
@@ -972,9 +972,9 @@ export default function Home() {
                     <h3 className="text-xl font-bold mb-1">Pro</h3>
                     <p className="text-xs text-muted-foreground mb-4">Für Creator</p>
                     <div className="text-3xl font-black mb-1">
-                      €29<span className="text-lg font-normal text-muted-foreground">/mo</span>
+                      €49<span className="text-lg font-normal text-muted-foreground">/mo</span>
                     </div>
-                    <p className="text-xs text-muted-foreground mb-6">monatlich kündbar</p>
+                    <p className="text-xs text-muted-foreground mb-6">100 Credits • €0.49/Credit</p>
                     <Button 
                       onClick={() => setLocation('/pricing')}
                       className="btn-gradient w-full text-white border-0 mb-6"
@@ -986,7 +986,7 @@ export default function Home() {
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-center gap-2">
                         <Check className="w-4 h-4 text-accent shrink-0" />
-                        <span><strong>50 Analysen</strong>/Monat</span>
+                        <span><strong>100 Credits</strong>/Monat</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <Check className="w-4 h-4 text-accent shrink-0" />
@@ -1025,9 +1025,9 @@ export default function Home() {
                 <h3 className="text-xl font-bold mb-1">Business</h3>
                 <p className="text-xs text-muted-foreground mb-4">Für Agenturen</p>
                 <div className="text-3xl font-black mb-1">
-                  €49<span className="text-lg font-normal text-muted-foreground">/mo</span>
+                  €99<span className="text-lg font-normal text-muted-foreground">/mo</span>
                 </div>
-                <p className="text-xs text-muted-foreground mb-6">monatlich kündbar</p>
+                <p className="text-xs text-muted-foreground mb-6">300 Credits • €0.33/Credit</p>
                 <Button 
                   onClick={() => setLocation('/pricing')}
                   variant="outline" 
@@ -1040,7 +1040,7 @@ export default function Home() {
                 <ul className="space-y-2 text-sm">
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-yellow-500 shrink-0" />
-                    <span><strong>Unbegrenzte</strong> Analysen</span>
+                    <span><strong>300 Credits</strong>/Monat</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-yellow-500 shrink-0" />

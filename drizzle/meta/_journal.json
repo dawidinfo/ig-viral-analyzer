@@ -22,6 +22,20 @@
       "when": 1766468707862,
       "tag": "0002_smooth_cannonball",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1766481369841,
+      "tag": "0003_complex_brother_voodoo",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1766481484639,
+      "tag": "0004_rich_grim_reaper",
+      "breakpoints": true
     }
   ]
 }

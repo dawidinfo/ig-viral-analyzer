@@ -8,8 +8,12 @@ import { getFollowerHistory, getTimeRanges } from "./followerHistory";
 import { generatePostingTimeAnalysis } from "./postingTimeAnalysis";
 import { analyzeReel } from "./reelAnalysis";
 import { generateDeepAnalysis, DeepAnalysis } from "./deepAnalysis";
+import { analyzeTikTokAccount, fetchTikTokProfile, searchTikTokVideos, TikTokAnalysis } from "./tiktok";
+import { analyzeYouTubeChannel, fetchYouTubeChannel, searchYouTubeVideos, YouTubeAnalysis } from "./youtube";
+import { isUserAdmin, getAllUsers, getAdminStats, banUser, unbanUser, setUserRole, updateUserPlan, getUserActivity, getTopUsers, scanForSuspiciousUsers } from "./adminService";
 import { getDb } from "./db";
-import { instagramCache, savedAnalyses, usageTracking, PLAN_LIMITS, users } from "../drizzle/schema";
+import { getUserCredits, useCredits, addCredits, getCreditHistory, getCreditStats, canPerformAction, getActionCost } from "./creditService";
+import { instagramCache, savedAnalyses, usageTracking, users, CREDIT_COSTS, CREDIT_PACKAGES, creditTransactions, PLAN_LIMITS } from "../drizzle/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
 
 // Cache duration: 1 hour
@@ -556,6 +560,238 @@ export const appRouter = router({
           used,
         };
       }),
+  }),
+
+  // Credit System Router
+  credits: router({
+    // Get current credit balance
+    getBalance: publicProcedure
+      .input(z.object({ userId: z.number() }))
+      .query(async ({ input }) => {
+        const balance = await getUserCredits(input.userId);
+        if (!balance) throw new Error("User not found");
+        return balance;
+      }),
+
+    // Get credit transaction history
+    getHistory: publicProcedure
+      .input(z.object({ 
+        userId: z.number(),
+        limit: z.number().min(1).max(100).default(50)
+      }))
+      .query(async ({ input }) => {
+        return await getCreditHistory(input.userId, input.limit);
+      }),
+
+    // Get credit usage statistics
+    getStats: publicProcedure
+      .input(z.object({ userId: z.number() }))
+      .query(async ({ input }) => {
+        return await getCreditStats(input.userId);
+      }),
+
+    // Check if user can perform an action
+    canPerform: publicProcedure
+      .input(z.object({
+        userId: z.number(),
+        action: z.string(),
+        platform: z.string().default("instagram")
+      }))
+      .query(async ({ input }) => {
+        const result = await canPerformAction(
+          input.userId,
+          input.action as any,
+          input.platform
+        );
+        const cost = getActionCost(input.action as any);
+        return { ...result, cost };
+      }),
+
+    // Use credits for an action
+    use: publicProcedure
+      .input(z.object({
+        userId: z.number(),
+        action: z.string(),
+        platform: z.string().default("instagram"),
+        description: z.string().optional()
+      }))
+      .mutation(async ({ input }) => {
+        return await useCredits(
+          input.userId,
+          input.action as any,
+          input.platform,
+          input.description
+        );
+      }),
+
+    // Get available credit packages
+    getPackages: publicProcedure.query(() => {
+      return Object.entries(CREDIT_PACKAGES).map(([key, pkg]) => ({
+        id: key,
+        name: key.charAt(0).toUpperCase() + key.slice(1),
+        ...pkg,
+      }));
+    }),
+
+    // Get action costs
+    getCosts: publicProcedure.query(() => {
+      return CREDIT_COSTS;
+    }),
+  }),
+
+  // TikTok Router
+  tiktok: router({
+    // Analyze TikTok account
+    analyze: publicProcedure
+      .input(z.object({ username: z.string().min(1) }))
+      .query(async ({ input }) => {
+        const analysis = await analyzeTikTokAccount(input.username);
+        return analysis;
+      }),
+
+    // Get TikTok profile only
+    profile: publicProcedure
+      .input(z.object({ username: z.string().min(1) }))
+      .query(async ({ input }) => {
+        const profile = await fetchTikTokProfile(input.username);
+        return profile;
+      }),
+
+    // Search TikTok videos
+    search: publicProcedure
+      .input(z.object({ 
+        keyword: z.string().min(1),
+        cursor: z.number().optional()
+      }))
+      .query(async ({ input }) => {
+        return await searchTikTokVideos(input.keyword, input.cursor);
+      }),
+  }),
+
+  // YouTube Router
+  youtube: router({
+    // Analyze YouTube channel
+    analyze: publicProcedure
+      .input(z.object({ channelId: z.string().min(1) }))
+      .query(async ({ input }) => {
+        const analysis = await analyzeYouTubeChannel(input.channelId);
+        return analysis;
+      }),
+
+    // Get YouTube channel only
+    channel: publicProcedure
+      .input(z.object({ channelId: z.string().min(1) }))
+      .query(async ({ input }) => {
+        const channel = await fetchYouTubeChannel(input.channelId);
+        return channel;
+      }),
+
+    // Search YouTube videos
+    search: publicProcedure
+      .input(z.object({ 
+        query: z.string().min(1),
+        cursor: z.string().optional()
+      }))
+      .query(async ({ input }) => {
+        return await searchYouTubeVideos(input.query, input.cursor);
+      }),
+  }),
+
+  // Admin Router
+  admin: router({
+    // Check if current user is admin
+    isAdmin: publicProcedure
+      .input(z.object({ userId: z.number() }))
+      .query(async ({ input }) => {
+        return await isUserAdmin(input.userId);
+      }),
+
+    // Get all users (admin only)
+    getUsers: publicProcedure
+      .input(z.object({
+        page: z.number().default(1),
+        limit: z.number().default(50),
+        search: z.string().optional(),
+        filterPlan: z.string().optional(),
+        filterSuspicious: z.boolean().optional(),
+        filterBanned: z.boolean().optional(),
+      }))
+      .query(async ({ input }) => {
+        return await getAllUsers(
+          input.page,
+          input.limit,
+          input.search,
+          input.filterPlan,
+          input.filterSuspicious,
+          input.filterBanned
+        );
+      }),
+
+    // Get admin statistics
+    getStats: publicProcedure.query(async () => {
+      return await getAdminStats();
+    }),
+
+    // Ban user
+    banUser: publicProcedure
+      .input(z.object({
+        userId: z.number(),
+        reason: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        return await banUser(input.userId, input.reason);
+      }),
+
+    // Unban user
+    unbanUser: publicProcedure
+      .input(z.object({ userId: z.number() }))
+      .mutation(async ({ input }) => {
+        return await unbanUser(input.userId);
+      }),
+
+    // Set user role
+    setUserRole: publicProcedure
+      .input(z.object({
+        userId: z.number(),
+        role: z.enum(["user", "admin", "support"]),
+      }))
+      .mutation(async ({ input }) => {
+        return await setUserRole(input.userId, input.role);
+      }),
+
+    // Update user plan
+    updateUserPlan: publicProcedure
+      .input(z.object({
+        userId: z.number(),
+        plan: z.enum(["free", "starter", "pro", "business", "enterprise"]),
+        credits: z.number(),
+      }))
+      .mutation(async ({ input }) => {
+        return await updateUserPlan(input.userId, input.plan, input.credits);
+      }),
+
+    // Get user activity
+    getUserActivity: publicProcedure
+      .input(z.object({
+        userId: z.number(),
+        page: z.number().default(1),
+        limit: z.number().default(50),
+      }))
+      .query(async ({ input }) => {
+        return await getUserActivity(input.userId, input.page, input.limit);
+      }),
+
+    // Get top users
+    getTopUsers: publicProcedure
+      .input(z.object({ limit: z.number().default(10) }))
+      .query(async ({ input }) => {
+        return await getTopUsers(input.limit);
+      }),
+
+    // Scan for suspicious users
+    scanSuspicious: publicProcedure.query(async () => {
+      return await scanForSuspiciousUsers();
+    }),
   }),
 });
 
