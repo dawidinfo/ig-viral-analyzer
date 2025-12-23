@@ -660,7 +660,7 @@ export default function Home() {
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto pt-8 overflow-visible">
             {[
               {
                 step: "01",
@@ -784,7 +784,7 @@ export default function Home() {
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 pt-6 overflow-visible">
             {testimonials.map((testimonial, index) => (
               <motion.div
                 key={index}
@@ -792,11 +792,11 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="glass-card rounded-2xl p-6 stat-card relative"
+                className="glass-card rounded-2xl p-6 pt-8 stat-card relative overflow-visible"
               >
                 {/* Metric Badge */}
-                <div className="absolute -top-3 -right-3">
-                  <Badge className="bg-accent text-accent-foreground font-bold">
+                <div className="absolute -top-3 right-4 z-10">
+                  <Badge className="bg-accent text-accent-foreground font-bold whitespace-nowrap">
                     {testimonial.metric}
                   </Badge>
                 </div>
@@ -851,8 +851,8 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="max-w-6xl mx-auto overflow-visible">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 pt-6 overflow-visible">
               {/* Free Plan */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -961,7 +961,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
                 viewport={{ once: true }}
-                className="relative"
+                className="relative overflow-visible"
               >
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
                   <Badge className="bg-accent text-accent-foreground font-bold px-4">BELIEBTESTE WAHL</Badge>

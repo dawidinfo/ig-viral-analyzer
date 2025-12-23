@@ -242,3 +242,7 @@
 
 ## Badge-Layout Fix
 - [x] Badges "3.000+ PARAMETER" und "NEU" werden abgeschnitten - overflow-visible und pt-8 auf Cards gesetzt
+
+## Erfolgsgeschichten-Badge Fix
+- [x] Badges (+312% Engagement, etc.) werden oben abgeschnitten - overflow-visible und pt-6 auf Grid und Cards gesetzt
+- [x] Gesamte Seite auf weitere Overflow-Probleme geprüft (How It Works, Pricing - alle gefixt)
