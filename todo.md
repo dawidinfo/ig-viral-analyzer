@@ -112,3 +112,16 @@
 - [x] Add visual pattern visualization
 - [x] Create compelling "why viral" explanations with specific reasons
 - [x] Show overlapping patterns across content
+
+## Comprehensive Analytics Enhancement (like notjustanalytics.com)
+- [ ] Follower growth charts with time ranges (7d, 1m, 3m, 6m, 1y, max)
+- [ ] Daily growth table with historical data
+- [ ] Top posts sorted by Views, Likes, Comments
+- [ ] Post timeline with full metadata (format, mentions, hashtags)
+- [ ] SEO analysis for captions with keyword extraction
+- [ ] Comparison with similar profiles benchmark
+- [ ] Weekly/Monthly overview summary with trends
+- [ ] Posting time analysis (best times to post)
+
+## Branding Cleanup
+- [x] Entferne alle "Made with Manus" Hinweise aus der Anwendung (Login-Dialog auf Deutsch angepasst)
