@@ -447,3 +447,7 @@
 
 ## Typography Update
 - [x] Apple-Style Typografie implementieren (SF Pro ähnlich, eleganter)
+
+## SEO Fixes
+- [x] Title auf 30-60 Zeichen optimieren (jetzt 52 Zeichen)
+- [x] Keywords/Meta-Tags hinzufügen (10 Keywords + OG + Twitter)
