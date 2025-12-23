@@ -441,3 +441,6 @@
 - [x] Kontaktseite mit Formular erstellen
 - [x] Anti-Spam Fragen (Pflichtfelder, Honeypot)
 - [x] E-Mail-Versand bei Kontaktanfrage
+
+## Disclaimer-Seite
+- [x] Disclaimer-Seite erstellen (404 beheben)

@@ -14,6 +14,7 @@ import Admin from "./pages/Admin";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Contact from "./pages/Contact";
+import Disclaimer from "./pages/Disclaimer";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -28,6 +29,7 @@ function Router() {
       <Route path={"/terms"} component={Terms} />
       <Route path={"/privacy"} component={Privacy} />
       <Route path={"/contact"} component={Contact} />
+      <Route path={"/disclaimer"} component={Disclaimer} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
