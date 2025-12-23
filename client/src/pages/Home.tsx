@@ -19,7 +19,9 @@ import {
   Users,
   Hash,
   Clock,
-  ArrowLeftRight
+  ArrowLeftRight,
+  Menu,
+  X
 } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
@@ -78,6 +80,9 @@ export default function Home() {
 
   const [, setLocation] = useLocation();
   const [username, setUsername] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const closeMobileMenu = () => setMobileMenuOpen(false);
 
   const handleAnalyze = () => {
     if (username.trim()) {
@@ -113,17 +118,101 @@ export default function Home() {
             </button>
           </div>
 
-          {/* CTA Button */}
-          <Button 
-            onClick={() => document.getElementById('hero-input')?.focus()}
-            className="btn-gradient text-white border-0 shrink-0 text-sm lg:text-base"
-            size="sm"
-          >
-            <Sparkles className="w-4 h-4 mr-1 lg:mr-2" />
-            <span className="hidden sm:inline">Jetzt analysieren</span>
-            <span className="sm:hidden">Analyse</span>
-          </Button>
+          {/* Right side: CTA + Hamburger */}
+          <div className="flex items-center gap-2">
+            {/* CTA Button - Hidden on very small screens */}
+            <Button 
+              onClick={() => document.getElementById('hero-input')?.focus()}
+              className="btn-gradient text-white border-0 shrink-0 text-sm lg:text-base hidden sm:flex"
+              size="sm"
+            >
+              <Sparkles className="w-4 h-4 mr-1 lg:mr-2" />
+              Jetzt analysieren
+            </Button>
+
+            {/* Hamburger Button - Visible on mobile/tablet */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="lg:hidden"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Menü öffnen"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </Button>
+          </div>
         </div>
+
+        {/* Mobile Menu Overlay */}
+        <motion.div
+          initial={false}
+          animate={mobileMenuOpen ? { opacity: 1, pointerEvents: "auto" as const } : { opacity: 0, pointerEvents: "none" as const }}
+          transition={{ duration: 0.2 }}
+          className="fixed inset-0 top-16 bg-black/60 backdrop-blur-sm lg:hidden z-40"
+          onClick={closeMobileMenu}
+        />
+
+        {/* Mobile Menu Panel */}
+        <motion.div
+          initial={false}
+          animate={mobileMenuOpen ? { x: 0 } : { x: "100%" }}
+          transition={{ type: "spring", damping: 25, stiffness: 300 }}
+          className="fixed top-16 right-0 bottom-0 w-72 bg-background border-l border-border/50 lg:hidden z-50 overflow-y-auto"
+        >
+          <div className="flex flex-col p-6 gap-2">
+            {/* Mobile Nav Links */}
+            <a 
+              href="#features" 
+              onClick={closeMobileMenu}
+              className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+            >
+              <Zap className="w-5 h-5 text-primary" />
+              Features
+            </a>
+            <a 
+              href="#how-it-works" 
+              onClick={closeMobileMenu}
+              className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+            >
+              <Play className="w-5 h-5 text-primary" />
+              Wie es funktioniert
+            </a>
+            <a 
+              href="#niches" 
+              onClick={closeMobileMenu}
+              className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+            >
+              <Hash className="w-5 h-5 text-primary" />
+              Nischen
+            </a>
+            <button 
+              onClick={() => { setLocation('/compare'); closeMobileMenu(); }}
+              className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors text-left"
+            >
+              <ArrowLeftRight className="w-5 h-5 text-primary" />
+              Vergleichen
+            </button>
+            <button 
+              onClick={() => { setLocation('/pricing'); closeMobileMenu(); }}
+              className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors text-left"
+            >
+              <Star className="w-5 h-5 text-primary" />
+              Preise
+            </button>
+
+            {/* Divider */}
+            <div className="h-px bg-border/50 my-4" />
+
+            {/* Mobile CTA */}
+            <Button 
+              onClick={() => { document.getElementById('hero-input')?.focus(); closeMobileMenu(); }}
+              className="btn-gradient text-white border-0 w-full justify-center"
+            >
+              <Sparkles className="w-4 h-4 mr-2" />
+              Jetzt analysieren
+            </Button>
+          </div>
+        </motion.div>
       </nav>
 
       {/* Hero Section */}
