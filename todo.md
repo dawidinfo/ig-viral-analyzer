@@ -225,3 +225,11 @@
 - [x] Datenschutzerklärung anpassen
 - [x] Verbotene Inhalte definieren (Adult, etc.)
 - [x] Account-Sperrung bei Verstoß
+
+## Pricing-Seite Überarbeitung
+- [x] Credits verständlicher machen ("30 KI-Analysen" statt "25 Credits")
+- [x] Besseres Wording für Features (Follower-Historie, Wachstumscharts)
+- [x] 14 Tage Geld-zurück-Garantie entfernen
+- [x] Längere Feature-Tabelle mit ausgeschriebenen Beschreibungen (60 Features)
+- [x] Mehr KI-Features hervorheben (HAPSS, AIDA, Hopkins, Ogilvy, Schwartz)
+- [x] Beschreibende Texte statt x/✓ Icons
