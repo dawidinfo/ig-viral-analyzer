@@ -23,7 +23,8 @@ export type NotificationType =
   | "suspicious_activity"
   | "account_banned"
   | "high_usage"
-  | "error";
+  | "error"
+  | "contact";
 
 interface NotificationPayload {
   type: NotificationType;
@@ -84,6 +85,7 @@ function createEmailTemplate(title: string, content: string, type: NotificationT
     account_banned: "#EF4444",
     high_usage: "#3B82F6",
     error: "#EF4444",
+    contact: "#06B6D4",
   };
 
   const typeEmojis: Record<NotificationType, string> = {
@@ -93,6 +95,7 @@ function createEmailTemplate(title: string, content: string, type: NotificationT
     account_banned: "🚫",
     high_usage: "📊",
     error: "❌",
+    contact: "📧",
   };
 
   return `
@@ -344,7 +347,8 @@ export function getNotificationStats(): Record<NotificationType, number> {
     suspicious_activity: 0,
     account_banned: 0,
     high_usage: 0,
-    error: 0
+    error: 0,
+    contact: 0,
   };
 
   for (const notification of notificationQueue) {

@@ -73,15 +73,7 @@ export function GlobalFooter() {
               <li><Link href="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link></li>
               <li><Link href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link></li>
               <li><Link href="/disclaimer" className="hover:text-foreground transition-colors">Disclaimer</Link></li>
-              <li>
-                <a 
-                  href="#" 
-                  onClick={handleEmailClick}
-                  className="hover:text-foreground transition-colors"
-                >
-                  Contact
-                </a>
-              </li>
+              <li><Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link></li>
             </ul>
           </div>
         </div>

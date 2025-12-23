@@ -564,6 +564,32 @@ export const appRouter = router({
           used,
         };
       }),
+    // Update user profile
+    updateProfile: publicProcedure
+      .input(z.object({
+        userId: z.number(),
+        name: z.string().min(1).max(100).optional(),
+        email: z.string().email().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        const updateData: { name?: string; email?: string } = {};
+        if (input.name) updateData.name = input.name;
+        if (input.email) updateData.email = input.email;
+
+        if (Object.keys(updateData).length === 0) {
+          throw new Error("Keine Änderungen angegeben");
+        }
+
+        await db
+          .update(users)
+          .set(updateData)
+          .where(eq(users.id, input.userId));
+
+        return { success: true };
+      }),
   }),
 
   // Credit System Router
@@ -941,6 +967,37 @@ export const appRouter = router({
       }))
       .query(async ({ input }) => {
         return await getAccountHistory(input.platform, input.username, input.days);
+      }),
+  }),
+
+  // Contact Form Router
+  contact: router({
+    submit: publicProcedure
+      .input(z.object({
+        name: z.string().min(1),
+        email: z.string().email(),
+        category: z.string(),
+        subject: z.string().min(1),
+        message: z.string().min(20),
+      }))
+      .mutation(async ({ input }) => {
+        // Import email service
+        const { sendAdminNotification } = await import("./emailService");
+        
+        // Send notification to admin
+        await sendAdminNotification(
+          "contact",
+          `Neue Kontaktanfrage: ${input.subject}`,
+          `<h2>Neue Kontaktanfrage</h2>
+          <p><strong>Von:</strong> ${input.name} (${input.email})</p>
+          <p><strong>Kategorie:</strong> ${input.category}</p>
+          <p><strong>Betreff:</strong> ${input.subject}</p>
+          <hr/>
+          <p><strong>Nachricht:</strong></p>
+          <p>${input.message.replace(/\n/g, "<br/>")}</p>`
+        );
+        
+        return { success: true };
       }),
   }),
 });

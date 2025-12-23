@@ -35,6 +35,7 @@ import {
   Check,
 } from "lucide-react";
 import { AffiliateDashboard } from "@/components/AffiliateDashboard";
+import { GlobalFooter } from "@/components/GlobalFooter";
 import { InvoicesTab } from "@/components/InvoicesTab";
 import { NotesTab } from "@/components/NotesTab";
 import { useState, useMemo } from "react";
@@ -62,6 +63,11 @@ export default function Dashboard() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
+  
+  // Editable profile state
+  const [editName, setEditName] = useState(user?.name || "");
+  const [editEmail, setEditEmail] = useState(user?.email || "");
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
 
   // Fetch dashboard data
   const { data: dashboardData, isLoading, refetch } = trpc.dashboard.getData.useQuery(
@@ -83,6 +89,17 @@ export default function Dashboard() {
   const toggleFavoriteMutation = trpc.dashboard.toggleFavorite.useMutation({
     onSuccess: (data: { isFavorite: boolean }) => {
       toast.success(data.isFavorite ? "Zu Favoriten hinzugefügt" : "Aus Favoriten entfernt");
+      refetch();
+    },
+    onError: (error: { message: string }) => {
+      toast.error(error.message);
+    },
+  });
+
+  const updateProfileMutation = trpc.dashboard.updateProfile.useMutation({
+    onSuccess: () => {
+      toast.success("Profil aktualisiert");
+      setIsEditingProfile(false);
       refetch();
     },
     onError: (error: { message: string }) => {
@@ -639,21 +656,67 @@ export default function Dashboard() {
                     <User className="w-5 h-5 text-primary" />
                     Account-Informationen
                   </CardTitle>
+                  <CardDescription>
+                    Bearbeite deine Profildaten
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-sm text-muted-foreground">Name</label>
-                      <Input value={user?.name || ""} disabled className="bg-muted/30" />
+                      <Input 
+                        value={isEditingProfile ? editName : (user?.name || "")} 
+                        onChange={(e) => setEditName(e.target.value)}
+                        disabled={!isEditingProfile}
+                        className={isEditingProfile ? "" : "bg-muted/30"}
+                      />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm text-muted-foreground">E-Mail</label>
-                      <Input value={user?.email || ""} disabled className="bg-muted/30" />
+                      <Input 
+                        value={isEditingProfile ? editEmail : (user?.email || "")} 
+                        onChange={(e) => setEditEmail(e.target.value)}
+                        disabled={!isEditingProfile}
+                        className={isEditingProfile ? "" : "bg-muted/30"}
+                      />
                     </div>
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    Account-Informationen werden über deinen Login-Provider verwaltet.
-                  </p>
+                  <div className="flex gap-2">
+                    {!isEditingProfile ? (
+                      <Button 
+                        variant="outline" 
+                        onClick={() => {
+                          setEditName(user?.name || "");
+                          setEditEmail(user?.email || "");
+                          setIsEditingProfile(true);
+                        }}
+                      >
+                        Bearbeiten
+                      </Button>
+                    ) : (
+                      <>
+                        <Button 
+                          className="btn-gradient text-white"
+                          onClick={() => {
+                            updateProfileMutation.mutate({
+                              userId: user?.id ?? 0,
+                              name: editName,
+                              email: editEmail,
+                            });
+                          }}
+                          disabled={updateProfileMutation.isPending}
+                        >
+                          {updateProfileMutation.isPending ? "Speichern..." : "Speichern"}
+                        </Button>
+                        <Button 
+                          variant="outline"
+                          onClick={() => setIsEditingProfile(false)}
+                        >
+                          Abbrechen
+                        </Button>
+                      </>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
 
@@ -713,6 +776,7 @@ export default function Dashboard() {
           </Tabs>
         </div>
       </main>
+      <GlobalFooter />
     </div>
   );
 }

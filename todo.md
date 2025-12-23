@@ -414,3 +414,30 @@
 - [x] Deployment-Anleitung (Manus Publish)
 - [x] Sichere Weiterentwicklung ohne User-Datenverlust
 - [x] Zahlungs-Status und was noch fehlt
+
+## Manus-Branding Maskierung
+- [x] Alle Manus-Referenzen im Quellcode entfernen/maskieren
+- [x] Kopierschutz gegen 1:1 Kopie implementieren
+- [x] OAuth-Texte neutralisieren
+
+## Dashboard Einstellungen
+- [x] Profildaten editierbar machen (Name, E-Mail)
+- [x] Rechnungen im Dashboard bearbeitbar (nicht nur Stripe)
+
+## Global Footer
+- [x] Footer im Dashboard einbinden
+- [x] Footer auf allen Unterseiten prüfen
+
+## Admin Prognosen
+- [x] Umsatz-Prognose Skala (10k, 30k, 50k, 100k/Monat)
+- [x] Benötigte Accounts pro Umsatzziel berechnen
+- [x] Visualisierung im Admin-Dashboard
+
+## RapidAPI Setup
+- [x] Anleitung für RapidAPI-Key Erstellung
+- [x] Konfiguration der API-Credits
+
+## Kontaktformular
+- [x] Kontaktseite mit Formular erstellen
+- [x] Anti-Spam Fragen (Pflichtfelder, Honeypot)
+- [x] E-Mail-Versand bei Kontaktanfrage

@@ -649,6 +649,73 @@ export default function Admin() {
                 </CardContent>
               </Card>
 
+              {/* Umsatz-Prognosen */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5 text-green-500" />
+                    Umsatz-Prognosen
+                  </CardTitle>
+                  <CardDescription>Benötigte zahlende Kunden pro Umsatzziel</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {(() => {
+                    // Durchschnittlicher Umsatz pro zahlendem Kunden (basierend auf Paket-Mix)
+                    const avgRevenuePerCustomer = 35; // Gewichteter Durchschnitt: 60% Starter (€19), 30% Pro (€49), 10% Business (€99)
+                    const currentMonthlyRevenue = stats?.monthlyRevenue || 0;
+                    const currentPayingCustomers = Math.ceil(currentMonthlyRevenue / avgRevenuePerCustomer);
+                    
+                    const targets = [
+                      { goal: 10000, label: "€10k/Monat" },
+                      { goal: 30000, label: "€30k/Monat" },
+                      { goal: 50000, label: "€50k/Monat" },
+                      { goal: 100000, label: "€100k/Monat" },
+                    ];
+                    
+                    return (
+                      <>
+                        <div className="p-3 bg-primary/10 rounded-lg border border-primary/20 mb-4">
+                          <p className="text-sm text-muted-foreground">Aktueller Stand</p>
+                          <p className="text-xl font-bold">{currentPayingCustomers} zahlende Kunden</p>
+                          <p className="text-xs text-muted-foreground">bei Ø €{avgRevenuePerCustomer}/Kunde</p>
+                        </div>
+                        <div className="space-y-3">
+                          {targets.map((target) => {
+                            const neededCustomers = Math.ceil(target.goal / avgRevenuePerCustomer);
+                            const missingCustomers = Math.max(0, neededCustomers - currentPayingCustomers);
+                            const progress = Math.min(100, (currentMonthlyRevenue / target.goal) * 100);
+                            
+                            return (
+                              <div key={target.goal} className="p-3 bg-muted rounded-lg">
+                                <div className="flex justify-between items-center mb-2">
+                                  <span className="font-medium">{target.label}</span>
+                                  <span className="text-sm text-muted-foreground">
+                                    {neededCustomers} Kunden benötigt
+                                  </span>
+                                </div>
+                                <div className="w-full bg-muted-foreground/20 rounded-full h-2 mb-2">
+                                  <div 
+                                    className="bg-gradient-to-r from-primary to-accent h-2 rounded-full transition-all"
+                                    style={{ width: `${progress}%` }}
+                                  />
+                                </div>
+                                <div className="flex justify-between text-xs text-muted-foreground">
+                                  <span>{progress.toFixed(1)}% erreicht</span>
+                                  <span className="text-amber-500">+{missingCustomers} fehlen</span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </>
+                    );
+                  })()}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Zweite Reihe */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <Card>
                 <CardHeader>
                   <CardTitle>Margen-Kalkulation</CardTitle>
