@@ -233,3 +233,9 @@
 - [x] Längere Feature-Tabelle mit ausgeschriebenen Beschreibungen (60 Features)
 - [x] Mehr KI-Features hervorheben (HAPSS, AIDA, Hopkins, Ogilvy, Schwartz)
 - [x] Beschreibende Texte statt x/✓ Icons
+
+## Bugfixes & Verbesserungen
+- [x] Features-Badge "3.000+ PARAMETER" wird abgeschnitten - Layout fixen (Badge nach links verschoben)
+- [x] 14 Tage Geld-zurück-Garantie komplett entfernt
+- [x] Preis-Tabelle auf Landingpage mit KI-Analysen statt Credits aktualisiert
+- [x] Made with Manus bereits entfernt (kein Vorkommen mehr gefunden)

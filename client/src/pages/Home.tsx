@@ -628,7 +628,7 @@ export default function Home() {
                 className="glass-card rounded-2xl p-6 stat-card group relative"
               >
                 {feature.highlight && (
-                  <Badge className="absolute -top-2 -right-2 bg-accent text-accent-foreground text-xs">
+                  <Badge className="absolute -top-3 left-4 bg-accent text-accent-foreground text-xs px-2 py-0.5 whitespace-nowrap">
                     {feature.highlight}
                   </Badge>
                 )}
@@ -840,14 +840,14 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <Badge className="badge-neon mb-4">PREISE</Badge>
+            <Badge className="badge-neon mb-4">EINFACHES PRICING</Badge>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
               Wähle deinen Plan
               <br />
-              <span className="text-gradient">10 Credits kostenlos</span>
+              <span className="text-gradient">3 KI-Analysen kostenlos</span>
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Starte mit 10 kostenlosen Credits. 1 Analyse = 1-3 Credits. Upgrade jederzeit für mehr Power.
+              Starte kostenlos mit 3 KI-Analysen. Upgrade jederzeit für mehr Power.
             </p>
           </motion.div>
 
@@ -865,7 +865,7 @@ export default function Home() {
                 <h3 className="text-xl font-bold mb-1">Kostenlos</h3>
                 <p className="text-xs text-muted-foreground mb-4">Zum Ausprobieren</p>
                 <div className="text-3xl font-black mb-1">
-                  10 Credits
+                  3 KI-Analysen
                 </div>
                 <p className="text-xs text-muted-foreground mb-6">einmalig geschenkt</p>
                 <Button 
@@ -879,11 +879,11 @@ export default function Home() {
                 <ul className="space-y-2 text-sm">
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-accent shrink-0" />
-                    <span><strong>10 Credits</strong> einmalig</span>
+                    <span><strong>3 KI-Analysen</strong> einmalig</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-accent shrink-0" />
-                    <span>Viral Score</span>
+                    <span>Viral Score (47 Faktoren)</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-accent shrink-0" />
@@ -895,7 +895,7 @@ export default function Home() {
                   </li>
                   <li className="flex items-center gap-2 text-muted-foreground">
                     <Minus className="w-4 h-4 shrink-0" />
-                    <span>Tiefenanalyse</span>
+                    <span>KI-Tiefenanalyse</span>
                   </li>
                   <li className="flex items-center gap-2 text-muted-foreground">
                     <Minus className="w-4 h-4 shrink-0" />
@@ -918,7 +918,7 @@ export default function Home() {
                 <div className="text-3xl font-black mb-1">
                   €19<span className="text-lg font-normal text-muted-foreground">/mo</span>
                 </div>
-                <p className="text-xs text-muted-foreground mb-6">30 Credits • €0.63/Credit</p>
+                <p className="text-xs text-muted-foreground mb-6">10 KI-Analysen/Monat</p>
                 <Button 
                   onClick={() => setLocation('/pricing')}
                   variant="outline" 
@@ -930,15 +930,15 @@ export default function Home() {
                 <ul className="space-y-2 text-sm">
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-accent shrink-0" />
-                    <span><strong>30 Credits</strong>/Monat</span>
+                    <span><strong>10 KI-Analysen</strong>/Monat</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-accent shrink-0" />
-                    <span>Viral Score</span>
+                    <span>3.000+ KI-Parameter</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-accent shrink-0" />
-                    <span>HAPSS + Copywriting</span>
+                    <span>HAPSS + AIDA Framework</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-accent shrink-0" />
@@ -974,7 +974,7 @@ export default function Home() {
                     <div className="text-3xl font-black mb-1">
                       €49<span className="text-lg font-normal text-muted-foreground">/mo</span>
                     </div>
-                    <p className="text-xs text-muted-foreground mb-6">100 Credits • €0.49/Credit</p>
+                    <p className="text-xs text-muted-foreground mb-6">35 KI-Analysen/Monat</p>
                     <Button 
                       onClick={() => setLocation('/pricing')}
                       className="btn-gradient w-full text-white border-0 mb-6"
@@ -986,19 +986,19 @@ export default function Home() {
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-center gap-2">
                         <Check className="w-4 h-4 text-accent shrink-0" />
-                        <span><strong>100 Credits</strong>/Monat</span>
+                        <span><strong>35 KI-Analysen</strong>/Monat</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <Check className="w-4 h-4 text-accent shrink-0" />
-                        <span>3.000+ KI-Parameter</span>
+                        <span>Hopkins, Ogilvy, Schwartz</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <Check className="w-4 h-4 text-accent shrink-0" />
-                        <span>Tiefenanalyse</span>
+                        <span>KI-Tiefenanalyse</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <Check className="w-4 h-4 text-accent shrink-0" />
-                        <span>1 Jahr Wachstum</span>
+                        <span>1 Jahr Follower-Historie</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <Check className="w-4 h-4 text-accent shrink-0" />
@@ -1027,7 +1027,7 @@ export default function Home() {
                 <div className="text-3xl font-black mb-1">
                   €99<span className="text-lg font-normal text-muted-foreground">/mo</span>
                 </div>
-                <p className="text-xs text-muted-foreground mb-6">300 Credits • €0.33/Credit</p>
+                <p className="text-xs text-muted-foreground mb-6">100 KI-Analysen/Monat</p>
                 <Button 
                   onClick={() => setLocation('/pricing')}
                   variant="outline" 
@@ -1035,12 +1035,12 @@ export default function Home() {
                   size="sm"
                 >
                   <Rocket className="w-4 h-4 mr-1" />
-                  Kontaktieren
+                  Upgrade
                 </Button>
                 <ul className="space-y-2 text-sm">
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-yellow-500 shrink-0" />
-                    <span><strong>300 Credits</strong>/Monat</span>
+                    <span><strong>100 KI-Analysen</strong>/Monat</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-yellow-500 shrink-0" />
@@ -1048,7 +1048,7 @@ export default function Home() {
                   </li>
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-yellow-500 shrink-0" />
-                    <span>API-Zugang</span>
+                    <span>TikTok + YouTube Module</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-yellow-500 shrink-0" />
@@ -1066,18 +1066,6 @@ export default function Home() {
               </motion.div>
             </div>
 
-            {/* Money Back Guarantee */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mt-12"
-            >
-              <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-accent/10 border border-accent/20">
-                <Shield className="w-5 h-5 text-accent" />
-                <span className="text-sm">14 Tage Geld-zurück-Garantie - Kein Risiko</span>
-              </div>
-            </motion.div>
           </div>
         </div>
       </section>
