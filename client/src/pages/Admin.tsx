@@ -62,6 +62,7 @@ export default function Admin() {
   const [banReason, setBanReason] = useState("");
   const [roleDialogOpen, setRoleDialogOpen] = useState(false);
   const [newRole, setNewRole] = useState<"user" | "admin" | "support">("user");
+  const [trackingResult, setTrackingResult] = useState<{ totalAccounts: number; successful: number; failed: number } | null>(null);
 
   // Check if user is admin
   const { data: isAdmin, isLoading: checkingAdmin } = trpc.admin.isAdmin.useQuery(
@@ -99,6 +100,18 @@ export default function Admin() {
     { enabled: isAdmin === true }
   );
 
+  // Get tracking stats
+  const { data: trackingStats, refetch: refetchTrackingStats } = trpc.admin.getTrackingStats.useQuery(
+    undefined,
+    { enabled: isAdmin === true }
+  );
+
+  // Get tracking accounts
+  const { data: trackingAccounts } = trpc.admin.getTrackingAccounts.useQuery(
+    undefined,
+    { enabled: isAdmin === true }
+  );
+
   // Mutations
   const banUserMutation = trpc.admin.banUser.useMutation({
     onSuccess: () => {
@@ -130,6 +143,17 @@ export default function Admin() {
     },
     onError: (error) => {
       toast.error("Fehler beim Aktualisieren: " + error.message);
+    },
+  });
+
+  const runTrackingMutation = trpc.admin.runTracking.useMutation({
+    onSuccess: (data) => {
+      toast.success(`Tracking abgeschlossen: ${data.successful}/${data.totalAccounts} erfolgreich`);
+      setTrackingResult(data);
+      refetchTrackingStats();
+    },
+    onError: (error) => {
+      toast.error("Fehler beim Tracking: " + error.message);
     },
   });
 
@@ -354,6 +378,10 @@ export default function Admin() {
             <TabsTrigger value="revenue" className="gap-2">
               <CreditCard className="h-4 w-4" />
               Umsatz
+            </TabsTrigger>
+            <TabsTrigger value="tracking" className="gap-2">
+              <Activity className="h-4 w-4" />
+              Tracking
             </TabsTrigger>
           </TabsList>
 
@@ -622,6 +650,94 @@ export default function Admin() {
                       );
                     })}
                   </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Tracking Tab */}
+          <TabsContent value="tracking">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Activity className="h-5 w-5" />
+                    Follower-Tracking Status
+                  </CardTitle>
+                  <CardDescription>
+                    Automatisches tägliches Tracking aller gespeicherten Accounts
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex justify-between items-center p-4 bg-muted rounded-lg">
+                    <span>Gesamt Snapshots</span>
+                    <span className="text-2xl font-bold">
+                      {trackingStats?.totalSnapshots || 0}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center p-4 bg-muted rounded-lg">
+                    <span>Getrackte Accounts</span>
+                    <span className="text-2xl font-bold">
+                      {trackingStats?.uniqueAccounts || 0}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center p-4 bg-muted rounded-lg">
+                    <span>Snapshots heute</span>
+                    <span className="text-2xl font-bold text-green-500">
+                      {trackingStats?.snapshotsToday || 0}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center p-4 bg-muted rounded-lg">
+                    <span>Letzter Tracking-Lauf</span>
+                    <span className="text-sm">
+                      {trackingStats?.lastTrackingRun 
+                        ? new Date(trackingStats.lastTrackingRun).toLocaleString('de-DE')
+                        : 'Noch nie'
+                      }
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Manuelles Tracking</CardTitle>
+                  <CardDescription>
+                    Starte das Tracking manuell für alle gespeicherten Accounts
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="p-4 bg-muted rounded-lg">
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Das automatische Tracking läuft täglich um 03:00 Uhr nachts.
+                      Du kannst es hier auch manuell starten.
+                    </p>
+                    <div className="flex items-center gap-4">
+                      <Button 
+                        onClick={() => runTrackingMutation.mutate()}
+                        disabled={runTrackingMutation.isPending}
+                        className="gap-2"
+                      >
+                        {runTrackingMutation.isPending ? (
+                          <RefreshCw className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Activity className="h-4 w-4" />
+                        )}
+                        {runTrackingMutation.isPending ? 'Läuft...' : 'Tracking starten'}
+                      </Button>
+                      <span className="text-sm text-muted-foreground">
+                        {trackingAccounts?.length || 0} Accounts werden getrackt
+                      </span>
+                    </div>
+                  </div>
+                  {trackingResult && (
+                    <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+                      <p className="font-medium text-green-500 mb-2">Tracking abgeschlossen</p>
+                      <p className="text-sm">
+                        {trackingResult.successful} von {trackingResult.totalAccounts} Accounts erfolgreich getrackt
+                      </p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>

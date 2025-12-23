@@ -11,6 +11,7 @@ import { generateDeepAnalysis, DeepAnalysis } from "./deepAnalysis";
 import { analyzeTikTokAccount, fetchTikTokProfile, searchTikTokVideos, TikTokAnalysis } from "./tiktok";
 import { analyzeYouTubeChannel, fetchYouTubeChannel, searchYouTubeVideos, YouTubeAnalysis } from "./youtube";
 import { isUserAdmin, getAllUsers, getAdminStats, banUser, unbanUser, setUserRole, updateUserPlan, getUserActivity, getTopUsers, scanForSuspiciousUsers } from "./adminService";
+import { runScheduledTracking, getTrackingStats, getSavedAccountsForTracking } from "./scheduledTracking";
 import { getDb } from "./db";
 import { getUserCredits, useCredits, addCredits, getCreditHistory, getCreditStats, canPerformAction, getActionCost } from "./creditService";
 import { instagramCache, savedAnalyses, usageTracking, users, CREDIT_COSTS, CREDIT_PACKAGES, creditTransactions, PLAN_LIMITS } from "../drizzle/schema";
@@ -791,6 +792,21 @@ export const appRouter = router({
     // Scan for suspicious users
     scanSuspicious: publicProcedure.query(async () => {
       return await scanForSuspiciousUsers();
+    }),
+
+    // Get tracking statistics
+    getTrackingStats: publicProcedure.query(async () => {
+      return await getTrackingStats();
+    }),
+
+    // Get accounts pending tracking
+    getTrackingAccounts: publicProcedure.query(async () => {
+      return await getSavedAccountsForTracking();
+    }),
+
+    // Run scheduled tracking (admin only)
+    runTracking: publicProcedure.mutation(async () => {
+      return await runScheduledTracking();
     }),
   }),
 });

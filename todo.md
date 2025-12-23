@@ -287,13 +287,23 @@
 - [x] Tests für Follower-Tracking schreiben (19 Tests bestanden)
 
 ## Scheduled Follower Tracking (Cron-Job)
-- [ ] Scheduled Tracking Service erstellen
-- [ ] Funktion zum Abrufen aller gespeicherten Accounts
-- [ ] Batch-Processing für API-Rate-Limits
-- [ ] Cron-Job für tägliches Tracking (z.B. 3:00 Uhr nachts)
-- [ ] Logging und Fehlerbehandlung
-- [ ] Tests für Scheduled Tracking
+- [x] Scheduled Tracking Service erstellen
+- [x] Funktion zum Abrufen aller gespeicherten Accounts
+- [x] Batch-Processing für API-Rate-Limits (2s Delay zwischen Requests)
+- [x] Admin-Dashboard: Tracking-Tab mit manuellem Start
+- [x] Logging und Fehlerbehandlung
+- [x] Tests für Scheduled Tracking (5 Tests bestanden)
 
 ## UI-Verbesserungen
 - [x] Klaren Login-Button für User hinzufügen (Desktop + Mobile)
 - [x] HAPSS-Formel korrigieren: Story und Solution vertauschen (korrekte Reihenfolge: Hook, Attention, Problem, Story, Solution)
+
+## Bug-Fix
+- [x] OAuth Callback Fehler beheben: Fehlende modulesEnabled Spalte in DB hinzugefügt
+
+## Admin-Dashboard Verbesserungen
+- [ ] Vollständige Kundenübersicht mit allen Accounts
+- [ ] Einsicht in alle Analysen der Kunden
+- [ ] Feature-Nutzung pro Kunde anzeigen
+- [ ] Credit-Verbrauch und Transaktionen einsehen
+- [ ] Admin-Zugang für Owner sicherstellen
