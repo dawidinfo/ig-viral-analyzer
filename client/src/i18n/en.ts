@@ -31,6 +31,35 @@ export const en: Translations = {
     },
   },
 
+  // Problem/Solution Section
+  problemSolution: {
+    badge: "THE PROBLEM",
+    title: "Why do some Reels go viral",
+    titleHighlight: "and others don't?",
+    without: "Without ReelSpy",
+    with: "With ReelSpy",
+    problems: [
+      "You post blindly and hope for reach",
+      "Your hooks don't work - but you don't know why",
+      "You miss the best posting times",
+      "Your engagement has been stagnating for months",
+      "You copy trends instead of understanding them"
+    ],
+    solutions: [
+      "Data-driven content strategy with clear insights",
+      "AI analyzes every hook and provides concrete improvements",
+      "Heatmap shows you the perfect posting times",
+      "Viral Score predicts your success",
+      "Understand the patterns behind viral content"
+    ],
+  },
+
+  // Niches Section
+  niches: {
+    badge: "WORKS FOR ALL NICHES",
+    items: ["🌍 Travel", "💪 Fitness", "🍔 Food", "👗 Fashion", "💄 Beauty", "🐶 Pets", "🎨 Art", "📷 Photography", "🎵 Music", "⚽ Sports", "🎮 Gaming", "💼 Business", "🏠 Home Decor", "🌱 Wellness"],
+  },
+
   // Stats
   stats: {
     accounts: "Accounts analyzed",
@@ -71,8 +100,10 @@ export const en: Translations = {
 
   // How It Works
   howItWorks: {
-    title: "How it works",
-    subtitle: "Get your personal analysis in just 3 steps",
+    badge: "HOW IT WORKS",
+    title: "Get your perfect analysis",
+    titleHighlight: "in 3 steps",
+    tryFree: "Try for free now",
     step1: {
       title: "Enter username",
       description: "Simply enter the Instagram username you want to analyze.",

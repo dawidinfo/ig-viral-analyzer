@@ -29,6 +29,35 @@ export const de = {
     },
   },
 
+  // Problem/Solution Section
+  problemSolution: {
+    badge: "DAS PROBLEM",
+    title: "Warum gehen manche Reels viral",
+    titleHighlight: "und andere nicht?",
+    without: "Ohne ReelSpy",
+    with: "Mit ReelSpy",
+    problems: [
+      "Du postest blind und hoffst auf Reichweite",
+      "Deine Hooks funktionieren nicht - aber du weißt nicht warum",
+      "Du verpasst die besten Posting-Zeiten",
+      "Dein Engagement stagniert seit Monaten",
+      "Du kopierst Trends, statt sie zu verstehen"
+    ],
+    solutions: [
+      "Datenbasierte Content-Strategie mit klaren Insights",
+      "KI analysiert jeden Hook und gibt konkrete Verbesserungen",
+      "Heatmap zeigt dir die perfekten Posting-Zeiten",
+      "Viral Score prognostiziert deinen Erfolg",
+      "Verstehe die Muster hinter viralem Content"
+    ],
+  },
+
+  // Niches Section
+  niches: {
+    badge: "FUNKTIONIERT FÜR ALLE NISCHEN",
+    items: ["🌍 Travel", "💪 Fitness", "🍔 Food", "👗 Fashion", "💄 Beauty", "🐶 Pets", "🎨 Art", "📷 Photography", "🎵 Music", "⚽ Sports", "🎮 Gaming", "💼 Business", "🏠 Home Decor", "🌱 Wellness"],
+  },
+
   // Stats
   stats: {
     accounts: "Accounts analysiert",
@@ -69,8 +98,10 @@ export const de = {
 
   // How It Works
   howItWorks: {
-    title: "So funktioniert's",
-    subtitle: "In nur 3 Schritten zu deiner persönlichen Analyse",
+    badge: "SO FUNKTIONIERT'S",
+    title: "In 3 Schritten zur",
+    titleHighlight: "perfekten Analyse",
+    tryFree: "Jetzt kostenlos testen",
     step1: {
       title: "Username eingeben",
       description: "Gib einfach den Instagram-Username ein, den du analysieren möchtest.",

@@ -31,6 +31,35 @@ export const es: Translations = {
     },
   },
 
+  // Problem/Solution Section
+  problemSolution: {
+    badge: "EL PROBLEMA",
+    title: "Por qué algunos Reels se vuelven virales",
+    titleHighlight: "¿y otros no?",
+    without: "Sin ReelSpy",
+    with: "Con ReelSpy",
+    problems: [
+      "Publicas a ciegas esperando alcance",
+      "Tus ganchos no funcionan - pero no sabes por qué",
+      "Te pierdes los mejores momentos para publicar",
+      "Tu engagement lleva meses estancado",
+      "Copias tendencias en lugar de entenderlas"
+    ],
+    solutions: [
+      "Estrategia de contenido basada en datos con insights claros",
+      "La IA analiza cada gancho y proporciona mejoras concretas",
+      "El mapa de calor te muestra los momentos perfectos para publicar",
+      "El Viral Score predice tu éxito",
+      "Comprende los patrones detrás del contenido viral"
+    ],
+  },
+
+  // Niches Section
+  niches: {
+    badge: "FUNCIONA PARA TODOS LOS NICHOS",
+    items: ["🌍 Viajes", "💪 Fitness", "🍔 Comida", "👗 Moda", "💄 Belleza", "🐶 Mascotas", "🎨 Arte", "📷 Fotografía", "🎵 Música", "⚽ Deportes", "🎮 Gaming", "💼 Negocios", "🏠 Decoración", "🌱 Bienestar"],
+  },
+
   // Stats
   stats: {
     accounts: "Cuentas analizadas",
@@ -71,8 +100,10 @@ export const es: Translations = {
 
   // How It Works
   howItWorks: {
-    title: "Cómo funciona",
-    subtitle: "Obtén tu análisis personal en solo 3 pasos",
+    badge: "CÓMO FUNCIONA",
+    title: "Obtén tu análisis perfecto",
+    titleHighlight: "en 3 pasos",
+    tryFree: "Prueba gratis ahora",
     step1: {
       title: "Ingresa el usuario",
       description: "Simplemente ingresa el nombre de usuario de Instagram que quieres analizar.",

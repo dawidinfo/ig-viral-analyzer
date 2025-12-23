@@ -326,3 +326,10 @@
 - [x] Home.tsx Navigation, Hero, Features, Pricing, FAQ, CTA, Footer übersetzen
 - [x] Sprache in localStorage speichern
 - [x] Tests für i18n-System (17 Tests bestanden)
+
+## Bug-Fix: Fehlende Übersetzungen auf Startseite
+- [x] Problem/Solution Section übersetzen
+- [x] Niches Section übersetzen
+- [x] How It Works Schritte übersetzen
+- [x] Try Free Button übersetzen
+- [x] 17 i18n Tests bestanden

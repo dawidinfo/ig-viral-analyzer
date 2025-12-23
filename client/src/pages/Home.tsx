@@ -547,10 +547,10 @@ export default function Home() {
       <section id="niches" className="py-16">
         <div className="container">
           <p className="text-center text-sm text-muted-foreground mb-6">
-            FUNKTIONIERT FÜR ALLE NISCHEN
+            {t.niches.badge}
           </p>
           <div className="flex flex-wrap justify-center gap-3">
-            {niches.map((niche, index) => (
+            {t.niches.items.map((niche, index) => (
               <motion.span
                 key={index}
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -575,11 +575,11 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <Badge className="badge-neon mb-4">DAS PROBLEM</Badge>
+            <Badge className="badge-neon mb-4">{t.problemSolution.badge}</Badge>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Warum gehen manche Reels viral
+              {t.problemSolution.title}
               <br />
-              <span className="text-gradient">und andere nicht?</span>
+              <span className="text-gradient">{t.problemSolution.titleHighlight}</span>
             </h2>
           </motion.div>
 
@@ -595,15 +595,9 @@ export default function Home() {
                 <div className="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center">
                   <TrendingDown className="w-6 h-6 text-red-500" />
                 </div>
-                <h3 className="text-2xl font-bold">Ohne ReelSpy</h3>
+                <h3 className="text-2xl font-bold">{t.problemSolution.without}</h3>
               </div>
-              {[
-                "Du postest blind und hoffst auf Reichweite",
-                "Deine Hooks funktionieren nicht - aber du weißt nicht warum",
-                "Du verpasst die besten Posting-Zeiten",
-                "Dein Engagement stagniert seit Monaten",
-                "Du kopierst Trends, statt sie zu verstehen"
-              ].map((item, i) => (
+              {t.problemSolution.problems.map((item, i) => (
                 <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-red-500/5 border border-red-500/20">
                   <X className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
                   <span className="text-muted-foreground">{item}</span>
@@ -622,15 +616,9 @@ export default function Home() {
                 <div className="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center">
                   <TrendingUp className="w-6 h-6 text-accent" />
                 </div>
-                <h3 className="text-2xl font-bold">Mit ReelSpy</h3>
+                <h3 className="text-2xl font-bold">{t.problemSolution.with}</h3>
               </div>
-              {[
-                "Datenbasierte Content-Strategie mit klaren Insights",
-                "KI analysiert jeden Hook und gibt konkrete Verbesserungen",
-                "Heatmap zeigt dir die perfekten Posting-Zeiten",
-                "Viral Score prognostiziert deinen Erfolg",
-                "Verstehe die Muster hinter viralem Content"
-              ].map((item, i) => (
+              {t.problemSolution.solutions.map((item, i) => (
                 <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-accent/5 border border-accent/20">
                   <CheckCircle2 className="w-5 h-5 text-accent shrink-0 mt-0.5" />
                   <span>{item}</span>
@@ -696,11 +684,11 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <Badge className="badge-neon mb-4">SO FUNKTIONIERT'S</Badge>
+            <Badge className="badge-neon mb-4">{t.howItWorks.badge}</Badge>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              In 3 Schritten zur
+              {t.howItWorks.title}
               <br />
-              <span className="text-gradient">perfekten Analyse</span>
+              <span className="text-gradient">{t.howItWorks.titleHighlight}</span>
             </h2>
           </motion.div>
 
@@ -708,20 +696,20 @@ export default function Home() {
             {[
               {
                 step: "01",
-                title: "Username eingeben",
-                description: "Gib einfach den Instagram-Username ein, den du analysieren möchtest.",
+                title: t.howItWorks.step1.title,
+                description: t.howItWorks.step1.description,
                 icon: <Search className="w-6 h-6" />
               },
               {
                 step: "02",
-                title: "KI analysiert",
-                description: "Unsere KI wertet alle verfügbaren Daten aus und berechnet den Viral Score.",
+                title: t.howItWorks.step2.title,
+                description: t.howItWorks.step2.description,
                 icon: <Sparkles className="w-6 h-6" />
               },
               {
                 step: "03",
-                title: "Insights erhalten",
-                description: "Erhalte detaillierte Empfehlungen zur Optimierung deines Contents.",
+                title: t.howItWorks.step3.title,
+                description: t.howItWorks.step3.description,
                 icon: <TrendingUp className="w-6 h-6" />
               }
             ].map((item, index) => (
@@ -758,7 +746,7 @@ export default function Home() {
               className="btn-gradient h-14 px-10 text-white border-0 text-lg"
             >
               <Sparkles className="w-5 h-5 mr-2" />
-              Jetzt kostenlos testen
+              {t.howItWorks.tryFree}
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </motion.div>
