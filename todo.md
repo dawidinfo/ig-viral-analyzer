@@ -444,3 +444,6 @@
 
 ## Disclaimer-Seite
 - [x] Disclaimer-Seite erstellen (404 beheben)
+
+## Typography Update
+- [x] Apple-Style Typografie implementieren (SF Pro ähnlich, eleganter)

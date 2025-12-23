@@ -420,13 +420,13 @@ export default function Home() {
             </motion.div>
 
             {/* Headline */}
-            <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6">
+            <h1 className="text-5xl md:text-7xl font-semibold tracking-[-0.035em] mb-6">
               {t.hero.title}
               <br />
               <span className="text-gradient">{t.hero.titleHighlight}</span>
             </h1>
 
-            <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
+            <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-2xl mx-auto font-light tracking-[-0.01em] leading-relaxed">
               {t.hero.subtitle}
             </p>
 
@@ -577,7 +577,7 @@ export default function Home() {
             className="text-center mb-16"
           >
             <Badge className="badge-neon mb-4">{t.problemSolution.badge}</Badge>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-[-0.03em] mb-4">
               {t.problemSolution.title}
               <br />
               <span className="text-gradient">{t.problemSolution.titleHighlight}</span>
@@ -640,7 +640,7 @@ export default function Home() {
             className="text-center mb-16"
           >
             <Badge className="badge-neon mb-4">{t.nav.features.toUpperCase()}</Badge>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-[-0.03em] mb-4">
               {t.features.title.split(' ').slice(0, -2).join(' ')}
               <br />
               <span className="text-gradient">{t.features.title.split(' ').slice(-2).join(' ')}</span>
@@ -688,7 +688,7 @@ export default function Home() {
             className="text-center mb-16"
           >
             <Badge className="badge-neon mb-4">{t.howItWorks.badge}</Badge>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-[-0.03em] mb-4">
               {t.howItWorks.title}
               <br />
               <span className="text-gradient">{t.howItWorks.titleHighlight}</span>
@@ -766,7 +766,7 @@ export default function Home() {
             className="text-center mb-16"
           >
             <Badge className="badge-neon mb-4">{t.useCases.badge}</Badge>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-[-0.03em] mb-4">
               {t.useCases.title}
               <br />
               <span className="text-gradient">{t.useCases.titleHighlight}</span>
@@ -814,7 +814,7 @@ export default function Home() {
             className="text-center mb-16"
           >
             <Badge className="badge-neon mb-4">{t.testimonials.badge}</Badge>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-[-0.03em] mb-4">
               {t.testimonials.title}
               <br />
               <span className="text-gradient">{t.testimonials.titleHighlight}</span>
@@ -878,7 +878,7 @@ export default function Home() {
             className="text-center mb-16"
           >
             <Badge className="badge-neon mb-4">{t.nav.pricing.toUpperCase()}</Badge>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-[-0.03em] mb-4">
               {t.pricing.title}
               <br />
               <span className="text-gradient">{t.pricing.free.features[0]}</span>
@@ -1045,7 +1045,7 @@ export default function Home() {
             className="text-center mb-16"
           >
             <Badge className="badge-neon mb-4">{t.nav.faq}</Badge>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-[-0.03em] mb-4">
               {t.faq.title.split(' ').slice(0, 2).join(' ')}
               <br />
               <span className="text-gradient">{t.faq.title.split(' ').slice(2).join(' ')}</span>
@@ -1108,7 +1108,7 @@ export default function Home() {
               
               <div className="relative z-10">
                 <Badge className="badge-neon mb-6">{t.cta.button.toUpperCase()}</Badge>
-                <h2 className="text-4xl md:text-5xl font-bold mb-4">
+                <h2 className="text-4xl md:text-5xl font-semibold tracking-[-0.03em] mb-4">
                   {t.cta.title.split('?')[0]}
                   <span className="text-gradient">?</span>
                 </h2>

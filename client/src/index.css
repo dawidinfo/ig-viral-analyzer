@@ -87,9 +87,60 @@
   --sidebar-ring: oklch(0.65 0.25 285);
 }
 
-/* Font Family */
+/* Apple-Style Typography */
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Segoe UI', sans-serif;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.011em;
+}
+
+/* Elegant Headings - Apple Style */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+h1 {
+  font-weight: 700;
+  letter-spacing: -0.035em;
+}
+
+h2 {
+  letter-spacing: -0.03em;
+}
+
+/* Refined paragraph spacing */
+p {
+  letter-spacing: -0.011em;
+  line-height: 1.6;
+}
+
+/* Subtle text for descriptions */
+.text-muted-foreground {
+  letter-spacing: -0.006em;
+}
+
+/* Numbers - Tabular for alignment */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Large display text */
+.text-display {
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+}
+
+/* Small caps for labels */
+.small-caps {
+  font-variant-caps: small-caps;
+  letter-spacing: 0.05em;
 }
 
 @layer base {
