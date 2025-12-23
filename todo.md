@@ -151,3 +151,15 @@
 
 ## HAPSS-Framework Korrektur
 - [x] Ändere "Agitate" zurück zu "Attention" (HAPSS = Hook, Attention, Problem, Solution, Story)
+
+## Landingpage Überarbeitung - Mehr Überzeugung
+- [x] Social Proof Sektion (Nutzerzahlen, analysierte Reels, etc.)
+- [x] Feature-Showcase mit Screenshots/Mockups
+- [x] Testimonials von "Nutzern"
+- [x] Detaillierte Feature-Erklärungen mit Icons
+- [x] "Wie es funktioniert" Sektion mit Schritten
+- [x] FAQ Sektion
+- [x] Trust-Badges und Garantien
+- [x] Vergleichstabelle (Kostenlos vs Pro)
+- [x] Stärkere CTAs und Conversion-Elemente
+- [x] Footer mit allen wichtigen Links

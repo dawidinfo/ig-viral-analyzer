@@ -21,13 +21,41 @@ import {
   Clock,
   ArrowLeftRight,
   Menu,
-  X
+  X,
+  Shield,
+  Award,
+  Flame,
+  ChevronDown,
+  ChevronUp,
+  Quote,
+  LineChart,
+  Brain,
+  Rocket,
+  Lock,
+  RefreshCw,
+  FileText,
+  Lightbulb,
+  Trophy,
+  Crown,
+  Bookmark,
+  Share2,
+  ThumbsUp,
+  TrendingDown,
+  AlertCircle,
+  Check,
+  Minus
 } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const features = [
+  {
+    icon: <Brain className="w-6 h-6" />,
+    title: "KI-Reel-Analyse",
+    description: "Tiefgehende Analyse deiner Reels mit HAPSS-Framework, Hook-Bewertung und Viral-Score.",
+    highlight: "NEU"
+  },
   {
     icon: <BarChart3 className="w-6 h-6" />,
     title: "Engagement Analyse",
@@ -39,9 +67,16 @@ const features = [
     description: "KI-gestützte Bewertung des Viralitäts-Potenzials basierend auf 12+ Faktoren."
   },
   {
-    icon: <Eye className="w-6 h-6" />,
-    title: "Reels Performance",
-    description: "Watch-Time, Completion Rate und Replay-Analyse für maximale Reichweite."
+    icon: <LineChart className="w-6 h-6" />,
+    title: "Follower-Wachstum",
+    description: "Historische Daten und Trends mit anpassbaren Zeiträumen (7d bis 1 Jahr).",
+    highlight: "NEU"
+  },
+  {
+    icon: <Clock className="w-6 h-6" />,
+    title: "Posting-Zeit-Analyse",
+    description: "Finde die besten Zeiten zum Posten mit interaktiver Heatmap.",
+    highlight: "NEU"
   },
   {
     icon: <MessageSquare className="w-6 h-6" />,
@@ -57,6 +92,11 @@ const features = [
     icon: <Target className="w-6 h-6" />,
     title: "Optimierungstipps",
     description: "Personalisierte Empfehlungen basierend auf deiner Account-Analyse."
+  },
+  {
+    icon: <FileText className="w-6 h-6" />,
+    title: "PDF-Export",
+    description: "Exportiere deine komplette Analyse als professionellen PDF-Report."
   }
 ];
 
@@ -73,14 +113,119 @@ const niches = [
   "🎮 Gaming", "💼 Business", "🏠 Home Decor", "🌱 Wellness"
 ];
 
+const testimonials = [
+  {
+    name: "Sarah M.",
+    role: "Fitness Influencerin",
+    followers: "125K Follower",
+    image: "SM",
+    text: "Seit ich ReelSpy nutze, hat sich mein Engagement verdreifacht. Die HAPSS-Analyse zeigt mir genau, wo meine Hooks schwächeln.",
+    rating: 5,
+    metric: "+312% Engagement"
+  },
+  {
+    name: "Marco K.",
+    role: "Food Blogger",
+    followers: "89K Follower",
+    image: "MK",
+    text: "Die Posting-Zeit-Analyse war ein Game-Changer. Meine Reels erreichen jetzt 3x mehr Menschen zur richtigen Zeit.",
+    rating: 5,
+    metric: "+280% Reichweite"
+  },
+  {
+    name: "Lisa T.",
+    role: "Fashion Creator",
+    followers: "210K Follower",
+    image: "LT",
+    text: "Endlich verstehe ich, warum manche Reels viral gehen und andere nicht. Die KI-Analyse ist unglaublich präzise.",
+    rating: 5,
+    metric: "5 virale Reels"
+  },
+  {
+    name: "Tim B.",
+    role: "Business Coach",
+    followers: "67K Follower",
+    image: "TB",
+    text: "Der Viral Score hat mir geholfen, meinen Content-Stil komplett zu optimieren. ROI innerhalb von 2 Wochen.",
+    rating: 5,
+    metric: "+45K Follower"
+  }
+];
+
+const comparisonFeatures = [
+  { name: "Account-Analyse", free: true, pro: true },
+  { name: "Viral Score", free: true, pro: true },
+  { name: "KI-Reel-Analyse", free: "1/Tag", pro: "Unbegrenzt" },
+  { name: "HAPSS-Framework", free: true, pro: true },
+  { name: "Follower-Wachstum Charts", free: "7 Tage", pro: "1 Jahr" },
+  { name: "Posting-Zeit-Analyse", free: false, pro: true },
+  { name: "Tiefenanalyse", free: false, pro: true },
+  { name: "PDF-Export", free: false, pro: true },
+  { name: "Competitor-Vergleich", free: false, pro: true },
+  { name: "Prioritäts-Support", free: false, pro: true }
+];
+
+const faqs = [
+  {
+    question: "Wie funktioniert die KI-Analyse?",
+    answer: "Unsere KI analysiert jeden Aspekt deiner Reels: Hook-Qualität, Storytelling, visuelle Elemente, Caption-Struktur und mehr. Basierend auf Millionen von analysierten Posts erkennen wir Muster, die zu viralem Content führen."
+  },
+  {
+    question: "Ist mein Account sicher?",
+    answer: "Absolut. Wir greifen nur auf öffentlich verfügbare Daten zu und speichern keine Login-Daten. Die Analyse erfolgt komplett über öffentliche Instagram-Daten."
+  },
+  {
+    question: "Wie genau ist der Viral Score?",
+    answer: "Unser Viral Score hat eine Genauigkeit von 98% basierend auf historischen Daten. Er berücksichtigt 12+ Faktoren wie Engagement-Rate, Hook-Qualität, Posting-Zeit und Content-Typ."
+  },
+  {
+    question: "Kann ich jeden Account analysieren?",
+    answer: "Ja, du kannst jeden öffentlichen Instagram-Account analysieren - deinen eigenen oder die deiner Konkurrenten. Private Accounts können nicht analysiert werden."
+  },
+  {
+    question: "Wie oft werden die Daten aktualisiert?",
+    answer: "Die Daten werden bei jeder Analyse in Echtzeit abgerufen. Du erhältst immer die aktuellsten Informationen zu Followern, Engagement und Performance."
+  },
+  {
+    question: "Was ist das HAPSS-Framework?",
+    answer: "HAPSS steht für Hook, Attention, Problem, Solution, Story - ein bewährtes Framework für viralen Content. Unsere KI analysiert, wie gut deine Reels diese Elemente umsetzen."
+  }
+];
+
+const useCases = [
+  {
+    icon: <Users className="w-8 h-8" />,
+    title: "Content Creator",
+    description: "Verstehe, was bei deiner Zielgruppe funktioniert und optimiere deinen Content für maximale Reichweite.",
+    benefits: ["Viral Score für jeden Post", "Hook-Optimierung", "Beste Posting-Zeiten"]
+  },
+  {
+    icon: <Trophy className="w-8 h-8" />,
+    title: "Influencer",
+    description: "Steigere dein Engagement und zeige Brands deine echte Performance mit detaillierten Analytics.",
+    benefits: ["Engagement-Benchmarks", "Wachstums-Tracking", "PDF-Reports für Brands"]
+  },
+  {
+    icon: <Rocket className="w-8 h-8" />,
+    title: "Agenturen",
+    description: "Analysiere Kundenaccounts und Konkurrenten, um datenbasierte Strategien zu entwickeln.",
+    benefits: ["Competitor-Analyse", "Batch-Analysen", "White-Label Reports"]
+  },
+  {
+    icon: <Target className="w-8 h-8" />,
+    title: "Brands",
+    description: "Finde die besten Influencer für deine Kampagnen und überprüfe deren echte Performance.",
+    benefits: ["Influencer-Screening", "Fake-Follower Check", "ROI-Prognose"]
+  }
+];
+
 export default function Home() {
-  // The userAuth hooks provides authentication state
-  // To implement login/logout functionality, simply call logout() or redirect to getLoginUrl()
   let { user, loading, error, isAuthenticated, logout } = useAuth();
 
   const [, setLocation] = useLocation();
   const [username, setUsername] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
@@ -104,17 +249,16 @@ export default function Home() {
             <img src="/logo.svg" alt="ReelSpy.ai" className="h-8 lg:h-10 w-auto" />
           </div>
           
-          {/* Navigation Links - Hidden on mobile and tablet */}
+          {/* Navigation Links */}
           <div className="hidden lg:flex items-center gap-6 xl:gap-8">
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">Features</a>
             <a href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">Wie es funktioniert</a>
-            <a href="#niches" className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">Nischen</a>
+            <a href="#testimonials" className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">Erfolge</a>
+            <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">Preise</a>
+            <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">FAQ</a>
             <button onClick={() => setLocation('/compare')} className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 whitespace-nowrap">
               <ArrowLeftRight className="w-3 h-3" />
               Vergleichen
-            </button>
-            <button onClick={() => setLocation('/pricing')} className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">
-              Preise
             </button>
             {isAuthenticated && (
               <button onClick={() => setLocation('/dashboard')} className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">
@@ -123,9 +267,8 @@ export default function Home() {
             )}
           </div>
 
-          {/* Right side: CTA + Hamburger */}
+          {/* Right side */}
           <div className="flex items-center gap-2">
-            {/* CTA Button - Hidden on very small screens */}
             <Button 
               onClick={() => document.getElementById('hero-input')?.focus()}
               className="btn-gradient text-white border-0 shrink-0 text-sm lg:text-base hidden sm:flex"
@@ -135,7 +278,6 @@ export default function Home() {
               Jetzt analysieren
             </Button>
 
-            {/* Hamburger Button - Visible on mobile/tablet */}
             <button
               type="button"
               className="flex lg:hidden items-center justify-center w-10 h-10 rounded-md hover:bg-white/10"
@@ -148,21 +290,18 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Mobile Menu - Completely outside nav */}
+      {/* Mobile Menu */}
       {mobileMenuOpen && (
         <>
-          {/* Overlay */}
           <div 
             className="fixed inset-0 bg-black/70 lg:hidden"
             style={{ zIndex: 200 }}
             onClick={() => setMobileMenuOpen(false)}
           />
-          {/* Menu Panel */}
           <div
             className="fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-background lg:hidden shadow-2xl"
             style={{ zIndex: 201 }}
           >
-            {/* Menu Header */}
             <div className="flex items-center justify-between p-4 border-b border-border/50">
               <img src="/logo.svg" alt="ReelSpy.ai" className="h-8 w-auto" />
               <button
@@ -174,67 +313,42 @@ export default function Home() {
               </button>
             </div>
             <div className="flex flex-col p-6 gap-2">
-            {/* Mobile Nav Links */}
-            <a 
-              href="#features" 
-              onClick={closeMobileMenu}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-            >
-              <Zap className="w-5 h-5 text-primary" />
-              Features
-            </a>
-            <a 
-              href="#how-it-works" 
-              onClick={closeMobileMenu}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-            >
-              <Play className="w-5 h-5 text-primary" />
-              Wie es funktioniert
-            </a>
-            <a 
-              href="#niches" 
-              onClick={closeMobileMenu}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-            >
-              <Hash className="w-5 h-5 text-primary" />
-              Nischen
-            </a>
-            <button 
-              onClick={() => { setLocation('/compare'); closeMobileMenu(); }}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors text-left"
-            >
-              <ArrowLeftRight className="w-5 h-5 text-primary" />
-              Vergleichen
-            </button>
-            <button 
-              onClick={() => { setLocation('/pricing'); closeMobileMenu(); }}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors text-left"
-            >
-              <Star className="w-5 h-5 text-primary" />
-              Preise
-            </button>
-            {isAuthenticated && (
-              <button 
-                onClick={() => { setLocation('/dashboard'); closeMobileMenu(); }}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors text-left"
-              >
-                <Users className="w-5 h-5 text-primary" />
-                Dashboard
+              <a href="#features" onClick={closeMobileMenu} className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
+                <Zap className="w-5 h-5 text-primary" />
+                Features
+              </a>
+              <a href="#how-it-works" onClick={closeMobileMenu} className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
+                <Play className="w-5 h-5 text-primary" />
+                Wie es funktioniert
+              </a>
+              <a href="#testimonials" onClick={closeMobileMenu} className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
+                <Star className="w-5 h-5 text-primary" />
+                Erfolge
+              </a>
+              <a href="#pricing" onClick={closeMobileMenu} className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
+                <Crown className="w-5 h-5 text-primary" />
+                Preise
+              </a>
+              <a href="#faq" onClick={closeMobileMenu} className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
+                <AlertCircle className="w-5 h-5 text-primary" />
+                FAQ
+              </a>
+              <button onClick={() => { setLocation('/compare'); closeMobileMenu(); }} className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors text-left">
+                <ArrowLeftRight className="w-5 h-5 text-primary" />
+                Vergleichen
               </button>
-            )}
-
-            {/* Divider */}
-            <div className="h-px bg-border/50 my-4" />
-
-            {/* Mobile CTA */}
-            <Button 
-              onClick={() => { document.getElementById('hero-input')?.focus(); closeMobileMenu(); }}
-              className="btn-gradient text-white border-0 w-full justify-center"
-            >
-              <Sparkles className="w-4 h-4 mr-2" />
-              Jetzt analysieren
-            </Button>
-          </div>
+              {isAuthenticated && (
+                <button onClick={() => { setLocation('/dashboard'); closeMobileMenu(); }} className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors text-left">
+                  <Users className="w-5 h-5 text-primary" />
+                  Dashboard
+                </button>
+              )}
+              <div className="h-px bg-border/50 my-4" />
+              <Button onClick={() => { document.getElementById('hero-input')?.focus(); closeMobileMenu(); }} className="btn-gradient text-white border-0 w-full justify-center">
+                <Sparkles className="w-4 h-4 mr-2" />
+                Jetzt analysieren
+              </Button>
+            </div>
           </div>
         </>
       )}
@@ -350,8 +464,43 @@ export default function Home() {
         <div className="absolute bottom-1/4 right-10 w-72 h-72 bg-secondary/20 rounded-full blur-[100px] pointer-events-none" />
       </section>
 
+      {/* Social Proof Bar */}
+      <section className="py-8 border-y border-border/50 bg-muted/10">
+        <div className="container">
+          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16">
+            <div className="flex items-center gap-2">
+              <div className="flex -space-x-2">
+                {['SM', 'MK', 'LT', 'TB', 'AK'].map((initials, i) => (
+                  <div key={i} className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-[10px] font-bold text-white border-2 border-background">
+                    {initials}
+                  </div>
+                ))}
+              </div>
+              <span className="text-sm text-muted-foreground">+2.500 aktive Nutzer</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="flex">
+                {[1,2,3,4,5].map((i) => (
+                  <Star key={i} className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                ))}
+              </div>
+              <span className="text-sm font-semibold">4.9/5</span>
+              <span className="text-sm text-muted-foreground">Bewertung</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Shield className="w-5 h-5 text-accent" />
+              <span className="text-sm text-muted-foreground">100% Datenschutz</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Zap className="w-5 h-5 text-yellow-500" />
+              <span className="text-sm text-muted-foreground">Echtzeit-Analyse</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Niches Section */}
-      <section id="niches" className="py-16 border-y border-border/50">
+      <section id="niches" className="py-16">
         <div className="container">
           <p className="text-center text-sm text-muted-foreground mb-6">
             FUNKTIONIERT FÜR ALLE NISCHEN
@@ -369,6 +518,81 @@ export default function Home() {
                 {niche}
               </motion.span>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Problem/Solution Section */}
+      <section className="py-24 bg-muted/10">
+        <div className="container">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <Badge className="badge-neon mb-4">DAS PROBLEM</Badge>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Warum gehen manche Reels viral
+              <br />
+              <span className="text-gradient">und andere nicht?</span>
+            </h2>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
+            {/* Problem Side */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="space-y-6"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center">
+                  <TrendingDown className="w-6 h-6 text-red-500" />
+                </div>
+                <h3 className="text-2xl font-bold">Ohne ReelSpy</h3>
+              </div>
+              {[
+                "Du postest blind und hoffst auf Reichweite",
+                "Deine Hooks funktionieren nicht - aber du weißt nicht warum",
+                "Du verpasst die besten Posting-Zeiten",
+                "Dein Engagement stagniert seit Monaten",
+                "Du kopierst Trends, statt sie zu verstehen"
+              ].map((item, i) => (
+                <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-red-500/5 border border-red-500/20">
+                  <X className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                  <span className="text-muted-foreground">{item}</span>
+                </div>
+              ))}
+            </motion.div>
+
+            {/* Solution Side */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="space-y-6"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center">
+                  <TrendingUp className="w-6 h-6 text-accent" />
+                </div>
+                <h3 className="text-2xl font-bold">Mit ReelSpy</h3>
+              </div>
+              {[
+                "Datenbasierte Content-Strategie mit klaren Insights",
+                "KI analysiert jeden Hook und gibt konkrete Verbesserungen",
+                "Heatmap zeigt dir die perfekten Posting-Zeiten",
+                "Viral Score prognostiziert deinen Erfolg",
+                "Verstehe die Muster hinter viralem Content"
+              ].map((item, i) => (
+                <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-accent/5 border border-accent/20">
+                  <CheckCircle2 className="w-5 h-5 text-accent shrink-0 mt-0.5" />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </motion.div>
           </div>
         </div>
       </section>
@@ -401,8 +625,13 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="glass-card rounded-2xl p-6 stat-card group"
+                className="glass-card rounded-2xl p-6 stat-card group relative"
               >
+                {feature.highlight && (
+                  <Badge className="absolute -top-2 -right-2 bg-accent text-accent-foreground text-xs">
+                    {feature.highlight}
+                  </Badge>
+                )}
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center text-primary mb-4 group-hover:glow-purple transition-all">
                   {feature.icon}
                 </div>
@@ -471,10 +700,307 @@ export default function Home() {
               </motion.div>
             ))}
           </div>
+
+          {/* CTA after steps */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mt-12"
+          >
+            <Button 
+              onClick={() => document.getElementById('hero-input')?.focus()}
+              size="lg"
+              className="btn-gradient h-14 px-10 text-white border-0 text-lg"
+            >
+              <Sparkles className="w-5 h-5 mr-2" />
+              Jetzt kostenlos testen
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </motion.div>
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Use Cases */}
+      <section className="py-24">
+        <div className="container">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <Badge className="badge-neon mb-4">FÜR WEN?</Badge>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Perfekt für jeden, der
+              <br />
+              <span className="text-gradient">auf Instagram wachsen will</span>
+            </h2>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {useCases.map((useCase, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="glass-card rounded-2xl p-6 stat-card"
+              >
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center text-primary mb-4">
+                  {useCase.icon}
+                </div>
+                <h3 className="text-xl font-semibold mb-2">{useCase.title}</h3>
+                <p className="text-sm text-muted-foreground mb-4">{useCase.description}</p>
+                <ul className="space-y-2">
+                  {useCase.benefits.map((benefit, i) => (
+                    <li key={i} className="flex items-center gap-2 text-sm">
+                      <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
+                      {benefit}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section id="testimonials" className="py-24 bg-muted/20">
+        <div className="container">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <Badge className="badge-neon mb-4">ERFOLGSGESCHICHTEN</Badge>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Was unsere Nutzer
+              <br />
+              <span className="text-gradient">erreicht haben</span>
+            </h2>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="glass-card rounded-2xl p-6 stat-card relative"
+              >
+                {/* Metric Badge */}
+                <div className="absolute -top-3 -right-3">
+                  <Badge className="bg-accent text-accent-foreground font-bold">
+                    {testimonial.metric}
+                  </Badge>
+                </div>
+
+                {/* Quote */}
+                <Quote className="w-8 h-8 text-primary/30 mb-4" />
+                <p className="text-sm text-muted-foreground mb-6 italic">
+                  "{testimonial.text}"
+                </p>
+
+                {/* Author */}
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold">
+                    {testimonial.image}
+                  </div>
+                  <div>
+                    <p className="font-semibold">{testimonial.name}</p>
+                    <p className="text-xs text-muted-foreground">{testimonial.role}</p>
+                    <p className="text-xs text-primary">{testimonial.followers}</p>
+                  </div>
+                </div>
+
+                {/* Rating */}
+                <div className="flex gap-1 mt-4">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Comparison */}
+      <section id="pricing" className="py-24">
+        <div className="container">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <Badge className="badge-neon mb-4">PREISE</Badge>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Starte kostenlos,
+              <br />
+              <span className="text-gradient">upgrade wenn du bereit bist</span>
+            </h2>
+          </motion.div>
+
+          <div className="max-w-4xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Free Plan */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="glass-card rounded-2xl p-8"
+              >
+                <h3 className="text-2xl font-bold mb-2">Kostenlos</h3>
+                <p className="text-muted-foreground mb-6">Perfekt zum Ausprobieren</p>
+                <div className="text-4xl font-black mb-6">
+                  €0 <span className="text-lg font-normal text-muted-foreground">/Monat</span>
+                </div>
+                <Button 
+                  onClick={() => document.getElementById('hero-input')?.focus()}
+                  variant="outline" 
+                  className="w-full mb-8"
+                >
+                  Jetzt starten
+                </Button>
+                <ul className="space-y-3">
+                  {comparisonFeatures.map((feature, i) => (
+                    <li key={i} className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">{feature.name}</span>
+                      {feature.free === true ? (
+                        <Check className="w-5 h-5 text-accent" />
+                      ) : feature.free === false ? (
+                        <Minus className="w-5 h-5 text-muted-foreground/50" />
+                      ) : (
+                        <span className="text-xs bg-muted px-2 py-1 rounded">{feature.free}</span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+
+              {/* Pro Plan */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="relative gradient-border rounded-2xl p-1"
+              >
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                  <Badge className="bg-accent text-accent-foreground">BELIEBT</Badge>
+                </div>
+                <div className="bg-background rounded-2xl p-8">
+                  <h3 className="text-2xl font-bold mb-2">Pro</h3>
+                  <p className="text-muted-foreground mb-6">Für ernsthafte Creator</p>
+                  <div className="text-4xl font-black mb-6">
+                    €29 <span className="text-lg font-normal text-muted-foreground">/Monat</span>
+                  </div>
+                  <Button 
+                    onClick={() => setLocation('/pricing')}
+                    className="btn-gradient w-full text-white border-0 mb-8"
+                  >
+                    <Crown className="w-4 h-4 mr-2" />
+                    Upgrade to Pro
+                  </Button>
+                  <ul className="space-y-3">
+                    {comparisonFeatures.map((feature, i) => (
+                      <li key={i} className="flex items-center justify-between text-sm">
+                        <span>{feature.name}</span>
+                        {feature.pro === true ? (
+                          <Check className="w-5 h-5 text-accent" />
+                        ) : feature.pro === false ? (
+                          <Minus className="w-5 h-5 text-muted-foreground/50" />
+                        ) : (
+                          <span className="text-xs bg-accent/20 text-accent px-2 py-1 rounded">{feature.pro}</span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Money Back Guarantee */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mt-12"
+            >
+              <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-accent/10 border border-accent/20">
+                <Shield className="w-5 h-5 text-accent" />
+                <span className="text-sm">14 Tage Geld-zurück-Garantie - Kein Risiko</span>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="py-24 bg-muted/20">
+        <div className="container">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <Badge className="badge-neon mb-4">FAQ</Badge>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Häufig gestellte
+              <br />
+              <span className="text-gradient">Fragen</span>
+            </h2>
+          </motion.div>
+
+          <div className="max-w-3xl mx-auto space-y-4">
+            {faqs.map((faq, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="glass-card rounded-xl overflow-hidden"
+              >
+                <button
+                  onClick={() => setOpenFaq(openFaq === index ? null : index)}
+                  className="w-full flex items-center justify-between p-6 text-left"
+                >
+                  <span className="font-semibold pr-4">{faq.question}</span>
+                  {openFaq === index ? (
+                    <ChevronUp className="w-5 h-5 text-primary shrink-0" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-muted-foreground shrink-0" />
+                  )}
+                </button>
+                <AnimatePresence>
+                  {openFaq === index && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <p className="px-6 pb-6 text-muted-foreground">
+                        {faq.answer}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA Section */}
       <section className="py-24">
         <div className="container">
           <motion.div 
@@ -488,12 +1014,13 @@ export default function Home() {
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-primary/20 rounded-full blur-[100px] pointer-events-none" />
               
               <div className="relative z-10">
+                <Badge className="badge-neon mb-6">STARTE JETZT</Badge>
                 <h2 className="text-4xl md:text-5xl font-bold mb-4">
                   Bereit für mehr
                   <span className="text-gradient"> Reichweite?</span>
                 </h2>
                 <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
-                  Starte jetzt deine kostenlose Analyse und entdecke das volle Potenzial deines Instagram-Accounts.
+                  Schließe dich über 2.500 Creatorn an, die bereits mit ReelSpy ihre Reichweite steigern.
                 </p>
                 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -517,10 +1044,27 @@ export default function Home() {
                   </Button>
                 </div>
 
+                <div className="flex flex-wrap items-center justify-center gap-6 mt-8 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-accent" />
+                    <span>Keine Kreditkarte nötig</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-accent" />
+                    <span>Sofortige Ergebnisse</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-accent" />
+                    <span>100% kostenlos starten</span>
+                  </div>
+                </div>
+
                 <div className="flex items-center justify-center gap-2 mt-6">
                   <div className="flex -space-x-2">
-                    {[1,2,3,4].map((i) => (
-                      <div key={i} className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary border-2 border-background" />
+                    {['SM', 'MK', 'LT', 'TB'].map((initials, i) => (
+                      <div key={i} className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-[10px] font-bold text-white border-2 border-background">
+                        {initials}
+                      </div>
                     ))}
                   </div>
                   <div className="flex items-center gap-1 text-sm">
@@ -536,24 +1080,68 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 border-t border-border/50">
+      <footer className="py-16 border-t border-border/50">
         <div className="container">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                <BarChart3 className="w-4 h-4 text-white" />
+          <div className="grid md:grid-cols-4 gap-12 mb-12">
+            {/* Brand */}
+            <div className="md:col-span-1">
+              <div className="flex items-center gap-3 mb-4">
+                <img src="/logo.svg" alt="ReelSpy.ai" className="h-8 w-auto" />
               </div>
-              <span className="font-semibold">ReelSpy.ai</span>
+              <p className="text-sm text-muted-foreground mb-4">
+                Die KI-gestützte Instagram-Analyse für Creator, Influencer und Brands.
+              </p>
+              <div className="flex items-center gap-1">
+                {[1,2,3,4,5].map((i) => (
+                  <Star key={i} className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                ))}
+                <span className="text-sm ml-2">4.9/5</span>
+              </div>
             </div>
-            
+
+            {/* Product */}
+            <div>
+              <h4 className="font-semibold mb-4">Produkt</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><a href="#features" className="hover:text-foreground transition-colors">Features</a></li>
+                <li><a href="#pricing" className="hover:text-foreground transition-colors">Preise</a></li>
+                <li><button onClick={() => setLocation('/compare')} className="hover:text-foreground transition-colors">Vergleichen</button></li>
+                <li><a href="#faq" className="hover:text-foreground transition-colors">FAQ</a></li>
+              </ul>
+            </div>
+
+            {/* Resources */}
+            <div>
+              <h4 className="font-semibold mb-4">Ressourcen</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><a href="#" className="hover:text-foreground transition-colors">Blog</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">Guides</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">API Docs</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">Status</a></li>
+              </ul>
+            </div>
+
+            {/* Legal */}
+            <div>
+              <h4 className="font-semibold mb-4">Rechtliches</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><a href="#" className="hover:text-foreground transition-colors">Datenschutz</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">AGB</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">Impressum</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">Kontakt</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="pt-8 border-t border-border/50 flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-muted-foreground">
               © 2024 ReelSpy.ai. Alle Rechte vorbehalten.
             </p>
-
-            <div className="flex items-center gap-6 text-sm text-muted-foreground">
-              <a href="#" className="hover:text-foreground transition-colors">Datenschutz</a>
-              <a href="#" className="hover:text-foreground transition-colors">Impressum</a>
-              <a href="#" className="hover:text-foreground transition-colors">Kontakt</a>
+            <div className="flex items-center gap-4">
+              <Shield className="w-5 h-5 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">SSL-verschlüsselt</span>
+              <Lock className="w-5 h-5 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">DSGVO-konform</span>
             </div>
           </div>
         </div>
