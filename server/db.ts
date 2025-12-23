@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { InsertUser, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
-import { notifyNewSignup } from "./emailService";
+import { notifyNewSignup, sendWelcomeEmail } from "./emailService";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
@@ -77,13 +77,21 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       set: updateSet,
     });
 
-    // Send notification for new signups
+    // Send notification for new signups and welcome email to user
     if (isNewUser) {
       const newUser = await db.select({ id: users.id }).from(users).where(eq(users.openId, user.openId)).limit(1);
       if (newUser.length > 0) {
+        // Notify admin about new signup
         notifyNewSignup(newUser[0].id, user.email || null, user.name || null).catch(err => {
           console.error("[Database] Failed to send signup notification:", err);
         });
+        
+        // Send welcome email to new user
+        if (user.email) {
+          sendWelcomeEmail(user.email, user.name || null).catch(err => {
+            console.error("[Database] Failed to send welcome email:", err);
+          });
+        }
       }
     }
   } catch (error) {

@@ -263,3 +263,9 @@
 - [x] RESEND_API_KEY als Secret konfiguriert
 - [x] Professionelle HTML E-Mail-Templates erstellt
 - [x] E-Mail-Versand erfolgreich getestet
+
+## Willkommens-E-Mail für neue User
+- [x] Willkommens-E-Mail Template erstellen
+- [x] Onboarding-Tipps und erste Schritte einbauen
+- [x] E-Mail bei Registrierung automatisch auslösen
+- [x] An User-E-Mail senden (nicht nur Admin)
