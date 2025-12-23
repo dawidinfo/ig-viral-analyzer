@@ -45,20 +45,19 @@ const pricingTiers: PricingTier[] = [
     name: "Starter",
     price: 9,
     yearlyPrice: 7,
-    description: "Perfekt für Einsteiger und kleine Creator",
+    description: "Für Einsteiger",
     icon: <Zap className="w-6 h-6" />,
     gradient: "from-blue-500 to-cyan-500",
     features: [
-      { text: "10 Account-Analysen / Monat", included: true },
-      { text: "Basis Viral Score", included: true },
-      { text: "Engagement-Rate Berechnung", included: true },
-      { text: "Hashtag-Analyse", included: true },
-      { text: "Caption-Längen Analyse", included: true },
-      { text: "AI Reel-Transkription", included: false },
-      { text: "AIDA & HAPSS Analyse", included: false },
-      { text: "Viral-Muster Erkennung", included: false },
-      { text: "Account-Vergleich", included: false },
+      { text: "15 Analysen / Monat", included: true },
+      { text: "Viral Score", included: true },
+      { text: "HAPSS-Framework", included: true },
+      { text: "Copywriting-Formeln", included: true },
+      { text: "30 Tage Wachstum", included: true },
+      { text: "Posting-Zeit-Analyse", included: true },
+      { text: "Tiefenanalyse", included: false },
       { text: "PDF-Export", included: false },
+      { text: "Competitor-Vergleich", included: false },
       { text: "API-Zugang", included: false },
       { text: "Priority Support", included: false },
     ],
@@ -68,21 +67,20 @@ const pricingTiers: PricingTier[] = [
     name: "Pro",
     price: 29,
     yearlyPrice: 24,
-    description: "Für professionelle Creator und Agenturen",
+    description: "Für Creator - Beliebteste Wahl",
     icon: <Sparkles className="w-6 h-6" />,
     popular: true,
     gradient: "from-violet-500 to-purple-500",
     features: [
-      { text: "50 Account-Analysen / Monat", included: true },
-      { text: "Erweiterter Viral Score", included: true },
-      { text: "Engagement-Rate Berechnung", included: true },
-      { text: "Hashtag-Analyse", included: true },
-      { text: "Caption-Längen Analyse", included: true },
-      { text: "AI Reel-Transkription", included: true, highlight: true },
-      { text: "AIDA & HAPSS Analyse", included: true, highlight: true },
-      { text: "Viral-Muster Erkennung", included: true, highlight: true },
-      { text: "Account-Vergleich", included: true },
+      { text: "50 Analysen / Monat", included: true, highlight: true },
+      { text: "3.000+ KI-Parameter", included: true, highlight: true },
+      { text: "HAPSS + Copywriting", included: true },
+      { text: "Tiefenanalyse", included: true, highlight: true },
+      { text: "1 Jahr Wachstum", included: true },
+      { text: "Posting-Zeit-Analyse", included: true },
       { text: "PDF-Export", included: true },
+      { text: "Competitor-Vergleich", included: true },
+      { text: "Hopkins, Ogilvy, Schwartz", included: true },
       { text: "API-Zugang", included: false },
       { text: "Priority Support", included: false },
     ],
@@ -92,22 +90,19 @@ const pricingTiers: PricingTier[] = [
     name: "Business",
     price: 49,
     yearlyPrice: 39,
-    description: "Für Teams und Enterprise-Kunden",
+    description: "Für Agenturen & Teams",
     icon: <Crown className="w-6 h-6" />,
     gradient: "from-amber-500 to-orange-500",
     features: [
       { text: "Unbegrenzte Analysen", included: true, highlight: true },
-      { text: "Premium Viral Score", included: true },
-      { text: "Engagement-Rate Berechnung", included: true },
-      { text: "Hashtag-Analyse", included: true },
-      { text: "Caption-Längen Analyse", included: true },
-      { text: "AI Reel-Transkription", included: true },
-      { text: "AIDA & HAPSS Analyse", included: true },
-      { text: "Viral-Muster Erkennung", included: true },
-      { text: "Account-Vergleich", included: true },
-      { text: "PDF-Export", included: true },
+      { text: "Alles aus Pro", included: true },
       { text: "API-Zugang", included: true, highlight: true },
-      { text: "Priority Support", included: true, highlight: true },
+      { text: "White-Label Reports", included: true, highlight: true },
+      { text: "Team-Accounts (5 User)", included: true },
+      { text: "Priority Support", included: true },
+      { text: "Persönlicher Account Manager", included: true },
+      { text: "Custom Integrations", included: true },
+      { text: "SLA Garantie", included: true },
     ],
     cta: "Business wählen"
   }
@@ -116,33 +111,33 @@ const pricingTiers: PricingTier[] = [
 const featureDetails = [
   {
     icon: <BarChart3 className="w-5 h-5" />,
-    title: "Account-Analysen",
-    description: "Detaillierte Analyse von Instagram-Profilen mit allen wichtigen KPIs"
+    title: "3.000+ KI-Parameter",
+    description: "Unsere KI analysiert über 3.000 Parameter: Hook-Timing, Schnittfrequenz, Transkription, Copywriting-Formeln und mehr."
   },
   {
     icon: <Play className="w-5 h-5" />,
-    title: "AI Reel-Transkription",
-    description: "Automatische Transkription von Reels mit KI-gestützter Spracherkennung"
+    title: "HOT-Transkription",
+    description: "Automatische Transkription mit Hook-Insight - verstehe genau, wie virale Creator ihre ersten 3 Sekunden gestalten."
   },
   {
     icon: <Target className="w-5 h-5" />,
-    title: "AIDA & HAPSS Analyse",
-    description: "Professionelle Framework-Analyse für Content-Optimierung"
+    title: "Copywriting-Meister",
+    description: "Analyse nach Claude Hopkins, David Ogilvy und Eugene Schwartz - die Legenden des Werbetextens."
   },
   {
     icon: <TrendingUp className="w-5 h-5" />,
-    title: "Viral-Muster Erkennung",
-    description: "KI erkennt erfolgreiche Muster und gibt Empfehlungen"
+    title: "47 Viralitäts-Faktoren",
+    description: "Von Engagement-Rate bis Schnittfrequenz - wir messen alles, was viralen Content ausmacht."
   },
   {
     icon: <Users className="w-5 h-5" />,
-    title: "Account-Vergleich",
-    description: "Vergleiche zwei Accounts nebeneinander für Wettbewerbsanalyse"
+    title: "Competitor-Analyse",
+    description: "Vergleiche dich mit deinen Wettbewerbern und lerne von den Besten deiner Nische."
   },
   {
     icon: <Code className="w-5 h-5" />,
     title: "API-Zugang",
-    description: "Integriere ReelSpy.ai in deine eigenen Tools und Workflows"
+    description: "Integriere ReelSpy.ai in deine eigenen Tools - perfekt für Agenturen und Entwickler."
   }
 ];
 

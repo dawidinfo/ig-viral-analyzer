@@ -53,18 +53,18 @@ const features = [
   {
     icon: <Brain className="w-6 h-6" />,
     title: "KI-Reel-Analyse",
-    description: "Tiefgehende Analyse deiner Reels mit HAPSS-Framework, Hook-Bewertung und Viral-Score.",
-    highlight: "NEU"
+    description: "3.000+ Parameter analysiert: HAPSS-Framework, Hook-Timing, Schnittfrequenz, Transkription und Copywriting-Formeln.",
+    highlight: "3.000+ PARAMETER"
   },
   {
     icon: <BarChart3 className="w-6 h-6" />,
     title: "Engagement Analyse",
-    description: "Detaillierte Auswertung von Likes, Comments, Shares und Saves mit Branchen-Benchmarks."
+    description: "Detaillierte Auswertung von Likes, Comments, Shares und Saves mit Branchen-Benchmarks und Trend-Erkennung."
   },
   {
     icon: <Zap className="w-6 h-6" />,
     title: "Viral Score",
-    description: "KI-gestützte Bewertung des Viralitäts-Potenzials basierend auf 12+ Faktoren."
+    description: "KI-gestützte Bewertung basierend auf 47 Viralitäts-Faktoren inkl. Hopkins, Ogilvy & Schwartz Formeln."
   },
   {
     icon: <LineChart className="w-6 h-6" />,
@@ -101,8 +101,8 @@ const features = [
 ];
 
 const stats = [
+  { value: "3.000+", label: "KI-Parameter" },
   { value: "50K+", label: "Analysierte Accounts" },
-  { value: "2.5M+", label: "Ausgewertete Posts" },
   { value: "98%", label: "Genauigkeit" },
   { value: "4.9/5", label: "Bewertung" }
 ];
@@ -831,7 +831,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Pricing Comparison */}
+      {/* Pricing Comparison - 4 Tiers */}
       <section id="pricing" className="py-24">
         <div className="container">
           <motion.div 
@@ -842,87 +842,227 @@ export default function Home() {
           >
             <Badge className="badge-neon mb-4">PREISE</Badge>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Starte kostenlos,
+              Wähle deinen Plan
               <br />
-              <span className="text-gradient">upgrade wenn du bereit bist</span>
+              <span className="text-gradient">3 Analysen kostenlos</span>
             </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Starte mit 3 kostenlosen Analysen pro Monat. Upgrade jederzeit für mehr Power.
+            </p>
           </motion.div>
 
-          <div className="max-w-4xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {/* Free Plan */}
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0 }}
                 viewport={{ once: true }}
-                className="glass-card rounded-2xl p-8"
+                className="glass-card rounded-2xl p-6"
               >
-                <h3 className="text-2xl font-bold mb-2">Kostenlos</h3>
-                <p className="text-muted-foreground mb-6">Perfekt zum Ausprobieren</p>
-                <div className="text-4xl font-black mb-6">
-                  €0 <span className="text-lg font-normal text-muted-foreground">/Monat</span>
+                <div className="text-sm font-medium text-muted-foreground mb-2">FREE</div>
+                <h3 className="text-xl font-bold mb-1">Kostenlos</h3>
+                <p className="text-xs text-muted-foreground mb-4">Zum Ausprobieren</p>
+                <div className="text-3xl font-black mb-1">
+                  €0
                 </div>
+                <p className="text-xs text-muted-foreground mb-6">für immer</p>
                 <Button 
                   onClick={() => document.getElementById('hero-input')?.focus()}
                   variant="outline" 
-                  className="w-full mb-8"
+                  className="w-full mb-6"
+                  size="sm"
                 >
                   Jetzt starten
                 </Button>
-                <ul className="space-y-3">
-                  {comparisonFeatures.map((feature, i) => (
-                    <li key={i} className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">{feature.name}</span>
-                      {feature.free === true ? (
-                        <Check className="w-5 h-5 text-accent" />
-                      ) : feature.free === false ? (
-                        <Minus className="w-5 h-5 text-muted-foreground/50" />
-                      ) : (
-                        <span className="text-xs bg-muted px-2 py-1 rounded">{feature.free}</span>
-                      )}
-                    </li>
-                  ))}
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-accent shrink-0" />
+                    <span><strong>3 Analysen</strong>/Monat</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-accent shrink-0" />
+                    <span>Viral Score</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-accent shrink-0" />
+                    <span>HAPSS-Framework</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-accent shrink-0" />
+                    <span>7 Tage Wachstum</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-muted-foreground">
+                    <Minus className="w-4 h-4 shrink-0" />
+                    <span>Tiefenanalyse</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-muted-foreground">
+                    <Minus className="w-4 h-4 shrink-0" />
+                    <span>PDF-Export</span>
+                  </li>
                 </ul>
               </motion.div>
 
-              {/* Pro Plan */}
+              {/* Starter Plan */}
               <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
                 viewport={{ once: true }}
-                className="relative gradient-border rounded-2xl p-1"
+                className="glass-card rounded-2xl p-6"
               >
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <Badge className="bg-accent text-accent-foreground">BELIEBT</Badge>
+                <div className="text-sm font-medium text-primary mb-2">STARTER</div>
+                <h3 className="text-xl font-bold mb-1">Starter</h3>
+                <p className="text-xs text-muted-foreground mb-4">Für Einsteiger</p>
+                <div className="text-3xl font-black mb-1">
+                  €9<span className="text-lg font-normal text-muted-foreground">/mo</span>
                 </div>
-                <div className="bg-background rounded-2xl p-8">
-                  <h3 className="text-2xl font-bold mb-2">Pro</h3>
-                  <p className="text-muted-foreground mb-6">Für ernsthafte Creator</p>
-                  <div className="text-4xl font-black mb-6">
-                    €29 <span className="text-lg font-normal text-muted-foreground">/Monat</span>
-                  </div>
-                  <Button 
-                    onClick={() => setLocation('/pricing')}
-                    className="btn-gradient w-full text-white border-0 mb-8"
-                  >
-                    <Crown className="w-4 h-4 mr-2" />
-                    Upgrade to Pro
-                  </Button>
-                  <ul className="space-y-3">
-                    {comparisonFeatures.map((feature, i) => (
-                      <li key={i} className="flex items-center justify-between text-sm">
-                        <span>{feature.name}</span>
-                        {feature.pro === true ? (
-                          <Check className="w-5 h-5 text-accent" />
-                        ) : feature.pro === false ? (
-                          <Minus className="w-5 h-5 text-muted-foreground/50" />
-                        ) : (
-                          <span className="text-xs bg-accent/20 text-accent px-2 py-1 rounded">{feature.pro}</span>
-                        )}
+                <p className="text-xs text-muted-foreground mb-6">monatlich kündbar</p>
+                <Button 
+                  onClick={() => setLocation('/pricing')}
+                  variant="outline" 
+                  className="w-full mb-6"
+                  size="sm"
+                >
+                  Upgrade
+                </Button>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-accent shrink-0" />
+                    <span><strong>15 Analysen</strong>/Monat</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-accent shrink-0" />
+                    <span>Viral Score</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-accent shrink-0" />
+                    <span>HAPSS + Copywriting</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-accent shrink-0" />
+                    <span>30 Tage Wachstum</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-accent shrink-0" />
+                    <span>Posting-Zeit-Analyse</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-muted-foreground">
+                    <Minus className="w-4 h-4 shrink-0" />
+                    <span>PDF-Export</span>
+                  </li>
+                </ul>
+              </motion.div>
+
+              {/* Pro Plan - HIGHLIGHTED */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                viewport={{ once: true }}
+                className="relative"
+              >
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
+                  <Badge className="bg-accent text-accent-foreground font-bold px-4">BELIEBTESTE WAHL</Badge>
+                </div>
+                <div className="gradient-border rounded-2xl p-1 h-full">
+                  <div className="bg-background rounded-2xl p-6 h-full">
+                    <div className="text-sm font-medium text-accent mb-2">PRO</div>
+                    <h3 className="text-xl font-bold mb-1">Pro</h3>
+                    <p className="text-xs text-muted-foreground mb-4">Für Creator</p>
+                    <div className="text-3xl font-black mb-1">
+                      €29<span className="text-lg font-normal text-muted-foreground">/mo</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-6">monatlich kündbar</p>
+                    <Button 
+                      onClick={() => setLocation('/pricing')}
+                      className="btn-gradient w-full text-white border-0 mb-6"
+                      size="sm"
+                    >
+                      <Crown className="w-4 h-4 mr-1" />
+                      Jetzt upgraden
+                    </Button>
+                    <ul className="space-y-2 text-sm">
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-accent shrink-0" />
+                        <span><strong>50 Analysen</strong>/Monat</span>
                       </li>
-                    ))}
-                  </ul>
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-accent shrink-0" />
+                        <span>3.000+ KI-Parameter</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-accent shrink-0" />
+                        <span>Tiefenanalyse</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-accent shrink-0" />
+                        <span>1 Jahr Wachstum</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-accent shrink-0" />
+                        <span>PDF-Export</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-accent shrink-0" />
+                        <span>Competitor-Vergleich</span>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
+              </motion.div>
+
+              {/* Business Plan */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                viewport={{ once: true }}
+                className="glass-card rounded-2xl p-6"
+              >
+                <div className="text-sm font-medium text-yellow-500 mb-2">BUSINESS</div>
+                <h3 className="text-xl font-bold mb-1">Business</h3>
+                <p className="text-xs text-muted-foreground mb-4">Für Agenturen</p>
+                <div className="text-3xl font-black mb-1">
+                  €49<span className="text-lg font-normal text-muted-foreground">/mo</span>
+                </div>
+                <p className="text-xs text-muted-foreground mb-6">monatlich kündbar</p>
+                <Button 
+                  onClick={() => setLocation('/pricing')}
+                  variant="outline" 
+                  className="w-full mb-6 border-yellow-500/50 hover:bg-yellow-500/10"
+                  size="sm"
+                >
+                  <Rocket className="w-4 h-4 mr-1" />
+                  Kontaktieren
+                </Button>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-yellow-500 shrink-0" />
+                    <span><strong>Unbegrenzte</strong> Analysen</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-yellow-500 shrink-0" />
+                    <span>Alles aus Pro</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-yellow-500 shrink-0" />
+                    <span>API-Zugang</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-yellow-500 shrink-0" />
+                    <span>White-Label Reports</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-yellow-500 shrink-0" />
+                    <span>Prioritäts-Support</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-yellow-500 shrink-0" />
+                    <span>Team-Accounts</span>
+                  </li>
+                </ul>
               </motion.div>
             </div>
 

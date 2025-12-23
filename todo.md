@@ -163,3 +163,11 @@
 - [x] Vergleichstabelle (Kostenlos vs Pro)
 - [x] Stärkere CTAs und Conversion-Elemente
 - [x] Footer mit allen wichtigen Links
+
+## KI-Messaging & Neues Pricing-Modell
+- [x] "3.000+ KI-Parameter" Messaging auf Landingpage
+- [x] KI-Analyse Details hervorheben (Hooks, Patterns, Engagement, etc.)
+- [x] Neues 4-Tier Pricing: Free (3), Starter €9 (15), Pro €29 (50), Business €49 (unbegrenzt)
+- [x] Pro-Tier in der Mitte hervorheben als "Beliebteste Wahl"
+- [x] Analyse-Limits klar kommunizieren
+- [x] Pricing-Seite aktualisieren
