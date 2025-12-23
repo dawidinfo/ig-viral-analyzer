@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { GlobalFooter } from "@/components/GlobalFooter";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -635,12 +636,8 @@ export default function Compare() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-border/50 py-6 relative z-10">
-        <div className="container text-center text-sm text-muted-foreground">
-          © 2024 ReelSpy.ai. Live-Daten von Instagram.
-        </div>
-      </footer>
+      {/* Global Footer */}
+      <GlobalFooter />
     </div>
   );
 }

@@ -43,6 +43,13 @@
       "when": 1766512401324,
       "tag": "0005_dapper_arclight",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1766525410640,
+      "tag": "0006_legal_greymalkin",
+      "breakpoints": true
     }
   ]
 }

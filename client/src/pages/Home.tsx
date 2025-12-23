@@ -1,5 +1,6 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
+import { GlobalFooter } from "@/components/GlobalFooter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -1171,73 +1172,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-16 border-t border-border/50">
-        <div className="container">
-          <div className="grid md:grid-cols-4 gap-12 mb-12">
-            {/* Brand */}
-            <div className="md:col-span-1">
-              <div className="flex items-center gap-3 mb-4">
-                <img src="/logo.svg" alt="ReelSpy.ai" className="h-8 w-auto" />
-              </div>
-              <p className="text-sm text-muted-foreground mb-4">
-                {t.footer.description}
-              </p>
-              <div className="flex items-center gap-1">
-                {[1,2,3,4,5].map((i) => (
-                  <Star key={i} className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                ))}
-                <span className="text-sm ml-2">4.9/5</span>
-              </div>
-            </div>
-
-            {/* Product */}
-            <div>
-              <h4 className="font-semibold mb-4">{t.footer.product}</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#features" className="hover:text-foreground transition-colors">{t.nav.features}</a></li>
-                <li><a href="#pricing" className="hover:text-foreground transition-colors">{t.nav.pricing}</a></li>
-                <li><button onClick={() => setLocation('/compare')} className="hover:text-foreground transition-colors">{t.nav.compare}</button></li>
-                <li><a href="#faq" className="hover:text-foreground transition-colors">{t.nav.faq}</a></li>
-              </ul>
-            </div>
-
-            {/* Resources */}
-            <div>
-              <h4 className="font-semibold mb-4">Ressourcen</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Guides</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">API Docs</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Status</a></li>
-              </ul>
-            </div>
-
-            {/* Legal */}
-            <div>
-              <h4 className="font-semibold mb-4">{t.footer.legal}</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="/privacy" className="hover:text-foreground transition-colors">{t.footer.privacy}</a></li>
-                <li><a href="/terms" className="hover:text-foreground transition-colors">{t.footer.terms}</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">{t.footer.imprint}</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Kontakt</a></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="pt-8 border-t border-border/50 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-muted-foreground">
-              © 2024 ReelSpy.ai. {t.footer.copyright}
-            </p>
-            <div className="flex items-center gap-4">
-              <Shield className="w-5 h-5 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">SSL-verschlüsselt</span>
-              <Lock className="w-5 h-5 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">DSGVO-konform</span>
-            </div>
-          </div>
-        </div>
-      </footer>
+      {/* Global Footer */}
+      <GlobalFooter />
     </div>
   );
 }

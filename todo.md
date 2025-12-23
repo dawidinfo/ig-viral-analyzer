@@ -353,3 +353,52 @@
 - [x] Credits nach Zahlung automatisch gutschreiben
 - [x] Zahlungshistorie API implementiert
 - [x] 15 Stripe Tests bestanden
+
+## Branding entfernen
+- [x] "Made with Manus" Branding nicht gefunden (bereits entfernt)
+
+## Globaler Footer und Rechtliches
+- [x] Globalen Footer als Komponente erstellen (GlobalFooter.tsx)
+- [x] Footer auf allen Unterseiten einbinden (Home, Analysis, Compare, Pricing)
+- [x] Copyright-Datum auf 2025 aktualisieren
+- [x] UAE-Firmendaten eingefügt (QLIQ Marketing L.L.C., Reg. No. 2580137)
+- [x] E-Mail gegen Phishing geschützt (JavaScript-Obfuskation)
+- [x] Terms of Service nach US/UAE-Standard aktualisiert
+- [x] Privacy Policy nach US/UAE-Standard aktualisiert
+
+## Sicherheitsprüfung
+- [x] XSS-Schutz geprüft (nur 1x dangerouslySetInnerHTML in chart.tsx - sicher)
+- [x] CSRF-Schutz aktiv (tRPC mit Session-Cookies)
+- [x] SQL-Injection-Schutz geprüft (Drizzle ORM mit parametrisierten Queries)
+- [x] Rate-Limiting implementiert (bereits vorhanden)
+- [x] Input-Validierung mit Zod-Schemas
+
+## Profilverwaltung
+- [x] Profil bearbeiten (Settings Tab im Dashboard)
+- [x] Rechnungen/Zahlungshistorie anzeigen (Invoices Tab)
+- [x] Account-Einstellungen (Settings Tab)
+- [x] Account löschen Option (Settings Tab)
+
+## Gespeicherte Daten
+- [x] Accounts speichern/favorisieren (Analyses Tab)
+- [x] Gespeicherte Accounts in Profilübersicht (Analyses Tab)
+- [x] Notizen-Feature für Learnings (Notes Tab)
+
+## CTA-Popup nach Analyse
+- [x] Popup nach Analyse-Abschluss (3 Sekunden Verzögerung)
+- [x] "Mehr Analysen starten" CTA
+- [x] "Von Top-Accounts lernen" CTA
+- [x] "Viral gehen" Motivation
+
+## Profilbilder und Verified-Badge
+- [x] Instagram Profilbilder in Analyse anzeigen (bereits implementiert)
+- [x] Blauer Haken (Verified Badge) anzeigen wenn vorhanden (bereits implementiert)
+- [x] Badge-Styling wie Instagram (blauer Kreis mit Checkmark)
+
+## Affiliate-Programm
+- [x] Referral-System Datenbank-Schema (referralCodes, referrals Tabellen)
+- [x] Einzigartiger Referral-Link pro User
+- [x] Tracking wer wen geworben hat
+- [ ] 500 Credits Gutschrift wenn Geworbener zahlt und 500 Credits überschreitet
+- [ ] Affiliate-Dashboard im Profil
+- [ ] Referral-Link teilen Funktion

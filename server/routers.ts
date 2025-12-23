@@ -12,6 +12,7 @@ import { analyzeTikTokAccount, fetchTikTokProfile, searchTikTokVideos, TikTokAna
 import { analyzeYouTubeChannel, fetchYouTubeChannel, searchYouTubeVideos, YouTubeAnalysis } from "./youtube";
 import { isUserAdmin, getAllUsers, getAdminStats, banUser, unbanUser, setUserRole, updateUserPlan, getUserActivity, getTopUsers, scanForSuspiciousUsers } from "./adminService";
 import { runScheduledTracking, getTrackingStats, getSavedAccountsForTracking, getTopGrowingAccounts, getDecliningAccounts, getPlatformDistribution, getAccountHistory } from "./scheduledTracking";
+import { getOrCreateReferralCode, getReferralCodeInfo, getUserReferrals, applyReferralCode, setVanityCode, getAffiliateStats } from "./affiliateService";
 import { getDb } from "./db";
 import { getUserCredits, useCredits, addCredits, getCreditHistory, getCreditStats, canPerformAction, getActionCost } from "./creditService";
 import { createCheckoutSession, getPaymentHistory, getOrCreateCustomer } from "./stripe/checkout";
@@ -695,6 +696,45 @@ export const appRouter = router({
           return [];
         }
       }),
+  }),
+
+  // Affiliate/Referral Router
+  affiliate: router({
+    // Get user's referral code and stats
+    getStats: publicProcedure.query(async ({ ctx }) => {
+      if (!ctx.user) throw new Error("Authentication required");
+      return await getAffiliateStats(ctx.user.id);
+    }),
+
+    // Get or create referral code
+    getCode: publicProcedure.query(async ({ ctx }) => {
+      if (!ctx.user) throw new Error("Authentication required");
+      const code = await getOrCreateReferralCode(ctx.user.id);
+      return { code };
+    }),
+
+    // Set custom vanity code
+    setVanityCode: publicProcedure
+      .input(z.object({ vanityCode: z.string().min(4).max(20) }))
+      .mutation(async ({ input, ctx }) => {
+        if (!ctx.user) throw new Error("Authentication required");
+        return await setVanityCode(ctx.user.id, input.vanityCode);
+      }),
+
+    // Apply referral code (for new users)
+    applyCode: publicProcedure
+      .input(z.object({ code: z.string().min(1) }))
+      .mutation(async ({ input, ctx }) => {
+        if (!ctx.user) throw new Error("Authentication required");
+        const success = await applyReferralCode(ctx.user.id, input.code);
+        return { success };
+      }),
+
+    // Get referral list
+    getReferrals: publicProcedure.query(async ({ ctx }) => {
+      if (!ctx.user) throw new Error("Authentication required");
+      return await getUserReferrals(ctx.user.id);
+    }),
   }),
 
   // TikTok Router

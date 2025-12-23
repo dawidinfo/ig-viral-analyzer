@@ -442,3 +442,66 @@ export const followerSnapshots = mysqlTable("follower_snapshots", {
 
 export type FollowerSnapshot = typeof followerSnapshots.$inferSelect;
 export type InsertFollowerSnapshot = typeof followerSnapshots.$inferInsert;
+
+
+/**
+ * Referral/Affiliate System
+ * Users can refer others and earn credits when referrals become paying customers
+ */
+export const referrals = mysqlTable("referrals", {
+  id: int("id").autoincrement().primaryKey(),
+  /** User who referred (the affiliate) */
+  referrerId: int("referrerId").notNull(),
+  /** User who was referred */
+  referredUserId: int("referredUserId").notNull().unique(),
+  /** Unique referral code used */
+  referralCode: varchar("referralCode", { length: 32 }).notNull(),
+  /** Status of the referral */
+  status: mysqlEnum("status", ["pending", "qualified", "rewarded", "expired"]).default("pending").notNull(),
+  /** Total credits spent by referred user */
+  referredUserCreditsSpent: int("referredUserCreditsSpent").default(0).notNull(),
+  /** Credits rewarded to referrer (500 when qualified) */
+  rewardCredits: int("rewardCredits").default(0).notNull(),
+  /** When the reward was given */
+  rewardedAt: timestamp("rewardedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Referral = typeof referrals.$inferSelect;
+export type InsertReferral = typeof referrals.$inferInsert;
+
+/**
+ * Referral codes - each user gets a unique code
+ */
+export const referralCodes = mysqlTable("referral_codes", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().unique(),
+  /** Unique referral code (e.g., "JOHN2024" or random string) */
+  code: varchar("code", { length: 32 }).notNull().unique(),
+  /** Custom vanity code (optional) */
+  vanityCode: varchar("vanityCode", { length: 32 }).unique(),
+  /** Total successful referrals */
+  totalReferrals: int("totalReferrals").default(0).notNull(),
+  /** Total credits earned from referrals */
+  totalCreditsEarned: int("totalCreditsEarned").default(0).notNull(),
+  /** Is the code active */
+  isActive: int("isActive").default(1).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ReferralCode = typeof referralCodes.$inferSelect;
+export type InsertReferralCode = typeof referralCodes.$inferInsert;
+
+/**
+ * Affiliate configuration
+ */
+export const AFFILIATE_CONFIG = {
+  /** Credits reward when referral qualifies */
+  rewardCredits: 500,
+  /** Minimum credits referred user must spend to qualify */
+  qualificationThreshold: 500,
+  /** Referral code prefix */
+  codePrefix: "RS",
+} as const;

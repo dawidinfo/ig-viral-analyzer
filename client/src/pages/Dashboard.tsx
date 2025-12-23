@@ -27,7 +27,16 @@ import {
   ExternalLink,
   Calendar,
   Clock,
+  Receipt,
+  StickyNote,
+  Share2,
+  Copy,
+  Gift,
+  Check,
 } from "lucide-react";
+import { AffiliateDashboard } from "@/components/AffiliateDashboard";
+import { InvoicesTab } from "@/components/InvoicesTab";
+import { NotesTab } from "@/components/NotesTab";
 import { useState, useMemo } from "react";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
@@ -211,6 +220,18 @@ export default function Dashboard() {
               <TabsTrigger value="analyses" className="data-[state=active]:bg-primary/20">
                 <Bookmark className="w-4 h-4 mr-2" />
                 Gespeicherte Analysen
+              </TabsTrigger>
+              <TabsTrigger value="invoices" className="data-[state=active]:bg-primary/20">
+                <Receipt className="w-4 h-4 mr-2" />
+                Rechnungen
+              </TabsTrigger>
+              <TabsTrigger value="notes" className="data-[state=active]:bg-primary/20">
+                <StickyNote className="w-4 h-4 mr-2" />
+                Notizen
+              </TabsTrigger>
+              <TabsTrigger value="affiliate" className="data-[state=active]:bg-primary/20">
+                <Share2 className="w-4 h-4 mr-2" />
+                Affiliate
               </TabsTrigger>
               <TabsTrigger value="settings" className="data-[state=active]:bg-primary/20">
                 <Settings className="w-4 h-4 mr-2" />
@@ -593,6 +614,21 @@ export default function Dashboard() {
                   )}
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            {/* Invoices Tab */}
+            <TabsContent value="invoices" className="space-y-6">
+              <InvoicesTab userId={user?.id ?? 0} />
+            </TabsContent>
+
+            {/* Notes Tab */}
+            <TabsContent value="notes" className="space-y-6">
+              <NotesTab userId={user?.id ?? 0} />
+            </TabsContent>
+
+            {/* Affiliate Tab */}
+            <TabsContent value="affiliate" className="space-y-6">
+              <AffiliateDashboard />
             </TabsContent>
 
             {/* Settings Tab */}

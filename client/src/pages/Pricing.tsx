@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { GlobalFooter } from "@/components/GlobalFooter";
 import { Badge } from "@/components/ui/badge";
 import { 
   Check, 
@@ -950,27 +951,8 @@ export default function Pricing() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border py-8">
-        <div className="container">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-                <BarChart3 className="w-4 h-4 text-white" />
-              </div>
-              <span className="font-semibold">ReelSpy.ai</span>
-            </div>
-            <div className="flex items-center gap-6 text-sm text-muted-foreground">
-              <a href="/terms" className="hover:text-foreground transition-colors">AGB</a>
-              <a href="/privacy" className="hover:text-foreground transition-colors">Datenschutz</a>
-              <a href="mailto:support@reelspy.ai" className="hover:text-foreground transition-colors">Kontakt</a>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              © 2024 ReelSpy.ai. Alle Rechte vorbehalten.
-            </p>
-          </div>
-        </div>
-      </footer>
+      {/* Global Footer */}
+      <GlobalFooter />
     </div>
   );
 }

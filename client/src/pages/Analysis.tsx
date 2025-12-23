@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { GlobalFooter } from "@/components/GlobalFooter";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
@@ -38,9 +39,10 @@ import {
   ChevronUp,
   Flame
 } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import ReelAnalysis from "@/components/ReelAnalysis";
 import DeepAnalysis from "@/components/DeepAnalysis";
+import { AnalysisCTAPopup } from "@/components/AnalysisCTAPopup";
 import FollowerGrowthChart from "@/components/FollowerGrowthChart";
 import PostingTimeAnalysis from "@/components/PostingTimeAnalysis";
 import { generateAnalysisPDF } from "@/lib/pdfExport";
@@ -158,6 +160,8 @@ export default function Analysis() {
   
   // Pinned sections state
   const [pinnedSections, setPinnedSections] = useState<Set<string>>(new Set(['ai', 'stats', 'viral']));
+  const [showCTAPopup, setShowCTAPopup] = useState(false);
+  const [hasShownPopup, setHasShownPopup] = useState(false);
 
   const togglePin = (section: string) => {
     setPinnedSections(prev => {
@@ -215,6 +219,17 @@ export default function Analysis() {
       staleTime: 5 * 60 * 1000,
     }
   );
+
+  // Show CTA popup after analysis is loaded (with delay)
+  useEffect(() => {
+    if (analysisData && !isLoading && !hasShownPopup) {
+      const timer = setTimeout(() => {
+        setShowCTAPopup(true);
+        setHasShownPopup(true);
+      }, 3000); // Show after 3 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [analysisData, isLoading, hasShownPopup]);
 
   const handleAnalyze = () => {
     if (username.trim()) {
@@ -823,12 +838,16 @@ export default function Analysis() {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="py-8 border-t border-border/50 relative z-10">
-        <div className="container text-center text-sm text-muted-foreground">
-          <p>© 2024 ReelSpy.ai. Live-Daten von Instagram.</p>
-        </div>
-      </footer>
+      {/* Global Footer */}
+      <GlobalFooter />
+
+      {/* CTA Popup after Analysis */}
+      <AnalysisCTAPopup
+        isOpen={showCTAPopup}
+        onClose={() => setShowCTAPopup(false)}
+        viralScore={analysisData?.viralScore}
+        username={analysisData?.profile.username}
+      />
     </div>
   );
 }

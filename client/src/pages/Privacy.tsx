@@ -1,6 +1,8 @@
 import { Link } from "wouter";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { GlobalFooter } from "@/components/GlobalFooter";
+import { LanguageSelector } from "@/components/LanguageSelector";
 
 export default function Privacy() {
   return (
@@ -8,14 +10,17 @@ export default function Privacy() {
       {/* Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
-            <Link href="/">
-              <Button variant="ghost" size="sm">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Zurück
-              </Button>
-            </Link>
-            <h1 className="text-xl font-bold">Datenschutzerklärung</h1>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Link href="/">
+                <Button variant="ghost" size="sm">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back
+                </Button>
+              </Link>
+              <h1 className="text-xl font-bold">Privacy Policy</h1>
+            </div>
+            <LanguageSelector />
           </div>
         </div>
       </header>
@@ -23,18 +28,22 @@ export default function Privacy() {
       <main className="container mx-auto px-4 py-12 max-w-4xl">
         <div className="prose prose-invert max-w-none">
           <p className="text-muted-foreground mb-8">
-            Stand: 23. Dezember 2024
+            Last updated: December 24, 2025
           </p>
 
           <section className="mb-12">
-            <h2 className="text-2xl font-bold mb-4">1. Verantwortlicher</h2>
+            <h2 className="text-2xl font-bold mb-4">1. Data Controller</h2>
             <p className="text-muted-foreground mb-4">
-              Verantwortlich für die Datenverarbeitung auf dieser Website ist:
+              The data controller for this website is:
             </p>
-            <p className="text-muted-foreground">
-              ReelSpy.ai<br />
-              E-Mail: privacy@reelspy.ai
-            </p>
+            <div className="text-muted-foreground">
+              <p className="font-medium">QLIQ Marketing L.L.C.</p>
+              <p>Dubai Branch Building</p>
+              <p>Office 1-141-278, Mankhool</p>
+              <p>Dubai, UAE</p>
+              <p>Reg. No. 2580137</p>
+              <p className="mt-2">Email: <span className="text-primary">report[at]reelspy.ai</span></p>
+            </div>
           </section>
 
           <section className="mb-12">
@@ -212,14 +221,24 @@ export default function Privacy() {
           </section>
 
           <section className="mb-12 p-6 bg-muted/50 rounded-lg">
-            <h2 className="text-xl font-bold mb-4">Kontakt für Datenschutzanfragen</h2>
+            <h2 className="text-xl font-bold mb-4">Contact for Privacy Inquiries</h2>
             <p className="text-muted-foreground">
-              Bei Fragen zum Datenschutz wenden Sie sich bitte an:<br />
-              E-Mail: privacy@reelspy.ai
+              For privacy-related questions, please contact us:
             </p>
+            <div className="mt-4">
+              <p className="font-medium">QLIQ Marketing L.L.C.</p>
+              <p className="text-muted-foreground">Dubai Branch Building</p>
+              <p className="text-muted-foreground">Office 1-141-278, Mankhool</p>
+              <p className="text-muted-foreground">Dubai, UAE</p>
+              <p className="text-muted-foreground mt-2">
+                Email: <span className="text-primary">report[at]reelspy.ai</span>
+              </p>
+            </div>
           </section>
         </div>
       </main>
+      
+      <GlobalFooter />
     </div>
   );
 }

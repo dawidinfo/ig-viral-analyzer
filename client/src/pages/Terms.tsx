@@ -1,21 +1,29 @@
 import { Link } from "wouter";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { GlobalFooter } from "@/components/GlobalFooter";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { LanguageSelector } from "@/components/LanguageSelector";
 
 export default function Terms() {
+  const { t } = useLanguage();
+  
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
-            <Link href="/">
-              <Button variant="ghost" size="sm">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Zurück
-              </Button>
-            </Link>
-            <h1 className="text-xl font-bold">Allgemeine Geschäftsbedingungen</h1>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Link href="/">
+                <Button variant="ghost" size="sm">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back
+                </Button>
+              </Link>
+              <h1 className="text-xl font-bold">Terms of Service</h1>
+            </div>
+            <LanguageSelector />
           </div>
         </div>
       </header>
@@ -23,19 +31,15 @@ export default function Terms() {
       <main className="container mx-auto px-4 py-12 max-w-4xl">
         <div className="prose prose-invert max-w-none">
           <p className="text-muted-foreground mb-8">
-            Stand: 23. Dezember 2024
+            Last updated: December 24, 2025
           </p>
 
           <section className="mb-12">
-            <h2 className="text-2xl font-bold mb-4">1. Geltungsbereich</h2>
+            <h2 className="text-2xl font-bold mb-4">1. Agreement to Terms</h2>
             <p className="text-muted-foreground mb-4">
-              Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle Verträge zwischen ReelSpy.ai 
-              (nachfolgend "Anbieter") und dem Nutzer (nachfolgend "Kunde") über die Nutzung der 
-              ReelSpy.ai-Plattform zur Analyse von Social-Media-Inhalten.
-            </p>
-            <p className="text-muted-foreground">
-              Abweichende Bedingungen des Kunden werden nicht anerkannt, es sei denn, der Anbieter 
-              stimmt ihrer Geltung ausdrücklich schriftlich zu.
+              By accessing or using ReelSpy.ai ("Service"), operated by QLIQ Marketing L.L.C., 
+              a company registered in Dubai, UAE (Reg. No. 2580137), you agree to be bound by 
+              these Terms of Service. If you do not agree to these terms, please do not use our Service.
             </p>
           </section>
 
@@ -172,28 +176,39 @@ export default function Terms() {
           </section>
 
           <section className="mb-12">
-            <h2 className="text-2xl font-bold mb-4">11. Schlussbestimmungen</h2>
+            <h2 className="text-2xl font-bold mb-4">11. Governing Law</h2>
             <p className="text-muted-foreground mb-4">
-              11.1 Es gilt deutsches Recht unter Ausschluss des UN-Kaufrechts.
+              These Terms shall be governed by and construed in accordance with the laws of the 
+              United Arab Emirates, without regard to conflict of law principles.
             </p>
             <p className="text-muted-foreground mb-4">
-              11.2 Gerichtsstand ist, soweit gesetzlich zulässig, der Sitz des Anbieters.
+              Any disputes arising from these Terms shall be resolved in the courts of Dubai, UAE.
             </p>
             <p className="text-muted-foreground">
-              11.3 Sollten einzelne Bestimmungen unwirksam sein, bleibt die Wirksamkeit der 
-              übrigen Bestimmungen unberührt.
+              If any provision of these Terms is found to be unenforceable, the remaining provisions 
+              will continue in full force and effect.
             </p>
           </section>
 
           <section className="mb-12 p-6 bg-muted/50 rounded-lg">
-            <h2 className="text-xl font-bold mb-4">Kontakt</h2>
+            <h2 className="text-xl font-bold mb-4">Contact</h2>
             <p className="text-muted-foreground">
-              Bei Fragen zu diesen AGB wenden Sie sich bitte an:<br />
-              E-Mail: support@reelspy.ai
+              For questions about these Terms, please contact us:
             </p>
+            <div className="mt-4">
+              <p className="font-medium">QLIQ Marketing L.L.C.</p>
+              <p className="text-muted-foreground">Dubai Branch Building</p>
+              <p className="text-muted-foreground">Office 1-141-278, Mankhool</p>
+              <p className="text-muted-foreground">Dubai, UAE</p>
+              <p className="text-muted-foreground mt-2">
+                Email: <span className="text-primary">report[at]reelspy.ai</span>
+              </p>
+            </div>
           </section>
         </div>
       </main>
+      
+      <GlobalFooter />
     </div>
   );
 }
