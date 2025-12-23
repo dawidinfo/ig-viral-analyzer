@@ -59,3 +59,11 @@
 - [x] Business tier (~49€/month) - All features + API access
 - [x] Add Pricing link to navigation
 - [x] Design feature comparison table
+
+## PDF Export Feature
+- [x] Create PDF generation service on backend (client-side with jsPDF)
+- [x] Design professional PDF report layout
+- [x] Include all analysis metrics in PDF
+- [x] Add AI analysis results to PDF (viral factors)
+- [x] Add Export PDF button to Analysis page
+- [x] Implement download functionality

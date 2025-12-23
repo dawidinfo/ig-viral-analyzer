@@ -27,10 +27,13 @@ import {
   ArrowLeft,
   Sparkles,
   ExternalLink,
-  ImageIcon
+  ImageIcon,
+  Download,
+  FileText
 } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import ReelAnalysis from "@/components/ReelAnalysis";
+import { generateAnalysisPDF } from "@/lib/pdfExport";
 import { useLocation, useSearch } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -364,10 +367,36 @@ export default function Analysis() {
                     )}
                   </div>
 
-                  {/* Viral Score */}
-                  <div className="flex flex-col items-center">
-                    <CircularProgress value={analysisData.viralScore} size={100} color="viral" />
-                    <p className="text-sm text-muted-foreground mt-2">Viral Score</p>
+                  {/* Viral Score & Export */}
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="flex flex-col items-center">
+                      <CircularProgress value={analysisData.viralScore} size={100} color="viral" />
+                      <p className="text-sm text-muted-foreground mt-2">Viral Score</p>
+                    </div>
+                    <Button
+                      onClick={() => generateAnalysisPDF({
+                        profile: {
+                          username: analysisData.profile.username,
+                          fullName: analysisData.profile.fullName || analysisData.profile.username,
+                          bio: analysisData.profile.biography || '',
+                          followerCount: analysisData.profile.followerCount,
+                          followingCount: analysisData.profile.followingCount,
+                          postCount: analysisData.profile.mediaCount,
+                          isVerified: analysisData.profile.isVerified,
+                          isBusinessAccount: analysisData.profile.isBusinessAccount
+                        },
+                        metrics: analysisData.metrics,
+                        viralScore: analysisData.viralScore,
+                        viralFactors: analysisData.viralFactors,
+                        isDemo: analysisData.isDemo
+                      })}
+                      variant="outline"
+                      size="sm"
+                      className="border-primary/50 hover:bg-primary/20 text-primary"
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      PDF Export
+                    </Button>
                   </div>
                 </div>
 
