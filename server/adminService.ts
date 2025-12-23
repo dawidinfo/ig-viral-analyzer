@@ -7,6 +7,11 @@ import { eq, desc, sql, and, gte, lte, like, or } from "drizzle-orm";
  * Provides admin functionality for user management, analytics, and moderation
  */
 
+// List of admin email addresses
+const ADMIN_EMAILS = [
+  "qliq.marketing@proton.me"
+];
+
 // List of forbidden keywords for adult content detection
 const FORBIDDEN_KEYWORDS = [
   "porn", "xxx", "adult", "nsfw", "onlyfans", "sex", "nude", "naked",
@@ -61,7 +66,7 @@ export interface UserActivity {
 }
 
 /**
- * Check if user is admin
+ * Check if user is admin by ID
  */
 export async function isUserAdmin(userId: number): Promise<boolean> {
   try {
@@ -69,16 +74,34 @@ export async function isUserAdmin(userId: number): Promise<boolean> {
     if (!db) return false;
 
     const user = await db
-      .select({ role: users.role })
+      .select({ role: users.role, email: users.email })
       .from(users)
       .where(eq(users.id, userId))
       .limit(1);
 
-    return user.length > 0 && user[0].role === "admin";
+    if (user.length === 0) return false;
+    
+    // Check if user has admin role OR is in admin emails list
+    const isAdminRole = user[0].role === "admin";
+    const isAdminEmail = user[0].email ? ADMIN_EMAILS.includes(user[0].email.toLowerCase()) : false;
+    
+    // Auto-promote admin email users to admin role
+    if (isAdminEmail && !isAdminRole) {
+      await db.update(users).set({ role: "admin" }).where(eq(users.id, userId));
+    }
+    
+    return isAdminRole || isAdminEmail;
   } catch (error) {
     console.error("[Admin] Error checking admin status:", error);
     return false;
   }
+}
+
+/**
+ * Check if email is an admin email
+ */
+export function isAdminEmail(email: string): boolean {
+  return ADMIN_EMAILS.includes(email.toLowerCase());
 }
 
 /**

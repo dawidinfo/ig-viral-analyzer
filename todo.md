@@ -246,3 +246,6 @@
 ## Erfolgsgeschichten-Badge Fix
 - [x] Badges (+312% Engagement, etc.) werden oben abgeschnitten - overflow-visible und pt-6 auf Grid und Cards gesetzt
 - [x] Gesamte Seite auf weitere Overflow-Probleme geprüft (How It Works, Pricing - alle gefixt)
+
+## Admin-Konfiguration
+- [x] qliq.marketing@proton.me als Administrator konfiguriert (Auto-Promotion bei Login)
