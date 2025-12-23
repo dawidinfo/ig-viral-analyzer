@@ -239,3 +239,6 @@
 - [x] 14 Tage Geld-zurück-Garantie komplett entfernt
 - [x] Preis-Tabelle auf Landingpage mit KI-Analysen statt Credits aktualisiert
 - [x] Made with Manus bereits entfernt (kein Vorkommen mehr gefunden)
+
+## Badge-Layout Fix
+- [x] Badges "3.000+ PARAMETER" und "NEU" werden abgeschnitten - overflow-visible und pt-8 auf Cards gesetzt

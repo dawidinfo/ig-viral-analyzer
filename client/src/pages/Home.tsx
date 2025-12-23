@@ -617,7 +617,7 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4 overflow-visible">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
@@ -625,10 +625,10 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="glass-card rounded-2xl p-6 stat-card group relative"
+                className="glass-card rounded-2xl p-6 pt-8 stat-card group relative overflow-visible"
               >
                 {feature.highlight && (
-                  <Badge className="absolute -top-3 left-4 bg-accent text-accent-foreground text-xs px-2 py-0.5 whitespace-nowrap">
+                  <Badge className="absolute -top-3 left-4 bg-accent text-accent-foreground text-xs px-2 py-0.5 whitespace-nowrap z-10">
                     {feature.highlight}
                   </Badge>
                 )}
