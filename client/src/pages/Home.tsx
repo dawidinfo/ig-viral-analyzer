@@ -97,7 +97,7 @@ export default function Home() {
       <div className="fixed inset-0 bg-gradient-radial pointer-events-none" />
       
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
+      <nav className="fixed top-0 left-0 right-0 border-b border-border/50 bg-background/80 backdrop-blur-xl" style={{ zIndex: 100 }}>
         <div className="container flex items-center justify-between h-16 gap-4">
           {/* Logo */}
           <div className="flex items-center gap-3 cursor-pointer shrink-0" onClick={() => setLocation('/')}>
@@ -136,33 +136,33 @@ export default function Home() {
             </Button>
 
             {/* Hamburger Button - Visible on mobile/tablet */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="lg:hidden"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            <button
+              type="button"
+              className="lg:hidden p-2 rounded-md hover:bg-muted/50 transition-colors"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setMobileMenuOpen(!mobileMenuOpen);
+              }}
               aria-label="Menü öffnen"
+              style={{ position: 'relative', zIndex: 101 }}
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </Button>
+            </button>
           </div>
         </div>
 
         {/* Mobile Menu Overlay */}
-        <motion.div
-          initial={false}
-          animate={mobileMenuOpen ? { opacity: 1, pointerEvents: "auto" as const } : { opacity: 0, pointerEvents: "none" as const }}
-          transition={{ duration: 0.2 }}
-          className="fixed inset-0 top-16 bg-black/60 backdrop-blur-sm lg:hidden z-40"
+        <div 
+          className={`fixed inset-0 top-16 bg-black/60 backdrop-blur-sm lg:hidden transition-opacity duration-300 ${mobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+          style={{ zIndex: 9998 }}
           onClick={closeMobileMenu}
         />
 
         {/* Mobile Menu Panel */}
-        <motion.div
-          initial={false}
-          animate={mobileMenuOpen ? { x: 0 } : { x: "100%" }}
-          transition={{ type: "spring", damping: 25, stiffness: 300 }}
-          className="fixed top-16 right-0 bottom-0 w-72 bg-background border-l border-border/50 lg:hidden z-50 overflow-y-auto"
+        <div
+          className={`fixed top-16 right-0 bottom-0 w-72 bg-background border-l border-border/50 lg:hidden overflow-y-auto transition-transform duration-300 ease-out ${mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+          style={{ zIndex: 9999 }}
         >
           <div className="flex flex-col p-6 gap-2">
             {/* Mobile Nav Links */}
@@ -226,7 +226,7 @@ export default function Home() {
               Jetzt analysieren
             </Button>
           </div>
-        </motion.div>
+        </div>
       </nav>
 
       {/* Hero Section */}

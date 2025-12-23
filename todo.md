@@ -88,3 +88,6 @@
 - [x] Add usage limits display with progress bars
 - [x] Create account settings section
 - [x] Add navigation link to Dashboard
+
+## Bug Fixes
+- [x] Fix mobile hamburger menu not opening on click (replaced Framer Motion with CSS transitions)
