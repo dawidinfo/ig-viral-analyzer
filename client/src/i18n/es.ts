@@ -184,23 +184,31 @@ export const es: Translations = {
   faq: {
     title: "Preguntas frecuentes",
     subtitle: "Todo lo que necesitas saber sobre ReelSpy.ai",
-    q1: {
-      question: "¿Qué es la fórmula HAPSS?",
-      answer: "HAPSS significa Hook, Attention, Problem, Story, Solution. Es una estructura probada para Reels virales que analizamos en cada video.",
-    },
-    q2: {
-      question: "¿Qué tan precisa es la Puntuación Viral?",
-      answer: "Nuestra Puntuación Viral se basa en el análisis de más de 100,000 publicaciones virales y tiene una precisión del 89%.",
-    },
-    q3: {
-      question: "¿Puedo analizar cualquier cuenta?",
-      answer: "Sí, puedes analizar cualquier cuenta pública de Instagram. Las cuentas privadas no son accesibles.",
-    },
-    q4: {
-      question: "¿Cómo funciona el geo-targeting?",
-      answer: "Detectamos automáticamente tu país y mostramos la página en tu idioma. Puedes cambiar el idioma manualmente en cualquier momento.",
-    },
   },
+
+  // FAQ Items
+  faqItems: [
+    {
+      question: "¿Qué es la fórmula HAPSS?",
+      answer: "HAPSS significa Hook, Attention, Problem, Story, Solution - un marco probado para Reels virales. Nuestra IA analiza cada uno de estos aspectos en tu contenido."
+    },
+    {
+      question: "¿Qué tan precisa es la Puntuación Viral?",
+      answer: "La Puntuación Viral se basa en 47 factores y alcanza una precisión del 98% en la predicción de tasas de engagement. Fue entrenada con más de 50,000 cuentas analizadas."
+    },
+    {
+      question: "¿Puedo analizar también TikTok y YouTube?",
+      answer: "¡Sí! Con el plan Business, tienes acceso a los módulos de TikTok y YouTube. La metodología de análisis está optimizada para todas las plataformas."
+    },
+    {
+      question: "¿Cómo funciona el análisis de horarios de publicación?",
+      answer: "Analizamos los patrones de engagement de tu audiencia objetivo y te mostramos los mejores momentos para publicar en un mapa de calor interactivo."
+    },
+    {
+      question: "¿Mis datos están seguros?",
+      answer: "Absolutamente. Solo almacenamos datos de acceso público y cumplimos estrictamente con el RGPD. Tus análisis se almacenan de forma encriptada."
+    }
+  ],
 
   // CTA Section
   cta: {
@@ -363,5 +371,219 @@ export const es: Translations = {
     en: "English",
     fr: "Français",
     es: "Español",
+  },
+
+  // Features List (for cards)
+  featuresList: [
+    {
+      title: "Análisis IA de Reels",
+      description: "3.000+ parámetros analizados: framework HAPSS, timing de hooks, frecuencia de corte, transcripción y fórmulas de copywriting.",
+      highlight: "3.000+ PARÁMETROS"
+    },
+    {
+      title: "Análisis de Engagement",
+      description: "Evaluación detallada de likes, comentarios, compartidos y guardados con benchmarks del sector y detección de tendencias."
+    },
+    {
+      title: "Score Viral",
+      description: "Calificación impulsada por IA basada en 47 factores de viralidad incl. fórmulas Hopkins, Ogilvy & Schwartz."
+    },
+    {
+      title: "Crecimiento de Seguidores",
+      description: "Datos históricos y tendencias con períodos personalizables (7d a 1 año).",
+      highlight: "NUEVO"
+    },
+    {
+      title: "Análisis de Horarios",
+      description: "Encuentra los mejores momentos para publicar con mapa de calor interactivo.",
+      highlight: "NUEVO"
+    },
+    {
+      title: "Análisis de Descripciones",
+      description: "Calidad del hook, efectividad del CTA y longitud óptima para más engagement."
+    },
+    {
+      title: "Estrategia de Hashtags",
+      description: "Análisis de alcance y recomendaciones para los mejores hashtags."
+    },
+    {
+      title: "Consejos de Optimización",
+      description: "Recomendaciones personalizadas basadas en el análisis de tu cuenta."
+    },
+    {
+      title: "Exportar PDF",
+      description: "Exporta tu análisis completo como informe PDF profesional."
+    }
+  ],
+
+  // Stats
+  statsList: [
+    { value: "3.000+", label: "Parámetros IA" },
+    { value: "50K+", label: "Cuentas Analizadas" },
+    { value: "98%", label: "Precisión" },
+    { value: "4.9/5", label: "Calificación" }
+  ],
+
+  // Use Cases Section
+  useCases: {
+    badge: "¿PARA QUIÉN?",
+    title: "Perfecto para cualquiera que quiera",
+    titleHighlight: "crecer en Instagram",
+    items: [
+      {
+        title: "Creador de Contenido",
+        description: "Entiende qué funciona para tu audiencia y optimiza tu contenido para máximo alcance.",
+        features: ["Score Viral para cada post", "Optimización de hooks", "Mejores horarios"]
+      },
+      {
+        title: "Influencer",
+        description: "Aumenta tu engagement y muestra a las marcas tu rendimiento real con analytics detallados.",
+        features: ["Benchmarks de engagement", "Seguimiento de crecimiento", "Informes PDF para marcas"]
+      },
+      {
+        title: "Agencias",
+        description: "Analiza cuentas de clientes y competidores para desarrollar estrategias basadas en datos.",
+        features: ["Análisis competitivo", "Análisis por lotes", "Informes marca blanca"]
+      },
+      {
+        title: "Marcas",
+        description: "Encuentra los mejores influencers para tus campañas y verifica su rendimiento real.",
+        features: ["Selección de influencers", "Detección seguidores falsos", "Previsión ROI"]
+      }
+    ]
+  },
+
+  // Testimonials
+  testimonials: {
+    badge: "HISTORIAS DE ÉXITO",
+    title: "Lo que nuestros usuarios han",
+    titleHighlight: "logrado",
+    items: [
+      {
+        name: "Sarah M.",
+        role: "Influencer Fitness",
+        followers: "125K Seguidores",
+        text: "Desde que uso ReelSpy, mi engagement se ha triplicado. El análisis HAPSS me muestra exactamente dónde mis hooks son débiles.",
+        metric: "+312% Engagement"
+      },
+      {
+        name: "Marco K.",
+        role: "Blogger de Comida",
+        followers: "89K Seguidores",
+        text: "El análisis de horarios fue un cambio total. Mis Reels ahora alcanzan 3x más personas en el momento correcto.",
+        metric: "+280% Alcance"
+      },
+      {
+        name: "Lisa T.",
+        role: "Creadora de Moda",
+        followers: "210K Seguidores",
+        text: "Por fin entiendo por qué algunos Reels se vuelven virales y otros no. El análisis IA es increíblemente preciso.",
+        metric: "5 Reels virales"
+      },
+      {
+        name: "Tim B.",
+        role: "Coach de Negocios",
+        followers: "67K Seguidores",
+        text: "El Score Viral me ayudó a optimizar completamente mi estilo de contenido. ROI en 2 semanas.",
+        metric: "+45K Seguidores"
+      }
+    ]
+  },
+
+  // FAQ List
+  faqList: [
+    {
+      question: "¿Cómo funciona el análisis IA?",
+      answer: "Nuestra IA analiza cada aspecto de tus Reels: calidad del hook, storytelling, elementos visuales, estructura de descripciones y más. Basado en millones de posts analizados, reconocemos patrones que llevan al contenido viral."
+    },
+    {
+      question: "¿Mi cuenta está segura?",
+      answer: "Absolutamente. Solo accedemos a datos públicos y no almacenamos credenciales. El análisis se hace completamente a través de datos públicos de Instagram."
+    },
+    {
+      question: "¿Qué tan preciso es el Score Viral?",
+      answer: "Nuestro Score Viral tiene 98% de precisión basado en datos históricos. Considera 12+ factores como tasa de engagement, calidad del hook, horario y tipo de contenido."
+    },
+    {
+      question: "¿Puedo analizar cualquier cuenta?",
+      answer: "Sí, puedes analizar cualquier cuenta pública de Instagram - la tuya o la de tus competidores. Las cuentas privadas no pueden ser analizadas."
+    },
+    {
+      question: "¿Con qué frecuencia se actualizan los datos?",
+      answer: "Los datos se obtienen en tiempo real con cada análisis. Siempre obtienes la información más reciente sobre seguidores, engagement y rendimiento."
+    },
+    {
+      question: "¿Qué es el framework HAPSS?",
+      answer: "HAPSS significa Hook, Attention, Problem, Story, Solution - un framework probado para contenido viral. Nuestra IA analiza qué tan bien tus Reels implementan estos elementos."
+    }
+  ],
+
+  // Pricing Plans (detailed)
+  pricingPlans: {
+    free: {
+      name: "Gratis",
+      tagline: "Para probar",
+      analyses: "3 Análisis IA",
+      analysesNote: "regalo único",
+      features: [
+        "3 análisis IA únicos",
+        "Score Viral (47 factores)",
+        "Framework HAPSS",
+        "7 días de crecimiento",
+        "Análisis IA profundo",
+        "Exportar PDF"
+      ],
+      cta: "Comenzar"
+    },
+    starter: {
+      name: "Starter",
+      tagline: "Para principiantes",
+      analyses: "10 Análisis IA/mes",
+      features: [
+        "10 análisis IA/mes",
+        "3.000+ parámetros IA",
+        "Framework HAPSS + AIDA",
+        "30 días de crecimiento",
+        "Análisis de horarios",
+        "Exportar PDF"
+      ],
+      cta: "Comenzar"
+    },
+    pro: {
+      badge: "MÁS POPULAR",
+      name: "Pro",
+      tagline: "Para creadores",
+      analyses: "35 Análisis IA/mes",
+      features: [
+        "35 análisis IA/mes",
+        "Hopkins, Ogilvy, Schwartz",
+        "Análisis IA profundo",
+        "1 año de historial",
+        "Exportar PDF",
+        "Comparación competidores"
+      ],
+      cta: "Actualizar Ahora"
+    },
+    business: {
+      name: "Business",
+      tagline: "Para agencias",
+      analyses: "100 Análisis IA/mes",
+      features: [
+        "100 análisis IA/mes",
+        "Todo de Pro",
+        "Módulos TikTok + YouTube",
+        "Informes marca blanca",
+        "Soporte prioritario",
+        "Cuentas de equipo"
+      ],
+      cta: "Actualizar"
+    }
+  },
+
+  // Trust badges
+  trustBadges: {
+    rating: "Calificación",
+    privacy: "100% Privacidad",
+    realtime: "Análisis Tiempo Real"
   },
 };

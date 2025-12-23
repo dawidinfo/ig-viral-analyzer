@@ -491,7 +491,7 @@ export default function Home() {
             transition={{ delay: 0.8, duration: 0.6 }}
             className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto"
           >
-            {stats.map((stat, index) => (
+            {t.statsList.map((stat, index) => (
               <div 
                 key={index}
                 className="glass-card rounded-2xl p-6 text-center stat-card"
@@ -520,7 +520,7 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-              <span className="text-sm text-muted-foreground">+2.500 aktive Nutzer</span>
+              <span className="text-sm text-muted-foreground">+2,500 {t.admin.activeUsers.toLowerCase()}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="flex">
@@ -529,15 +529,15 @@ export default function Home() {
                 ))}
               </div>
               <span className="text-sm font-semibold">4.9/5</span>
-              <span className="text-sm text-muted-foreground">Bewertung</span>
+              <span className="text-sm text-muted-foreground">{t.trustBadges.rating}</span>
             </div>
             <div className="flex items-center gap-2">
               <Shield className="w-5 h-5 text-accent" />
-              <span className="text-sm text-muted-foreground">100% Datenschutz</span>
+              <span className="text-sm text-muted-foreground">{t.trustBadges.privacy}</span>
             </div>
             <div className="flex items-center gap-2">
               <Zap className="w-5 h-5 text-yellow-500" />
-              <span className="text-sm text-muted-foreground">Echtzeit-Analyse</span>
+              <span className="text-sm text-muted-foreground">{t.trustBadges.realtime}</span>
             </div>
           </div>
         </div>
@@ -650,7 +650,9 @@ export default function Home() {
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4 overflow-visible">
-            {features.map((feature, index) => (
+            {t.featuresList.map((feature, index) => {
+              const icons = [<Brain className="w-6 h-6" />, <BarChart3 className="w-6 h-6" />, <Zap className="w-6 h-6" />, <LineChart className="w-6 h-6" />, <Clock className="w-6 h-6" />, <MessageSquare className="w-6 h-6" />, <Hash className="w-6 h-6" />, <Target className="w-6 h-6" />, <FileText className="w-6 h-6" />];
+              return (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -665,12 +667,12 @@ export default function Home() {
                   </Badge>
                 )}
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center text-primary mb-4 group-hover:glow-purple transition-all">
-                  {feature.icon}
+                  {icons[index]}
                 </div>
                 <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
                 <p className="text-sm text-muted-foreground">{feature.description}</p>
               </motion.div>
-            ))}
+            );})}
           </div>
         </div>
       </section>
@@ -762,16 +764,18 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <Badge className="badge-neon mb-4">FÜR WEN?</Badge>
+            <Badge className="badge-neon mb-4">{t.useCases.badge}</Badge>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Perfekt für jeden, der
+              {t.useCases.title}
               <br />
-              <span className="text-gradient">auf Instagram wachsen will</span>
+              <span className="text-gradient">{t.useCases.titleHighlight}</span>
             </h2>
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {useCases.map((useCase, index) => (
+            {t.useCases.items.map((useCase, index) => {
+              const icons = [<Users className="w-8 h-8" />, <Trophy className="w-8 h-8" />, <Rocket className="w-8 h-8" />, <Target className="w-8 h-8" />];
+              return (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -781,20 +785,20 @@ export default function Home() {
                 className="glass-card rounded-2xl p-6 stat-card"
               >
                 <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center text-primary mb-4">
-                  {useCase.icon}
+                  {icons[index]}
                 </div>
                 <h3 className="text-xl font-semibold mb-2">{useCase.title}</h3>
                 <p className="text-sm text-muted-foreground mb-4">{useCase.description}</p>
                 <ul className="space-y-2">
-                  {useCase.benefits.map((benefit, i) => (
+                  {useCase.features.map((feature, i) => (
                     <li key={i} className="flex items-center gap-2 text-sm">
                       <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
-                      {benefit}
+                      {feature}
                     </li>
                   ))}
                 </ul>
               </motion.div>
-            ))}
+            );})}
           </div>
         </div>
       </section>
@@ -808,16 +812,16 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <Badge className="badge-neon mb-4">ERFOLGSGESCHICHTEN</Badge>
+            <Badge className="badge-neon mb-4">{t.testimonials.badge}</Badge>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Was unsere Nutzer
+              {t.testimonials.title}
               <br />
-              <span className="text-gradient">erreicht haben</span>
+              <span className="text-gradient">{t.testimonials.titleHighlight}</span>
             </h2>
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 pt-6 overflow-visible">
-            {testimonials.map((testimonial, index) => (
+            {t.testimonials.items.map((testimonial, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -842,7 +846,7 @@ export default function Home() {
                 {/* Author */}
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold">
-                    {testimonial.image}
+                    {testimonial.name.split(' ').map(n => n[0]).join('')}
                   </div>
                   <div>
                     <p className="font-semibold">{testimonial.name}</p>
@@ -853,7 +857,7 @@ export default function Home() {
 
                 {/* Rating */}
                 <div className="flex gap-1 mt-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
+                  {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-4 h-4 text-yellow-500 fill-yellow-500" />
                   ))}
                 </div>
@@ -894,45 +898,27 @@ export default function Home() {
                 className="glass-card rounded-2xl p-6"
               >
                 <div className="text-sm font-medium text-muted-foreground mb-2">FREE</div>
-                <h3 className="text-xl font-bold mb-1">Kostenlos</h3>
-                <p className="text-xs text-muted-foreground mb-4">Zum Ausprobieren</p>
+                <h3 className="text-xl font-bold mb-1">{t.pricingPlans.free.name}</h3>
+                <p className="text-xs text-muted-foreground mb-4">{t.pricingPlans.free.tagline}</p>
                 <div className="text-3xl font-black mb-1">
-                  3 KI-Analysen
+                  {t.pricingPlans.free.analyses}
                 </div>
-                <p className="text-xs text-muted-foreground mb-6">einmalig geschenkt</p>
+                <p className="text-xs text-muted-foreground mb-6">{t.pricingPlans.free.analysesNote}</p>
                 <Button 
                   onClick={() => document.getElementById('hero-input')?.focus()}
                   variant="outline" 
                   className="w-full mb-6"
                   size="sm"
                 >
-                  Jetzt starten
+                  {t.pricingPlans.free.cta}
                 </Button>
                 <ul className="space-y-2 text-sm">
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-accent shrink-0" />
-                    <span><strong>3 KI-Analysen</strong> einmalig</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-accent shrink-0" />
-                    <span>Viral Score (47 Faktoren)</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-accent shrink-0" />
-                    <span>HAPSS-Framework</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-accent shrink-0" />
-                    <span>7 Tage Wachstum</span>
-                  </li>
-                  <li className="flex items-center gap-2 text-muted-foreground">
-                    <Minus className="w-4 h-4 shrink-0" />
-                    <span>KI-Tiefenanalyse</span>
-                  </li>
-                  <li className="flex items-center gap-2 text-muted-foreground">
-                    <Minus className="w-4 h-4 shrink-0" />
-                    <span>PDF-Export</span>
-                  </li>
+                  {t.pricingPlans.free.features.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-accent shrink-0" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
                 </ul>
               </motion.div>
 
@@ -945,45 +931,27 @@ export default function Home() {
                 className="glass-card rounded-2xl p-6"
               >
                 <div className="text-sm font-medium text-primary mb-2">STARTER</div>
-                <h3 className="text-xl font-bold mb-1">Starter</h3>
-                <p className="text-xs text-muted-foreground mb-4">Für Einsteiger</p>
+                <h3 className="text-xl font-bold mb-1">{t.pricingPlans.starter.name}</h3>
+                <p className="text-xs text-muted-foreground mb-4">{t.pricingPlans.starter.tagline}</p>
                 <div className="text-3xl font-black mb-1">
                   €19<span className="text-lg font-normal text-muted-foreground">/mo</span>
                 </div>
-                <p className="text-xs text-muted-foreground mb-6">10 KI-Analysen/Monat</p>
+                <p className="text-xs text-muted-foreground mb-6">{t.pricingPlans.starter.analyses}</p>
                 <Button 
                   onClick={() => setLocation('/pricing')}
                   variant="outline" 
                   className="w-full mb-6"
                   size="sm"
                 >
-                  Upgrade
+                  {t.pricingPlans.starter.cta}
                 </Button>
                 <ul className="space-y-2 text-sm">
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-accent shrink-0" />
-                    <span><strong>10 KI-Analysen</strong>/Monat</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-accent shrink-0" />
-                    <span>3.000+ KI-Parameter</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-accent shrink-0" />
-                    <span>HAPSS + AIDA Framework</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-accent shrink-0" />
-                    <span>30 Tage Wachstum</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-accent shrink-0" />
-                    <span>Posting-Zeit-Analyse</span>
-                  </li>
-                  <li className="flex items-center gap-2 text-muted-foreground">
-                    <Minus className="w-4 h-4 shrink-0" />
-                    <span>PDF-Export</span>
-                  </li>
+                  {t.pricingPlans.starter.features.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-accent shrink-0" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
                 </ul>
               </motion.div>
 
@@ -996,50 +964,32 @@ export default function Home() {
                 className="relative overflow-visible"
               >
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
-                  <Badge className="bg-accent text-accent-foreground font-bold px-4">BELIEBTESTE WAHL</Badge>
+                  <Badge className="bg-accent text-accent-foreground font-bold px-4">{t.pricingPlans.pro.badge}</Badge>
                 </div>
                 <div className="gradient-border rounded-2xl p-1 h-full">
                   <div className="bg-background rounded-2xl p-6 h-full">
                     <div className="text-sm font-medium text-accent mb-2">PRO</div>
-                    <h3 className="text-xl font-bold mb-1">Pro</h3>
-                    <p className="text-xs text-muted-foreground mb-4">Für Creator</p>
+                    <h3 className="text-xl font-bold mb-1">{t.pricingPlans.pro.name}</h3>
+                    <p className="text-xs text-muted-foreground mb-4">{t.pricingPlans.pro.tagline}</p>
                     <div className="text-3xl font-black mb-1">
                       €49<span className="text-lg font-normal text-muted-foreground">/mo</span>
                     </div>
-                    <p className="text-xs text-muted-foreground mb-6">35 KI-Analysen/Monat</p>
+                    <p className="text-xs text-muted-foreground mb-6">{t.pricingPlans.pro.analyses}</p>
                     <Button 
                       onClick={() => setLocation('/pricing')}
                       className="btn-gradient w-full text-white border-0 mb-6"
                       size="sm"
                     >
                       <Crown className="w-4 h-4 mr-1" />
-                      Jetzt upgraden
+                      {t.pricingPlans.pro.cta}
                     </Button>
                     <ul className="space-y-2 text-sm">
-                      <li className="flex items-center gap-2">
-                        <Check className="w-4 h-4 text-accent shrink-0" />
-                        <span><strong>35 KI-Analysen</strong>/Monat</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Check className="w-4 h-4 text-accent shrink-0" />
-                        <span>Hopkins, Ogilvy, Schwartz</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Check className="w-4 h-4 text-accent shrink-0" />
-                        <span>KI-Tiefenanalyse</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Check className="w-4 h-4 text-accent shrink-0" />
-                        <span>1 Jahr Follower-Historie</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Check className="w-4 h-4 text-accent shrink-0" />
-                        <span>PDF-Export</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Check className="w-4 h-4 text-accent shrink-0" />
-                        <span>Competitor-Vergleich</span>
-                      </li>
+                      {t.pricingPlans.pro.features.map((feature, i) => (
+                        <li key={i} className="flex items-center gap-2">
+                          <Check className="w-4 h-4 text-accent shrink-0" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
                     </ul>
                   </div>
                 </div>
@@ -1054,12 +1004,12 @@ export default function Home() {
                 className="glass-card rounded-2xl p-6"
               >
                 <div className="text-sm font-medium text-yellow-500 mb-2">BUSINESS</div>
-                <h3 className="text-xl font-bold mb-1">Business</h3>
-                <p className="text-xs text-muted-foreground mb-4">Für Agenturen</p>
+                <h3 className="text-xl font-bold mb-1">{t.pricingPlans.business.name}</h3>
+                <p className="text-xs text-muted-foreground mb-4">{t.pricingPlans.business.tagline}</p>
                 <div className="text-3xl font-black mb-1">
                   €99<span className="text-lg font-normal text-muted-foreground">/mo</span>
                 </div>
-                <p className="text-xs text-muted-foreground mb-6">100 KI-Analysen/Monat</p>
+                <p className="text-xs text-muted-foreground mb-6">{t.pricingPlans.business.analyses}</p>
                 <Button 
                   onClick={() => setLocation('/pricing')}
                   variant="outline" 
@@ -1067,33 +1017,15 @@ export default function Home() {
                   size="sm"
                 >
                   <Rocket className="w-4 h-4 mr-1" />
-                  Upgrade
+                  {t.pricingPlans.business.cta}
                 </Button>
                 <ul className="space-y-2 text-sm">
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-yellow-500 shrink-0" />
-                    <span><strong>100 KI-Analysen</strong>/Monat</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-yellow-500 shrink-0" />
-                    <span>Alles aus Pro</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-yellow-500 shrink-0" />
-                    <span>TikTok + YouTube Module</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-yellow-500 shrink-0" />
-                    <span>White-Label Reports</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-yellow-500 shrink-0" />
-                    <span>Prioritäts-Support</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-yellow-500 shrink-0" />
-                    <span>Team-Accounts</span>
-                  </li>
+                  {t.pricingPlans.business.features.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-yellow-500 shrink-0" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
                 </ul>
               </motion.div>
             </div>
@@ -1120,7 +1052,7 @@ export default function Home() {
           </motion.div>
 
           <div className="max-w-3xl mx-auto space-y-4">
-            {faqs.map((faq, index) => (
+            {t.faqItems.map((faq: {question: string, answer: string}, index: number) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}

@@ -333,3 +333,13 @@
 - [x] How It Works Schritte übersetzen
 - [x] Try Free Button übersetzen
 - [x] 17 i18n Tests bestanden
+
+## Bug-Fix: Fehlende Navigations-Übersetzungen
+- [x] Navigation Links übersetzen (Features, How it works, etc.)
+- [x] Stats Section übersetzen
+- [x] Features-Karten übersetzen
+- [x] Use Cases übersetzen
+- [x] Testimonials übersetzen
+- [x] Pricing-Pläne übersetzen
+- [x] FAQ-Fragen übersetzen
+- [x] Social Proof Bar übersetzen
