@@ -5,6 +5,7 @@ import { publicProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import { analyzeInstagramAccount, fetchInstagramProfile, fetchInstagramPosts, fetchInstagramReels, InstagramAnalysis } from "./instagram";
 import { analyzeReel } from "./reelAnalysis";
+import { generateDeepAnalysis, DeepAnalysis } from "./deepAnalysis";
 import { getDb } from "./db";
 import { instagramCache, savedAnalyses, usageTracking, PLAN_LIMITS, users } from "../drizzle/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
@@ -165,6 +166,40 @@ export const appRouter = router({
       .query(async ({ input }) => {
         const analysis = await analyzeReel(input.username, input.reelUrl);
         return analysis;
+      }),
+
+    // Deep viral analysis with HAPSS, patterns, SEO, top content
+    deepAnalysis: publicProcedure
+      .input(z.object({ username: z.string().min(1) }))
+      .query(async ({ input }): Promise<DeepAnalysis> => {
+        // First get the basic analysis
+        const cached = await getCachedAnalysis(input.username);
+        let analysis;
+        
+        if (cached) {
+          analysis = cached;
+        } else {
+          const { analyzeInstagramAccount } = await import("./instagram");
+          analysis = await analyzeInstagramAccount(input.username);
+          await setCachedAnalysis(input.username, analysis);
+        }
+
+        // Generate deep analysis
+        const deepAnalysis = generateDeepAnalysis(
+          input.username,
+          analysis.posts,
+          analysis.reels,
+          {
+            avgLikes: analysis.metrics.avgLikes,
+            avgComments: analysis.metrics.avgComments,
+            avgViews: analysis.metrics.avgViews,
+            engagementRate: analysis.metrics.engagementRate,
+          },
+          analysis.viralScore,
+          analysis.profile.followerCount
+        );
+
+        return deepAnalysis;
       }),
   }),
 

@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import ReelAnalysis from "@/components/ReelAnalysis";
+import DeepAnalysis from "@/components/DeepAnalysis";
 import { generateAnalysisPDF } from "@/lib/pdfExport";
 import { useLocation, useSearch } from "wouter";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -487,6 +488,14 @@ export default function Analysis() {
                     <BarChart3 className="w-4 h-4 mr-2" />
                     Übersicht
                   </TabsTrigger>
+                  <TabsTrigger value="ai" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    AI Analyse
+                  </TabsTrigger>
+                  <TabsTrigger value="deep" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <Target className="w-4 h-4 mr-2" />
+                    Tiefenanalyse
+                  </TabsTrigger>
                   <TabsTrigger value="engagement" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                     <Heart className="w-4 h-4 mr-2" />
                     Engagement
@@ -498,10 +507,6 @@ export default function Analysis() {
                   <TabsTrigger value="viral" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                     <Zap className="w-4 h-4 mr-2" />
                     Viral Faktoren
-                  </TabsTrigger>
-                  <TabsTrigger value="ai" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white">
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    AI Analyse
                   </TabsTrigger>
                 </TabsList>
 
@@ -821,6 +826,11 @@ export default function Analysis() {
                 {/* AI Analysis Tab */}
                 <TabsContent value="ai" className="space-y-6">
                   <ReelAnalysis username={analysisData.profile.username} />
+                </TabsContent>
+
+                {/* Deep Analysis Tab */}
+                <TabsContent value="deep" className="space-y-6">
+                  <DeepAnalysis username={analysisData.profile.username} />
                 </TabsContent>
               </Tabs>
 

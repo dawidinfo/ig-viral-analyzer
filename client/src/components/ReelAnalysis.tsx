@@ -350,10 +350,10 @@ export default function ReelAnalysis({ username }: ReelAnalysisProps) {
               <div className="mt-4 space-y-3">
                 {[
                   { key: 'hook', label: 'Hook', icon: '🎣', data: analysis.hapssAnalysis.hook },
-                  { key: 'agitate', label: 'Agitate', icon: '😤', data: analysis.hapssAnalysis.agitate },
+                  { key: 'attention', label: 'Attention', icon: '👀', data: analysis.hapssAnalysis.attention },
                   { key: 'problem', label: 'Problem', icon: '❓', data: analysis.hapssAnalysis.problem },
-                  { key: 'solution', label: 'Solution', icon: '💡', data: analysis.hapssAnalysis.solution },
                   { key: 'story', label: 'Story', icon: '📖', data: analysis.hapssAnalysis.story },
+                  { key: 'solution', label: 'Solution', icon: '💡', data: analysis.hapssAnalysis.solution },
                 ].map((item) => (
                   <div key={item.key} className="flex items-center gap-4 p-3 bg-muted/30 rounded-lg">
                     <span className="text-xl">{item.icon}</span>

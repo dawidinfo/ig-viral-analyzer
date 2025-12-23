@@ -43,7 +43,7 @@ export interface HAPSSAnalysis {
     timestamp: string;
     description: string;
   };
-  agitate: {
+  attention: {
     score: number;
     timestamp: string;
     description: string;
@@ -53,12 +53,12 @@ export interface HAPSSAnalysis {
     timestamp: string;
     description: string;
   };
-  solution: {
+  story: {
     score: number;
     timestamp: string;
     description: string;
   };
-  story: {
+  solution: {
     score: number;
     timestamp: string;
     description: string;
@@ -257,10 +257,10 @@ function analyzeHAPSS(transcription: ReelTranscription): HAPSSAnalysis {
   // Hook (0-3 seconds)
   const hookScore = segments[0]?.text.length > 20 ? 75 : 60;
 
-  // Agitate (problem amplification)
-  const agitateWords = ['fehler', 'problem', 'falsch', 'nicht', 'schwer', 'frustriert'];
-  const hasAgitate = agitateWords.some(w => fullText.includes(w));
-  const agitateScore = hasAgitate ? 78 : 50;
+  // Attention (keeping viewer engaged)
+  const attentionWords = ['schau', 'sieh', 'wichtig', 'achtung', 'aufgepasst', 'moment'];
+  const hasAttention = attentionWords.some(w => fullText.includes(w));
+  const attentionScore = hasAttention ? 78 : 50;
 
   // Problem (clear problem statement)
   const problemIndicators = ['das problem', 'der grund', 'warum', 'weil'];
@@ -283,10 +283,10 @@ function analyzeHAPSS(transcription: ReelTranscription): HAPSSAnalysis {
       timestamp: '0:00-0:03',
       description: 'Initialer Hook um Scroll zu stoppen'
     },
-    agitate: {
-      score: Math.min(100, agitateScore),
+    attention: {
+      score: Math.min(100, attentionScore),
       timestamp: '0:03-0:08',
-      description: hasAgitate ? 'Problem wird verstärkt und emotional aufgeladen' : 'Agitation könnte stärker sein'
+      description: hasAttention ? 'Aufmerksamkeit wird durch visuelle und sprachliche Elemente gehalten' : 'Attention-Elemente könnten stärker sein'
     },
     problem: {
       score: Math.min(100, problemScore),
@@ -303,7 +303,7 @@ function analyzeHAPSS(transcription: ReelTranscription): HAPSSAnalysis {
       timestamp: '0:00-0:22',
       description: hasStory ? 'Persönliche Story-Elemente vorhanden' : 'Mehr persönliche Elemente würden helfen'
     },
-    overallScore: Math.round((hookScore + agitateScore + problemScore + solutionScore + storyScore) / 5)
+    overallScore: Math.round((hookScore + attentionScore + problemScore + storyScore + solutionScore) / 5)
   };
 }
 
@@ -398,8 +398,8 @@ function generateRecommendations(
   }
 
   // HAPSS recommendations
-  if (hapssAnalysis.agitate.score < 65) {
-    recommendations.push('😤 Problem verstärken: Zeige die Konsequenzen des Problems emotionaler');
+  if (hapssAnalysis.attention.score < 65) {
+    recommendations.push('👀 Attention verstärken: Nutze visuelle Elemente und Bewegung um die Aufmerksamkeit zu halten');
   }
   if (hapssAnalysis.solution.score < 70) {
     recommendations.push('💡 Lösung konkretisieren: Gib spezifische, umsetzbare Tipps');
