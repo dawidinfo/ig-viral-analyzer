@@ -212,7 +212,7 @@ export default function DeepAnalysis({ username }: DeepAnalysisProps) {
             <CardHeader>
               <CardTitle>HAPSS Framework Analyse</CardTitle>
               <CardDescription>
-                Hook, Attention, Problem, Story, Solution - Die Formel von Dawid Przybylski
+                Hook, Agitate, Problem, Solution, Story - Die Formel von Dawid Przybylski
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -264,19 +264,19 @@ export default function DeepAnalysis({ username }: DeepAnalysisProps) {
                   </div>
                 </div>
 
-                {/* Attention */}
+                {/* Agitate */}
                 <div className="p-4 bg-white/5 rounded-xl">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center text-cyan-400 font-bold">A</div>
-                      <span className="font-semibold">Attention</span>
+                      <span className="font-semibold">Agitate</span>
                     </div>
-                    <span className="text-2xl font-bold text-cyan-400">{hapss.attention.score}%</span>
+                    <span className="text-2xl font-bold text-cyan-400">{hapss.agitate.score}%</span>
                   </div>
-                  <Progress value={hapss.attention.score} className="h-2 mb-3" />
-                  <p className="text-sm text-gray-400 mb-2">{hapss.attention.description}</p>
+                  <Progress value={hapss.agitate.score} className="h-2 mb-3" />
+                  <p className="text-sm text-gray-400 mb-2">{hapss.agitate.description}</p>
                   <div className="space-y-1">
-                    {hapss.attention.techniques.map((tech, i) => (
+                    {hapss.agitate.techniques.map((tech: string, i: number) => (
                       <div key={i} className="flex items-center gap-2 text-xs text-gray-500">
                         <CheckCircle className="w-3 h-3 text-cyan-400" />
                         {tech}
@@ -306,27 +306,6 @@ export default function DeepAnalysis({ username }: DeepAnalysisProps) {
                   </div>
                 </div>
 
-                {/* Story */}
-                <div className="p-4 bg-white/5 rounded-xl">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-pink-500/20 rounded-lg flex items-center justify-center text-pink-400 font-bold">S</div>
-                      <span className="font-semibold">Story</span>
-                    </div>
-                    <span className="text-2xl font-bold text-pink-400">{hapss.story.score}%</span>
-                  </div>
-                  <Progress value={hapss.story.score} className="h-2 mb-3" />
-                  <p className="text-sm text-gray-400 mb-2">{hapss.story.description}</p>
-                  <div className="space-y-1">
-                    {hapss.story.storytellingElements.map((el, i) => (
-                      <div key={i} className="flex items-center gap-2 text-xs text-gray-500">
-                        <FileText className="w-3 h-3 text-pink-400" />
-                        {el}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
                 {/* Solution */}
                 <div className="p-4 bg-white/5 rounded-xl">
                   <div className="flex items-center justify-between mb-2">
@@ -343,6 +322,27 @@ export default function DeepAnalysis({ username }: DeepAnalysisProps) {
                       <div key={i} className="flex items-center gap-2 text-xs text-gray-500">
                         <CheckCircle className="w-3 h-3 text-green-400" />
                         {sol}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Story */}
+                <div className="p-4 bg-white/5 rounded-xl">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-pink-500/20 rounded-lg flex items-center justify-center text-pink-400 font-bold">S</div>
+                      <span className="font-semibold">Story</span>
+                    </div>
+                    <span className="text-2xl font-bold text-pink-400">{hapss.story.score}%</span>
+                  </div>
+                  <Progress value={hapss.story.score} className="h-2 mb-3" />
+                  <p className="text-sm text-gray-400 mb-2">{hapss.story.description}</p>
+                  <div className="space-y-1">
+                    {hapss.story.storytellingElements.map((el, i) => (
+                      <div key={i} className="flex items-center gap-2 text-xs text-gray-500">
+                        <FileText className="w-3 h-3 text-pink-400" />
+                        {el}
                       </div>
                     ))}
                   </div>

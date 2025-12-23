@@ -3,13 +3,14 @@ import autoTable from 'jspdf-autotable';
 
 interface ProfileData {
   username: string;
-  fullName: string;
-  bio: string;
+  fullName?: string;
+  bio?: string;
   followerCount: number;
   followingCount: number;
-  postCount: number;
-  isVerified: boolean;
-  isBusinessAccount: boolean;
+  postCount?: number;
+  isVerified?: boolean;
+  isBusinessAccount?: boolean;
+  profilePicUrl?: string;
 }
 
 interface MetricsData {
@@ -146,7 +147,7 @@ export async function generateAnalysisPDF(data: AnalysisData): Promise<void> {
   const statsData = [
     { label: 'Follower', value: formatNumber(data.profile.followerCount) },
     { label: 'Following', value: formatNumber(data.profile.followingCount) },
-    { label: 'Posts', value: formatNumber(data.profile.postCount) },
+    { label: 'Posts', value: formatNumber(data.profile.postCount || 0) },
     { label: 'Engagement', value: `${data.metrics.engagementRate.toFixed(2)}%` }
   ];
   

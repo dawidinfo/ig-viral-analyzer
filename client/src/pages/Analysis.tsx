@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc";
@@ -32,9 +31,14 @@ import {
   Download,
   FileText,
   Save,
-  Loader2
+  Loader2,
+  Pin,
+  PinOff,
+  ChevronDown,
+  ChevronUp,
+  Flame
 } from "lucide-react";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import ReelAnalysis from "@/components/ReelAnalysis";
 import DeepAnalysis from "@/components/DeepAnalysis";
 import { generateAnalysisPDF } from "@/lib/pdfExport";
@@ -109,6 +113,37 @@ const CircularProgress = ({ value, size = 120, strokeWidth = 8, color = "primary
   );
 };
 
+// Section Header with Pin functionality
+interface SectionHeaderProps {
+  title: string;
+  icon: React.ReactNode;
+  isPinned: boolean;
+  onTogglePin: () => void;
+  badge?: string;
+  badgeColor?: string;
+}
+
+const SectionHeader = ({ title, icon, isPinned, onTogglePin, badge, badgeColor = "bg-primary/20 text-primary" }: SectionHeaderProps) => (
+  <div className="flex items-center justify-between mb-6">
+    <div className="flex items-center gap-3">
+      {icon}
+      <h2 className="text-xl font-bold">{title}</h2>
+      {badge && (
+        <Badge className={badgeColor}>{badge}</Badge>
+      )}
+    </div>
+    <Button
+      variant="ghost"
+      size="sm"
+      onClick={onTogglePin}
+      className={`${isPinned ? 'text-primary' : 'text-muted-foreground'} hover:text-primary`}
+    >
+      {isPinned ? <Pin className="w-4 h-4" /> : <PinOff className="w-4 h-4" />}
+      <span className="ml-2 text-xs">{isPinned ? 'Angepinnt' : 'Anpinnen'}</span>
+    </Button>
+  </div>
+);
+
 export default function Analysis() {
   const [, setLocation] = useLocation();
   const searchString = useSearch();
@@ -118,6 +153,21 @@ export default function Analysis() {
   const [username, setUsername] = useState(usernameParam);
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  
+  // Pinned sections state
+  const [pinnedSections, setPinnedSections] = useState<Set<string>>(new Set(['ai', 'stats', 'viral']));
+
+  const togglePin = (section: string) => {
+    setPinnedSections(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(section)) {
+        newSet.delete(section);
+      } else {
+        newSet.add(section);
+      }
+      return newSet;
+    });
+  };
 
   // Save analysis mutation
   const saveAnalysisMutation = trpc.dashboard.saveAnalysis.useMutation({
@@ -160,7 +210,7 @@ export default function Analysis() {
     { 
       enabled: !!usernameParam,
       retry: 1,
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 5 * 60 * 1000,
     }
   );
 
@@ -177,7 +227,6 @@ export default function Analysis() {
     
     const recs: { type: 'success' | 'warning' | 'error'; text: string }[] = [];
     
-    // Engagement rate analysis
     if (analysisData.metrics.engagementRate > 3) {
       recs.push({ type: 'success', text: `Überdurchschnittliche Engagement-Rate von ${analysisData.metrics.engagementRate.toFixed(1)}%` });
     } else if (analysisData.metrics.engagementRate > 1) {
@@ -186,28 +235,24 @@ export default function Analysis() {
       recs.push({ type: 'error', text: `Niedrige Engagement-Rate von ${analysisData.metrics.engagementRate.toFixed(1)}% - Strategie überdenken` });
     }
 
-    // Viral score analysis
     if (analysisData.viralScore >= 70) {
       recs.push({ type: 'success', text: 'Hoher Viral Score - Content hat großes Potenzial' });
     } else if (analysisData.viralScore >= 50) {
       recs.push({ type: 'warning', text: 'Mittlerer Viral Score - Hook und Emotionen verbessern' });
     }
 
-    // Reels analysis
     if (analysisData.reels.length > 0) {
       recs.push({ type: 'success', text: `${analysisData.reels.length} Reels analysiert - Video-Content aktiv` });
     } else {
       recs.push({ type: 'warning', text: 'Keine Reels gefunden - Reels können Reichweite steigern' });
     }
 
-    // Caption analysis
     if (analysisData.viralFactors.caption >= 70) {
       recs.push({ type: 'success', text: 'Starke Caption-Qualität mit guten CTAs' });
     } else {
       recs.push({ type: 'warning', text: 'Captions optimieren - Mehr Hooks und CTAs einbauen' });
     }
 
-    // Hashtag analysis
     if (analysisData.viralFactors.hashtags >= 70) {
       recs.push({ type: 'success', text: 'Effektive Hashtag-Strategie' });
     } else {
@@ -230,7 +275,7 @@ export default function Analysis() {
     ];
   }, [analysisData]);
 
-  // Weekly engagement data (simulated based on real metrics)
+  // Weekly engagement data
   const weeklyData = useMemo(() => {
     if (!analysisData) return [];
     const baseEngagement = analysisData.metrics.engagementRate;
@@ -284,562 +329,449 @@ export default function Analysis() {
             </Button>
           </div>
 
-          <div className="hidden md:block" />
+          {/* Action Buttons */}
+          <div className="flex items-center gap-2">
+            {analysisData && (
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleSaveAnalysis}
+                  disabled={isSaved || isSaving || !user}
+                  className={isSaved ? 'bg-green-500/20 border-green-500/30 text-green-400' : ''}
+                >
+                  {isSaving ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : isSaved ? (
+                    <BookmarkCheck className="w-4 h-4 mr-2" />
+                  ) : (
+                    <Bookmark className="w-4 h-4 mr-2" />
+                  )}
+                  {isSaved ? 'Gespeichert' : 'Speichern'}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => generateAnalysisPDF(analysisData)}
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  PDF
+                </Button>
+              </>
+            )}
+          </div>
         </div>
       </nav>
 
       {/* Main Content */}
-      <main className="pt-24 pb-12 relative z-10">
-        <div className="container">
-          {/* Loading State */}
-          <AnimatePresence>
-            {isLoading && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="flex flex-col items-center justify-center py-32"
-              >
+      <main className="container pt-24 pb-12 relative z-10">
+        {/* Loading State */}
+        {isLoading && (
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="relative">
+              <div className="w-20 h-20 border-4 border-primary/30 rounded-full animate-pulse" />
+              <div className="absolute inset-0 w-20 h-20 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+            </div>
+            <p className="mt-6 text-muted-foreground">Analysiere @{usernameParam}...</p>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && (
+          <div className="glass-card rounded-2xl p-8 text-center">
+            <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+            <h2 className="text-xl font-bold mb-2">Analyse fehlgeschlagen</h2>
+            <p className="text-muted-foreground mb-4">
+              Der Account konnte nicht analysiert werden. Bitte überprüfe den Benutzernamen.
+            </p>
+            <Button onClick={() => refetch()} className="btn-gradient text-white border-0">
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Erneut versuchen
+            </Button>
+          </div>
+        )}
+
+        {/* Analysis Results */}
+        {analysisData && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-12"
+          >
+            {/* Profile Header */}
+            <div className="glass-card rounded-2xl p-8">
+              <div className="flex flex-col md:flex-row items-center gap-8">
+                {/* Profile Picture */}
                 <div className="relative">
-                  <div className="w-20 h-20 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
-                  <Sparkles className="w-8 h-8 text-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-                </div>
-                <p className="text-muted-foreground mt-6">Analysiere @{usernameParam}...</p>
-                <p className="text-sm text-muted-foreground/60 mt-2">Lade Live-Daten von Instagram</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Error State */}
-          {error && !isLoading && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-center py-32"
-            >
-              <div className="w-24 h-24 rounded-2xl bg-destructive/10 flex items-center justify-center mx-auto mb-6">
-                <AlertCircle className="w-12 h-12 text-destructive" />
-              </div>
-              <h2 className="text-2xl font-bold mb-2">Fehler bei der Analyse</h2>
-              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                {error.message || 'Der Account konnte nicht analysiert werden. Bitte überprüfe den Username.'}
-              </p>
-              <Button onClick={() => refetch()} className="btn-gradient text-white border-0">
-                <RefreshCw className="w-4 h-4 mr-2" />
-                Erneut versuchen
-              </Button>
-            </motion.div>
-          )}
-
-          {/* No Data State */}
-          {!isLoading && !analysisData && !error && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-center py-32"
-            >
-              <div className="w-24 h-24 rounded-2xl bg-muted/50 flex items-center justify-center mx-auto mb-6">
-                <Search className="w-12 h-12 text-muted-foreground" />
-              </div>
-              <h2 className="text-2xl font-bold mb-2">Account analysieren</h2>
-              <p className="text-muted-foreground mb-6">
-                Gib einen Instagram-Username ein, um die Analyse zu starten.
-              </p>
-            </motion.div>
-          )}
-
-          {/* Analysis Results */}
-          {!isLoading && analysisData && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              {/* Profile Header */}
-              <div className="glass-card rounded-2xl p-6 mb-6">
-                <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-                  {/* Profile Picture */}
-                  <div className="relative">
+                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary to-secondary p-1">
                     {analysisData.profile.profilePicUrl ? (
                       <img 
                         src={analysisData.profile.profilePicUrl} 
                         alt={analysisData.profile.username}
-                        className="w-24 h-24 rounded-2xl object-cover border-2 border-border"
+                        className="w-full h-full rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                        <Users className="w-10 h-10 text-white" />
-                      </div>
-                    )}
-                    {analysisData.profile.isVerified && (
-                      <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
-                        <CheckCircle2 className="w-4 h-4 text-white" />
+                      <div className="w-full h-full rounded-full bg-muted flex items-center justify-center">
+                        <Users className="w-12 h-12 text-muted-foreground" />
                       </div>
                     )}
                   </div>
-
-                  {/* Profile Info */}
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h1 className="text-2xl font-bold">@{analysisData.profile.username}</h1>
-                      {analysisData.profile.isBusinessAccount && (
-                        <Badge variant="secondary">Business</Badge>
-                      )}
-                      {analysisData.isDemo ? (
-                        <Badge variant="outline" className="border-amber-500/50 text-amber-500 bg-amber-500/10">
-                          <AlertCircle className="w-3 h-3 mr-1" />
-                          Demo-Daten
-                        </Badge>
-                      ) : (
-                        <Badge className="badge-neon">Live-Daten</Badge>
-                      )}
+                  {analysisData.profile.isVerified && (
+                    <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                      <CheckCircle2 className="w-5 h-5 text-white" />
                     </div>
-                    <p className="text-lg text-muted-foreground mb-2">{analysisData.profile.fullName}</p>
-                    <p className="text-sm text-muted-foreground max-w-xl">{analysisData.profile.biography}</p>
-                    {analysisData.profile.externalUrl && (
-                      <a 
-                        href={analysisData.profile.externalUrl} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-sm text-primary hover:underline flex items-center gap-1 mt-2"
-                      >
-                        <ExternalLink className="w-3 h-3" />
-                        {analysisData.profile.externalUrl}
-                      </a>
+                  )}
+                </div>
+
+                {/* Profile Info */}
+                <div className="flex-1 text-center md:text-left">
+                  <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
+                    <h1 className="text-2xl font-bold">@{analysisData.profile.username}</h1>
+                    {analysisData.isDemo && (
+                      <Badge variant="outline" className="bg-amber-500/20 border-amber-500/30 text-amber-400">
+                        Demo-Daten
+                      </Badge>
                     )}
                   </div>
-
-                  {/* Viral Score & Export */}
-                  <div className="flex flex-col items-center gap-4">
-                    <div className="flex flex-col items-center">
-                      <CircularProgress value={analysisData.viralScore} size={100} color="viral" />
-                      <p className="text-sm text-muted-foreground mt-2">Viral Score</p>
+                  {analysisData.profile.fullName && (
+                    <p className="text-muted-foreground mb-4">{analysisData.profile.fullName}</p>
+                  )}
+                  
+                  {/* Quick Stats */}
+                  <div className="flex flex-wrap justify-center md:justify-start gap-6">
+                    <div className="text-center">
+                      <p className="text-2xl font-bold">{formatNumber(analysisData.profile.followerCount)}</p>
+                      <p className="text-sm text-muted-foreground">Follower</p>
                     </div>
-                    <div className="flex gap-2">
-                      <Button
-                        onClick={handleSaveAnalysis}
-                        disabled={isSaved || isSaving}
-                        variant="outline"
-                        size="sm"
-                        className={isSaved ? "border-green-500/50 text-green-500" : "border-accent/50 hover:bg-accent/20 text-accent"}
-                      >
-                        {isSaving ? (
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        ) : isSaved ? (
-                          <BookmarkCheck className="w-4 h-4 mr-2" />
-                        ) : (
-                          <Bookmark className="w-4 h-4 mr-2" />
-                        )}
-                        {isSaved ? "Gespeichert" : "Speichern"}
-                      </Button>
-                      <Button
-                        onClick={() => generateAnalysisPDF({
-                          profile: {
-                            username: analysisData.profile.username,
-                            fullName: analysisData.profile.fullName || analysisData.profile.username,
-                            bio: analysisData.profile.biography || '',
-                            followerCount: analysisData.profile.followerCount,
-                            followingCount: analysisData.profile.followingCount,
-                            postCount: analysisData.profile.mediaCount,
-                            isVerified: analysisData.profile.isVerified,
-                            isBusinessAccount: analysisData.profile.isBusinessAccount
-                          },
-                          metrics: analysisData.metrics,
-                          viralScore: analysisData.viralScore,
-                          viralFactors: analysisData.viralFactors,
-                          isDemo: analysisData.isDemo
-                        })}
-                        variant="outline"
-                        size="sm"
-                        className="border-primary/50 hover:bg-primary/20 text-primary"
-                      >
-                        <Download className="w-4 h-4 mr-2" />
-                        PDF
-                      </Button>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold">{formatNumber(analysisData.profile.followingCount)}</p>
+                      <p className="text-sm text-muted-foreground">Following</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold">{(analysisData.profile as any).postCount || analysisData.posts.length}</p>
+                      <p className="text-sm text-muted-foreground">Posts</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-primary">{analysisData.viralScore}</p>
+                      <p className="text-sm text-muted-foreground">Viral Score</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-accent">{analysisData.metrics.engagementRate.toFixed(1)}%</p>
+                      <p className="text-sm text-muted-foreground">Engagement</p>
                     </div>
                   </div>
                 </div>
 
-                {/* Stats Row */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-border/50">
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-gradient">{formatNumber(analysisData.profile.followerCount)}</p>
-                    <p className="text-sm text-muted-foreground">Follower</p>
+                {/* Viral Score Circle */}
+                <div className="flex flex-col items-center">
+                  <CircularProgress value={analysisData.viralScore} size={140} color="viral" />
+                  <p className="mt-2 text-sm font-medium text-accent">Viral Score</p>
+                </div>
+              </div>
+            </div>
+
+            {/* ==================== SECTION 1: AI REEL-ANALYSE ==================== */}
+            <section className="space-y-6">
+              <SectionHeader
+                title="🔥 HOT-Transkription & AI Reel-Analyse"
+                icon={<Sparkles className="w-6 h-6 text-primary" />}
+                isPinned={pinnedSections.has('ai')}
+                onTogglePin={() => togglePin('ai')}
+                badge="KI-gestützt"
+                badgeColor="bg-gradient-to-r from-purple-500/20 to-cyan-500/20 text-primary border border-primary/30"
+              />
+              <div className="glass-card rounded-2xl p-8 border-2 border-primary/20">
+                <ReelAnalysis username={analysisData.profile.username} />
+              </div>
+            </section>
+
+            {/* ==================== SECTION 2: TIEFENANALYSE ==================== */}
+            <section className="space-y-6">
+              <SectionHeader
+                title="Tiefenanalyse & HAPSS Framework"
+                icon={<Target className="w-6 h-6 text-cyan-400" />}
+                isPinned={pinnedSections.has('deep')}
+                onTogglePin={() => togglePin('deep')}
+                badge="Hook, Agitate, Problem, Solution, Story"
+                badgeColor="bg-cyan-500/20 text-cyan-400 border border-cyan-500/30"
+              />
+              <div className="glass-card rounded-2xl p-8">
+                <DeepAnalysis username={analysisData.profile.username} />
+              </div>
+            </section>
+
+            {/* ==================== SECTION 3: STATISTIKEN & METRIKEN ==================== */}
+            <section className="space-y-6">
+              <SectionHeader
+                title="Statistiken & Metriken"
+                icon={<BarChart3 className="w-6 h-6 text-green-400" />}
+                isPinned={pinnedSections.has('stats')}
+                onTogglePin={() => togglePin('stats')}
+              />
+              
+              {/* Metric Cards Grid */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="glass-card rounded-xl p-6 stat-card">
+                  <div className="flex items-center justify-between mb-3">
+                    <Heart className="w-6 h-6 text-pink-500" />
+                    <span className="text-xs text-muted-foreground">Ø pro Post</span>
                   </div>
-                  <div className="text-center">
-                    <p className="text-2xl font-bold">{formatNumber(analysisData.profile.followingCount)}</p>
-                    <p className="text-sm text-muted-foreground">Following</p>
+                  <p className="text-4xl font-bold">{formatNumber(analysisData.metrics.avgLikes)}</p>
+                  <p className="text-sm text-muted-foreground mt-1">Likes</p>
+                </div>
+
+                <div className="glass-card rounded-xl p-6 stat-card">
+                  <div className="flex items-center justify-between mb-3">
+                    <MessageSquare className="w-6 h-6 text-blue-500" />
+                    <span className="text-xs text-muted-foreground">Ø pro Post</span>
                   </div>
-                  <div className="text-center">
-                    <p className="text-2xl font-bold">{formatNumber(analysisData.profile.mediaCount)}</p>
-                    <p className="text-sm text-muted-foreground">Posts</p>
+                  <p className="text-4xl font-bold">{formatNumber(analysisData.metrics.avgComments)}</p>
+                  <p className="text-sm text-muted-foreground mt-1">Kommentare</p>
+                </div>
+
+                <div className="glass-card rounded-xl p-6 stat-card">
+                  <div className="flex items-center justify-between mb-3">
+                    <Eye className="w-6 h-6 text-cyan-500" />
+                    <span className="text-xs text-muted-foreground">Ø pro Video</span>
                   </div>
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-accent">{analysisData.metrics.engagementRate.toFixed(2)}%</p>
-                    <p className="text-sm text-muted-foreground">Engagement</p>
+                  <p className="text-4xl font-bold">{formatNumber(analysisData.metrics.avgViews)}</p>
+                  <p className="text-sm text-muted-foreground mt-1">Views</p>
+                </div>
+
+                <div className="glass-card rounded-xl p-6 stat-card">
+                  <div className="flex items-center justify-between mb-3">
+                    <Share2 className="w-6 h-6 text-green-500" />
+                    <span className="text-xs text-muted-foreground">Geschätzt</span>
                   </div>
+                  <p className="text-4xl font-bold">{formatNumber(analysisData.metrics.avgShares)}</p>
+                  <p className="text-sm text-muted-foreground mt-1">Shares</p>
+                </div>
+
+                <div className="glass-card rounded-xl p-6 stat-card">
+                  <div className="flex items-center justify-between mb-3">
+                    <Bookmark className="w-6 h-6 text-amber-500" />
+                    <span className="text-xs text-muted-foreground">Geschätzt</span>
+                  </div>
+                  <p className="text-4xl font-bold">{formatNumber(analysisData.metrics.avgSaves)}</p>
+                  <p className="text-sm text-muted-foreground mt-1">Saves</p>
+                </div>
+
+                <div className="glass-card rounded-xl p-6 stat-card">
+                  <div className="flex items-center justify-between mb-3">
+                    <TrendingUp className="w-6 h-6 text-primary" />
+                    <span className="text-xs text-muted-foreground">Berechnet</span>
+                  </div>
+                  <p className="text-4xl font-bold text-primary">{analysisData.metrics.engagementRate.toFixed(2)}%</p>
+                  <p className="text-sm text-muted-foreground mt-1">Engagement Rate</p>
+                </div>
+
+                <div className="glass-card rounded-xl p-6 stat-card">
+                  <div className="flex items-center justify-between mb-3">
+                    <Play className="w-6 h-6 text-red-500" />
+                    <span className="text-xs text-muted-foreground">Video</span>
+                  </div>
+                  <p className="text-4xl font-bold">{analysisData.reels.length}</p>
+                  <p className="text-sm text-muted-foreground mt-1">Reels analysiert</p>
+                </div>
+
+                <div className="glass-card rounded-xl p-6 stat-card">
+                  <div className="flex items-center justify-between mb-3">
+                    <ImageIcon className="w-6 h-6 text-purple-500" />
+                    <span className="text-xs text-muted-foreground">Bilder</span>
+                  </div>
+                  <p className="text-4xl font-bold">{analysisData.posts.length}</p>
+                  <p className="text-sm text-muted-foreground mt-1">Posts analysiert</p>
                 </div>
               </div>
 
-              {/* Tabs */}
-              <Tabs defaultValue="overview" className="space-y-6">
-                <TabsList className="glass-card p-1 h-auto flex-wrap">
-                  <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    <BarChart3 className="w-4 h-4 mr-2" />
-                    Übersicht
-                  </TabsTrigger>
-                  <TabsTrigger value="ai" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    AI Analyse
-                  </TabsTrigger>
-                  <TabsTrigger value="deep" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    <Target className="w-4 h-4 mr-2" />
-                    Tiefenanalyse
-                  </TabsTrigger>
-                  <TabsTrigger value="engagement" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    <Heart className="w-4 h-4 mr-2" />
-                    Engagement
-                  </TabsTrigger>
-                  <TabsTrigger value="reels" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    <Play className="w-4 h-4 mr-2" />
-                    Reels
-                  </TabsTrigger>
-                  <TabsTrigger value="viral" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    <Zap className="w-4 h-4 mr-2" />
-                    Viral Faktoren
-                  </TabsTrigger>
-                </TabsList>
+              {/* Engagement Chart */}
+              <div className="glass-card rounded-xl p-6">
+                <h3 className="text-lg font-semibold mb-4">Engagement-Verlauf (Woche)</h3>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={weeklyData}>
+                      <defs>
+                        <linearGradient id="engagementGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="oklch(0.65 0.25 285)" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="oklch(0.65 0.25 285)" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                      <XAxis dataKey="day" stroke="rgba(255,255,255,0.5)" />
+                      <YAxis stroke="rgba(255,255,255,0.5)" />
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: 'rgba(0,0,0,0.8)', 
+                          border: '1px solid rgba(255,255,255,0.1)',
+                          borderRadius: '8px'
+                        }}
+                      />
+                      <Area 
+                        type="monotone" 
+                        dataKey="engagement" 
+                        stroke="oklch(0.65 0.25 285)" 
+                        fill="url(#engagementGradient)"
+                        strokeWidth={2}
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </section>
 
-                {/* Overview Tab */}
-                <TabsContent value="overview" className="space-y-6">
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {/* Metric Cards */}
-                    <div className="glass-card rounded-xl p-5 stat-card">
-                      <div className="flex items-center justify-between mb-3">
-                        <Heart className="w-5 h-5 text-pink-500" />
-                        <span className="text-xs text-muted-foreground">Ø pro Post</span>
-                      </div>
-                      <p className="text-3xl font-bold">{formatNumber(analysisData.metrics.avgLikes)}</p>
-                      <p className="text-sm text-muted-foreground">Likes</p>
-                    </div>
-
-                    <div className="glass-card rounded-xl p-5 stat-card">
-                      <div className="flex items-center justify-between mb-3">
-                        <MessageSquare className="w-5 h-5 text-blue-500" />
-                        <span className="text-xs text-muted-foreground">Ø pro Post</span>
-                      </div>
-                      <p className="text-3xl font-bold">{formatNumber(analysisData.metrics.avgComments)}</p>
-                      <p className="text-sm text-muted-foreground">Kommentare</p>
-                    </div>
-
-                    <div className="glass-card rounded-xl p-5 stat-card">
-                      <div className="flex items-center justify-between mb-3">
-                        <Eye className="w-5 h-5 text-cyan-500" />
-                        <span className="text-xs text-muted-foreground">Ø pro Video</span>
-                      </div>
-                      <p className="text-3xl font-bold">{formatNumber(analysisData.metrics.avgViews)}</p>
-                      <p className="text-sm text-muted-foreground">Views</p>
-                    </div>
-
-                    <div className="glass-card rounded-xl p-5 stat-card">
-                      <div className="flex items-center justify-between mb-3">
-                        <Share2 className="w-5 h-5 text-green-500" />
-                        <span className="text-xs text-muted-foreground">Geschätzt</span>
-                      </div>
-                      <p className="text-3xl font-bold">{formatNumber(analysisData.metrics.avgShares)}</p>
-                      <p className="text-sm text-muted-foreground">Shares</p>
-                    </div>
-
-                    <div className="glass-card rounded-xl p-5 stat-card">
-                      <div className="flex items-center justify-between mb-3">
-                        <Bookmark className="w-5 h-5 text-yellow-500" />
-                        <span className="text-xs text-muted-foreground">Geschätzt</span>
-                      </div>
-                      <p className="text-3xl font-bold">{formatNumber(analysisData.metrics.avgSaves)}</p>
-                      <p className="text-sm text-muted-foreground">Saves</p>
-                    </div>
-
-                    <div className="glass-card rounded-xl p-5 stat-card">
-                      <div className="flex items-center justify-between mb-3">
-                        <TrendingUp className="w-5 h-5 text-purple-500" />
-                        <span className="text-xs text-muted-foreground">Gesamt</span>
-                      </div>
-                      <p className="text-3xl font-bold text-gradient">{analysisData.metrics.engagementRate.toFixed(2)}%</p>
-                      <p className="text-sm text-muted-foreground">Engagement Rate</p>
-                    </div>
+            {/* ==================== SECTION 4: VIRAL FAKTOREN ==================== */}
+            <section className="space-y-6">
+              <SectionHeader
+                title="Viral Faktoren"
+                icon={<Zap className="w-6 h-6 text-accent" />}
+                isPinned={pinnedSections.has('viral')}
+                onTogglePin={() => togglePin('viral')}
+              />
+              
+              <div className="grid lg:grid-cols-2 gap-6">
+                {/* Radar Chart */}
+                <div className="glass-card rounded-xl p-6">
+                  <h3 className="text-lg font-semibold mb-4">Viral-Faktoren Übersicht</h3>
+                  <div className="h-80">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <RadarChart data={radarData}>
+                        <PolarGrid stroke="rgba(255,255,255,0.1)" />
+                        <PolarAngleAxis dataKey="subject" tick={{ fill: 'rgba(255,255,255,0.7)', fontSize: 12 }} />
+                        <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fill: 'rgba(255,255,255,0.5)' }} />
+                        <Radar
+                          name="Score"
+                          dataKey="A"
+                          stroke="oklch(0.72 0.19 142)"
+                          fill="oklch(0.72 0.19 142)"
+                          fillOpacity={0.3}
+                          strokeWidth={2}
+                        />
+                      </RadarChart>
+                    </ResponsiveContainer>
                   </div>
+                </div>
 
-                  {/* Recommendations */}
-                  <div className="glass-card rounded-xl p-6">
-                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                      <Target className="w-5 h-5 text-primary" />
-                      Empfehlungen
-                    </h3>
-                    <div className="space-y-3">
-                      {recommendations.map((rec, index) => (
-                        <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
-                          {rec.type === 'success' && <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5" />}
-                          {rec.type === 'warning' && <AlertCircle className="w-5 h-5 text-yellow-500 mt-0.5" />}
-                          {rec.type === 'error' && <XCircle className="w-5 h-5 text-red-500 mt-0.5" />}
-                          <p className="text-sm">{rec.text}</p>
+                {/* Factor Details */}
+                <div className="glass-card rounded-xl p-6">
+                  <h3 className="text-lg font-semibold mb-4">Faktor-Details</h3>
+                  <div className="space-y-4">
+                    {[
+                      { name: 'Hook-Qualität', value: analysisData.viralFactors.hook, icon: <Zap className="w-4 h-4" />, color: 'text-yellow-500' },
+                      { name: 'Emotionale Wirkung', value: analysisData.viralFactors.emotion, icon: <Heart className="w-4 h-4" />, color: 'text-pink-500' },
+                      { name: 'Teilbarkeit', value: analysisData.viralFactors.shareability, icon: <Share2 className="w-4 h-4" />, color: 'text-green-500' },
+                      { name: 'Replay-Wert', value: analysisData.viralFactors.replay, icon: <RefreshCw className="w-4 h-4" />, color: 'text-blue-500' },
+                      { name: 'Caption-Qualität', value: analysisData.viralFactors.caption, icon: <Type className="w-4 h-4" />, color: 'text-purple-500' },
+                      { name: 'Hashtag-Strategie', value: analysisData.viralFactors.hashtags, icon: <Hash className="w-4 h-4" />, color: 'text-cyan-500' },
+                    ].map((factor) => (
+                      <div key={factor.name} className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className={factor.color}>{factor.icon}</span>
+                            <span className="text-sm font-medium">{factor.name}</span>
+                          </div>
+                          <span className="text-sm font-bold">{factor.value}%</span>
                         </div>
-                      ))}
-                    </div>
+                        <Progress value={factor.value} className="h-2" />
+                      </div>
+                    ))}
                   </div>
-                </TabsContent>
+                </div>
+              </div>
+            </section>
 
-                {/* Engagement Tab */}
-                <TabsContent value="engagement" className="space-y-6">
-                  <div className="glass-card rounded-xl p-6">
-                    <h3 className="text-lg font-semibold mb-4">Engagement-Trend (Woche)</h3>
-                    <div className="h-64">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={weeklyData}>
-                          <defs>
-                            <linearGradient id="colorEngagement" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="5%" stopColor="oklch(0.65 0.25 285)" stopOpacity={0.3}/>
-                              <stop offset="95%" stopColor="oklch(0.65 0.25 285)" stopOpacity={0}/>
-                            </linearGradient>
-                          </defs>
-                          <CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 0.1)" />
-                          <XAxis dataKey="day" stroke="oklch(0.7 0 0)" />
-                          <YAxis stroke="oklch(0.7 0 0)" />
-                          <Tooltip 
-                            contentStyle={{ 
-                              backgroundColor: 'oklch(0.15 0.02 285)', 
-                              border: '1px solid oklch(1 0 0 / 0.1)',
-                              borderRadius: '8px'
-                            }}
+            {/* ==================== SECTION 5: EMPFEHLUNGEN ==================== */}
+            <section className="space-y-6">
+              <SectionHeader
+                title="KI-Empfehlungen"
+                icon={<CheckCircle2 className="w-6 h-6 text-green-400" />}
+                isPinned={pinnedSections.has('recommendations')}
+                onTogglePin={() => togglePin('recommendations')}
+              />
+              
+              <div className="glass-card rounded-xl p-6">
+                <div className="grid md:grid-cols-2 gap-4">
+                  {recommendations.map((rec, index) => (
+                    <div 
+                      key={index}
+                      className={`flex items-start gap-3 p-4 rounded-lg ${
+                        rec.type === 'success' ? 'bg-green-500/10 border border-green-500/20' :
+                        rec.type === 'warning' ? 'bg-amber-500/10 border border-amber-500/20' :
+                        'bg-red-500/10 border border-red-500/20'
+                      }`}
+                    >
+                      {rec.type === 'success' ? (
+                        <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+                      ) : rec.type === 'warning' ? (
+                        <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                      ) : (
+                        <XCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                      )}
+                      <p className="text-sm">{rec.text}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* ==================== SECTION 6: REELS ÜBERSICHT ==================== */}
+            {analysisData.reels.length > 0 && (
+              <section className="space-y-6">
+                <SectionHeader
+                  title="Reels Performance"
+                  icon={<Play className="w-6 h-6 text-red-500" />}
+                  isPinned={pinnedSections.has('reels')}
+                  onTogglePin={() => togglePin('reels')}
+                  badge={`${analysisData.reels.length} Reels`}
+                />
+                
+                <div className="glass-card rounded-xl p-6">
+                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    {analysisData.reels.slice(0, 12).map((reel, index) => (
+                      <div key={reel.id || index} className="relative group">
+                        {reel.thumbnailUrl ? (
+                          <img 
+                            src={reel.thumbnailUrl} 
+                            alt={`Reel ${index + 1}`}
+                            className="w-full aspect-[9/16] object-cover rounded-lg"
                           />
-                          <Area 
-                            type="monotone" 
-                            dataKey="engagement" 
-                            stroke="oklch(0.65 0.25 285)" 
-                            fillOpacity={1} 
-                            fill="url(#colorEngagement)" 
-                          />
-                        </AreaChart>
-                      </ResponsiveContainer>
-                    </div>
+                        ) : (
+                          <div className="w-full aspect-[9/16] bg-muted rounded-lg flex items-center justify-center">
+                            <Play className="w-8 h-8 text-muted-foreground" />
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex flex-col items-center justify-center p-2">
+                          <div className="text-center text-white text-xs space-y-1">
+                            <p className="flex items-center justify-center gap-1"><Eye className="w-3 h-3" /> {formatNumber(reel.viewCount)}</p>
+                            <p className="flex items-center justify-center gap-1"><Heart className="w-3 h-3" /> {formatNumber(reel.likeCount)}</p>
+                            <p className="flex items-center justify-center gap-1"><MessageSquare className="w-3 h-3" /> {formatNumber(reel.commentCount)}</p>
+                          </div>
+                        </div>
+                        <div className="absolute top-2 left-2">
+                          <Badge className="bg-black/60 text-white text-xs">
+                            #{index + 1}
+                          </Badge>
+                        </div>
+                      </div>
+                    ))}
                   </div>
+                </div>
+              </section>
+            )}
 
-                  {/* Engagement Breakdown */}
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="glass-card rounded-xl p-6">
-                      <h3 className="text-lg font-semibold mb-4">Engagement-Verteilung</h3>
-                      <div className="space-y-4">
-                        <div>
-                          <div className="flex justify-between text-sm mb-1">
-                            <span>Likes</span>
-                            <span>{formatNumber(analysisData.metrics.avgLikes)}</span>
-                          </div>
-                          <Progress value={80} className="h-2" />
-                        </div>
-                        <div>
-                          <div className="flex justify-between text-sm mb-1">
-                            <span>Kommentare</span>
-                            <span>{formatNumber(analysisData.metrics.avgComments)}</span>
-                          </div>
-                          <Progress value={45} className="h-2" />
-                        </div>
-                        <div>
-                          <div className="flex justify-between text-sm mb-1">
-                            <span>Shares</span>
-                            <span>{formatNumber(analysisData.metrics.avgShares)}</span>
-                          </div>
-                          <Progress value={25} className="h-2" />
-                        </div>
-                        <div>
-                          <div className="flex justify-between text-sm mb-1">
-                            <span>Saves</span>
-                            <span>{formatNumber(analysisData.metrics.avgSaves)}</span>
-                          </div>
-                          <Progress value={30} className="h-2" />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="glass-card rounded-xl p-6">
-                      <h3 className="text-lg font-semibold mb-4">Engagement-Qualität</h3>
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
-                          <span className="text-sm">Kommentar-zu-Like Ratio</span>
-                          <span className="font-mono font-bold">
-                            {analysisData.metrics.avgLikes > 0 
-                              ? ((analysisData.metrics.avgComments / analysisData.metrics.avgLikes) * 100).toFixed(1) 
-                              : 0}%
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
-                          <span className="text-sm">Engagement pro Follower</span>
-                          <span className="font-mono font-bold">
-                            {((analysisData.metrics.avgLikes + analysisData.metrics.avgComments) / analysisData.profile.followerCount * 100).toFixed(2)}%
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
-                          <span className="text-sm">Durchschnittliche Interaktionen</span>
-                          <span className="font-mono font-bold">
-                            {formatNumber(analysisData.metrics.avgLikes + analysisData.metrics.avgComments)}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </TabsContent>
-
-                {/* Reels Tab */}
-                <TabsContent value="reels" className="space-y-6">
-                  {analysisData.reels.length > 0 ? (
-                    <>
-                      <div className="grid md:grid-cols-4 gap-4">
-                        <div className="glass-card rounded-xl p-5 stat-card">
-                          <Play className="w-5 h-5 text-pink-500 mb-3" />
-                          <p className="text-3xl font-bold">{analysisData.reels.length}</p>
-                          <p className="text-sm text-muted-foreground">Reels analysiert</p>
-                        </div>
-                        <div className="glass-card rounded-xl p-5 stat-card">
-                          <Eye className="w-5 h-5 text-cyan-500 mb-3" />
-                          <p className="text-3xl font-bold">
-                            {formatNumber(analysisData.reels.reduce((sum, r) => sum + r.playCount, 0) / analysisData.reels.length)}
-                          </p>
-                          <p className="text-sm text-muted-foreground">Ø Views</p>
-                        </div>
-                        <div className="glass-card rounded-xl p-5 stat-card">
-                          <Heart className="w-5 h-5 text-pink-500 mb-3" />
-                          <p className="text-3xl font-bold">
-                            {formatNumber(analysisData.reels.reduce((sum, r) => sum + r.likeCount, 0) / analysisData.reels.length)}
-                          </p>
-                          <p className="text-sm text-muted-foreground">Ø Likes</p>
-                        </div>
-                        <div className="glass-card rounded-xl p-5 stat-card">
-                          <MessageSquare className="w-5 h-5 text-blue-500 mb-3" />
-                          <p className="text-3xl font-bold">
-                            {formatNumber(analysisData.reels.reduce((sum, r) => sum + r.commentCount, 0) / analysisData.reels.length)}
-                          </p>
-                          <p className="text-sm text-muted-foreground">Ø Kommentare</p>
-                        </div>
-                      </div>
-
-                      {/* Reels Grid */}
-                      <div className="glass-card rounded-xl p-6">
-                        <h3 className="text-lg font-semibold mb-4">Neueste Reels</h3>
-                        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                          {analysisData.reels.slice(0, 12).map((reel, index) => (
-                            <div key={reel.id || index} className="relative group">
-                              {reel.thumbnailUrl ? (
-                                <img 
-                                  src={reel.thumbnailUrl} 
-                                  alt={`Reel ${index + 1}`}
-                                  className="w-full aspect-[9/16] object-cover rounded-lg"
-                                />
-                              ) : (
-                                <div className="w-full aspect-[9/16] bg-muted rounded-lg flex items-center justify-center">
-                                  <ImageIcon className="w-8 h-8 text-muted-foreground" />
-                                </div>
-                              )}
-                              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
-                                <div className="text-center text-white text-xs">
-                                  <p className="font-bold">{formatNumber(reel.playCount)} Views</p>
-                                  <p>{formatNumber(reel.likeCount)} Likes</p>
-                                </div>
-                              </div>
-                              <div className="absolute bottom-2 left-2 flex items-center gap-1 text-white text-xs bg-black/50 px-2 py-1 rounded">
-                                <Play className="w-3 h-3" />
-                                {formatNumber(reel.playCount)}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <div className="glass-card rounded-xl p-12 text-center">
-                      <Play className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-xl font-semibold mb-2">Keine Reels gefunden</h3>
-                      <p className="text-muted-foreground">
-                        Dieser Account hat keine öffentlichen Reels oder sie konnten nicht geladen werden.
-                      </p>
-                    </div>
-                  )}
-                </TabsContent>
-
-                {/* Viral Factors Tab */}
-                <TabsContent value="viral" className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    {/* Radar Chart */}
-                    <div className="glass-card rounded-xl p-6">
-                      <h3 className="text-lg font-semibold mb-4">Viral-Faktoren Analyse</h3>
-                      <div className="h-80">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <RadarChart data={radarData}>
-                            <PolarGrid stroke="oklch(1 0 0 / 0.1)" />
-                            <PolarAngleAxis dataKey="subject" tick={{ fill: 'oklch(0.7 0 0)', fontSize: 12 }} />
-                            <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fill: 'oklch(0.5 0 0)' }} />
-                            <Radar
-                              name="Score"
-                              dataKey="A"
-                              stroke="oklch(0.72 0.19 142)"
-                              fill="oklch(0.72 0.19 142)"
-                              fillOpacity={0.3}
-                            />
-                          </RadarChart>
-                        </ResponsiveContainer>
-                      </div>
-                    </div>
-
-                    {/* Factor Breakdown */}
-                    <div className="glass-card rounded-xl p-6">
-                      <h3 className="text-lg font-semibold mb-4">Faktor-Details</h3>
-                      <div className="space-y-4">
-                        {radarData.map((factor, index) => (
-                          <div key={index}>
-                            <div className="flex justify-between text-sm mb-1">
-                              <span>{factor.subject}</span>
-                              <span className="font-mono font-bold">{factor.A}/100</span>
-                            </div>
-                            <Progress 
-                              value={factor.A} 
-                              className="h-2"
-                            />
-                          </div>
-                        ))}
-                      </div>
-
-                      <div className="mt-6 p-4 rounded-lg bg-muted/30">
-                        <h4 className="font-semibold mb-2 flex items-center gap-2">
-                          <Zap className="w-4 h-4 text-accent" />
-                          Gesamter Viral Score
-                        </h4>
-                        <div className="flex items-center gap-4">
-                          <div className="text-4xl font-bold text-gradient">{analysisData.viralScore}</div>
-                          <div className="text-sm text-muted-foreground">
-                            {analysisData.viralScore >= 70 && "Hohes Viral-Potenzial"}
-                            {analysisData.viralScore >= 50 && analysisData.viralScore < 70 && "Mittleres Viral-Potenzial"}
-                            {analysisData.viralScore < 50 && "Verbesserungspotenzial"}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </TabsContent>
-
-                {/* AI Analysis Tab */}
-                <TabsContent value="ai" className="space-y-6">
-                  <ReelAnalysis username={analysisData.profile.username} />
-                </TabsContent>
-
-                {/* Deep Analysis Tab */}
-                <TabsContent value="deep" className="space-y-6">
-                  <DeepAnalysis username={analysisData.profile.username} />
-                </TabsContent>
-              </Tabs>
-
-              {/* Recent Posts */}
-              {analysisData.posts.length > 0 && (
-                <div className="glass-card rounded-xl p-6 mt-6">
-                  <h3 className="text-lg font-semibold mb-4">Neueste Posts</h3>
+            {/* ==================== SECTION 7: POSTS ÜBERSICHT ==================== */}
+            {analysisData.posts.length > 0 && (
+              <section className="space-y-6">
+                <SectionHeader
+                  title="Neueste Posts"
+                  icon={<ImageIcon className="w-6 h-6 text-purple-500" />}
+                  isPinned={pinnedSections.has('posts')}
+                  onTogglePin={() => togglePin('posts')}
+                  badge={`${analysisData.posts.length} Posts`}
+                />
+                
+                <div className="glass-card rounded-xl p-6">
                   <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
-                    {analysisData.posts.slice(0, 6).map((post, index) => (
+                    {analysisData.posts.slice(0, 12).map((post, index) => (
                       <div key={post.id || index} className="relative group">
                         {post.thumbnailUrl ? (
                           <img 
@@ -867,14 +799,15 @@ export default function Analysis() {
                     ))}
                   </div>
                 </div>
-              )}
-            </motion.div>
-          )}
-        </div>
+              </section>
+            )}
+
+          </motion.div>
+        )}
       </main>
 
       {/* Footer */}
-      <footer className="py-6 border-t border-border/50 relative z-10">
+      <footer className="py-8 border-t border-border/50 relative z-10">
         <div className="container text-center text-sm text-muted-foreground">
           <p>© 2024 ReelSpy.ai. Live-Daten von Instagram.</p>
         </div>

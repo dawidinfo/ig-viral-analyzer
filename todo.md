@@ -125,3 +125,12 @@
 
 ## Branding Cleanup
 - [x] Entferne alle "Made with Manus" Hinweise aus der Anwendung (Login-Dialog auf Deutsch angepasst)
+
+## Analyse-Seite Überarbeitung
+- [x] HAPSS-Framework korrigieren (Hook, Agitate, Problem, Solution, Story)
+- [x] Alle Sektionen aufklappen - keine versteckten Tabs
+- [x] Mehr Rand/Abstand zwischen Sektionen
+- [x] "HOT-Transkription" Label für Hook-Bereich
+- [x] Klassische Copywriting-Formeln hinzufügen (Hopkins, Ogilvy, Schwartz)
+- [x] Statistiken nach oben verschieben (nach AI Reel-Analyse)
+- [x] Anpinn-Funktion für Sektionen implementieren
