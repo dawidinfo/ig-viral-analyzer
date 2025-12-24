@@ -1,9 +1,10 @@
 /**
  * Stripe Checkout Service for ReelSpy.ai
+ * Subscription-based checkout with monthly and yearly billing
  */
 
 import Stripe from "stripe";
-import { CREDIT_PACKAGES, getPackageById } from "./products";
+import { SUBSCRIPTION_PLANS, getPlanById, getStripePriceId } from "./products";
 
 // Initialize Stripe with secret key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
@@ -14,6 +15,7 @@ export interface CreateCheckoutParams {
   userEmail: string;
   userName?: string;
   origin: string;
+  isYearly?: boolean;
 }
 
 export interface CheckoutResult {
@@ -22,33 +24,33 @@ export interface CheckoutResult {
 }
 
 /**
- * Create a Stripe Checkout Session for credit package purchase
+ * Create a Stripe Checkout Session for subscription purchase
  */
 export async function createCheckoutSession(params: CreateCheckoutParams): Promise<CheckoutResult> {
-  const { packageId, userId, userEmail, userName, origin } = params;
+  const { packageId, userId, userEmail, userName, origin, isYearly = false } = params;
 
-  const creditPackage = getPackageById(packageId);
-  if (!creditPackage) {
-    throw new Error(`Invalid package ID: ${packageId}`);
+  const plan = getPlanById(packageId);
+  if (!plan) {
+    throw new Error(`Invalid plan ID: ${packageId}`);
   }
 
+  const priceId = getStripePriceId(packageId, isYearly);
+  if (!priceId) {
+    throw new Error(`No price ID found for plan: ${packageId}`);
+  }
+
+  // Get or create customer
+  const customerId = await getOrCreateCustomer(userEmail, userName);
+
   const session = await stripe.checkout.sessions.create({
-    mode: "payment",
+    mode: "subscription",
     payment_method_types: ["card"],
-    customer_email: userEmail,
+    customer: customerId,
     client_reference_id: userId.toString(),
     allow_promotion_codes: true,
     line_items: [
       {
-        price_data: {
-          currency: creditPackage.currency,
-          product_data: {
-            name: `ReelSpy.ai ${creditPackage.name}`,
-            description: `${creditPackage.analyses} KI-Analysen`,
-            images: ["https://reelspy.ai/logo.png"],
-          },
-          unit_amount: creditPackage.price,
-        },
+        price: priceId,
         quantity: 1,
       },
     ],
@@ -56,8 +58,16 @@ export async function createCheckoutSession(params: CreateCheckoutParams): Promi
       user_id: userId.toString(),
       customer_email: userEmail,
       customer_name: userName || "",
-      package_id: packageId,
-      credits: creditPackage.credits.toString(),
+      plan_id: packageId,
+      billing_period: isYearly ? "yearly" : "monthly",
+      analyses_per_month: plan.analysesPerMonth.toString(),
+    },
+    subscription_data: {
+      metadata: {
+        user_id: userId.toString(),
+        plan_id: packageId,
+        billing_period: isYearly ? "yearly" : "monthly",
+      },
     },
     success_url: `${origin}/dashboard?payment=success&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/pricing?payment=cancelled`,
@@ -74,10 +84,47 @@ export async function createCheckoutSession(params: CreateCheckoutParams): Promi
 }
 
 /**
+ * Create a portal session for subscription management
+ */
+export async function createPortalSession(customerId: string, returnUrl: string): Promise<string> {
+  const session = await stripe.billingPortal.sessions.create({
+    customer: customerId,
+    return_url: returnUrl,
+  });
+
+  return session.url;
+}
+
+/**
  * Retrieve a checkout session by ID
  */
 export async function getCheckoutSession(sessionId: string): Promise<Stripe.Checkout.Session> {
   return await stripe.checkout.sessions.retrieve(sessionId);
+}
+
+/**
+ * Get subscription by ID
+ */
+export async function getSubscription(subscriptionId: string): Promise<Stripe.Subscription> {
+  return await stripe.subscriptions.retrieve(subscriptionId);
+}
+
+/**
+ * Cancel subscription
+ */
+export async function cancelSubscription(subscriptionId: string): Promise<Stripe.Subscription> {
+  return await stripe.subscriptions.update(subscriptionId, {
+    cancel_at_period_end: true,
+  });
+}
+
+/**
+ * Reactivate subscription (remove cancel at period end)
+ */
+export async function reactivateSubscription(subscriptionId: string): Promise<Stripe.Subscription> {
+  return await stripe.subscriptions.update(subscriptionId, {
+    cancel_at_period_end: false,
+  });
 }
 
 /**
@@ -106,6 +153,16 @@ export async function getOrCreateCustomer(
     }
   }
 
+  // Check if customer already exists by email
+  const existingCustomers = await stripe.customers.list({
+    email,
+    limit: 1,
+  });
+
+  if (existingCustomers.data.length > 0) {
+    return existingCustomers.data[0].id;
+  }
+
   const customer = await stripe.customers.create({
     email,
     name: name || undefined,
@@ -127,6 +184,31 @@ export async function getPaymentHistory(customerId: string, limit: number = 10):
   });
 
   return paymentIntents.data;
+}
+
+/**
+ * List subscriptions for a customer
+ */
+export async function getCustomerSubscriptions(customerId: string): Promise<Stripe.Subscription[]> {
+  const subscriptions = await stripe.subscriptions.list({
+    customer: customerId,
+    status: "all",
+    limit: 10,
+  });
+
+  return subscriptions.data;
+}
+
+/**
+ * List invoices for a customer
+ */
+export async function getCustomerInvoices(customerId: string, limit: number = 10): Promise<Stripe.Invoice[]> {
+  const invoices = await stripe.invoices.list({
+    customer: customerId,
+    limit,
+  });
+
+  return invoices.data;
 }
 
 export { stripe };

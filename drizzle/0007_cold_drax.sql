@@ -1,0 +1,2 @@
+ALTER TABLE `users` ADD `stripeSubscriptionId` varchar(128);--> statement-breakpoint
+ALTER TABLE `users` ADD `subscriptionStatus` enum('active','past_due','cancelling','cancelled','trialing') DEFAULT 'active';

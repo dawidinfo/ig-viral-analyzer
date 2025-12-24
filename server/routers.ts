@@ -16,7 +16,7 @@ import { getOrCreateReferralCode, getReferralCodeInfo, getUserReferrals, applyRe
 import { getDb } from "./db";
 import { getUserCredits, useCredits, addCredits, getCreditHistory, getCreditStats, canPerformAction, getActionCost } from "./creditService";
 import { createCheckoutSession, getPaymentHistory, getOrCreateCustomer } from "./stripe/checkout";
-import { CREDIT_PACKAGES as STRIPE_PACKAGES } from "./stripe/products";
+import { CREDIT_PACKAGES as STRIPE_PACKAGES, SUBSCRIPTION_PLANS } from "./stripe/products";
 import { instagramCache, savedAnalyses, usageTracking, users, CREDIT_COSTS, CREDIT_PACKAGES, creditTransactions, PLAN_LIMITS } from "../drizzle/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
 
@@ -668,10 +668,11 @@ export const appRouter = router({
       return CREDIT_COSTS;
     }),
 
-    // Create Stripe checkout session for credit purchase
+    // Create Stripe checkout session for subscription purchase
     createCheckout: publicProcedure
       .input(z.object({
-        packageId: z.enum(["starter", "pro", "business"]),
+        packageId: z.enum(["starter", "pro", "business", "enterprise"]),
+        isYearly: z.boolean().default(false),
       }))
       .mutation(async ({ input, ctx }) => {
         if (!ctx.user) {
@@ -684,6 +685,7 @@ export const appRouter = router({
           userEmail: ctx.user.email || "",
           userName: ctx.user.name || undefined,
           origin: ctx.req.headers.origin || "https://reelspy.ai",
+          isYearly: input.isYearly,
         });
 
         return result;
@@ -692,6 +694,11 @@ export const appRouter = router({
     // Get Stripe packages (for frontend)
     getStripePackages: publicProcedure.query(() => {
       return STRIPE_PACKAGES;
+    }),
+
+    // Get subscription plans (for frontend)
+    getSubscriptionPlans: publicProcedure.query(() => {
+      return SUBSCRIPTION_PLANS;
     }),
 
     // Get payment history for user

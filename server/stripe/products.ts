@@ -1,73 +1,129 @@
 /**
  * Stripe Products Configuration for ReelSpy.ai
- * Credit packages for AI analysis
+ * Subscription-based pricing with monthly and yearly options
  */
 
+export interface SubscriptionPlan {
+  id: string;
+  name: string;
+  analysesPerMonth: number;
+  monthlyPrice: number; // in cents
+  yearlyPrice: number; // in cents (total per year)
+  currency: string;
+  description: string;
+  features: string[];
+  isPopular?: boolean;
+  // Stripe Price IDs
+  stripePriceIdMonthly: string;
+  stripePriceIdYearly: string;
+}
+
+export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
+  {
+    id: "starter",
+    name: "Starter",
+    analysesPerMonth: 10,
+    monthlyPrice: 1900, // €19
+    yearlyPrice: 18000, // €180/year (€15/month)
+    currency: "eur",
+    description: "Für Einsteiger",
+    features: [
+      "10 KI-Analysen pro Monat",
+      "Instagram Analyse",
+      "Viral Score",
+      "HAPSS-Analyse",
+      "E-Mail Support",
+    ],
+    stripePriceIdMonthly: "price_1ShzduKBt9XuvpG3PkqoD1yl",
+    stripePriceIdYearly: "price_1ShzdvKBt9XuvpG3Vv0V10Uo",
+  },
+  {
+    id: "pro",
+    name: "Pro",
+    analysesPerMonth: 35,
+    monthlyPrice: 4900, // €49
+    yearlyPrice: 46800, // €468/year (€39/month)
+    currency: "eur",
+    description: "Für Creator",
+    features: [
+      "35 KI-Analysen pro Monat",
+      "Instagram + TikTok",
+      "KI-Tiefenanalyse",
+      "Hopkins, Ogilvy, Schwartz",
+      "PDF-Export",
+      "1 Jahr Follower-Historie",
+      "Prioritäts-Support",
+    ],
+    isPopular: true,
+    stripePriceIdMonthly: "price_1ShzdwKBt9XuvpG38RrcrD5K",
+    stripePriceIdYearly: "price_1ShzdxKBt9XuvpG3BvqaSHta",
+  },
+  {
+    id: "business",
+    name: "Business",
+    analysesPerMonth: 100,
+    monthlyPrice: 9900, // €99
+    yearlyPrice: 94800, // €948/year (€79/month)
+    currency: "eur",
+    description: "Für Agenturen",
+    features: [
+      "100 KI-Analysen pro Monat",
+      "Alle Plattformen inklusive",
+      "White-Label Reports",
+      "Competitor-Vergleich",
+      "Team-Accounts (bis 5)",
+      "API-Zugang",
+      "Dedizierter Support",
+    ],
+    stripePriceIdMonthly: "price_1ShzdyKBt9XuvpG3cjRRLHbL",
+    stripePriceIdYearly: "price_1ShzdzKBt9XuvpG3ZQ0fENdE",
+  },
+  {
+    id: "enterprise",
+    name: "Enterprise",
+    analysesPerMonth: -1, // Unlimited
+    monthlyPrice: 29900, // €299
+    yearlyPrice: 298800, // €2988/year (€249/month)
+    currency: "eur",
+    description: "Für große Agenturen",
+    features: [
+      "Unbegrenzte KI-Analysen",
+      "Alle Plattformen inklusive",
+      "White-Label Reports",
+      "Unbegrenzte Team-Accounts",
+      "Custom API-Integration",
+      "Dedicated Account Manager",
+      "SLA-Garantie",
+    ],
+    stripePriceIdMonthly: "price_1Shze0KBt9XuvpG3pxqr26LA",
+    stripePriceIdYearly: "price_1Shze1KBt9XuvpG3gJN8mhlx",
+  },
+];
+
+// Legacy credit packages for backward compatibility
 export interface CreditPackage {
   id: string;
   name: string;
   credits: number;
-  analyses: number; // Approximate number of analyses (1 credit = 1 basic analysis)
-  price: number; // in cents
+  analyses: number;
+  price: number;
   currency: string;
   description: string;
   features: string[];
   isPopular?: boolean;
 }
 
-export const CREDIT_PACKAGES: CreditPackage[] = [
-  {
-    id: "starter",
-    name: "Starter",
-    credits: 25,
-    analyses: 25,
-    price: 1900, // €19
-    currency: "eur",
-    description: "Perfect for getting started",
-    features: [
-      "25 KI-Analysen",
-      "Instagram Analyse",
-      "Viral Score",
-      "HAPSS-Analyse",
-      "30 Tage gültig",
-    ],
-  },
-  {
-    id: "pro",
-    name: "Pro",
-    credits: 100,
-    analyses: 100,
-    price: 4900, // €49
-    currency: "eur",
-    description: "Most popular for creators",
-    features: [
-      "100 KI-Analysen",
-      "Instagram + TikTok",
-      "KI-Tiefenanalyse",
-      "Hopkins, Ogilvy, Schwartz",
-      "PDF-Export",
-      "1 Jahr Follower-Historie",
-    ],
-    isPopular: true,
-  },
-  {
-    id: "business",
-    name: "Business",
-    credits: 350,
-    analyses: 350,
-    price: 9900, // €99
-    currency: "eur",
-    description: "For agencies and teams",
-    features: [
-      "350 KI-Analysen",
-      "Alle Plattformen",
-      "White-Label Reports",
-      "Competitor-Vergleich",
-      "Prioritäts-Support",
-      "Team-Accounts",
-    ],
-  },
-];
+export const CREDIT_PACKAGES: CreditPackage[] = SUBSCRIPTION_PLANS.map(plan => ({
+  id: plan.id,
+  name: plan.name,
+  credits: plan.analysesPerMonth,
+  analyses: plan.analysesPerMonth,
+  price: plan.monthlyPrice,
+  currency: plan.currency,
+  description: plan.description,
+  features: plan.features,
+  isPopular: plan.isPopular,
+}));
 
 // Platform module add-ons
 export const PLATFORM_MODULES = {
@@ -91,6 +147,10 @@ export const PLATFORM_MODULES = {
   },
 };
 
+export function getPlanById(id: string): SubscriptionPlan | undefined {
+  return SUBSCRIPTION_PLANS.find(plan => plan.id === id);
+}
+
 export function getPackageById(id: string): CreditPackage | undefined {
   return CREDIT_PACKAGES.find(pkg => pkg.id === id);
 }
@@ -100,4 +160,10 @@ export function formatPrice(priceInCents: number, currency: string = "eur"): str
     style: "currency",
     currency: currency.toUpperCase(),
   }).format(priceInCents / 100);
+}
+
+export function getStripePriceId(planId: string, isYearly: boolean): string | undefined {
+  const plan = getPlanById(planId);
+  if (!plan) return undefined;
+  return isYearly ? plan.stripePriceIdYearly : plan.stripePriceIdMonthly;
 }

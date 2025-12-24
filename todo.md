@@ -829,3 +829,18 @@
 - [x] Neugierde erzeugen durch visuelle Darstellung der KI-Analyse (HeroDemo mit KI-Vorschau)
 - [ ] Features so überzeugend machen, dass Nutzer die Seite empfehlen
 - [ ] Above-the-Fold optimieren für maximale Conversion
+
+
+## Viralitäts-Features & Stripe-Setup
+- [ ] Feature-Akkordeon zur Pricing-Seite hinzufügen (alle Details ausklappbar)
+- [ ] Testimonials mit echten Zahlen hinzufügen ("Von 5K auf 50K Follower")
+- [ ] Video-Demo Sektion auf Landing Page hinzufügen
+- [ ] Exit-Intent Popup implementieren (Rabatt/Extra-Credits)
+- [ ] Stripe-Produkte erstellen und Checkout-Integration testen
+
+
+## Stripe Subscription Integration
+- [x] Checkout von Einmalzahlung auf Subscription umstellen
+- [x] Price IDs der erstellten Produkte integrieren
+- [x] Monatliche und jährliche Optionen unterstützen
+- [x] Webhook für Subscription-Events anpassen

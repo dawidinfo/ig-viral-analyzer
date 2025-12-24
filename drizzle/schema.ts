@@ -19,6 +19,10 @@ export const users = mysqlTable("users", {
   totalCreditsPurchased: int("totalCreditsPurchased").default(0).notNull(),
   /** Stripe customer ID for billing */
   stripeCustomerId: varchar("stripeCustomerId", { length: 128 }),
+  /** Stripe subscription ID */
+  stripeSubscriptionId: varchar("stripeSubscriptionId", { length: 128 }),
+  /** Subscription status */
+  subscriptionStatus: mysqlEnum("subscriptionStatus", ["active", "past_due", "cancelling", "cancelled", "trialing"]).default("active"),
   /** Subscription end date */
   subscriptionEndsAt: timestamp("subscriptionEndsAt"),
   /** Platform modules enabled */

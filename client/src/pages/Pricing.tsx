@@ -31,7 +31,8 @@ import {
   MessageCircle,
   Layers,
   Gauge,
-  Flame
+  Flame,
+  ChevronDown
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
@@ -665,12 +666,6 @@ export default function Pricing() {
       return;
     }
 
-    // Enterprise - contact form
-    if (tierName === "enterprise") {
-      window.open("mailto:enterprise@reelspy.ai?subject=Enterprise%20Anfrage", "_blank");
-      return;
-    }
-
     // Check if user is logged in
     if (!user) {
       toast.info("Bitte melde dich zuerst an");
@@ -679,10 +674,11 @@ export default function Pricing() {
     }
 
     // Map tier names to package IDs
-    const packageMap: Record<string, "starter" | "pro" | "business"> = {
+    const packageMap: Record<string, "starter" | "pro" | "business" | "enterprise"> = {
       starter: "starter",
       pro: "pro",
       business: "business",
+      enterprise: "enterprise",
     };
 
     const packageId = packageMap[tierName];
@@ -691,8 +687,8 @@ export default function Pricing() {
       return;
     }
 
-    // Create checkout session
-    checkoutMutation.mutate({ packageId });
+    // Create checkout session with yearly option
+    checkoutMutation.mutate({ packageId, isYearly });
   };
 
   const getTierValue = (tierValue: boolean | string) => {
