@@ -616,3 +616,7 @@
 ## Hero Demo Verbesserungen (24.12.2024)
 - [x] Echte Reel-Thumbnails (Unsplash Bilder)
 - [x] Demo-Cards klickbar für Beispiel-Analyse (cristiano)
+
+## Hero Demo Tooltips (24.12.2024)
+- [x] Tooltip "Beispiel-Analyse ansehen" bei Hover über Video-Cards
+- [x] Bessere Thumbnails (Portrait-Fotos wie echte Creator-Reels)

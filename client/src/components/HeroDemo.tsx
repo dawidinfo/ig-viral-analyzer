@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, Eye, Heart, Play, Users } from 'lucide-react';
 import { useLocation } from 'wouter';
 
@@ -36,14 +36,14 @@ function formatNumber(num: number): string {
   return num.toString();
 }
 
-// Real reel thumbnail images
+// Better reel-style thumbnail images (vertical content creators)
 const reelThumbnails = [
-  'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=100&h=150&fit=crop', // Social media content
-  'https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?w=100&h=150&fit=crop', // Instagram style
-  'https://images.unsplash.com/photo-1516251193007-45ef944ab0c6?w=100&h=150&fit=crop', // Lifestyle
+  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=150&fit=crop&crop=face', // Portrait person
+  'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&h=150&fit=crop&crop=face', // Influencer style
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=150&fit=crop&crop=face', // Creator
 ];
 
-// Compact mini video card with real thumbnail
+// Compact mini video card with real thumbnail and tooltip
 function MiniVideoCard({ 
   views, 
   likes, 
@@ -57,15 +57,34 @@ function MiniVideoCard({
   thumbnail: string;
   onClick: () => void;
 }) {
+  const [showTooltip, setShowTooltip] = useState(false);
+  
   return (
     <motion.div 
       onClick={onClick}
+      onMouseEnter={() => setShowTooltip(true)}
+      onMouseLeave={() => setShowTooltip(false)}
       whileHover={{ scale: 1.05, y: -2 }}
       whileTap={{ scale: 0.98 }}
       className={`relative bg-black/40 backdrop-blur-sm rounded-md p-1.5 border cursor-pointer transition-all ${
         isViral ? 'border-accent/50 shadow-[0_0_12px_rgba(0,255,136,0.2)]' : 'border-white/10 hover:border-white/30'
       }`}
     >
+      {/* Tooltip */}
+      <AnimatePresence>
+        {showTooltip && (
+          <motion.div
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 5 }}
+            className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black/90 text-white text-[8px] sm:text-[9px] px-2 py-1 rounded whitespace-nowrap z-20"
+          >
+            Beispiel-Analyse ansehen
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full border-4 border-transparent border-t-black/90" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
       {isViral && (
         <div className="absolute -top-1.5 -right-1.5 bg-accent text-black text-[8px] font-bold px-1 py-0.5 rounded-full z-10">
           VIRAL
@@ -78,14 +97,22 @@ function MiniVideoCard({
           alt="Reel thumbnail"
           className="w-full h-full object-cover"
         />
+        {/* Reel-style gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         {/* Play button overlay */}
-        <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity">
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
           <motion.div
             whileHover={{ scale: 1.2 }}
-            className="w-4 h-4 sm:w-5 sm:h-5 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center"
+            className="w-5 h-5 sm:w-6 sm:h-6 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center"
           >
-            <Play className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-white fill-white" />
+            <Play className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white fill-white" />
           </motion.div>
+        </div>
+        {/* Reel indicator */}
+        <div className="absolute top-0.5 right-0.5">
+          <svg className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-white" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+          </svg>
         </div>
       </div>
       <div className="space-y-0.5">
