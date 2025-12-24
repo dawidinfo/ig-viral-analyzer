@@ -710,3 +710,10 @@
 - [x] Beste Posting-Zeit Heatmap (Wochentag x Uhrzeit)
 - [x] Integration in Analysis.tsx
 - [x] Alle Analyse-Buttons auf "KI-Analyse starten" / "Mit KI analysieren" geändert
+
+## KI-Features für CLV (24.12.2024)
+- [x] KI-Caption-Generator mit 5 Varianten basierend auf Top-Performern
+- [x] Integration in Analysis.tsx
+- [x] Wöchentlicher Email-Report Backend (sendWeeklyReport Funktion)
+- [x] Email-Template für Performance-Zusammenfassung
+- [x] Engagement-Alert Email bei Rückgang

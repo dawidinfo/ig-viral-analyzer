@@ -830,3 +830,321 @@ export async function sendUserInvitation(
 
   return sendEmail(email, subject, html);
 }
+
+
+/**
+ * Weekly Performance Report Email
+ * Sends a weekly summary of account performance to users
+ */
+export interface WeeklyReportData {
+  username: string;
+  followerChange: number;
+  followerTotal: number;
+  engagementRate: number;
+  engagementChange: number;
+  topReel: {
+    thumbnail?: string;
+    views: number;
+    likes: number;
+  } | null;
+  reelsPosted: number;
+  avgViews: number;
+  recommendations: string[];
+}
+
+function createWeeklyReportTemplate(name: string | null, data: WeeklyReportData): string {
+  const userName = name || "Content Creator";
+  const isGrowth = data.followerChange >= 0;
+  const isEngagementUp = data.engagementChange >= 0;
+  
+  const formatNumber = (num: number): string => {
+    if (Math.abs(num) >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (Math.abs(num) >= 1000) return (num / 1000).toFixed(1) + 'K';
+    return num.toString();
+  };
+
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dein Wöchentlicher Performance Report</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0a0a0a; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #1a1a1a; border-radius: 16px; overflow: hidden; border: 1px solid #333;">
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%); padding: 40px; text-align: center;">
+              <img src="https://reelspy.ai/logo.svg" alt="ReelSpy.ai" style="height: 40px; margin-bottom: 16px;" />
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700;">Wöchentlicher Report</h1>
+              <p style="color: rgba(255,255,255,0.8); margin: 8px 0 0 0; font-size: 14px;">@${data.username} • Diese Woche</p>
+            </td>
+          </tr>
+          
+          <!-- Greeting -->
+          <tr>
+            <td style="padding: 32px 32px 16px 32px;">
+              <p style="color: #e5e5e5; font-size: 16px; margin: 0;">
+                Hey ${userName}! 👋
+              </p>
+              <p style="color: #a3a3a3; font-size: 14px; margin: 8px 0 0 0;">
+                Hier ist dein wöchentlicher Performance-Überblick für @${data.username}:
+              </p>
+            </td>
+          </tr>
+          
+          <!-- Stats Grid -->
+          <tr>
+            <td style="padding: 16px 32px;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <!-- Follower Change -->
+                  <td width="50%" style="padding: 8px;">
+                    <div style="background: ${isGrowth ? 'linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(16,185,129,0.05) 100%)' : 'linear-gradient(135deg, rgba(239,68,68,0.1) 0%, rgba(239,68,68,0.05) 100%)'}; border: 1px solid ${isGrowth ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}; border-radius: 12px; padding: 20px; text-align: center;">
+                      <p style="color: #a3a3a3; font-size: 12px; margin: 0; text-transform: uppercase;">Follower</p>
+                      <p style="color: ${isGrowth ? '#10B981' : '#EF4444'}; font-size: 28px; font-weight: 700; margin: 8px 0 4px 0;">
+                        ${isGrowth ? '+' : ''}${formatNumber(data.followerChange)}
+                      </p>
+                      <p style="color: #666; font-size: 12px; margin: 0;">Gesamt: ${formatNumber(data.followerTotal)}</p>
+                    </div>
+                  </td>
+                  <!-- Engagement -->
+                  <td width="50%" style="padding: 8px;">
+                    <div style="background: ${isEngagementUp ? 'linear-gradient(135deg, rgba(139,92,246,0.1) 0%, rgba(139,92,246,0.05) 100%)' : 'linear-gradient(135deg, rgba(239,68,68,0.1) 0%, rgba(239,68,68,0.05) 100%)'}; border: 1px solid ${isEngagementUp ? 'rgba(139,92,246,0.3)' : 'rgba(239,68,68,0.3)'}; border-radius: 12px; padding: 20px; text-align: center;">
+                      <p style="color: #a3a3a3; font-size: 12px; margin: 0; text-transform: uppercase;">Engagement</p>
+                      <p style="color: ${isEngagementUp ? '#8B5CF6' : '#EF4444'}; font-size: 28px; font-weight: 700; margin: 8px 0 4px 0;">
+                        ${data.engagementRate.toFixed(1)}%
+                      </p>
+                      <p style="color: #666; font-size: 12px; margin: 0;">${isEngagementUp ? '+' : ''}${data.engagementChange.toFixed(1)}% vs. letzte Woche</p>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <!-- Reels Posted -->
+                  <td width="50%" style="padding: 8px;">
+                    <div style="background: linear-gradient(135deg, rgba(6,182,212,0.1) 0%, rgba(6,182,212,0.05) 100%); border: 1px solid rgba(6,182,212,0.3); border-radius: 12px; padding: 20px; text-align: center;">
+                      <p style="color: #a3a3a3; font-size: 12px; margin: 0; text-transform: uppercase;">Reels gepostet</p>
+                      <p style="color: #06B6D4; font-size: 28px; font-weight: 700; margin: 8px 0 4px 0;">
+                        ${data.reelsPosted}
+                      </p>
+                      <p style="color: #666; font-size: 12px; margin: 0;">Diese Woche</p>
+                    </div>
+                  </td>
+                  <!-- Avg Views -->
+                  <td width="50%" style="padding: 8px;">
+                    <div style="background: linear-gradient(135deg, rgba(236,72,153,0.1) 0%, rgba(236,72,153,0.05) 100%); border: 1px solid rgba(236,72,153,0.3); border-radius: 12px; padding: 20px; text-align: center;">
+                      <p style="color: #a3a3a3; font-size: 12px; margin: 0; text-transform: uppercase;">Ø Views</p>
+                      <p style="color: #EC4899; font-size: 28px; font-weight: 700; margin: 8px 0 4px 0;">
+                        ${formatNumber(data.avgViews)}
+                      </p>
+                      <p style="color: #666; font-size: 12px; margin: 0;">Pro Reel</p>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          ${data.topReel ? `
+          <!-- Top Reel -->
+          <tr>
+            <td style="padding: 16px 32px;">
+              <p style="color: #e5e5e5; font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">🔥 Dein Top-Reel diese Woche</p>
+              <div style="background: #111; border: 1px solid #333; border-radius: 12px; padding: 16px; display: flex; align-items: center;">
+                <table width="100%" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td width="80" style="vertical-align: top;">
+                      ${data.topReel.thumbnail ? `<img src="${data.topReel.thumbnail}" alt="Top Reel" style="width: 70px; height: 100px; object-fit: cover; border-radius: 8px;" />` : '<div style="width: 70px; height: 100px; background: #333; border-radius: 8px;"></div>'}
+                    </td>
+                    <td style="padding-left: 16px; vertical-align: middle;">
+                      <p style="color: #e5e5e5; font-size: 14px; margin: 0;">
+                        👁 <strong>${formatNumber(data.topReel.views)}</strong> Views
+                      </p>
+                      <p style="color: #a3a3a3; font-size: 14px; margin: 8px 0 0 0;">
+                        ❤️ <strong>${formatNumber(data.topReel.likes)}</strong> Likes
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </td>
+          </tr>
+          ` : ''}
+          
+          <!-- Recommendations -->
+          ${data.recommendations.length > 0 ? `
+          <tr>
+            <td style="padding: 16px 32px;">
+              <p style="color: #e5e5e5; font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">💡 KI-Empfehlungen für diese Woche</p>
+              <div style="background: linear-gradient(135deg, rgba(139,92,246,0.1) 0%, rgba(236,72,153,0.1) 100%); border: 1px solid rgba(139,92,246,0.3); border-radius: 12px; padding: 16px;">
+                ${data.recommendations.map((rec, i) => `
+                  <p style="color: #e5e5e5; font-size: 13px; margin: ${i === 0 ? '0' : '12px 0 0 0'};">
+                    ✨ ${rec}
+                  </p>
+                `).join('')}
+              </div>
+            </td>
+          </tr>
+          ` : ''}
+          
+          <!-- CTA -->
+          <tr>
+            <td style="padding: 24px 32px;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center">
+                    <a href="https://reelspy.ai/analysis?username=${data.username}" style="display: inline-block; background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 14px;">
+                      Vollständige Analyse ansehen →
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #111; padding: 24px; text-align: center; border-top: 1px solid #333;">
+              <p style="color: #666; font-size: 12px; margin: 0;">
+                Du erhältst diese E-Mail, weil du @${data.username} auf ReelSpy.ai trackst.
+              </p>
+              <p style="color: #666; font-size: 12px; margin: 8px 0 0 0;">
+                <a href="https://reelspy.ai/dashboard" style="color: #8B5CF6; text-decoration: none;">Einstellungen</a> • 
+                <a href="https://reelspy.ai/unsubscribe" style="color: #8B5CF6; text-decoration: none;">Abmelden</a>
+              </p>
+              <p style="color: #444; font-size: 11px; margin: 16px 0 0 0;">
+                © 2024 ReelSpy.ai • QLIQ Marketing L.L.C.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
+}
+
+/**
+ * Send weekly performance report to user
+ */
+export async function sendWeeklyReport(
+  email: string,
+  name: string | null,
+  data: WeeklyReportData
+): Promise<boolean> {
+  const subject = `📊 Dein Wöchentlicher Report für @${data.username}`;
+  const html = createWeeklyReportTemplate(name, data);
+  
+  return sendEmail(email, subject, html);
+}
+
+/**
+ * Send engagement drop alert
+ */
+export async function sendEngagementAlert(
+  email: string,
+  name: string | null,
+  username: string,
+  currentEngagement: number,
+  previousEngagement: number,
+  dropPercent: number
+): Promise<boolean> {
+  const userName = name || "Content Creator";
+  
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Engagement Alert</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0a0a0a; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #1a1a1a; border-radius: 16px; overflow: hidden; border: 1px solid #333;">
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #F59E0B 0%, #EF4444 100%); padding: 40px; text-align: center;">
+              <div style="font-size: 48px; margin-bottom: 12px;">⚠️</div>
+              <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700;">Engagement Alert</h1>
+              <p style="color: rgba(255,255,255,0.8); margin: 8px 0 0 0; font-size: 14px;">@${username}</p>
+            </td>
+          </tr>
+          
+          <!-- Content -->
+          <tr>
+            <td style="padding: 32px;">
+              <p style="color: #e5e5e5; font-size: 16px; margin: 0;">
+                Hey ${userName},
+              </p>
+              <p style="color: #a3a3a3; font-size: 14px; margin: 16px 0;">
+                Wir haben einen <strong style="color: #EF4444;">Rückgang von ${dropPercent.toFixed(0)}%</strong> im Engagement für @${username} festgestellt.
+              </p>
+              
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin: 24px 0;">
+                <tr>
+                  <td width="50%" style="padding: 8px;">
+                    <div style="background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 12px; padding: 20px; text-align: center;">
+                      <p style="color: #a3a3a3; font-size: 12px; margin: 0;">Vorher</p>
+                      <p style="color: #e5e5e5; font-size: 24px; font-weight: 700; margin: 8px 0 0 0;">${previousEngagement.toFixed(1)}%</p>
+                    </div>
+                  </td>
+                  <td width="50%" style="padding: 8px;">
+                    <div style="background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 12px; padding: 20px; text-align: center;">
+                      <p style="color: #a3a3a3; font-size: 12px; margin: 0;">Jetzt</p>
+                      <p style="color: #EF4444; font-size: 24px; font-weight: 700; margin: 8px 0 0 0;">${currentEngagement.toFixed(1)}%</p>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              
+              <p style="color: #a3a3a3; font-size: 14px; margin: 16px 0;">
+                <strong style="color: #e5e5e5;">Was du tun kannst:</strong>
+              </p>
+              <ul style="color: #a3a3a3; font-size: 14px; margin: 0; padding-left: 20px;">
+                <li style="margin-bottom: 8px;">Analysiere deine letzten Posts auf Hook-Qualität</li>
+                <li style="margin-bottom: 8px;">Überprüfe deine Posting-Zeiten</li>
+                <li style="margin-bottom: 8px;">Teste neue Content-Formate</li>
+              </ul>
+              
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-top: 24px;">
+                <tr>
+                  <td align="center">
+                    <a href="https://reelspy.ai/analysis?username=${username}" style="display: inline-block; background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 14px;">
+                      Jetzt analysieren →
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #111; padding: 24px; text-align: center; border-top: 1px solid #333;">
+              <p style="color: #666; font-size: 12px; margin: 0;">
+                Du erhältst diese E-Mail, weil du Alerts für @${username} aktiviert hast.
+              </p>
+              <p style="color: #444; font-size: 11px; margin: 16px 0 0 0;">
+                © 2024 ReelSpy.ai • QLIQ Marketing L.L.C.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
+
+  return sendEmail(email, `⚠️ Engagement-Rückgang bei @${username}`, html);
+}

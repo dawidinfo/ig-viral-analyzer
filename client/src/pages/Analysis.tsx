@@ -56,6 +56,7 @@ import { PostInteractionsChart } from "@/components/PostInteractionsChart";
 import { DetailedPostAnalysis } from "@/components/DetailedPostAnalysis";
 import { HashtagStatistics } from "@/components/HashtagStatistics";
 import { BestPostingTime } from "@/components/BestPostingTime";
+import { CaptionGenerator } from "@/components/CaptionGenerator";
 import { FeatureTooltip, tooltips, InfoTooltip } from "@/components/FeatureTooltip";
 import { generateAnalysisPDF } from "@/lib/pdfExport";
 import { useLocation, useSearch, useRoute } from "wouter";
@@ -991,7 +992,25 @@ export default function Analysis() {
               </section>
             )}
 
-            {/* ==================== SECTION 11: POSTS ÜBERSICHT ==================== */}
+            {/* ==================== SECTION 11: KI-CAPTION-GENERATOR ==================== */}
+            {analysisData.reels.length > 0 && (
+              <section className="space-y-6">
+                <SectionHeader
+                  title="KI-Caption-Generator"
+                  icon={<Sparkles className="w-6 h-6 text-purple-500" />}
+                  isPinned={pinnedSections.has('captions')}
+                  onTogglePin={() => togglePin('captions')}
+                  badge="KI"
+                />
+                <CaptionGenerator 
+                  reels={analysisData.reels} 
+                  username={analysisData.profile.username}
+                  isPremium={!!user}
+                />
+              </section>
+            )}
+
+            {/* ==================== SECTION 12: POSTS ÜBERSICHT ==================== */}
             {analysisData.posts.length > 0 && (
               <section className="space-y-6">
                 <SectionHeader
