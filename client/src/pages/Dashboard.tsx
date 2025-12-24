@@ -253,7 +253,7 @@ export default function Dashboard() {
                     }
                   }}
                 >
-                  Analysieren
+                  KI-Analyse
                 </Button>
               </div>
             </div>

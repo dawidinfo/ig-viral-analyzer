@@ -704,3 +704,9 @@
 - [x] Filter für 7, 30, 90 Tage in DetailedPostAnalysis
 - [x] "Alle" Option für ungefilterte Ansicht
 - [x] Dynamische Anzeige der gefilterten Post-Anzahl
+
+## Hashtag-Statistik & Posting-Zeit (24.12.2024)
+- [x] Hashtag-Statistik mit Performance-Ranking
+- [x] Beste Posting-Zeit Heatmap (Wochentag x Uhrzeit)
+- [x] Integration in Analysis.tsx
+- [x] Alle Analyse-Buttons auf "KI-Analyse starten" / "Mit KI analysieren" geändert

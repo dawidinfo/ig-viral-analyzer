@@ -373,7 +373,7 @@ export default function Home() {
                   </Button>
                   <Button onClick={() => { document.getElementById('hero-input')?.focus(); closeMobileMenu(); }} className="btn-gradient text-white border-0 w-full justify-center">
                     <Sparkles className="w-4 h-4 mr-2" />
-                    Jetzt analysieren
+                    KI-Analyse starten
                   </Button>
                 </>
               ) : (
@@ -381,7 +381,7 @@ export default function Home() {
                   <MobileLoginButton onClose={closeMobileMenu} />
                   <Button onClick={() => { document.getElementById('hero-input')?.focus(); closeMobileMenu(); }} className="btn-gradient text-white border-0 w-full justify-center">
                     <Sparkles className="w-4 h-4 mr-2" />
-                    Jetzt analysieren
+                    KI-Analyse starten
                   </Button>
                 </>
               )}

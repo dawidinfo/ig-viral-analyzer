@@ -54,6 +54,8 @@ import PostingTimeAnalysis from "@/components/PostingTimeAnalysis";
 import { DailyGrowthChart, generateDemoGrowthData } from "@/components/DailyGrowthChart";
 import { PostInteractionsChart } from "@/components/PostInteractionsChart";
 import { DetailedPostAnalysis } from "@/components/DetailedPostAnalysis";
+import { HashtagStatistics } from "@/components/HashtagStatistics";
+import { BestPostingTime } from "@/components/BestPostingTime";
 import { FeatureTooltip, tooltips, InfoTooltip } from "@/components/FeatureTooltip";
 import { generateAnalysisPDF } from "@/lib/pdfExport";
 import { useLocation, useSearch, useRoute } from "wouter";
@@ -963,7 +965,33 @@ export default function Analysis() {
               </section>
             )}
 
-            {/* ==================== SECTION 9: POSTS ÜBERSICHT ==================== */}
+            {/* ==================== SECTION 9: HASHTAG STATISTIK ==================== */}
+            {analysisData.reels.length > 0 && (
+              <section className="space-y-6">
+                <SectionHeader
+                  title="Hashtag Performance"
+                  icon={<Hash className="w-6 h-6 text-purple-500" />}
+                  isPinned={pinnedSections.has('hashtags')}
+                  onTogglePin={() => togglePin('hashtags')}
+                />
+                <HashtagStatistics reels={analysisData.reels} />
+              </section>
+            )}
+
+            {/* ==================== SECTION 10: BESTE POSTING-ZEIT ==================== */}
+            {analysisData.reels.length > 0 && (
+              <section className="space-y-6">
+                <SectionHeader
+                  title="Beste Posting-Zeit"
+                  icon={<Clock className="w-6 h-6 text-cyan-500" />}
+                  isPinned={pinnedSections.has('postingtime')}
+                  onTogglePin={() => togglePin('postingtime')}
+                />
+                <BestPostingTime reels={analysisData.reels} />
+              </section>
+            )}
+
+            {/* ==================== SECTION 11: POSTS ÜBERSICHT ==================== */}
             {analysisData.posts.length > 0 && (
               <section className="space-y-6">
                 <SectionHeader
