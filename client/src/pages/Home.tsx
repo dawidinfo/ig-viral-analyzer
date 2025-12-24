@@ -1,5 +1,6 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
+import { LoginButtonCompact, MobileLoginButton } from "@/components/LoginButton";
 import { GlobalFooter } from "@/components/GlobalFooter";
 import { HeroDemo } from "@/components/HeroDemo";
 import { Button } from "@/components/ui/button";
@@ -293,15 +294,7 @@ export default function Home() {
               </div>
             ) : (
               <div className="hidden sm:flex items-center gap-2">
-                <Button 
-                  onClick={() => window.location.href = getLoginUrl()}
-                  variant="outline"
-                  size="sm"
-                  className="border-border/50 hover:bg-muted/50"
-                >
-                  <LogIn className="w-4 h-4 mr-2" />
-                  {t.nav.login}
-                </Button>
+                <LoginButtonCompact />
                 <Button 
                   onClick={() => document.getElementById('hero-input')?.focus()}
                   className="btn-gradient text-white border-0 shrink-0 text-sm lg:text-base"
@@ -385,10 +378,7 @@ export default function Home() {
                 </>
               ) : (
                 <>
-                  <Button onClick={() => { window.location.href = getLoginUrl(); }} variant="outline" className="w-full justify-center mb-2">
-                    <LogIn className="w-4 h-4 mr-2" />
-                    Anmelden
-                  </Button>
+                  <MobileLoginButton onClose={closeMobileMenu} />
                   <Button onClick={() => { document.getElementById('hero-input')?.focus(); closeMobileMenu(); }} className="btn-gradient text-white border-0 w-full justify-center">
                     <Sparkles className="w-4 h-4 mr-2" />
                     Jetzt analysieren

@@ -1,5 +1,6 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
+import { LoginButton } from "@/components/LoginButton";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -159,13 +160,14 @@ export default function Dashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Button
-              onClick={() => window.location.href = getLoginUrl()}
-              className="w-full btn-gradient text-white"
+            <LoginButton 
+              variant="gradient" 
+              size="lg" 
+              showSecurityNote={true}
+              className="w-full"
             >
-              <User className="w-4 h-4 mr-2" />
               Jetzt anmelden
-            </Button>
+            </LoginButton>
             <Button
               variant="outline"
               onClick={() => setLocation("/")}

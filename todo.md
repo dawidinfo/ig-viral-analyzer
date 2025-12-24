@@ -686,3 +686,15 @@
 - [x] Add swap button between the two account input fields
 - [x] Swap both input values and trigger new comparison
 - [x] Animate the swap for visual feedback (180° rotation)
+
+## OAuth Popup Login (24.12.2024)
+- [ ] OAuth-Login als Popup-Fenster statt Vollbild-Redirect
+- [ ] Hauptseite bleibt sichtbar während Login
+- [ ] Automatische Schließung des Popups nach erfolgreichem Login
+
+## Erweiterte Analyse-Übersichten (24.12.2024)
+- [x] Daily Growth Chart - Tägliches Follower-Wachstum als Balkendiagramm
+- [x] Overview Panel - Woche/Monat Toggle mit Follower/Following/Posts Änderungen
+- [x] Post Interactions Overview - Interaktionen pro Post mit Thumbnails
+- [x] Detailed Post Analysis Tabelle - Datum, Thumbnail, Likes, Kommentare, Mentions, Hashtags
+- [x] KI-Tipps/Insights Box unter den Charts

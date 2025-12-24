@@ -52,6 +52,8 @@ import { AnalysisCTAPopup } from "@/components/AnalysisCTAPopup";
 import FollowerGrowthChart from "@/components/FollowerGrowthChart";
 import PostingTimeAnalysis from "@/components/PostingTimeAnalysis";
 import { DailyGrowthChart, generateDemoGrowthData } from "@/components/DailyGrowthChart";
+import { PostInteractionsChart } from "@/components/PostInteractionsChart";
+import { DetailedPostAnalysis } from "@/components/DetailedPostAnalysis";
 import { FeatureTooltip, tooltips, InfoTooltip } from "@/components/FeatureTooltip";
 import { generateAnalysisPDF } from "@/lib/pdfExport";
 import { useLocation, useSearch, useRoute } from "wouter";
@@ -935,7 +937,33 @@ export default function Analysis() {
               </section>
             )}
 
-            {/* ==================== SECTION 7: POSTS ÜBERSICHT ==================== */}
+            {/* ==================== SECTION 7: POST INTERAKTIONEN CHART ==================== */}
+            {analysisData.reels.length > 0 && (
+              <section className="space-y-6">
+                <SectionHeader
+                  title="Post Interaktionen Übersicht"
+                  icon={<BarChart3 className="w-6 h-6 text-blue-500" />}
+                  isPinned={pinnedSections.has('interactions')}
+                  onTogglePin={() => togglePin('interactions')}
+                />
+                <PostInteractionsChart reels={analysisData.reels} />
+              </section>
+            )}
+
+            {/* ==================== SECTION 8: DETAILLIERTE POST-ANALYSE ==================== */}
+            {analysisData.reels.length > 0 && (
+              <section className="space-y-6">
+                <SectionHeader
+                  title="Detaillierte Post-Analyse"
+                  icon={<FileText className="w-6 h-6 text-emerald-500" />}
+                  isPinned={pinnedSections.has('detailed')}
+                  onTogglePin={() => togglePin('detailed')}
+                />
+                <DetailedPostAnalysis reels={analysisData.reels} />
+              </section>
+            )}
+
+            {/* ==================== SECTION 9: POSTS ÜBERSICHT ==================== */}
             {analysisData.posts.length > 0 && (
               <section className="space-y-6">
                 <SectionHeader

@@ -44,7 +44,65 @@ export function registerOAuthRoutes(app: Express) {
       const cookieOptions = getSessionCookieOptions(req);
       res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
 
-      res.redirect(302, "/dashboard");
+      // Check if this is a popup login (state contains popup marker)
+      const isPopup = state.includes('popup=true') || req.query.popup === 'true';
+      
+      if (isPopup) {
+        // Return HTML that sends message to parent window and closes
+        res.send(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Login erfolgreich</title>
+              <style>
+                body {
+                  font-family: system-ui, -apple-system, sans-serif;
+                  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+                  color: white;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  min-height: 100vh;
+                  margin: 0;
+                }
+                .container {
+                  text-align: center;
+                  padding: 2rem;
+                }
+                .success-icon {
+                  font-size: 4rem;
+                  margin-bottom: 1rem;
+                }
+                h1 {
+                  font-size: 1.5rem;
+                  margin-bottom: 0.5rem;
+                }
+                p {
+                  color: #a0a0a0;
+                  font-size: 0.9rem;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="success-icon">✅</div>
+                <h1>Login erfolgreich!</h1>
+                <p>Dieses Fenster schließt sich automatisch...</p>
+              </div>
+              <script>
+                if (window.opener) {
+                  window.opener.postMessage({ type: 'oauth-success' }, window.location.origin);
+                  setTimeout(() => window.close(), 1500);
+                } else {
+                  window.location.href = '/dashboard';
+                }
+              </script>
+            </body>
+          </html>
+        `);
+      } else {
+        res.redirect(302, "/dashboard");
+      }
     } catch (error) {
       console.error("[OAuth] Callback failed", error);
       res.status(500).json({ error: "OAuth callback failed" });
