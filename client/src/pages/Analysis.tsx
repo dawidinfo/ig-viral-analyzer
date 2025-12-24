@@ -45,6 +45,8 @@ import DeepAnalysis from "@/components/DeepAnalysis";
 import { AnalysisCTAPopup } from "@/components/AnalysisCTAPopup";
 import FollowerGrowthChart from "@/components/FollowerGrowthChart";
 import PostingTimeAnalysis from "@/components/PostingTimeAnalysis";
+import { DailyGrowthChart, generateDemoGrowthData } from "@/components/DailyGrowthChart";
+import { FeatureTooltip, tooltips, InfoTooltip } from "@/components/FeatureTooltip";
 import { generateAnalysisPDF } from "@/lib/pdfExport";
 import { useLocation, useSearch } from "wouter";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -474,11 +476,15 @@ export default function Analysis() {
                     </div>
                     <div className="text-center">
                       <p className="text-2xl font-bold text-primary">{analysisData.viralScore}</p>
-                      <p className="text-sm text-muted-foreground">Viral Score</p>
+                      <FeatureTooltip title={tooltips.viralScore.title} description={tooltips.viralScore.description}>
+                        <p className="text-sm text-muted-foreground">Viral Score</p>
+                      </FeatureTooltip>
                     </div>
                     <div className="text-center">
                       <p className="text-2xl font-bold text-accent">{analysisData.metrics.engagementRate.toFixed(1)}%</p>
-                      <p className="text-sm text-muted-foreground">Engagement</p>
+                      <FeatureTooltip title={tooltips.engagementRate.title} description={tooltips.engagementRate.description}>
+                        <p className="text-sm text-muted-foreground">Engagement</p>
+                      </FeatureTooltip>
                     </div>
                   </div>
                 </div>
@@ -607,6 +613,12 @@ export default function Analysis() {
 
               {/* Follower Growth Chart */}
               <FollowerGrowthChart username={analysisData.profile.username} />
+
+              {/* Daily Growth Chart (Balkendiagramm) */}
+              <DailyGrowthChart 
+                data={generateDemoGrowthData(90)} 
+                username={analysisData.profile.username} 
+              />
 
               {/* Engagement Chart */}
               <div className="glass-card rounded-xl p-6">

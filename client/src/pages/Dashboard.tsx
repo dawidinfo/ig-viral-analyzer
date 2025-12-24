@@ -41,6 +41,7 @@ import { AffiliateDashboard } from "@/components/AffiliateDashboard";
 import { GlobalFooter } from "@/components/GlobalFooter";
 import { InvoicesTab } from "@/components/InvoicesTab";
 import { NotesTab } from "@/components/NotesTab";
+import { OnboardingTutorial, useOnboarding } from "@/components/OnboardingTutorial";
 import { useState, useMemo } from "react";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
@@ -66,6 +67,9 @@ export default function Dashboard() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
+  
+  // Onboarding Tutorial
+  const { showOnboarding, completeOnboarding } = useOnboarding();
   
   // Editable profile state
   const [editName, setEditName] = useState(user?.name || "");
@@ -187,6 +191,9 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-background bg-grid">
       <div className="fixed inset-0 bg-gradient-radial pointer-events-none" />
+      
+      {/* Onboarding Tutorial */}
+      <OnboardingTutorial isOpen={showOnboarding} onComplete={completeOnboarding} />
 
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">

@@ -469,3 +469,18 @@
 - [x] "Profiles analyzed" Counter als Social Proof (bereits vorhanden: 50K+)
 - [ ] UX-Verbesserungen für mehr Engagement
 - [ ] Design eleganter und klarer machen
+
+## UX-Verbesserungen Phase 2
+- [x] Onboarding-Tutorial für neue User (Schritt-für-Schritt Einführung)
+- [x] Tooltips bei wichtigen Features (Viral Score, HAPSS, etc.)
+- [x] Progress-Indikatoren bei Analysen
+
+## Daily Growth Chart
+- [x] Balkendiagramm mit täglichem Follower-Gewinn/Verlust
+- [x] Farbcodierung: Grün für Gewinn, Rot für Verlust
+- [x] Zeitraum-Auswahl (7d, 30d, 90d)
+
+## Follow/Unfollow Detection
+- [x] Erkennung von verdächtigen Following-Mustern
+- [x] Warnung bei großen Schwankungen
+- [x] Info-Box mit Erklärung
