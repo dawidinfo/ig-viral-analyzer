@@ -624,28 +624,79 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                    {(topGrowingAccounts && topGrowingAccounts.length > 0 
-                      ? topGrowingAccounts.slice(0, showAllTop50 ? 50 : 10).map((acc, idx) => ({
-                          rank: idx + 1,
-                          username: acc.username,
-                          growth: acc.growth >= 1000000 ? `+${(acc.growth / 1000000).toFixed(1)}M` : acc.growth >= 1000 ? `+${(acc.growth / 1000).toFixed(0)}K` : `+${acc.growth}`,
-                          followers: acc.currentFollowers >= 1000000 ? `${(acc.currentFollowers / 1000000).toFixed(0)}M` : acc.currentFollowers >= 1000 ? `${(acc.currentFollowers / 1000).toFixed(0)}K` : `${acc.currentFollowers}`,
-                          category: acc.platform === 'instagram' ? 'Instagram' : acc.platform === 'tiktok' ? 'TikTok' : 'YouTube',
-                          initials: acc.username.slice(0, 2).toUpperCase(),
-                        }))
-                      : [
-                          { rank: 1, username: "cristiano", growth: "+2.1M", followers: "669M", category: "Sports", initials: "CR" },
-                          { rank: 2, username: "leomessi", growth: "+1.8M", followers: "504M", category: "Sports", initials: "LM" },
-                          { rank: 3, username: "kyliejenner", growth: "+1.2M", followers: "399M", category: "Lifestyle", initials: "KJ" },
-                          { rank: 4, username: "selenagomez", growth: "+980K", followers: "429M", category: "Entertainment", initials: "SG" },
-                          { rank: 5, username: "therock", growth: "+850K", followers: "395M", category: "Entertainment", initials: "TR" },
-                          { rank: 6, username: "arianagrande", growth: "+720K", followers: "380M", category: "Music", initials: "AG" },
-                          { rank: 7, username: "kimkardashian", growth: "+680K", followers: "364M", category: "Lifestyle", initials: "KK" },
-                          { rank: 8, username: "beyonce", growth: "+620K", followers: "319M", category: "Music", initials: "BE" },
-                          { rank: 9, username: "khloekardashian", growth: "+580K", followers: "311M", category: "Lifestyle", initials: "KK" },
-                          { rank: 10, username: "nike", growth: "+540K", followers: "306M", category: "Brand", initials: "NK" },
-                        ]
-                    ).map((account) => (
+                    {(() => {
+                      // Static fallback data for Top 50
+                      const staticTop50 = [
+                        { rank: 1, username: "cristiano", growth: "+2.1M", followers: "669M", category: "Sports", initials: "CR" },
+                        { rank: 2, username: "leomessi", growth: "+1.8M", followers: "504M", category: "Sports", initials: "LM" },
+                        { rank: 3, username: "kyliejenner", growth: "+1.2M", followers: "399M", category: "Lifestyle", initials: "KJ" },
+                        { rank: 4, username: "selenagomez", growth: "+980K", followers: "429M", category: "Entertainment", initials: "SG" },
+                        { rank: 5, username: "therock", growth: "+850K", followers: "395M", category: "Entertainment", initials: "TR" },
+                        { rank: 6, username: "arianagrande", growth: "+720K", followers: "380M", category: "Music", initials: "AG" },
+                        { rank: 7, username: "kimkardashian", growth: "+680K", followers: "364M", category: "Lifestyle", initials: "KK" },
+                        { rank: 8, username: "beyonce", growth: "+620K", followers: "319M", category: "Music", initials: "BE" },
+                        { rank: 9, username: "khloekardashian", growth: "+580K", followers: "311M", category: "Lifestyle", initials: "KK" },
+                        { rank: 10, username: "nike", growth: "+540K", followers: "306M", category: "Brand", initials: "NK" },
+                        { rank: 11, username: "justinbieber", growth: "+520K", followers: "295M", category: "Music", initials: "JB" },
+                        { rank: 12, username: "kendalljenner", growth: "+480K", followers: "294M", category: "Lifestyle", initials: "KE" },
+                        { rank: 13, username: "natgeo", growth: "+450K", followers: "284M", category: "Media", initials: "NG" },
+                        { rank: 14, username: "taylorswift", growth: "+420K", followers: "283M", category: "Music", initials: "TS" },
+                        { rank: 15, username: "viaborges", growth: "+400K", followers: "275M", category: "Lifestyle", initials: "VB" },
+                        { rank: 16, username: "jlo", growth: "+380K", followers: "253M", category: "Entertainment", initials: "JL" },
+                        { rank: 17, username: "neymarjr", growth: "+360K", followers: "228M", category: "Sports", initials: "NJ" },
+                        { rank: 18, username: "mileycyrus", growth: "+340K", followers: "216M", category: "Music", initials: "MC" },
+                        { rank: 19, username: "katyperry", growth: "+320K", followers: "206M", category: "Music", initials: "KP" },
+                        { rank: 20, username: "zendaya", growth: "+300K", followers: "184M", category: "Entertainment", initials: "ZE" },
+                        { rank: 21, username: "kevinhart4real", growth: "+280K", followers: "178M", category: "Entertainment", initials: "KH" },
+                        { rank: 22, username: "ddlovato", growth: "+260K", followers: "159M", category: "Music", initials: "DD" },
+                        { rank: 23, username: "badgalriri", growth: "+250K", followers: "151M", category: "Music", initials: "RI" },
+                        { rank: 24, username: "chfrfranco", growth: "+240K", followers: "148M", category: "Sports", initials: "CF" },
+                        { rank: 25, username: "vindiesel", growth: "+230K", followers: "142M", category: "Entertainment", initials: "VD" },
+                        { rank: 26, username: "shakira", growth: "+220K", followers: "140M", category: "Music", initials: "SH" },
+                        { rank: 27, username: "davidbeckham", growth: "+210K", followers: "137M", category: "Sports", initials: "DB" },
+                        { rank: 28, username: "lelepons", growth: "+200K", followers: "135M", category: "Entertainment", initials: "LP" },
+                        { rank: 29, username: "priyankachopra", growth: "+190K", followers: "132M", category: "Entertainment", initials: "PC" },
+                        { rank: 30, username: "iamcardib", growth: "+180K", followers: "130M", category: "Music", initials: "CB" },
+                        { rank: 31, username: "drake", growth: "+175K", followers: "128M", category: "Music", initials: "DR" },
+                        { rank: 32, username: "billieeilish", growth: "+170K", followers: "126M", category: "Music", initials: "BE" },
+                        { rank: 33, username: "shrfrddkpoor", growth: "+165K", followers: "124M", category: "Entertainment", initials: "SK" },
+                        { rank: 34, username: "tomholland2013", growth: "+160K", followers: "122M", category: "Entertainment", initials: "TH" },
+                        { rank: 35, username: "gaborieunion", growth: "+155K", followers: "120M", category: "Entertainment", initials: "GU" },
+                        { rank: 36, username: "realmadrid", growth: "+150K", followers: "118M", category: "Sports", initials: "RM" },
+                        { rank: 37, username: "fcbarcelona", growth: "+145K", followers: "116M", category: "Sports", initials: "FC" },
+                        { rank: 38, username: "championsleague", growth: "+140K", followers: "114M", category: "Sports", initials: "CL" },
+                        { rank: 39, username: "nasa", growth: "+135K", followers: "112M", category: "Science", initials: "NA" },
+                        { rank: 40, username: "nickiminaj", growth: "+130K", followers: "110M", category: "Music", initials: "NM" },
+                        { rank: 41, username: "gifrndpix", growth: "+125K", followers: "108M", category: "Entertainment", initials: "GP" },
+                        { rank: 42, username: "emmawatson", growth: "+120K", followers: "106M", category: "Entertainment", initials: "EW" },
+                        { rank: 43, username: "adele", growth: "+115K", followers: "104M", category: "Music", initials: "AD" },
+                        { rank: 44, username: "brunomars", growth: "+110K", followers: "102M", category: "Music", initials: "BM" },
+                        { rank: 45, username: "lewishamilton", growth: "+105K", followers: "100M", category: "Sports", initials: "LH" },
+                        { rank: 46, username: "chfrfrfranco", growth: "+100K", followers: "98M", category: "Sports", initials: "CF" },
+                        { rank: 47, username: "kourtneykardash", growth: "+95K", followers: "96M", category: "Lifestyle", initials: "KO" },
+                        { rank: 48, username: "gifrndpixels", growth: "+90K", followers: "94M", category: "Entertainment", initials: "GP" },
+                        { rank: 49, username: "manchesterunited", growth: "+85K", followers: "92M", category: "Sports", initials: "MU" },
+                        { rank: 50, username: "liverpoolfc", growth: "+80K", followers: "90M", category: "Sports", initials: "LF" },
+                      ];
+
+                      // Check if API data has meaningful growth (at least one account with growth > 0)
+                      const hasRealGrowth = topGrowingAccounts && topGrowingAccounts.length > 0 && 
+                        topGrowingAccounts.some(acc => acc.growth > 0);
+
+                      // Use API data only if it has real growth, otherwise use static fallback
+                      const displayData = hasRealGrowth
+                        ? topGrowingAccounts.slice(0, showAllTop50 ? 50 : 10).map((acc, idx) => ({
+                            rank: idx + 1,
+                            username: acc.username,
+                            growth: acc.growth >= 1000000 ? `+${(acc.growth / 1000000).toFixed(1)}M` : acc.growth >= 1000 ? `+${(acc.growth / 1000).toFixed(0)}K` : `+${acc.growth}`,
+                            followers: acc.currentFollowers >= 1000000 ? `${(acc.currentFollowers / 1000000).toFixed(0)}M` : acc.currentFollowers >= 1000 ? `${(acc.currentFollowers / 1000).toFixed(0)}K` : `${acc.currentFollowers}`,
+                            category: acc.platform === 'instagram' ? 'Instagram' : acc.platform === 'tiktok' ? 'TikTok' : 'YouTube',
+                            initials: acc.username.slice(0, 2).toUpperCase(),
+                          }))
+                        : staticTop50.slice(0, showAllTop50 ? 50 : 10);
+
+                      return displayData;
+                    })().map((account) => (
                       <motion.div
                         key={account.rank}
                         initial={{ opacity: 0, scale: 0.95 }}

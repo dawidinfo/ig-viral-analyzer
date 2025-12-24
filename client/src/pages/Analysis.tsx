@@ -1036,6 +1036,89 @@ export default function Analysis() {
                     </div>
                   </div>
 
+                  {/* Dein nächster Schritt */}
+                  <div className="mt-8 p-6 bg-gradient-to-r from-primary/20 via-cyan-500/10 to-amber-500/10 rounded-2xl border border-primary/30">
+                    <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                      <Target className="w-5 h-5 text-primary" />
+                      Dein nächster Schritt
+                    </h3>
+                    <p className="text-muted-foreground mb-4">
+                      Nutze diese Erkenntnisse von <span className="text-primary font-medium">@{username}</span> als Inspiration für deinen eigenen Content. 
+                      Analysiere deinen Account und vergleiche die Strategien.
+                    </p>
+                    <div className="flex flex-wrap gap-3">
+                      <button
+                        onClick={() => {
+                          const noteContent = `📌 Erkenntnisse von @${username} (${new Date().toLocaleDateString('de-DE')})\n\n` +
+                            `🏆 Viral-Score: ${analysisData.viralScore}/100\n` +
+                            `❤️ Engagement: ${analysisData.metrics.engagementRate.toFixed(2)}%\n\n` +
+                            `💡 Wichtigste Learnings:\n` +
+                            `- Hook in den ersten 0.5-1.5 Sekunden (HAPSS)\n` +
+                            `- Pain Points in Headlines ansprechen (Ogilvy)\n` +
+                            `- PAS-Formel für Storytelling (Hopkins)\n\n` +
+                            `⚡ Quick Wins:\n` +
+                            `- Erste 3 Wörter = Hook\n` +
+                            `- CTA am Ende jedes Reels\n` +
+                            `- 3-5 relevante Hashtags`;
+                          
+                          // Speichere in localStorage für spätere Verwendung im Dashboard
+                          const existingNotes = JSON.parse(localStorage.getItem('reelspy_notes') || '[]');
+                          existingNotes.unshift({
+                            id: Date.now(),
+                            username: username,
+                            content: noteContent,
+                            createdAt: new Date().toISOString(),
+                            viralScore: analysisData.viralScore
+                          });
+                          localStorage.setItem('reelspy_notes', JSON.stringify(existingNotes.slice(0, 50)));
+                          
+                          // Zeige Erfolgs-Toast
+                          alert('✅ Erkenntnisse als Notiz gespeichert! Du findest sie im Dashboard unter "Notizen".');
+                        }}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-primary/20 hover:bg-primary/30 text-primary rounded-lg transition-colors"
+                      >
+                        <Bookmark className="w-4 h-4" />
+                        Als Notiz speichern
+                      </button>
+                      <button
+                        onClick={() => {
+                          const myUsername = prompt('Gib deinen Instagram-Username ein (ohne @):');
+                          if (myUsername) {
+                            window.location.href = `/analysis?username=${myUsername.replace('@', '')}`;
+                          }
+                        }}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 rounded-lg transition-colors"
+                      >
+                        <Search className="w-4 h-4" />
+                        Meinen Account analysieren
+                      </button>
+                      <button
+                        onClick={() => {
+                          window.location.href = `/dashboard?tab=notes`;
+                        }}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 rounded-lg transition-colors"
+                      >
+                        <FileText className="w-4 h-4" />
+                        Meine Notizen ansehen
+                      </button>
+                    </div>
+                    
+                    {/* Strategie-Tipps */}
+                    <div className="mt-6 p-4 bg-background/50 rounded-xl border border-border/50">
+                      <h4 className="font-medium mb-2 flex items-center gap-2">
+                        <PenTool className="w-4 h-4 text-green-400" />
+                        So nutzt du diese Erkenntnisse
+                      </h4>
+                      <ol className="text-sm text-muted-foreground space-y-2 list-decimal list-inside">
+                        <li><strong>Analysiere deinen Account</strong> und vergleiche deine Metriken mit @{username}</li>
+                        <li><strong>Identifiziere Lücken</strong> - Wo performt @{username} besser? Hooks? Engagement?</li>
+                        <li><strong>Adaptiere die Strategien</strong> für deine Nische und Zielgruppe</li>
+                        <li><strong>Teste und iteriere</strong> - Poste 5-10 Reels mit den neuen Techniken</li>
+                        <li><strong>Tracke deinen Fortschritt</strong> - Analysiere erneut nach 2 Wochen</li>
+                      </ol>
+                    </div>
+                  </div>
+
                 </div>
               </section>
             )}

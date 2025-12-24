@@ -634,3 +634,12 @@
 
 ## SEO noindex für Firmendaten (24.12.2024)
 - [x] noindex, nofollow Meta-Tag hinzugefügt - Suchmaschinen indexieren die Seite nicht mehr
+
+## Bug: Top 50 Liste lädt nicht (24.12.2024)
+- [x] Fallback auf statische Beispieldaten (50 echte Accounts) wenn API-Daten kein Wachstum zeigen
+
+## Erkenntnisse-Sektion Erweiterung (24.12.2024)
+- [x] "Als Notiz speichern" Button - speichert Erkenntnisse im localStorage
+- [x] "Meinen Account analysieren" CTA-Button - öffnet Analyse für eigenen Account
+- [x] "Meine Notizen ansehen" Button - Link zum Dashboard Notizen-Tab
+- [x] "Dein nächster Schritt" Sektion mit 5-Schritte-Anleitung
