@@ -451,3 +451,8 @@
 ## SEO Fixes
 - [x] Title auf 30-60 Zeichen optimieren (jetzt 52 Zeichen)
 - [x] Keywords/Meta-Tags hinzufügen (10 Keywords + OG + Twitter)
+
+## Dashboard & Design Updates
+- [x] Analyse-Eingabefeld im Dashboard oben hinzufügen
+- [x] SEO-Titel korrigieren zu "ReelSpy.ai - Virale Reels und Content liefern"
+- [x] Dashboard Design leichter: dünnere Rahmen, weniger Farbdruck, mehr Eleganz

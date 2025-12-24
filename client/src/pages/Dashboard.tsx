@@ -193,13 +193,33 @@ export default function Dashboard() {
           </div>
 
           <div className="flex items-center gap-4">
+            {/* Analyse-Eingabefeld */}
+            <div className="hidden md:flex items-center gap-2">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="@username analysieren..."
+                  className="pl-9 w-64 h-9 bg-muted/30 border-border/30 text-sm"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      const target = e.target as HTMLInputElement;
+                      if (target.value.trim()) {
+                        setLocation(`/analysis?username=${target.value.trim().replace('@', '')}`);
+                      }
+                    }
+                  }}
+                />
+              </div>
+            </div>
             <Button
               variant="outline"
               size="sm"
               onClick={() => setLocation("/")}
+              className="md:hidden"
             >
               <Search className="w-4 h-4 mr-2" />
-              Neue Analyse
+              Analyse
             </Button>
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
