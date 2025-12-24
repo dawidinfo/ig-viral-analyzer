@@ -844,3 +844,25 @@
 - [x] Price IDs der erstellten Produkte integrieren
 - [x] Monatliche und jährliche Optionen unterstützen
 - [x] Webhook für Subscription-Events anpassen
+
+
+## Viralitäts-Features Implementation
+- [x] Feature-Akkordeon für Pricing-Seite (80+ Features als ausklappbare Kategorien)
+- [x] Testimonials mit echten Zahlen (Erfolgsgeschichten)
+- [x] Video-Demo Sektion
+- [x] Exit-Intent Popup mit Rabatt/Extra-Credits
+
+## MVP Finalisierung
+- [x] Video-Demo Sektion implementieren
+- [x] Exit-Intent Popup implementieren
+- [x] Sicherheitsprüfung (XSS, SQL-Injection, CSRF) - Geprüft: Drizzle ORM, Zod Validierung, Rate-Limiting
+- [ ] 404-Link-Check auf allen Seiten
+- [ ] Stripe-Zahlungsflow testen
+- [ ] TypeScript-Fehler beheben
+- [ ] Build prüfen
+- [ ] Finaler Checkpoint
+
+## Pricing-Seite Optimierung
+- [x] Akkordeon mit allen Features direkt bei jedem Plan einbauen
+- [x] Kauf-Button direkt beim Plan (Checkout öffnet im gleichen Tab)
+- [x] Conversion-optimiert: Alles auf einer Seite

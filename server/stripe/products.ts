@@ -34,8 +34,8 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       "HAPSS-Analyse",
       "E-Mail Support",
     ],
-    stripePriceIdMonthly: "price_1ShzduKBt9XuvpG3PkqoD1yl",
-    stripePriceIdYearly: "price_1ShzdvKBt9XuvpG3Vv0V10Uo",
+    stripePriceIdMonthly: "price_1Si0DTKBt9XuvpG31XjrlWmk",
+    stripePriceIdYearly: "price_1Si0DTKBt9XuvpG3lfjenjzK",
   },
   {
     id: "pro",
@@ -55,8 +55,8 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       "Prioritäts-Support",
     ],
     isPopular: true,
-    stripePriceIdMonthly: "price_1ShzdwKBt9XuvpG38RrcrD5K",
-    stripePriceIdYearly: "price_1ShzdxKBt9XuvpG3BvqaSHta",
+    stripePriceIdMonthly: "price_1Si0DUKBt9XuvpG396rkn6d8",
+    stripePriceIdYearly: "price_1Si0DUKBt9XuvpG35cjee0BE",
   },
   {
     id: "business",
@@ -75,8 +75,8 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       "API-Zugang",
       "Dedizierter Support",
     ],
-    stripePriceIdMonthly: "price_1ShzdyKBt9XuvpG3cjRRLHbL",
-    stripePriceIdYearly: "price_1ShzdzKBt9XuvpG3ZQ0fENdE",
+    stripePriceIdMonthly: "price_1Si0DUKBt9XuvpG3LedPu5CP",
+    stripePriceIdYearly: "price_1Si0DVKBt9XuvpG3NUpQ8m7Y",
   },
   {
     id: "enterprise",
@@ -95,8 +95,8 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       "Dedicated Account Manager",
       "SLA-Garantie",
     ],
-    stripePriceIdMonthly: "price_1Shze0KBt9XuvpG3pxqr26LA",
-    stripePriceIdYearly: "price_1Shze1KBt9XuvpG3gJN8mhlx",
+    stripePriceIdMonthly: "price_1Si0DVKBt9XuvpG3KAqC9KYe",
+    stripePriceIdYearly: "price_1Si0DWKBt9XuvpG3qJOSXBM9",
   },
 ];
 

@@ -631,4 +631,115 @@ export const fr: Translations = {
     privacy: "100% Confidentialité",
     realtime: "Analyse Temps Réel"
   },
+
+  // Testimonials with real numbers
+  testimonialsDetailed: {
+    badge: "RÉSULTATS RÉELS",
+    title: "De 5K à 50K Followers",
+    titleHighlight: "en seulement 3 mois",
+    subtitle: "Ces créateurs ont révolutionné leur stratégie Instagram avec ReelSpy",
+    items: [
+      {
+        name: "Julia Weber",
+        handle: "@juliafitness",
+        avatar: "JW",
+        niche: "Fitness",
+        before: {
+          followers: "5 200",
+          engagement: "1,2%",
+          avgViews: "800"
+        },
+        after: {
+          followers: "52 400",
+          engagement: "8,7%",
+          avgViews: "45 000"
+        },
+        timeframe: "3 mois",
+        quote: "L'analyse des hooks a tout changé. Mes 3 premières secondes étaient ennuyeuses avant - maintenant 87% des viewers s'arrêtent.",
+        keyInsight: "Score hook amélioré de 34 à 91",
+        viralReels: 12
+      },
+      {
+        name: "Maximilian Stein",
+        handle: "@maxcooks",
+        avatar: "MS",
+        niche: "Food",
+        before: {
+          followers: "12 800",
+          engagement: "2,1%",
+          avgViews: "3 200"
+        },
+        after: {
+          followers: "89 600",
+          engagement: "11,2%",
+          avgViews: "127 000"
+        },
+        timeframe: "4 mois",
+        quote: "L'analyse des heures de publication a été le game-changer. J'ai décalé mon heure de publication de 3 heures et ma portée a explosé.",
+        keyInsight: "Heure optimale : 19h30 au lieu de 12h00",
+        viralReels: 8
+      },
+      {
+        name: "Sophie Müller",
+        handle: "@sophiestyle",
+        avatar: "SM",
+        niche: "Fashion",
+        before: {
+          followers: "8 900",
+          engagement: "1,8%",
+          avgViews: "1 500"
+        },
+        after: {
+          followers: "134 200",
+          engagement: "9,4%",
+          avgViews: "89 000"
+        },
+        timeframe: "5 mois",
+        quote: "Je pensais connaître mon contenu. Mais l'analyse HAPSS m'a montré que mes stories n'offraient pas de solutions. Maintenant je convertis 3x mieux.",
+        keyInsight: "Score HAPSS augmenté de 45 à 88",
+        viralReels: 15
+      }
+    ],
+    stats: {
+      avgGrowth: "+907%",
+      avgGrowthLabel: "croissance moyenne des followers",
+      totalAnalyses: "50 000+",
+      totalAnalysesLabel: "analyses effectuées",
+      successRate: "94%",
+      successRateLabel: "voient une croissance en 30 jours"
+    },
+    cta: "Commencer votre succès",
+    ctaSubtext: "Commencez avec 3 analyses gratuites"
+  },
+
+  // Video Demo Section
+  videoDemo: {
+    badge: "DÉMO EN DIRECT",
+    title: "Voyez l'analyse IA",
+    titleHighlight: "en action",
+    subtitle: "En seulement 30 secondes, nous vous montrons comment ReelSpy analyse votre contenu",
+    features: [
+      "Analyse des hooks en temps réel",
+      "Évaluation du framework HAPSS",
+      "Suggestions d'amélioration concrètes",
+      "Calcul du score viral"
+    ],
+    cta: "Essayez maintenant",
+    watchTime: "30 sec."
+  },
+
+  // Exit Intent Popup
+  exitIntent: {
+    title: "Attendez ! ",
+    titleHighlight: "Pas si vite...",
+    subtitle: "Obtenez 3 crédits EXTRA gratuits maintenant !",
+    description: "Inscrivez-vous et recevez 3 analyses IA supplémentaires gratuitement - pour une durée limitée.",
+    benefit1: "6 au lieu de 3 analyses gratuites",
+    benefit2: "Accès instantané",
+    benefit3: "Pas de carte de crédit requise",
+    cta: "Oui, je veux les crédits bonus !",
+    dismiss: "Non merci, je passe sur les crédits bonus",
+    timer: "L'offre se termine dans :",
+    limited: "Offre limitée"
+  },
 };

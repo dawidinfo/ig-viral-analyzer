@@ -658,8 +658,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Problem/Solution Section */}
-      <section className="py-24 bg-muted/10">
+      {/* Detailed Testimonials Section */}
+      <section className="py-24 bg-gradient-to-b from-background to-muted/20">
         <div className="container">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -667,6 +667,328 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
+            <Badge className="badge-neon mb-4">{t.testimonialsDetailed.badge}</Badge>
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-[-0.03em] mb-4">
+              {t.testimonialsDetailed.title}
+              <br />
+              <span className="text-gradient">{t.testimonialsDetailed.titleHighlight}</span>
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              {t.testimonialsDetailed.subtitle}
+            </p>
+          </motion.div>
+
+          {/* Stats Bar */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="grid grid-cols-3 gap-4 max-w-3xl mx-auto mb-16"
+          >
+            <div className="text-center p-6 rounded-2xl bg-card border border-border">
+              <div className="text-3xl md:text-4xl font-bold text-gradient mb-2">{t.testimonialsDetailed.stats.avgGrowth}</div>
+              <div className="text-sm text-muted-foreground">{t.testimonialsDetailed.stats.avgGrowthLabel}</div>
+            </div>
+            <div className="text-center p-6 rounded-2xl bg-card border border-border">
+              <div className="text-3xl md:text-4xl font-bold text-gradient mb-2">{t.testimonialsDetailed.stats.totalAnalyses}</div>
+              <div className="text-sm text-muted-foreground">{t.testimonialsDetailed.stats.totalAnalysesLabel}</div>
+            </div>
+            <div className="text-center p-6 rounded-2xl bg-card border border-border">
+              <div className="text-3xl md:text-4xl font-bold text-gradient mb-2">{t.testimonialsDetailed.stats.successRate}</div>
+              <div className="text-sm text-muted-foreground">{t.testimonialsDetailed.stats.successRateLabel}</div>
+            </div>
+          </motion.div>
+
+          {/* Testimonial Cards */}
+          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {t.testimonialsDetailed.items.map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="rounded-2xl border border-border bg-card overflow-hidden"
+              >
+                {/* Header */}
+                <div className="p-6 border-b border-border">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+                      {item.avatar}
+                    </div>
+                    <div>
+                      <div className="font-semibold">{item.name}</div>
+                      <div className="text-sm text-muted-foreground">{item.handle}</div>
+                      <Badge variant="outline" className="mt-1 text-xs">{item.niche}</Badge>
+                    </div>
+                  </div>
+                  <div className="text-sm italic text-foreground/80 leading-relaxed">
+                    "{item.quote}"
+                  </div>
+                </div>
+
+                {/* Before/After Stats */}
+                <div className="p-6 bg-muted/30">
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <div className="text-xs text-muted-foreground mb-2 flex items-center gap-1">
+                        <TrendingDown className="w-3 h-3 text-red-500" />
+                        Vorher
+                      </div>
+                      <div className="space-y-1 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Follower</span>
+                          <span>{item.before.followers}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Engagement</span>
+                          <span>{item.before.engagement}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Avg. Views</span>
+                          <span>{item.before.avgViews}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-xs text-muted-foreground mb-2 flex items-center gap-1">
+                        <TrendingUp className="w-3 h-3 text-emerald-500" />
+                        Nachher
+                      </div>
+                      <div className="space-y-1 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Follower</span>
+                          <span className="text-emerald-500 font-medium">{item.after.followers}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Engagement</span>
+                          <span className="text-emerald-500 font-medium">{item.after.engagement}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Avg. Views</span>
+                          <span className="text-emerald-500 font-medium">{item.after.avgViews}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Key Insight */}
+                  <div className="p-3 rounded-lg bg-violet-500/10 border border-violet-500/20">
+                    <div className="flex items-center gap-2">
+                      <Lightbulb className="w-4 h-4 text-violet-500" />
+                      <span className="text-xs font-medium text-violet-500">{item.keyInsight}</span>
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/50">
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <Clock className="w-3 h-3" />
+                      {item.timeframe}
+                    </div>
+                    <div className="flex items-center gap-1 text-xs">
+                      <Flame className="w-3 h-3 text-orange-500" />
+                      <span className="text-orange-500 font-medium">{item.viralReels} virale Reels</span>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mt-12"
+          >
+            <Button 
+              size="lg" 
+              onClick={() => setLocation('/analysis')}
+              className="btn-gradient text-white border-0"
+            >
+              <Rocket className="w-5 h-5 mr-2" />
+              {t.testimonialsDetailed.cta}
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+            <p className="text-sm text-muted-foreground mt-4">
+              {t.testimonialsDetailed.ctaSubtext}
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Video Demo Section */}
+      <section className="py-24 bg-gradient-to-b from-muted/20 to-background relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)', backgroundSize: '40px 40px' }} />
+        </div>
+        
+        <div className="container relative">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <Badge className="badge-neon mb-4">{t.videoDemo.badge}</Badge>
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-[-0.03em] mb-4">
+              {t.videoDemo.title}
+              <br />
+              <span className="text-gradient">{t.videoDemo.titleHighlight}</span>
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              {t.videoDemo.subtitle}
+            </p>
+          </motion.div>
+
+          <div className="max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="relative rounded-2xl overflow-hidden border border-border bg-card shadow-2xl"
+            >
+              {/* Video Placeholder - Interactive Demo */}
+              <div className="aspect-video bg-gradient-to-br from-violet-900/20 to-purple-900/20 relative">
+                {/* Animated Demo UI */}
+                <div className="absolute inset-0 p-8 flex items-center justify-center">
+                  <div className="w-full max-w-2xl">
+                    {/* Mock Analysis Interface */}
+                    <div className="bg-background/80 backdrop-blur-sm rounded-xl p-6 border border-border">
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+                          <Sparkles className="w-8 h-8 text-white" />
+                        </div>
+                        <div>
+                          <div className="text-lg font-semibold">@example_creator</div>
+                          <div className="text-sm text-muted-foreground">KI-Analyse läuft...</div>
+                        </div>
+                      </div>
+                      
+                      {/* Animated Progress Bars */}
+                      <div className="space-y-4">
+                        <div>
+                          <div className="flex justify-between text-sm mb-1">
+                            <span>Hook-Analyse</span>
+                            <span className="text-emerald-500">94/100</span>
+                          </div>
+                          <div className="h-2 bg-muted rounded-full overflow-hidden">
+                            <motion.div 
+                              className="h-full bg-gradient-to-r from-violet-500 to-emerald-500"
+                              initial={{ width: 0 }}
+                              whileInView={{ width: '94%' }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 1.5, delay: 0.2 }}
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <div className="flex justify-between text-sm mb-1">
+                            <span>HAPSS-Framework</span>
+                            <span className="text-emerald-500">87/100</span>
+                          </div>
+                          <div className="h-2 bg-muted rounded-full overflow-hidden">
+                            <motion.div 
+                              className="h-full bg-gradient-to-r from-violet-500 to-emerald-500"
+                              initial={{ width: 0 }}
+                              whileInView={{ width: '87%' }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 1.5, delay: 0.4 }}
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <div className="flex justify-between text-sm mb-1">
+                            <span>Viral Score</span>
+                            <span className="text-emerald-500">91/100</span>
+                          </div>
+                          <div className="h-2 bg-muted rounded-full overflow-hidden">
+                            <motion.div 
+                              className="h-full bg-gradient-to-r from-violet-500 to-emerald-500"
+                              initial={{ width: 0 }}
+                              whileInView={{ width: '91%' }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 1.5, delay: 0.6 }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* AI Tip */}
+                      <motion.div 
+                        className="mt-6 p-4 rounded-lg bg-violet-500/10 border border-violet-500/20"
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 1.2 }}
+                      >
+                        <div className="flex items-start gap-3">
+                          <Lightbulb className="w-5 h-5 text-violet-500 mt-0.5" />
+                          <div>
+                            <div className="text-sm font-medium text-violet-500">KI-Tipp erkannt</div>
+                            <div className="text-sm text-muted-foreground">Füge einen CTA in Sekunde 3 ein für +40% mehr Engagement</div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Watch Time Badge */}
+                <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-background/80 backdrop-blur-sm border border-border text-sm">
+                  <Clock className="w-4 h-4 inline mr-1" />
+                  {t.videoDemo.watchTime}
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Feature List */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8"
+            >
+              {t.videoDemo.features.map((feature, index) => (
+                <div key={index} className="flex items-center gap-2 text-sm">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  <span>{feature}</span>
+                </div>
+              ))}
+            </motion.div>
+
+            {/* CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mt-8"
+            >
+              <Button 
+                size="lg" 
+                onClick={() => setLocation('/analysis')}
+                className="btn-gradient text-white border-0"
+              >
+                <Play className="w-5 h-5 mr-2" />
+                {t.videoDemo.cta}
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Problem/Solution Section */}
+      <section className="py-24 bg-muted/10">
+        <div className="container">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16">
             <Badge className="badge-neon mb-4">{t.problemSolution.badge}</Badge>
             <h2 className="text-4xl md:text-5xl font-semibold tracking-[-0.03em] mb-4">
               {t.problemSolution.title}

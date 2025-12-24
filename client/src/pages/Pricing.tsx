@@ -646,13 +646,35 @@ const featureCategories = [
 export default function Pricing() {
   const [, setLocation] = useLocation();
   const [isYearly, setIsYearly] = useState(false);
+  const [expandedCategories, setExpandedCategories] = useState<Set<number>>(new Set([0])); // First category expanded by default
+
+  const toggleCategory = (index: number) => {
+    setExpandedCategories(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(index)) {
+        newSet.delete(index);
+      } else {
+        newSet.add(index);
+      }
+      return newSet;
+    });
+  };
+
+  const expandAll = () => {
+    setExpandedCategories(new Set(featureCategories.map((_, i) => i)));
+  };
+
+  const collapseAll = () => {
+    setExpandedCategories(new Set());
+  };
   const { user } = useAuth();
+  const [expandedTier, setExpandedTier] = useState<string | null>(null);
 
   // Stripe checkout mutation
   const checkoutMutation = trpc.credits.createCheckout.useMutation({
     onSuccess: (data) => {
       toast.success("Weiterleitung zum Checkout...");
-      window.open(data.url, "_blank");
+      window.location.href = data.url;
     },
     onError: (error) => {
       toast.error(error.message || "Fehler beim Erstellen des Checkouts");
@@ -851,6 +873,44 @@ export default function Pricing() {
                     </p>
                   </div>
 
+                  {/* Features Accordion */}
+                  <div className="mb-4 flex-1">
+                    <button
+                      onClick={() => setExpandedTier(expandedTier === tier.name ? null : tier.name)}
+                      className="w-full flex items-center justify-between text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
+                    >
+                      <span className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-emerald-500" />
+                        {tier.name === "Free" ? "6" : tier.name === "Starter" ? "45" : tier.name === "Pro" ? "65" : tier.name === "Business" ? "78" : "83"} Features inklusive
+                      </span>
+                      <ChevronDown className={`w-4 h-4 transition-transform ${expandedTier === tier.name ? 'rotate-180' : ''}`} />
+                    </button>
+                    
+                    {expandedTier === tier.name && (
+                      <div className="mt-2 space-y-1 max-h-60 overflow-y-auto pr-2 text-xs">
+                        {featureCategories.map((category) => {
+                          const tierKey = tier.name.toLowerCase() as keyof typeof category.features[0]['tiers'];
+                          const availableFeatures = category.features.filter(f => f.tiers[tierKey]);
+                          if (availableFeatures.length === 0) return null;
+                          return (
+                            <div key={category.title} className="mb-2">
+                              <div className="font-semibold text-muted-foreground flex items-center gap-1 mb-1">
+                                {category.icon}
+                                {category.title}
+                              </div>
+                              {availableFeatures.map((feature) => (
+                                <div key={feature.name} className="flex items-start gap-2 py-0.5 pl-4">
+                                  <Check className="w-3 h-3 text-emerald-500 mt-0.5 flex-shrink-0" />
+                                  <span className="text-muted-foreground">{feature.name}</span>
+                                </div>
+                              ))}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+
                   {/* CTA */}
                   <Button 
                     className={`w-full mt-auto ${
@@ -876,62 +936,91 @@ export default function Pricing() {
             transition={{ delay: 0.5 }}
             className="max-w-7xl mx-auto"
           >
-            <div className="text-center mb-12">
+            <div className="text-center mb-8">
               <h2 className="text-3xl font-bold mb-4">Alle Features im Detail</h2>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground mb-6">
                 Vergleiche alle {featureCategories.reduce((acc, cat) => acc + cat.features.length, 0)} Features der verschiedenen Pläne
               </p>
+              <div className="flex justify-center gap-4">
+                <Button variant="outline" size="sm" onClick={expandAll} className="gap-2">
+                  <ChevronDown className="w-4 h-4" />
+                  Alle öffnen
+                </Button>
+                <Button variant="outline" size="sm" onClick={collapseAll} className="gap-2">
+                  <ChevronDown className="w-4 h-4 rotate-180" />
+                  Alle schließen
+                </Button>
+              </div>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                {/* Header */}
-                <thead>
-                  <tr className="border-b border-border">
-                    <th className="text-left py-4 px-4 font-medium text-muted-foreground w-1/3">Feature</th>
-                    {pricingTiers.map((tier) => (
-                      <th key={tier.name} className={`text-center py-4 px-2 font-medium ${tier.popular ? 'text-violet-500' : ''}`}>
-                        {tier.name}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {featureCategories.map((category, catIndex) => (
-                    <React.Fragment key={`category-${catIndex}`}>
-                      {/* Category Header */}
-                      <tr className="bg-muted/30">
-                        <td colSpan={6} className="py-4 px-4">
-                          <div className="flex items-center gap-2 font-semibold">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500/20 to-purple-500/20 flex items-center justify-center text-violet-500">
-                              {category.icon}
-                            </div>
-                            {category.title}
-                          </div>
-                        </td>
-                      </tr>
-                      {/* Features */}
-                      {category.features.map((feature, featIndex) => (
-                        <tr key={`feat-${catIndex}-${featIndex}`} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
-                          <td className="py-4 px-4">
-                            <div>
-                              <div className="font-medium">{feature.name}</div>
-                              <div className="text-sm text-muted-foreground">{feature.description}</div>
-                            </div>
-                          </td>
-                          <td className="text-center py-4 px-2">{getTierValue(feature.tiers.free)}</td>
-                          <td className="text-center py-4 px-2">{getTierValue(feature.tiers.starter)}</td>
-                          <td className={`text-center py-4 px-2 ${pricingTiers[2].popular ? 'bg-violet-500/5' : ''}`}>
-                            {getTierValue(feature.tiers.pro)}
-                          </td>
-                          <td className="text-center py-4 px-2">{getTierValue(feature.tiers.business)}</td>
-                          <td className="text-center py-4 px-2">{getTierValue(feature.tiers.enterprise)}</td>
-                        </tr>
-                      ))}
-                    </React.Fragment>
-                  ))}
-                </tbody>
-              </table>
+            {/* Sticky Header for Tier Names */}
+            <div className="sticky top-16 z-40 bg-background/95 backdrop-blur-sm border-b border-border mb-4 py-3">
+              <div className="grid grid-cols-6 gap-2 text-center text-sm font-medium">
+                <div className="text-left pl-4 text-muted-foreground">Kategorie</div>
+                {pricingTiers.map((tier) => (
+                  <div key={tier.name} className={tier.popular ? 'text-violet-500' : 'text-muted-foreground'}>
+                    {tier.name}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Accordion Categories */}
+            <div className="space-y-3">
+              {featureCategories.map((category, catIndex) => (
+                <div key={`category-${catIndex}`} className="rounded-xl border border-border overflow-hidden bg-card">
+                  {/* Category Header - Clickable */}
+                  <button
+                    onClick={() => toggleCategory(catIndex)}
+                    className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-violet-500/20 to-purple-500/20 flex items-center justify-center text-violet-500">
+                        {category.icon}
+                      </div>
+                      <div className="text-left">
+                        <h3 className="font-semibold">{category.title}</h3>
+                        <p className="text-sm text-muted-foreground">{category.features.length} Features</p>
+                      </div>
+                    </div>
+                    <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform duration-300 ${expandedCategories.has(catIndex) ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  {/* Features - Expandable */}
+                  {expandedCategories.has(catIndex) && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="border-t border-border"
+                    >
+                      <div className="overflow-x-auto">
+                        <table className="w-full">
+                          <tbody>
+                            {category.features.map((feature, featIndex) => (
+                              <tr key={`feat-${catIndex}-${featIndex}`} className="border-b border-border/30 last:border-0 hover:bg-muted/20 transition-colors">
+                                <td className="py-3 px-4 w-1/3">
+                                  <div>
+                                    <div className="font-medium text-sm">{feature.name}</div>
+                                    <div className="text-xs text-muted-foreground">{feature.description}</div>
+                                  </div>
+                                </td>
+                                <td className="text-center py-3 px-2 w-[13.3%]">{getTierValue(feature.tiers.free)}</td>
+                                <td className="text-center py-3 px-2 w-[13.3%]">{getTierValue(feature.tiers.starter)}</td>
+                                <td className={`text-center py-3 px-2 w-[13.3%] ${pricingTiers[2].popular ? 'bg-violet-500/5' : ''}`}>
+                                  {getTierValue(feature.tiers.pro)}
+                                </td>
+                                <td className="text-center py-3 px-2 w-[13.3%]">{getTierValue(feature.tiers.business)}</td>
+                                <td className="text-center py-3 px-2 w-[13.3%]">{getTierValue(feature.tiers.enterprise)}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
+              ))}
             </div>
           </motion.div>
 

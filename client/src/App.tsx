@@ -17,6 +17,7 @@ import Contact from "./pages/Contact";
 import Disclaimer from "./pages/Disclaimer";
 import DesignCompare from "./pages/DesignCompare";
 import Unsubscribe from "./pages/Unsubscribe";
+import { ExitIntentPopup } from "./components/ExitIntentPopup";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -58,6 +59,7 @@ function App() {
               }}
             />
             <Router />
+            <ExitIntentPopup />
           </TooltipProvider>
         </LanguageProvider>
       </ThemeProvider>
