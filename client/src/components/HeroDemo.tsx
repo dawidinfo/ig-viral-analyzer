@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, Eye, Heart, Play, Users } from 'lucide-react';
+import { useLocation } from 'wouter';
 
 // Animated counter hook
 function useAnimatedCounter(end: number, duration: number = 2000, start: number = 0) {
@@ -35,22 +36,56 @@ function formatNumber(num: number): string {
   return num.toString();
 }
 
-// Compact mini video card
-function MiniVideoCard({ views, likes, isViral }: { views: number; likes: number; isViral?: boolean }) {
+// Real reel thumbnail images
+const reelThumbnails = [
+  'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=100&h=150&fit=crop', // Social media content
+  'https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?w=100&h=150&fit=crop', // Instagram style
+  'https://images.unsplash.com/photo-1516251193007-45ef944ab0c6?w=100&h=150&fit=crop', // Lifestyle
+];
+
+// Compact mini video card with real thumbnail
+function MiniVideoCard({ 
+  views, 
+  likes, 
+  isViral, 
+  thumbnail,
+  onClick 
+}: { 
+  views: number; 
+  likes: number; 
+  isViral?: boolean;
+  thumbnail: string;
+  onClick: () => void;
+}) {
   return (
-    <div className={`relative bg-black/40 backdrop-blur-sm rounded-md p-1.5 border ${
-      isViral ? 'border-accent/50 shadow-[0_0_12px_rgba(0,255,136,0.2)]' : 'border-white/10'
-    }`}>
+    <motion.div 
+      onClick={onClick}
+      whileHover={{ scale: 1.05, y: -2 }}
+      whileTap={{ scale: 0.98 }}
+      className={`relative bg-black/40 backdrop-blur-sm rounded-md p-1.5 border cursor-pointer transition-all ${
+        isViral ? 'border-accent/50 shadow-[0_0_12px_rgba(0,255,136,0.2)]' : 'border-white/10 hover:border-white/30'
+      }`}
+    >
       {isViral && (
-        <div className="absolute -top-1.5 -right-1.5 bg-accent text-black text-[8px] font-bold px-1 py-0.5 rounded-full">
+        <div className="absolute -top-1.5 -right-1.5 bg-accent text-black text-[8px] font-bold px-1 py-0.5 rounded-full z-10">
           VIRAL
         </div>
       )}
-      <div className="relative w-10 h-12 sm:w-12 sm:h-14 bg-gradient-to-br from-primary/20 to-secondary/20 rounded mb-1 overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-4 h-4 sm:w-5 sm:h-5 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+      <div className="relative w-10 h-12 sm:w-12 sm:h-14 rounded mb-1 overflow-hidden group">
+        {/* Real thumbnail image */}
+        <img 
+          src={thumbnail} 
+          alt="Reel thumbnail"
+          className="w-full h-full object-cover"
+        />
+        {/* Play button overlay */}
+        <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity">
+          <motion.div
+            whileHover={{ scale: 1.2 }}
+            className="w-4 h-4 sm:w-5 sm:h-5 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center"
+          >
             <Play className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-white fill-white" />
-          </div>
+          </motion.div>
         </div>
       </div>
       <div className="space-y-0.5">
@@ -63,7 +98,7 @@ function MiniVideoCard({ views, likes, isViral }: { views: number; likes: number
           <span>{formatNumber(likes)}</span>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -119,8 +154,14 @@ function GrowthChart() {
 }
 
 export function HeroDemo() {
+  const [, setLocation] = useLocation();
   const followerCount = useAnimatedCounter(52400, 2000, 12000);
   const viewsCount = useAnimatedCounter(1250000, 2000, 250000);
+  
+  // Navigate to demo analysis
+  const handleCardClick = () => {
+    setLocation('/analysis/cristiano?demo=true');
+  };
   
   return (
     <motion.div
@@ -194,12 +235,40 @@ export function HeroDemo() {
             </div>
           </div>
           
-          {/* Video cards - compact row */}
+          {/* Video cards - compact row with real thumbnails */}
           <div className="flex items-center justify-center gap-1.5 sm:gap-2">
-            <MiniVideoCard views={45000} likes={3200} />
-            <MiniVideoCard views={892000} likes={67000} isViral />
-            <MiniVideoCard views={128000} likes={9400} />
+            <MiniVideoCard 
+              views={45000} 
+              likes={3200} 
+              thumbnail={reelThumbnails[0]}
+              onClick={handleCardClick}
+            />
+            <MiniVideoCard 
+              views={892000} 
+              likes={67000} 
+              isViral 
+              thumbnail={reelThumbnails[1]}
+              onClick={handleCardClick}
+            />
+            <MiniVideoCard 
+              views={128000} 
+              likes={9400} 
+              thumbnail={reelThumbnails[2]}
+              onClick={handleCardClick}
+            />
           </div>
+          
+          {/* Click hint */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2 }}
+            className="text-center mt-2"
+          >
+            <span className="text-[8px] sm:text-[10px] text-white/40">
+              Klicke auf ein Video für eine Beispiel-Analyse
+            </span>
+          </motion.div>
         </div>
       </div>
       

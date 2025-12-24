@@ -612,3 +612,7 @@
 ## Hero Demo Kompakter (24.12.2024)
 - [x] Demo kompakter gemacht (max-w-xl, kleinere Elemente)
 - [x] Analyse-Button sichtbar im ersten Viewport
+
+## Hero Demo Verbesserungen (24.12.2024)
+- [x] Echte Reel-Thumbnails (Unsplash Bilder)
+- [x] Demo-Cards klickbar für Beispiel-Analyse (cristiano)
