@@ -57,6 +57,9 @@ import { DetailedPostAnalysis } from "@/components/DetailedPostAnalysis";
 import { HashtagStatistics } from "@/components/HashtagStatistics";
 import { BestPostingTime } from "@/components/BestPostingTime";
 import { CaptionGenerator } from "@/components/CaptionGenerator";
+import { AccountMonitoring } from "@/components/AccountMonitoring";
+import { ReelIdeasGenerator } from "@/components/ReelIdeasGenerator";
+import { AnalysisPaywall } from "@/components/AnalysisPaywall";
 import { FeatureTooltip, tooltips, InfoTooltip } from "@/components/FeatureTooltip";
 import { generateAnalysisPDF } from "@/lib/pdfExport";
 import { useLocation, useSearch, useRoute } from "wouter";
@@ -1010,7 +1013,49 @@ export default function Analysis() {
               </section>
             )}
 
-            {/* ==================== SECTION 12: POSTS ÜBERSICHT ==================== */}
+            {/* ==================== SECTION 12: ACCOUNT-MONITORING ==================== */}
+            <section className="space-y-6">
+              <SectionHeader
+                title="Account-Monitoring"
+                icon={<Eye className="w-6 h-6 text-amber-500" />}
+                isPinned={pinnedSections.has('monitoring')}
+                onTogglePin={() => togglePin('monitoring')}
+                badge="KI"
+              />
+              <AccountMonitoring 
+                username={analysisData.profile.username}
+                isPremium={!!user}
+              />
+            </section>
+
+            {/* ==================== SECTION 13: KI-REEL-IDEEN-GENERATOR ==================== */}
+            {analysisData.reels.length > 0 && (
+              <section className="space-y-6">
+                <SectionHeader
+                  title="KI-Reel-Ideen-Generator"
+                  icon={<Lightbulb className="w-6 h-6 text-purple-500" />}
+                  isPinned={pinnedSections.has('ideas')}
+                  onTogglePin={() => togglePin('ideas')}
+                  badge="KI"
+                />
+                <ReelIdeasGenerator 
+                  reels={analysisData.reels} 
+                  username={analysisData.profile.username}
+                  isPremium={!!user}
+                />
+              </section>
+            )}
+
+            {/* ==================== PAYWALL FÜR NICHT-PREMIUM NUTZER ==================== */}
+            {!user && (
+              <AnalysisPaywall 
+                username={analysisData.profile.username}
+                visibleSections={6}
+                totalSections={13}
+              />
+            )}
+
+            {/* ==================== SECTION 14: POSTS ÜBERSICHT ==================== */}
             {analysisData.posts.length > 0 && (
               <section className="space-y-6">
                 <SectionHeader

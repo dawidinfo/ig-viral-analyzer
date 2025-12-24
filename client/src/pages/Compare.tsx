@@ -343,7 +343,7 @@ export default function Compare() {
                 disabled={!account1Input.trim() || !account2Input.trim()}
               >
                 <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-                Vergleichen
+                KI-Vergleich starten
               </Button>
             </div>
           </motion.div>

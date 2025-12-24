@@ -444,6 +444,145 @@ const featureCategories = [
     ]
   },
   {
+    title: "KI-Content-Generator",
+    icon: <Sparkles className="w-5 h-5" />,
+    features: [
+      {
+        name: "KI-Caption-Generator",
+        description: "5 verschiedene Caption-Stile basierend auf Top-Performern",
+        tiers: { free: false, starter: false, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "KI-Reel-Ideen-Generator",
+        description: "10 personalisierte Content-Ideen mit geschätzten Views",
+        tiers: { free: false, starter: false, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "KI-Hook-Vorschläge",
+        description: "Optimierte Hooks basierend auf viralen Mustern",
+        tiers: { free: false, starter: false, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "KI-Hashtag-Generator",
+        description: "Automatisch generierte Hashtag-Sets für maximale Reichweite",
+        tiers: { free: false, starter: false, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "Unbegrenzte KI-Generierungen",
+        description: "Keine Limits bei der Content-Generierung",
+        tiers: { free: false, starter: false, pro: false, business: true, enterprise: true }
+      }
+    ]
+  },
+  {
+    title: "Account-Monitoring & Alerts",
+    icon: <Eye className="w-5 h-5" />,
+    features: [
+      {
+        name: "Account-Tracking",
+        description: "Tracke beliebige Accounts und erhalte Updates",
+        tiers: { free: false, starter: false, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "Wöchentlicher KI-Report",
+        description: "Automatischer Performance-Report jeden Montag per E-Mail",
+        tiers: { free: false, starter: false, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "Engagement-Drop Alerts",
+        description: "Sofortige Benachrichtigung bei Engagement-Rückgängen",
+        tiers: { free: false, starter: false, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "Viral-Reel Alerts",
+        description: "Benachrichtigung wenn ein Reel viral geht",
+        tiers: { free: false, starter: false, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "Konkurrenz-Monitoring",
+        description: "Alerts wenn Konkurrenten viral gehen",
+        tiers: { free: false, starter: false, pro: false, business: true, enterprise: true }
+      },
+      {
+        name: "Unbegrenzte Tracked Accounts",
+        description: "Tracke so viele Accounts wie du möchtest",
+        tiers: { free: false, starter: false, pro: false, business: true, enterprise: true }
+      }
+    ]
+  },
+  {
+    title: "Erweiterte Statistiken",
+    icon: <LineChart className="w-5 h-5" />,
+    features: [
+      {
+        name: "Hashtag-Statistiken",
+        description: "Performance-Ranking deiner verwendeten Hashtags",
+        tiers: { free: false, starter: true, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "Beste Posting-Zeit Heatmap",
+        description: "7x24 Grid zeigt optimale Posting-Zeiten",
+        tiers: { free: false, starter: true, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "Post-Interaktionen Chart",
+        description: "Interaktionen pro Post mit Thumbnails visualisiert",
+        tiers: { free: false, starter: true, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "Detaillierte Post-Analyse Tabelle",
+        description: "Alle Posts mit Datum, Mentions, Hashtags, Interaktionen",
+        tiers: { free: false, starter: true, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "Zeitraum-Filter (7/30/90 Tage)",
+        description: "Filtere Analysen nach beliebigem Zeitraum",
+        tiers: { free: false, starter: true, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "Reel-Sortierung nach Performance",
+        description: "Sortiere Reels nach Views, Likes oder Engagement",
+        tiers: { free: true, starter: true, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "Viral-Badge Erkennung",
+        description: "Automatische Markierung überdurchschnittlicher Reels",
+        tiers: { free: true, starter: true, pro: true, business: true, enterprise: true }
+      }
+    ]
+  },
+  {
+    title: "Vergleich & Analyse",
+    icon: <Users className="w-5 h-5" />,
+    features: [
+      {
+        name: "Split-Screen Vergleich",
+        description: "Zwei Accounts nebeneinander vergleichen",
+        tiers: { free: false, starter: true, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "Best Performing Reel Highlight",
+        description: "Größere Vorschau des besten Reels mit Details",
+        tiers: { free: false, starter: true, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "Quick-Swap Button",
+        description: "Accounts mit einem Klick tauschen",
+        tiers: { free: false, starter: true, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "Reel-Performance Vergleich",
+        description: "Side-by-side Reels-Vergleich mit Metriken",
+        tiers: { free: false, starter: true, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "Multi-Account Vergleich",
+        description: "Bis zu 5 Accounts gleichzeitig vergleichen",
+        tiers: { free: false, starter: false, pro: false, business: true, enterprise: true }
+      }
+    ]
+  },
+  {
     title: "Support & Service",
     icon: <Award className="w-5 h-5" />,
     features: [

@@ -717,3 +717,17 @@
 - [x] Wöchentlicher Email-Report Backend (sendWeeklyReport Funktion)
 - [x] Email-Template für Performance-Zusammenfassung
 - [x] Engagement-Alert Email bei Rückgang
+
+## Große Feature-Erweiterung (24.12.2024)
+- [ ] Account-Monitoring System (Track-Button, wöchentliche Reports, Alerts)
+- [ ] Paywall für Premium-Features (50% gratis, Rest Premium)
+- [ ] KI-Reel-Ideen-Generator (10 Content-Ideen basierend auf Top-Performern)
+- [ ] Erweiterte Pricing-Tabelle mit allen Features
+- [ ] Alle Buttons mit KI-Keyword bestücken für mehr Hype
+
+## Große Feature-Erweiterung (24.12.2024)
+- [x] Account-Monitoring System mit Tracking und Alerts
+- [x] Paywall für Premium-Features (50% gratis, Rest Premium)
+- [x] KI-Reel-Ideen-Generator mit 10 Content-Ideen
+- [x] Pricing-Tabelle mit allen Features erweitern (KI-Content, Monitoring, Statistiken, Vergleich)
+- [x] Alle Buttons mit KI-Keyword bestückt für mehr Hype

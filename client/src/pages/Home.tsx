@@ -362,8 +362,8 @@ export default function Home() {
                 FAQ
               </a>
               <button onClick={() => { setLocation('/compare'); closeMobileMenu(); }} className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors text-left">
-                <ArrowLeftRight className="w-5 h-5 text-primary" />
-                Vergleichen
+                <ArrowLeftRight className="w-4 h-4 mr-2" />
+                KI-Vergleich
               </button>
               <div className="h-px bg-border/50 my-4" />
               {isAuthenticated ? (

@@ -790,7 +790,7 @@ export default function Dashboard() {
                           className="mt-4"
                           onClick={() => setLocation("/")}
                         >
-                          Erste Analyse starten
+                          Erste KI-Analyse starten
                         </Button>
                       )}
                     </div>
