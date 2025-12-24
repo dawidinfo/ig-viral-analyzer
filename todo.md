@@ -595,3 +595,7 @@
 
 ## Header-Abstand Fix v7 (24.12.2024)
 - [x] Leerer Bereich zwischen Header und Badge auf Mobile reduziert (pt-4 statt pt-16)
+
+## Mobile Layout Fix v8 (24.12.2024)
+- [x] Header-Abstand: Section-Padding Override entfernt
+- [x] Checkpunkte: Auf Mobile vertikal gestapelt (flex-col)

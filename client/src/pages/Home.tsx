@@ -474,19 +474,19 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
-              className="flex items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm text-muted-foreground px-4 sm:px-0"
+              className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-xs sm:text-sm text-muted-foreground px-4 sm:px-0"
             >
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-accent shrink-0" />
-                <span className="whitespace-nowrap">{t.hero.features.free}</span>
+                <span>{t.hero.features.free}</span>
               </div>
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-accent shrink-0" />
-                <span className="whitespace-nowrap">{t.hero.features.noSignup}</span>
+                <span>{t.hero.features.noSignup}</span>
               </div>
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-accent shrink-0" />
-                <span className="whitespace-nowrap">{t.hero.features.instant}</span>
+                <span>{t.hero.features.instant}</span>
               </div>
             </motion.div>
           </motion.div>

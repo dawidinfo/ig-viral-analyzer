@@ -521,10 +521,10 @@ p {
     border-radius: 0.75rem !important;
   }
   
-  /* Section Spacing */
-  section {
-    padding-top: 3rem !important;
-    padding-bottom: 3rem !important;
+  /* Section Spacing - Don't override hero section */
+  section:not(:first-of-type) {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
   }
   
   /* Container Padding */
