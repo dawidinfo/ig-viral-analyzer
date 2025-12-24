@@ -175,6 +175,7 @@ export default function Analysis() {
   const [pinnedSections, setPinnedSections] = useState<Set<string>>(new Set(['ai', 'stats', 'viral']));
   const [showCTAPopup, setShowCTAPopup] = useState(false);
   const [hasShownPopup, setHasShownPopup] = useState(false);
+  const [reelSortBy, setReelSortBy] = useState<'views' | 'likes' | 'engagement'>('views');
 
   const togglePin = (section: string) => {
     setPinnedSections(prev => {
@@ -784,9 +785,78 @@ export default function Analysis() {
                 />
                 
                 <div className="glass-card rounded-xl p-6">
+                  {/* Sortier-Dropdown */}
+                  <div className="flex items-center justify-between mb-4">
+                    <p className="text-sm text-muted-foreground">Sortiert nach: <span className="text-foreground font-medium">{reelSortBy === 'views' ? 'Views' : reelSortBy === 'likes' ? 'Likes' : 'Engagement'}</span></p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setReelSortBy('views')}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                          reelSortBy === 'views' 
+                            ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' 
+                            : 'bg-muted hover:bg-muted/80 text-muted-foreground'
+                        }`}
+                      >
+                        <Eye className="w-3 h-3 inline mr-1" />Views
+                      </button>
+                      <button
+                        onClick={() => setReelSortBy('likes')}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                          reelSortBy === 'likes' 
+                            ? 'bg-red-500/20 text-red-400 border border-red-500/30' 
+                            : 'bg-muted hover:bg-muted/80 text-muted-foreground'
+                        }`}
+                      >
+                        <Heart className="w-3 h-3 inline mr-1" />Likes
+                      </button>
+                      <button
+                        onClick={() => setReelSortBy('engagement')}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                          reelSortBy === 'engagement' 
+                            ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
+                            : 'bg-muted hover:bg-muted/80 text-muted-foreground'
+                        }`}
+                      >
+                        <TrendingUp className="w-3 h-3 inline mr-1" />Engagement
+                      </button>
+                    </div>
+                  </div>
+                  
                   <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                    {analysisData.reels.slice(0, 12).map((reel, index) => (
-                      <div key={reel.id || index} className="relative group cursor-pointer">
+                    {(() => {
+                      // Berechne durchschnittliche Metriken für Viral-Badge
+                      const avgViews = analysisData.reels.reduce((sum, r) => sum + r.viewCount, 0) / analysisData.reels.length;
+                      const avgEngagement = analysisData.reels.reduce((sum, r) => sum + (r.viewCount > 0 ? (r.likeCount / r.viewCount) * 100 : 0), 0) / analysisData.reels.length;
+                      
+                      // Sortiere Reels
+                      const sortedReels = [...analysisData.reels].sort((a, b) => {
+                        if (reelSortBy === 'views') return b.viewCount - a.viewCount;
+                        if (reelSortBy === 'likes') return b.likeCount - a.likeCount;
+                        const engA = a.viewCount > 0 ? (a.likeCount / a.viewCount) * 100 : 0;
+                        const engB = b.viewCount > 0 ? (b.likeCount / b.viewCount) * 100 : 0;
+                        return engB - engA;
+                      });
+                      
+                      return sortedReels.slice(0, 12).map((reel, index) => {
+                        const engagement = reel.viewCount > 0 ? (reel.likeCount / reel.viewCount) * 100 : 0;
+                        const isViral = reel.viewCount > avgViews * 1.5 || engagement > avgEngagement * 1.3;
+                        const reelUrl = reel.shortcode ? `https://www.instagram.com/reel/${reel.shortcode}/` : null;
+                        
+                        return (
+                          <div 
+                            key={reel.id || index} 
+                            className="relative group cursor-pointer"
+                            onClick={() => reelUrl && window.open(reelUrl, '_blank')}
+                            title={reelUrl ? 'Klicke um das Reel auf Instagram zu öffnen' : ''}
+                          >
+                        {/* Viral Badge */}
+                        {isViral && (
+                          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-20">
+                            <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white border-0 shadow-lg text-xs animate-pulse">
+                              🔥 Viral
+                            </Badge>
+                          </div>
+                        )}
                         {reel.thumbnailUrl ? (
                           <img 
                             src={reel.thumbnailUrl} 
@@ -849,14 +919,17 @@ export default function Analysis() {
                           </Badge>
                         </div>
                         
-                        {/* Play Icon */}
+                        {/* Play Icon + Instagram Link */}
                         <div className="absolute top-2 right-2">
-                          <div className="w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                            <Play className="w-4 h-4 text-white fill-white" />
+                          <div className="w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-gradient-to-r group-hover:from-purple-500 group-hover:to-pink-500 transition-all">
+                            <ExternalLink className="w-4 h-4 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <Play className="w-4 h-4 text-white fill-white absolute group-hover:opacity-0 transition-opacity" />
                           </div>
                         </div>
                       </div>
-                    ))}
+                    );
+                  });
+                })()}
                   </div>
                 </div>
               </section>

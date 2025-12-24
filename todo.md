@@ -659,3 +659,8 @@
 - [x] Permanentes Overlay am unteren Rand der Thumbnails
 - [x] Engagement-Rate als Prozent angezeigt
 - [x] Hover-Overlay für mehr Details
+
+## Reel-Features Erweiterung (24.12.2024)
+- [x] Sortierung nach Views, Likes, Engagement-Rate
+- [x] Viral-Badge für überdurchschnittliche Performance
+- [x] Klickbare Reels - Original auf Instagram öffnen
