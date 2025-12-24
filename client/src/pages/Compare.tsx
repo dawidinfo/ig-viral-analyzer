@@ -185,6 +185,27 @@ export default function Compare() {
     }
   };
 
+  // Swap accounts function
+  const [isSwapping, setIsSwapping] = useState(false);
+  const handleSwap = () => {
+    setIsSwapping(true);
+    const temp = account1Input;
+    setAccount1Input(account2Input);
+    setAccount2Input(temp);
+    
+    // If both accounts have values, trigger comparison with swapped values
+    const clean1 = account2Input.replace('@', '').trim();
+    const clean2 = account1Input.replace('@', '').trim();
+    if (clean1 && clean2) {
+      setTimeout(() => {
+        setLocation(`/compare?account1=${encodeURIComponent(clean1)}&account2=${encodeURIComponent(clean2)}`);
+        setIsSwapping(false);
+      }, 300);
+    } else {
+      setTimeout(() => setIsSwapping(false), 300);
+    }
+  };
+
   // Radar chart data for comparison
   const radarData = useMemo(() => {
     if (!data1 || !data2) return [];
@@ -286,9 +307,17 @@ export default function Compare() {
               </div>
               
               <div className="flex justify-center">
-                <div className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center">
-                  <ArrowLeftRight className="w-5 h-5 text-muted-foreground" />
-                </div>
+                <motion.button
+                  onClick={handleSwap}
+                  className="w-12 h-12 rounded-full bg-gradient-to-r from-violet-500/20 to-cyan-500/20 hover:from-violet-500/40 hover:to-cyan-500/40 border border-violet-500/30 hover:border-violet-500/50 flex items-center justify-center transition-all duration-300 cursor-pointer group"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  animate={{ rotate: isSwapping ? 180 : 0 }}
+                  transition={{ duration: 0.3 }}
+                  title="Accounts tauschen"
+                >
+                  <ArrowLeftRight className="w-5 h-5 text-violet-400 group-hover:text-violet-300 transition-colors" />
+                </motion.button>
               </div>
               
               <div className="md:col-span-3">

@@ -681,3 +681,8 @@
 - [x] Winner banner highlighting the better performing reel
 - [x] Viral Score badge (Viral, Good, Average)
 - [x] Comparison metrics below the cards
+
+## Quick-Swap Button (24.12.2024)
+- [x] Add swap button between the two account input fields
+- [x] Swap both input values and trigger new comparison
+- [x] Animate the swap for visual feedback (180° rotation)
