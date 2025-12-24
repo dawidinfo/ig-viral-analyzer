@@ -42,6 +42,7 @@ import { GlobalFooter } from "@/components/GlobalFooter";
 import { InvoicesTab } from "@/components/InvoicesTab";
 import { NotesTab } from "@/components/NotesTab";
 import { OnboardingTutorial, useOnboarding } from "@/components/OnboardingTutorial";
+import { NotificationSettings } from "@/components/NotificationSettings";
 import { useState, useMemo } from "react";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
@@ -763,6 +764,9 @@ export default function Dashboard() {
 
             {/* Settings Tab */}
             <TabsContent value="settings" className="space-y-6">
+              {/* Notification Settings */}
+              <NotificationSettings />
+              
               <Card className="glass-card">
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center gap-2">

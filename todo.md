@@ -527,3 +527,37 @@
 
 ## Competitor Comparison
 - [x] Compare-Seite UI fertigstellen (bereits vollständig implementiert)
+
+## CTA-Popup Verbesserung
+- [ ] Leuchtender Shine-Rand für bessere Sichtbarkeit
+- [ ] Animierter Glow-Effekt
+
+## Mobile Design Fix v3
+- [ ] Score-Ringe überlappen - Abstand vergrößern
+- [ ] Header zu eng auf Mobile
+- [ ] Cards besser stapeln
+
+## Affiliate-Dashboard
+- [ ] 500 Credits Gutschrift wenn Geworbener zahlt
+- [ ] Referral-Link teilen Feature
+- [ ] Affiliate-Statistiken im Dashboard
+
+## Push-Benachrichtigungen
+- [ ] Browser-Notifications Permission anfragen
+- [ ] Notification wenn Account viral geht
+- [ ] Benachrichtigung bei starkem Wachstum
+
+## CTA-Popup Verbesserung
+- [x] Leuchtender Shine-Rand für bessere Sichtbarkeit
+
+## Mobile Design Fix v3
+- [x] Score-Ringe überlappen auf Mobile (grid-cols-2 statt 4)
+- [x] Header zu eng auf Mobile (CSS Fixes)
+
+## Affiliate-Dashboard
+- [x] 500 Credits Gutschrift (bereits implementiert in AFFILIATE_CONFIG)
+- [x] Sharing-Feature im Dashboard (Twitter, LinkedIn, Email)
+
+## Push-Benachrichtigungen
+- [x] Browser-Notifications wenn Account viral geht
+- [x] NotificationSettings Komponente im Dashboard

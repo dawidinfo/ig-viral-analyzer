@@ -335,7 +335,7 @@ export default function ReelAnalysis({ username }: ReelAnalysisProps) {
         </div>
 
         {/* Score Overview */}
-        <div className="grid grid-cols-4 gap-6 p-6 bg-gradient-to-r from-violet-500/5 via-cyan-500/5 to-green-500/5 rounded-2xl border border-white/10">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 p-4 sm:p-6 bg-gradient-to-r from-violet-500/5 via-cyan-500/5 to-green-500/5 rounded-2xl border border-white/10">
           <ScoreCircle 
             score={analysis.hookAnalysis.score} 
             label="Hook" 

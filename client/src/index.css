@@ -727,12 +727,37 @@ p {
 /* Touch-friendly tap targets */
 @media (max-width: 768px) {
   button, a, [role="button"] {
-    min-height: 44px;
-    min-width: 44px;
+    min-height: 40px;
   }
   
   /* Larger touch targets for icons */
   .icon-button {
+    padding: 0.5rem !important;
+  }
+  
+  /* Fix Analysis Header spacing */
+  nav .container {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+  
+  /* Score circles responsive */
+  .score-circle-container {
+    gap: 0.5rem !important;
+  }
+  
+  /* Cards padding on mobile */
+  .glass-card {
+    padding: 1rem !important;
+  }
+  
+  /* Copywriting cards mobile */
+  .copywriting-card {
+    padding: 0.75rem !important;
+  }
+  
+  /* HOT-Transkription mobile */
+  .hot-transcription {
     padding: 0.75rem !important;
   }
 }
@@ -748,4 +773,18 @@ html, body {
   .fixed {
     position: -webkit-sticky;
   }
+}
+
+/* Shine/Glow Animation for CTA Popup */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.4), 0 0 60px rgba(168, 85, 247, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 50px rgba(168, 85, 247, 0.6), 0 0 100px rgba(168, 85, 247, 0.3), 0 0 150px rgba(168, 85, 247, 0.1);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
 }
