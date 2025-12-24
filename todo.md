@@ -698,3 +698,9 @@
 - [x] Post Interactions Overview - Interaktionen pro Post mit Thumbnails
 - [x] Detailed Post Analysis Tabelle - Datum, Thumbnail, Likes, Kommentare, Mentions, Hashtags
 - [x] KI-Tipps/Insights Box unter den Charts
+
+## Zeitraum-Filter (24.12.2024)
+- [x] Filter für 7, 30, 90 Tage in PostInteractionsChart
+- [x] Filter für 7, 30, 90 Tage in DetailedPostAnalysis
+- [x] "Alle" Option für ungefilterte Ansicht
+- [x] Dynamische Anzeige der gefilterten Post-Anzahl

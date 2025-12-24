@@ -66,16 +66,35 @@ const extractMentions = (caption?: string): string[] => {
 };
 
 type SortKey = "date" | "likes" | "comments" | "views";
+type TimeRange = "all" | "7d" | "30d" | "90d";
 
 export function DetailedPostAnalysis({ reels, className = "" }: DetailedPostAnalysisProps) {
   const [sortBy, setSortBy] = useState<SortKey>("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [currentPage, setCurrentPage] = useState(1);
+  const [timeRange, setTimeRange] = useState<TimeRange>("all");
   const itemsPerPage = 10;
+
+  // Filter by time range
+  const filteredReels = useMemo(() => {
+    if (timeRange === "all") return reels;
+    
+    const now = Date.now();
+    const days = timeRange === "7d" ? 7 : timeRange === "30d" ? 30 : 90;
+    const cutoff = now - (days * 24 * 60 * 60 * 1000);
+    
+    return reels.filter(reel => {
+      if (!reel.timestamp) return true;
+      const timestamp = typeof reel.timestamp === 'number' 
+        ? reel.timestamp * 1000 
+        : new Date(reel.timestamp).getTime();
+      return timestamp >= cutoff;
+    });
+  }, [reels, timeRange]);
 
   // Sort and paginate data
   const sortedReels = useMemo(() => {
-    const sorted = [...reels].sort((a, b) => {
+    const sorted = [...filteredReels].sort((a, b) => {
       let comparison = 0;
       switch (sortBy) {
         case "date":
@@ -96,14 +115,14 @@ export function DetailedPostAnalysis({ reels, className = "" }: DetailedPostAnal
       return sortOrder === "desc" ? -comparison : comparison;
     });
     return sorted;
-  }, [reels, sortBy, sortOrder]);
+  }, [filteredReels, sortBy, sortOrder]);
 
   const paginatedReels = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
     return sortedReels.slice(start, start + itemsPerPage);
   }, [sortedReels, currentPage]);
 
-  const totalPages = Math.ceil(reels.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredReels.length / itemsPerPage);
 
   const handleSort = (key: SortKey) => {
     if (sortBy === key) {
@@ -131,9 +150,41 @@ export function DetailedPostAnalysis({ reels, className = "" }: DetailedPostAnal
   return (
     <Card className={`glass-card ${className}`}>
       <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold">Detaillierte Post-Analyse</CardTitle>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2">
+            <CardTitle className="text-lg font-semibold">Detaillierte Post-Analyse</CardTitle>
+            {timeRange !== "all" && (
+              <Badge variant="outline" className="text-xs">
+                {filteredReels.length} Posts
+              </Badge>
+            )}
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Time Range Filter */}
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+              <Calendar className="w-3 h-3" />
+              <span>Zeitraum:</span>
+            </div>
+            <div className="flex gap-1">
+              {(["all", "7d", "30d", "90d"] as TimeRange[]).map((range) => (
+                <button
+                  key={range}
+                  onClick={() => {
+                    setTimeRange(range);
+                    setCurrentPage(1);
+                  }}
+                  className={`text-xs h-6 px-2 rounded transition-colors ${
+                    timeRange === range 
+                      ? "bg-primary text-primary-foreground" 
+                      : "bg-muted hover:bg-muted/80 text-muted-foreground"
+                  }`}
+                >
+                  {range === "all" ? "Alle" : range === "7d" ? "7T" : range === "30d" ? "30T" : "90T"}
+                </button>
+              ))}
+            </div>
+            <div className="w-px h-4 bg-border mx-1" />
+            {/* Sort Filter */}
             <span className="text-xs text-muted-foreground">Sortieren:</span>
             <select
               value={sortBy}
@@ -300,7 +351,7 @@ export function DetailedPostAnalysis({ reels, className = "" }: DetailedPostAnal
         {totalPages > 1 && (
           <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
             <span className="text-xs text-muted-foreground">
-              Zeige {(currentPage - 1) * itemsPerPage + 1}-{Math.min(currentPage * itemsPerPage, reels.length)} von {reels.length}
+              Zeige {(currentPage - 1) * itemsPerPage + 1}-{Math.min(currentPage * itemsPerPage, filteredReels.length)} von {filteredReels.length}
             </span>
             <div className="flex items-center gap-2">
               <Button

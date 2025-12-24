@@ -43,13 +43,33 @@ const formatNumber = (num: number): string => {
   return num.toString();
 };
 
+type TimeRange = "all" | "7d" | "30d" | "90d";
+
 export function PostInteractionsChart({ reels, className = "" }: PostInteractionsChartProps) {
   const [viewMode, setViewMode] = useState<"interactions" | "views">("interactions");
   const [sortBy, setSortBy] = useState<"date" | "performance">("date");
+  const [timeRange, setTimeRange] = useState<TimeRange>("all");
+
+  // Filter by time range
+  const filteredReels = useMemo(() => {
+    if (timeRange === "all") return reels;
+    
+    const now = Date.now();
+    const days = timeRange === "7d" ? 7 : timeRange === "30d" ? 30 : 90;
+    const cutoff = now - (days * 24 * 60 * 60 * 1000);
+    
+    return reels.filter(reel => {
+      if (!reel.timestamp) return true;
+      const timestamp = typeof reel.timestamp === 'number' 
+        ? reel.timestamp * 1000 
+        : new Date(reel.timestamp).getTime();
+      return timestamp >= cutoff;
+    });
+  }, [reels, timeRange]);
 
   // Prepare chart data
   const chartData = useMemo(() => {
-    let sorted = [...reels];
+    let sorted = [...filteredReels];
     
     if (sortBy === "date") {
       sorted.sort((a, b) => {
@@ -75,7 +95,7 @@ export function PostInteractionsChart({ reels, className = "" }: PostInteraction
       interactions: reel.likeCount + reel.commentCount,
       shortcode: reel.shortcode
     }));
-  }, [reels, sortBy, viewMode]);
+  }, [filteredReels, sortBy, viewMode]);
 
   // Calculate max value for scaling
   const maxValue = useMemo(() => {
@@ -138,6 +158,26 @@ export function PostInteractionsChart({ reels, className = "" }: PostInteraction
             <Info className="w-4 h-4 text-muted-foreground cursor-help" />
           </div>
           <div className="flex flex-wrap items-center gap-2">
+            {/* Time Range Filter */}
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+              <Calendar className="w-3 h-3" />
+              <span>Zeitraum:</span>
+            </div>
+            <div className="flex gap-1">
+              {(["all", "7d", "30d", "90d"] as TimeRange[]).map((range) => (
+                <Button
+                  key={range}
+                  variant={timeRange === range ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setTimeRange(range)}
+                  className={`text-xs h-6 px-2 ${timeRange === range ? "bg-primary" : ""}`}
+                >
+                  {range === "all" ? "Alle" : range === "7d" ? "7T" : range === "30d" ? "30T" : "90T"}
+                </Button>
+              ))}
+            </div>
+            <div className="w-px h-4 bg-border mx-1" />
+            {/* Sort Filter */}
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <ArrowUpDown className="w-3 h-3" />
               <span>Sortieren:</span>
@@ -256,6 +296,7 @@ export function PostInteractionsChart({ reels, className = "" }: PostInteraction
                   <Lightbulb className="w-4 h-4 text-white" />
                 </div>
                 <p className="text-sm text-muted-foreground">
+                  {timeRange !== "all" && `${filteredReels.length} Posts in den letzten ${timeRange === "7d" ? "7 Tagen" : timeRange === "30d" ? "30 Tagen" : "90 Tagen"}. `}
                   Beobachte und lass dich von den Elementen inspirieren, die deine Top-Posts gemeinsam haben! 
                   {bestPost && ` Dein bester Post hat ${formatNumber(bestPost.interactions)} Interaktionen.`}
                 </p>
