@@ -582,3 +582,9 @@
 ## Branding-Fix: IG Viral Analyzer → ReelSpy.ai
 - [x] Alle Vorkommen im Code durch "ReelSpy.ai" ersetzt
 - [ ] OAuth-Dialog Text: Änderung in Settings → General erforderlich (VITE_APP_TITLE)
+
+## Mobile UI Fixes (24.12.2024 - v5)
+- [x] Hero-Bereich: Zu viel Padding oben auf Mobile reduzieren (pt-20 statt pt-32)
+- [x] Suchfeld: Instagram-Logo im mobilen Suchfeld hinzugefügt (w-9 h-9)
+- [x] Suchfeld: Schlanker gemacht (Input und Button inline, h-10)
+- [x] Checkpunkte: Layout auf Mobile gefixed (horizontal, gap-3, whitespace-nowrap)
