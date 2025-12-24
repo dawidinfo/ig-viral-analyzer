@@ -574,6 +574,233 @@ export default function Compare() {
                 </div>
               </div>
 
+              {/* ==================== BEST PERFORMING REEL HIGHLIGHT ==================== */}
+              <div className="glass-card rounded-2xl p-6 mb-6">
+                <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                  <Crown className="w-5 h-5 text-amber-500" />
+                  Best Performing Reel
+                  <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 text-xs ml-2">
+                    🏆 Top Performer
+                  </Badge>
+                </h3>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Account 1 Best Reel */}
+                  {(() => {
+                    const bestReel1 = [...data1.reels].sort((a, b) => b.viewCount - a.viewCount)[0];
+                    const bestReel2 = [...data2.reels].sort((a, b) => b.viewCount - a.viewCount)[0];
+                    const isBest1Winner = bestReel1 && bestReel2 && bestReel1.viewCount > bestReel2.viewCount;
+                    const engagement1 = bestReel1 && bestReel1.viewCount > 0 ? ((bestReel1.likeCount / bestReel1.viewCount) * 100).toFixed(2) : '0';
+                    const reelUrl1 = bestReel1?.shortcode ? `https://www.instagram.com/reel/${bestReel1.shortcode}/` : null;
+                    
+                    return bestReel1 ? (
+                      <div className={`relative rounded-xl overflow-hidden border-2 ${isBest1Winner ? 'border-amber-500 ring-2 ring-amber-500/30' : 'border-violet-500/30'}`}>
+                        {isBest1Winner && (
+                          <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-center py-1 text-xs font-bold z-20">
+                            🏆 WINNER - Beste Performance
+                          </div>
+                        )}
+                        <div className={`grid grid-cols-2 ${isBest1Winner ? 'pt-7' : ''}`}>
+                          {/* Large Thumbnail */}
+                          <div 
+                            className="relative aspect-[9/16] cursor-pointer group"
+                            onClick={() => reelUrl1 && window.open(reelUrl1, '_blank')}
+                          >
+                            {bestReel1.thumbnailUrl ? (
+                              <img 
+                                src={bestReel1.thumbnailUrl} 
+                                alt="Best Reel"
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-muted flex items-center justify-center">
+                                <Play className="w-12 h-12 text-muted-foreground" />
+                              </div>
+                            )}
+                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                              <ExternalLink className="w-8 h-8 text-white" />
+                            </div>
+                            <div className="absolute top-2 left-2">
+                              <Badge className="bg-violet-500 text-white">
+                                @{data1.profile.username}
+                              </Badge>
+                            </div>
+                          </div>
+                          
+                          {/* Detailed Stats */}
+                          <div className="p-4 bg-gradient-to-br from-violet-500/10 to-purple-500/10 flex flex-col justify-center">
+                            <h4 className="text-sm font-medium text-violet-400 mb-3">Detailed Statistics</h4>
+                            
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                  <Eye className="w-3 h-3" /> Views
+                                </span>
+                                <span className="text-sm font-bold text-violet-400">{formatNumber(bestReel1.viewCount)}</span>
+                              </div>
+                              
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                  <Heart className="w-3 h-3" /> Likes
+                                </span>
+                                <span className="text-sm font-bold text-red-400">{formatNumber(bestReel1.likeCount)}</span>
+                              </div>
+                              
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                  <MessageSquare className="w-3 h-3" /> Comments
+                                </span>
+                                <span className="text-sm font-bold">{formatNumber(bestReel1.commentCount || 0)}</span>
+                              </div>
+                              
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                  <TrendingUp className="w-3 h-3" /> Engagement
+                                </span>
+                                <span className="text-sm font-bold text-emerald-400">{engagement1}%</span>
+                              </div>
+                              
+                              <div className="pt-2 border-t border-border/50">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-xs text-muted-foreground">Viral Score</span>
+                                  <Badge className={`${Number(engagement1) > 3 ? 'bg-emerald-500' : Number(engagement1) > 1.5 ? 'bg-amber-500' : 'bg-muted'} text-white text-xs`}>
+                                    {Number(engagement1) > 3 ? '🔥 Viral' : Number(engagement1) > 1.5 ? '📈 Good' : '📊 Average'}
+                                  </Badge>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : null;
+                  })()}
+                  
+                  {/* Account 2 Best Reel */}
+                  {(() => {
+                    const bestReel1 = [...data1.reels].sort((a, b) => b.viewCount - a.viewCount)[0];
+                    const bestReel2 = [...data2.reels].sort((a, b) => b.viewCount - a.viewCount)[0];
+                    const isBest2Winner = bestReel1 && bestReel2 && bestReel2.viewCount > bestReel1.viewCount;
+                    const engagement2 = bestReel2 && bestReel2.viewCount > 0 ? ((bestReel2.likeCount / bestReel2.viewCount) * 100).toFixed(2) : '0';
+                    const reelUrl2 = bestReel2?.shortcode ? `https://www.instagram.com/reel/${bestReel2.shortcode}/` : null;
+                    
+                    return bestReel2 ? (
+                      <div className={`relative rounded-xl overflow-hidden border-2 ${isBest2Winner ? 'border-amber-500 ring-2 ring-amber-500/30' : 'border-cyan-500/30'}`}>
+                        {isBest2Winner && (
+                          <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-center py-1 text-xs font-bold z-20">
+                            🏆 WINNER - Beste Performance
+                          </div>
+                        )}
+                        <div className={`grid grid-cols-2 ${isBest2Winner ? 'pt-7' : ''}`}>
+                          {/* Large Thumbnail */}
+                          <div 
+                            className="relative aspect-[9/16] cursor-pointer group"
+                            onClick={() => reelUrl2 && window.open(reelUrl2, '_blank')}
+                          >
+                            {bestReel2.thumbnailUrl ? (
+                              <img 
+                                src={bestReel2.thumbnailUrl} 
+                                alt="Best Reel"
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-muted flex items-center justify-center">
+                                <Play className="w-12 h-12 text-muted-foreground" />
+                              </div>
+                            )}
+                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                              <ExternalLink className="w-8 h-8 text-white" />
+                            </div>
+                            <div className="absolute top-2 left-2">
+                              <Badge className="bg-cyan-500 text-white">
+                                @{data2.profile.username}
+                              </Badge>
+                            </div>
+                          </div>
+                          
+                          {/* Detailed Stats */}
+                          <div className="p-4 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 flex flex-col justify-center">
+                            <h4 className="text-sm font-medium text-cyan-400 mb-3">Detailed Statistics</h4>
+                            
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                  <Eye className="w-3 h-3" /> Views
+                                </span>
+                                <span className="text-sm font-bold text-cyan-400">{formatNumber(bestReel2.viewCount)}</span>
+                              </div>
+                              
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                  <Heart className="w-3 h-3" /> Likes
+                                </span>
+                                <span className="text-sm font-bold text-red-400">{formatNumber(bestReel2.likeCount)}</span>
+                              </div>
+                              
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                  <MessageSquare className="w-3 h-3" /> Comments
+                                </span>
+                                <span className="text-sm font-bold">{formatNumber(bestReel2.commentCount || 0)}</span>
+                              </div>
+                              
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                  <TrendingUp className="w-3 h-3" /> Engagement
+                                </span>
+                                <span className="text-sm font-bold text-emerald-400">{engagement2}%</span>
+                              </div>
+                              
+                              <div className="pt-2 border-t border-border/50">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-xs text-muted-foreground">Viral Score</span>
+                                  <Badge className={`${Number(engagement2) > 3 ? 'bg-emerald-500' : Number(engagement2) > 1.5 ? 'bg-amber-500' : 'bg-muted'} text-white text-xs`}>
+                                    {Number(engagement2) > 3 ? '🔥 Viral' : Number(engagement2) > 1.5 ? '📈 Good' : '📊 Average'}
+                                  </Badge>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : null;
+                  })()}
+                </div>
+                
+                {/* Best Reel Comparison Stats */}
+                {(() => {
+                  const bestReel1 = [...data1.reels].sort((a, b) => b.viewCount - a.viewCount)[0];
+                  const bestReel2 = [...data2.reels].sort((a, b) => b.viewCount - a.viewCount)[0];
+                  if (!bestReel1 || !bestReel2) return null;
+                  
+                  return (
+                    <div className="mt-6 pt-6 border-t border-border/50">
+                      <h4 className="text-sm font-medium mb-4 text-center">Best Reel Vergleich</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <MetricCompareCard 
+                          label="Views" 
+                          value1={bestReel1.viewCount} 
+                          value2={bestReel2.viewCount} 
+                          icon={Eye}
+                        />
+                        <MetricCompareCard 
+                          label="Likes" 
+                          value1={bestReel1.likeCount} 
+                          value2={bestReel2.likeCount} 
+                          icon={Heart}
+                        />
+                        <MetricCompareCard 
+                          label="Engagement Rate" 
+                          value1={bestReel1.viewCount > 0 ? (bestReel1.likeCount / bestReel1.viewCount) * 100 : 0} 
+                          value2={bestReel2.viewCount > 0 ? (bestReel2.likeCount / bestReel2.viewCount) * 100 : 0} 
+                          icon={TrendingUp}
+                          format="percent"
+                        />
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+
               {/* ==================== SPLIT-SCREEN REELS COMPARISON ==================== */}
               <div className="glass-card rounded-2xl p-6 mb-6">
                 <h3 className="text-lg font-bold mb-4 flex items-center gap-2">

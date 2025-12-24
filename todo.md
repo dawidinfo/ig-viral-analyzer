@@ -673,3 +673,11 @@
 - [x] Top 6 Reels grid for each account
 - [x] Viral badges on high-performing reels
 - [x] Clickable reels open on Instagram
+
+## Best Performing Reel Highlight (24.12.2024)
+- [x] Add larger preview for best reel of each account
+- [x] Show detailed statistics (Views, Likes, Comments, Engagement, Date)
+- [x] Visual comparison showing which account's best reel performs better
+- [x] Winner banner highlighting the better performing reel
+- [x] Viral Score badge (Viral, Good, Average)
+- [x] Comparison metrics below the cards
