@@ -456,3 +456,9 @@
 - [x] Analyse-Eingabefeld im Dashboard oben hinzufügen
 - [x] SEO-Titel korrigieren zu "ReelSpy.ai - Virale Reels und Content liefern"
 - [x] Dashboard Design leichter: dünnere Rahmen, weniger Farbdruck, mehr Eleganz
+
+## Dashboard Verbesserungen v2
+- [x] Dashboard-Eingabefeld mit klarem Rahmen und Button
+- [x] Instagram-Button für Plattform-Auswahl (wie Socialblade)
+- [x] Top 50 Winner Section - virale Accounts die gerade wachsen
+- [x] Design 10% stärker - Rahmen kräftiger machen

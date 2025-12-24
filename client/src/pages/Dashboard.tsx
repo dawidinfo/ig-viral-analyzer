@@ -33,6 +33,9 @@ import {
   Copy,
   Gift,
   Check,
+  Flame,
+  Instagram,
+  ArrowUpRight,
 } from "lucide-react";
 import { AffiliateDashboard } from "@/components/AffiliateDashboard";
 import { GlobalFooter } from "@/components/GlobalFooter";
@@ -193,23 +196,42 @@ export default function Dashboard() {
           </div>
 
           <div className="flex items-center gap-4">
-            {/* Analyse-Eingabefeld */}
-            <div className="hidden md:flex items-center gap-2">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  type="text"
-                  placeholder="@username analysieren..."
-                  className="pl-9 w-64 h-9 bg-muted/30 border-border/30 text-sm"
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      const target = e.target as HTMLInputElement;
-                      if (target.value.trim()) {
-                        setLocation(`/analysis?username=${target.value.trim().replace('@', '')}`);
+            {/* Analyse-Eingabefeld mit Instagram-Button */}
+            <div className="hidden md:flex items-center">
+              <div className="flex items-center border border-border rounded-lg overflow-hidden bg-background/50">
+                {/* Instagram Platform Button */}
+                <div className="flex items-center gap-1.5 px-3 py-2 border-r border-border bg-gradient-to-r from-pink-500/10 to-purple-500/10">
+                  <Instagram className="w-4 h-4 text-pink-500" />
+                  <span className="text-xs font-medium text-pink-500">Instagram</span>
+                </div>
+                {/* Input */}
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    type="text"
+                    placeholder="@username"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-9 w-48 h-9 border-0 bg-transparent text-sm focus-visible:ring-0"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && searchQuery.trim()) {
+                        setLocation(`/analysis?username=${searchQuery.trim().replace('@', '')}`);
                       }
+                    }}
+                  />
+                </div>
+                {/* Analyze Button */}
+                <Button
+                  size="sm"
+                  className="rounded-none h-9 px-4"
+                  onClick={() => {
+                    if (searchQuery.trim()) {
+                      setLocation(`/analysis?username=${searchQuery.trim().replace('@', '')}`);
                     }
                   }}
-                />
+                >
+                  Analysieren
+                </Button>
               </div>
             </div>
             <Button
@@ -508,6 +530,69 @@ export default function Dashboard() {
                   </CardContent>
                 </Card>
               )}
+
+              {/* Top 50 Winners - Viral Accounts */}
+              <Card className="glass-card">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Flame className="w-5 h-5 text-orange-500" />
+                      Top 50 Winner
+                      <Badge variant="outline" className="ml-2 text-orange-500 border-orange-500/50">
+                        🔥 Viral
+                      </Badge>
+                    </CardTitle>
+                    <p className="text-xs text-muted-foreground">Accounts mit starkem Wachstum</p>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                    {[
+                      { rank: 1, username: "cristiano", growth: "+2.1M", followers: "669M", category: "Sports" },
+                      { rank: 2, username: "leomessi", growth: "+1.8M", followers: "504M", category: "Sports" },
+                      { rank: 3, username: "kyliejenner", growth: "+1.2M", followers: "399M", category: "Lifestyle" },
+                      { rank: 4, username: "selenagomez", growth: "+980K", followers: "429M", category: "Entertainment" },
+                      { rank: 5, username: "therock", growth: "+850K", followers: "395M", category: "Entertainment" },
+                      { rank: 6, username: "arianagrande", growth: "+720K", followers: "380M", category: "Music" },
+                      { rank: 7, username: "kimkardashian", growth: "+680K", followers: "364M", category: "Lifestyle" },
+                      { rank: 8, username: "beyonce", growth: "+620K", followers: "319M", category: "Music" },
+                      { rank: 9, username: "khloekardashian", growth: "+580K", followers: "311M", category: "Lifestyle" },
+                      { rank: 10, username: "nike", growth: "+540K", followers: "306M", category: "Brand" },
+                    ].map((account) => (
+                      <motion.div
+                        key={account.rank}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: account.rank * 0.05 }}
+                        className="p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all cursor-pointer group border border-transparent hover:border-orange-500/30"
+                        onClick={() => setLocation(`/analysis?username=${account.username}`)}
+                      >
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${
+                            account.rank <= 3 ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white' : 'bg-muted text-muted-foreground'
+                          }`}>
+                            #{account.rank}
+                          </span>
+                          <span className="text-xs text-muted-foreground">{account.category}</span>
+                        </div>
+                        <p className="font-medium text-sm truncate">@{account.username}</p>
+                        <div className="flex items-center justify-between mt-1">
+                          <span className="text-xs text-muted-foreground">{account.followers}</span>
+                          <span className="text-xs font-medium text-green-500 flex items-center gap-0.5">
+                            <ArrowUpRight className="w-3 h-3" />
+                            {account.growth}
+                          </span>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                  <div className="mt-4 text-center">
+                    <Button variant="outline" size="sm" onClick={() => toast.info("Vollständige Top 50 Liste kommt bald!")}>
+                      Alle 50 anzeigen
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
 
             {/* Saved Analyses Tab */}
