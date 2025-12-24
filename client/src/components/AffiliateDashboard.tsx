@@ -28,7 +28,7 @@ export function AffiliateDashboard() {
   const { data: stats, isLoading, refetch } = trpc.affiliate.getStats.useQuery();
   const setVanityMutation = trpc.affiliate.setVanityCode.useMutation({
     onSuccess: () => {
-      toast.success("Custom code saved!");
+      toast.success("Eigener Code gespeichert!");
       refetch();
       setIsSettingVanity(false);
     },
@@ -42,13 +42,13 @@ export function AffiliateDashboard() {
     const url = `${window.location.origin}?ref=${stats.referralCode}`;
     navigator.clipboard.writeText(url);
     setCopied(true);
-    toast.success("Referral link copied!");
+    toast.success("Empfehlungslink kopiert!");
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleSetVanityCode = () => {
     if (vanityCode.length < 4) {
-      toast.error("Code must be at least 4 characters");
+      toast.error("Code muss mindestens 4 Zeichen haben");
       return;
     }
     setVanityMutation.mutate({ vanityCode });
@@ -80,9 +80,9 @@ export function AffiliateDashboard() {
             <Gift className="w-7 h-7 text-white" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold">Affiliate Program</h2>
+            <h2 className="text-2xl font-bold">Affiliate-Programm</h2>
             <p className="text-muted-foreground">
-              Earn {stats.rewardAmount} credits for each qualified referral
+              Verdiene {stats.rewardAmount} Credits für jede qualifizierte Empfehlung
             </p>
           </div>
         </div>
@@ -90,7 +90,7 @@ export function AffiliateDashboard() {
         {/* Referral Link */}
         <div className="bg-background/50 rounded-xl p-4 mb-6">
           <label className="text-sm font-medium text-muted-foreground mb-2 block">
-            Your Referral Link
+            Dein Empfehlungslink
           </label>
           <div className="flex gap-2">
             <div className="flex-1 relative">
@@ -103,7 +103,7 @@ export function AffiliateDashboard() {
             </div>
             <Button onClick={copyToClipboard} variant="outline" className="gap-2">
               {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-              {copied ? "Copied!" : "Copy"}
+              {copied ? "Kopiert!" : "Kopieren"}
             </Button>
           </div>
         </div>
@@ -111,28 +111,28 @@ export function AffiliateDashboard() {
         {/* Custom Code */}
         <div className="bg-background/50 rounded-xl p-4">
           <label className="text-sm font-medium text-muted-foreground mb-2 block">
-            Your Referral Code: <span className="text-primary font-bold">{stats.referralCode}</span>
+            Dein Empfehlungscode: <span className="text-primary font-bold">{stats.referralCode}</span>
           </label>
           {isSettingVanity ? (
             <div className="flex gap-2">
               <Input
                 value={vanityCode}
                 onChange={(e) => setVanityCode(e.target.value.toUpperCase())}
-                placeholder="Enter custom code (4-20 chars)"
+                placeholder="Eigenen Code eingeben (4-20 Zeichen)"
                 className="flex-1"
                 maxLength={20}
               />
               <Button onClick={handleSetVanityCode} disabled={setVanityMutation.isPending}>
-                Save
+                Speichern
               </Button>
               <Button variant="outline" onClick={() => setIsSettingVanity(false)}>
-                Cancel
+                Abbrechen
               </Button>
             </div>
           ) : (
             <Button variant="outline" onClick={() => setIsSettingVanity(true)} className="gap-2">
               <Sparkles className="w-4 h-4" />
-              Set Custom Code
+              Eigenen Code festlegen
             </Button>
           )}
         </div>
@@ -143,37 +143,37 @@ export function AffiliateDashboard() {
         <div className="glass-card rounded-xl p-4 text-center">
           <Users className="w-6 h-6 text-primary mx-auto mb-2" />
           <p className="text-2xl font-bold">{stats.totalReferrals}</p>
-          <p className="text-sm text-muted-foreground">Total Referrals</p>
+          <p className="text-sm text-muted-foreground">Gesamt Empfehlungen</p>
         </div>
         <div className="glass-card rounded-xl p-4 text-center">
           <Clock className="w-6 h-6 text-amber-500 mx-auto mb-2" />
           <p className="text-2xl font-bold">{stats.pendingReferrals}</p>
-          <p className="text-sm text-muted-foreground">Pending</p>
+          <p className="text-sm text-muted-foreground">Ausstehend</p>
         </div>
         <div className="glass-card rounded-xl p-4 text-center">
           <CheckCircle2 className="w-6 h-6 text-green-500 mx-auto mb-2" />
           <p className="text-2xl font-bold">{stats.qualifiedReferrals}</p>
-          <p className="text-sm text-muted-foreground">Qualified</p>
+          <p className="text-sm text-muted-foreground">Qualifiziert</p>
         </div>
         <div className="glass-card rounded-xl p-4 text-center">
           <Coins className="w-6 h-6 text-yellow-500 mx-auto mb-2" />
           <p className="text-2xl font-bold">{stats.totalCreditsEarned}</p>
-          <p className="text-sm text-muted-foreground">Credits Earned</p>
+          <p className="text-sm text-muted-foreground">Verdiente Credits</p>
         </div>
       </div>
 
       {/* How It Works */}
       <div className="glass-card rounded-2xl p-8">
-        <h3 className="text-lg font-semibold mb-4">How It Works</h3>
+        <h3 className="text-lg font-semibold mb-4">So funktioniert's</h3>
         <div className="grid md:grid-cols-3 gap-6">
           <div className="flex items-start gap-3">
             <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
               <span className="text-primary font-bold">1</span>
             </div>
             <div>
-              <p className="font-medium">Share Your Link</p>
+              <p className="font-medium">Link teilen</p>
               <p className="text-sm text-muted-foreground">
-                Send your referral link to friends and followers
+                Sende deinen Empfehlungslink an Freunde und Follower
               </p>
             </div>
           </div>
@@ -182,9 +182,9 @@ export function AffiliateDashboard() {
               <span className="text-primary font-bold">2</span>
             </div>
             <div>
-              <p className="font-medium">They Sign Up & Use</p>
+              <p className="font-medium">Sie registrieren sich & nutzen</p>
               <p className="text-sm text-muted-foreground">
-                When they spend {stats.qualificationThreshold}+ credits
+                Wenn sie {stats.qualificationThreshold}+ Credits ausgeben
               </p>
             </div>
           </div>
@@ -193,9 +193,9 @@ export function AffiliateDashboard() {
               <span className="text-primary font-bold">3</span>
             </div>
             <div>
-              <p className="font-medium">You Get Rewarded</p>
+              <p className="font-medium">Du wirst belohnt</p>
               <p className="text-sm text-muted-foreground">
-                Receive {stats.rewardAmount} credits automatically
+                Erhalte automatisch {stats.rewardAmount} Credits
               </p>
             </div>
           </div>
@@ -205,7 +205,7 @@ export function AffiliateDashboard() {
       {/* Referral List */}
       {stats.referrals.length > 0 && (
         <div className="glass-card rounded-2xl p-8">
-          <h3 className="text-lg font-semibold mb-4">Your Referrals</h3>
+          <h3 className="text-lg font-semibold mb-4">Deine Empfehlungen</h3>
           <div className="space-y-3">
             {stats.referrals.map((referral) => (
               <div
@@ -219,7 +219,7 @@ export function AffiliateDashboard() {
                   <div>
                     <p className="font-medium">{referral.userName}</p>
                     <p className="text-sm text-muted-foreground">
-                      {referral.creditsSpent} credits spent
+                      {referral.creditsSpent} Credits ausgegeben
                     </p>
                   </div>
                 </div>
@@ -234,11 +234,11 @@ export function AffiliateDashboard() {
                         : ""
                     }
                   >
-                    {referral.status === "rewarded" ? "Qualified" : "Pending"}
+                    {referral.status === "rewarded" ? "Qualifiziert" : "Ausstehend"}
                   </Badge>
                   {referral.status === "rewarded" && (
                     <p className="text-sm text-green-400 mt-1">
-                      +{referral.rewardCredits} credits
+                      +{referral.rewardCredits} Credits
                     </p>
                   )}
                 </div>
@@ -250,7 +250,7 @@ export function AffiliateDashboard() {
 
       {/* Share Buttons */}
       <div className="glass-card rounded-2xl p-8">
-        <h3 className="text-lg font-semibold mb-4">Share & Earn</h3>
+        <h3 className="text-lg font-semibold mb-4">Teilen & verdienen</h3>
         <div className="flex flex-wrap gap-3">
           <Button
             variant="outline"
@@ -258,14 +258,14 @@ export function AffiliateDashboard() {
             onClick={() => {
               window.open(
                 `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-                  `I'm using ReelSpy.ai to analyze viral content! Get started with my link: ${referralUrl}`
+                  `Ich nutze ReelSpy.ai um virale Inhalte zu analysieren! Starte auch du mit meinem Link: ${referralUrl}`
                 )}`,
                 "_blank"
               );
             }}
           >
             <Share2 className="w-4 h-4" />
-            Share on X
+            Auf X teilen
           </Button>
           <Button
             variant="outline"
@@ -278,22 +278,22 @@ export function AffiliateDashboard() {
             }}
           >
             <Share2 className="w-4 h-4" />
-            Share on LinkedIn
+            Auf LinkedIn teilen
           </Button>
           <Button
             variant="outline"
             className="gap-2"
             onClick={() => {
               window.open(
-                `mailto:?subject=${encodeURIComponent("Check out ReelSpy.ai!")}&body=${encodeURIComponent(
-                  `I've been using ReelSpy.ai to analyze viral content. You should try it too!\n\n${referralUrl}`
+                `mailto:?subject=${encodeURIComponent("Schau dir ReelSpy.ai an!")}&body=${encodeURIComponent(
+                  `Ich nutze ReelSpy.ai um virale Inhalte zu analysieren. Du solltest es auch ausprobieren!\n\n${referralUrl}`
                 )}`,
                 "_blank"
               );
             }}
           >
             <Share2 className="w-4 h-4" />
-            Share via Email
+            Per E-Mail teilen
           </Button>
         </div>
       </div>

@@ -561,3 +561,24 @@
 ## Push-Benachrichtigungen
 - [x] Browser-Notifications wenn Account viral geht
 - [x] NotificationSettings Komponente im Dashboard
+
+## UI/UX Verbesserungen v4 (24.12.2024)
+- [x] Mobile Suche: Instagram-Icon fehlt im mobilen Bereich
+- [x] Mobile Navigation: Zu breit, optimieren (72px max 80vw)
+- [x] Desktop-Breite: Inhalte auf 70-80% der Breite begrenzen (max-width: 75%)
+- [x] Admin/Dashboard Switch-Button: Button zum Wechseln zwischen Admin und User-Dashboard
+- [x] Profil-Dropdown: Klick auf Namen/Icon öffnet Dropdown mit Link zu Einstellungen
+- [x] Affiliate auf Deutsch: Übersetzung des Affiliate-Bereichs im Dashboard
+- [x] Dark Mode Boxen: Sichtbarere Ränder für Cards im Dark Mode
+- [x] Dashboard: Letzte Analysen mit Profilbild/Avatar-Vorschau
+- [x] Dashboard: Top 50 Winner bessere Trennung und Icons
+
+## Analyse-Erkenntnisse und Handlungsempfehlungen
+- [x] Klare Erkenntnisse am Ende der Analyse anzeigen
+- [x] Konkrete Verbesserungsvorschläge (SEO-Beschreibungen, Hooks, Pain Points)
+- [x] Reels nach HAPSS/Ogilvy/Hopkins Framework aufbereiten und bewerten
+- [x] Priorisierte Handlungsempfehlungen basierend auf Analyse-Ergebnissen
+
+## Branding-Fix: IG Viral Analyzer → ReelSpy.ai
+- [x] Alle Vorkommen im Code durch "ReelSpy.ai" ersetzt
+- [ ] OAuth-Dialog Text: Änderung in Settings → General erforderlich (VITE_APP_TITLE)

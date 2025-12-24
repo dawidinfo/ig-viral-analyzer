@@ -37,7 +37,13 @@ import {
   PinOff,
   ChevronDown,
   ChevronUp,
-  Flame
+  Flame,
+  Lightbulb,
+  Trophy,
+  Brain,
+  Rocket,
+  PenTool,
+  Video
 } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
 import ReelAnalysis from "@/components/ReelAnalysis";
@@ -846,6 +852,190 @@ export default function Analysis() {
                       </div>
                     ))}
                   </div>
+                </div>
+              </section>
+            )}
+
+            {/* Erkenntnisse & Handlungsempfehlungen */}
+            {analysisData && (
+              <section className="mt-12">
+                <SectionHeader 
+                  icon={<Lightbulb className="w-5 h-5" />} 
+                  title="Erkenntnisse & Handlungsempfehlungen"
+                  isPinned={pinnedSections.has('insights')}
+                  onTogglePin={() => togglePin('insights')}
+                  badge="HAPSS, Ogilvy & Hopkins"
+                  badgeColor="bg-amber-500/20 text-amber-400 border border-amber-500/30"
+                />
+                <div className="glass-card rounded-2xl p-6 sm:p-8 space-y-8">
+                  
+                  {/* Haupterkenntnisse */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                      <Brain className="w-5 h-5 text-primary" />
+                      Haupterkenntnisse
+                    </h3>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      {/* Viral Score Bewertung */}
+                      <div className="bg-background/50 rounded-xl p-4 border border-border/50">
+                        <div className="flex items-start gap-3">
+                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${analysisData.viralScore >= 70 ? 'bg-green-500/20' : analysisData.viralScore >= 40 ? 'bg-amber-500/20' : 'bg-red-500/20'}`}>
+                            <Trophy className={`w-5 h-5 ${analysisData.viralScore >= 70 ? 'text-green-400' : analysisData.viralScore >= 40 ? 'text-amber-400' : 'text-red-400'}`} />
+                          </div>
+                          <div>
+                            <p className="font-medium">Viral-Potenzial: {analysisData.viralScore >= 70 ? 'Hoch' : analysisData.viralScore >= 40 ? 'Mittel' : 'Niedrig'}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {analysisData.viralScore >= 70 
+                                ? 'Dein Content hat starkes Viral-Potenzial. Fokussiere auf Konsistenz.'
+                                : analysisData.viralScore >= 40
+                                ? 'Gutes Fundament vorhanden. Optimiere Hook und Storytelling.'
+                                : 'Grundlegende Verbesserungen bei Hook und Engagement nötig.'}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Engagement Bewertung */}
+                      <div className="bg-background/50 rounded-xl p-4 border border-border/50">
+                        <div className="flex items-start gap-3">
+                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${analysisData.metrics.engagementRate >= 5 ? 'bg-green-500/20' : analysisData.metrics.engagementRate >= 2 ? 'bg-amber-500/20' : 'bg-red-500/20'}`}>
+                            <Heart className={`w-5 h-5 ${analysisData.metrics.engagementRate >= 5 ? 'text-green-400' : analysisData.metrics.engagementRate >= 2 ? 'text-amber-400' : 'text-red-400'}`} />
+                          </div>
+                          <div>
+                            <p className="font-medium">Engagement: {analysisData.metrics.engagementRate >= 5 ? 'Überdurchschnittlich' : analysisData.metrics.engagementRate >= 2 ? 'Durchschnittlich' : 'Unter Durchschnitt'}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {analysisData.metrics.engagementRate >= 5
+                                ? 'Exzellente Community-Bindung. Nutze CTAs für mehr Conversions.'
+                                : analysisData.metrics.engagementRate >= 2
+                                ? 'Solide Basis. Mehr Fragen und CTAs in Captions einbauen.'
+                                : 'Fokussiere auf emotionale Hooks und direkte Ansprache.'}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Priorisierte Handlungsempfehlungen */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                      <Rocket className="w-5 h-5 text-cyan-400" />
+                      Priorisierte Handlungsempfehlungen
+                    </h3>
+                    <div className="space-y-4">
+                      {/* Hook Optimierung */}
+                      <div className="bg-gradient-to-r from-primary/10 to-transparent rounded-xl p-4 border-l-4 border-primary">
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                            <span className="text-primary font-bold text-sm">1</span>
+                          </div>
+                          <div>
+                            <p className="font-semibold text-primary">Hook-Optimierung (HAPSS-Framework)</p>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              <strong>H</strong>ook in den ersten 0.5-1.5 Sekunden: Nutze Pattern Interrupts, 
+                              kontroverse Aussagen oder überraschende Fakten. 
+                              <strong> A</strong>ttention durch visuelle Bewegung halten.
+                            </p>
+                            <div className="mt-2 p-2 bg-muted/30 rounded-lg text-xs">
+                              <span className="text-primary font-medium">Beispiel-Hook:</span> "Das macht 99% falsch bei Instagram..." oder "Stopp! Bevor du scrollst..."
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* SEO & Captions */}
+                      <div className="bg-gradient-to-r from-cyan-500/10 to-transparent rounded-xl p-4 border-l-4 border-cyan-500">
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center flex-shrink-0">
+                            <span className="text-cyan-400 font-bold text-sm">2</span>
+                          </div>
+                          <div>
+                            <p className="font-semibold text-cyan-400">SEO-Beschreibungen & Captions (Ogilvy-Methode)</p>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              Schreibe Headlines die <strong>Pain Points</strong> ansprechen. 
+                              Nutze die 4U-Formel: <strong>U</strong>rgent, <strong>U</strong>nique, <strong>U</strong>ltra-specific, <strong>U</strong>seful.
+                            </p>
+                            <div className="mt-2 p-2 bg-muted/30 rounded-lg text-xs">
+                              <span className="text-cyan-400 font-medium">Pain Point Keywords:</span> "Frustriert von...", "Müde von...", "Endlich die Lösung für..."
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Storytelling */}
+                      <div className="bg-gradient-to-r from-amber-500/10 to-transparent rounded-xl p-4 border-l-4 border-amber-500">
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+                            <span className="text-amber-400 font-bold text-sm">3</span>
+                          </div>
+                          <div>
+                            <p className="font-semibold text-amber-400">Storytelling-Struktur (Hopkins-Prinzip)</p>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              Nutze die <strong>PAS-Formel</strong>: Problem → Agitation → Solution. 
+                              Zeige erst das Problem, verstärke den Schmerz, dann präsentiere die Lösung.
+                            </p>
+                            <div className="mt-2 p-2 bg-muted/30 rounded-lg text-xs">
+                              <span className="text-amber-400 font-medium">Struktur:</span> "Ich hatte das gleiche Problem..." → "Es wurde immer schlimmer..." → "Dann entdeckte ich..."
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Content-Strategie */}
+                      <div className="bg-gradient-to-r from-green-500/10 to-transparent rounded-xl p-4 border-l-4 border-green-500">
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                            <span className="text-green-400 font-bold text-sm">4</span>
+                          </div>
+                          <div>
+                            <p className="font-semibold text-green-400">Content-Mix & Posting-Strategie</p>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              Idealer Mix: <strong>40% Educational</strong>, <strong>30% Entertainment</strong>, <strong>20% Inspirational</strong>, <strong>10% Promotional</strong>.
+                              Poste zu den Zeiten mit höchstem Engagement deiner Zielgruppe.
+                            </p>
+                            <div className="mt-2 p-2 bg-muted/30 rounded-lg text-xs">
+                              <span className="text-green-400 font-medium">Tipp:</span> Teste verschiedene Formate (Talking Head, B-Roll, Text-Overlay) und tracke die Performance.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Quick Wins */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                      <Zap className="w-5 h-5 text-yellow-400" />
+                      Quick Wins - Sofort umsetzbar
+                    </h3>
+                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      <div className="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
+                        <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
+                        <span className="text-sm">Erste 3 Wörter = Hook</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
+                        <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
+                        <span className="text-sm">CTA am Ende jedes Reels</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
+                        <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
+                        <span className="text-sm">3-5 relevante Hashtags</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
+                        <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
+                        <span className="text-sm">Untertitel aktivieren</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
+                        <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
+                        <span className="text-sm">Fragen in Captions stellen</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
+                        <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
+                        <span className="text-sm">Trending Audio nutzen</span>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
               </section>
             )}

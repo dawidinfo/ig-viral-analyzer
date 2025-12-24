@@ -36,7 +36,15 @@ import {
   Flame,
   Instagram,
   ArrowUpRight,
+  Shield,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { AffiliateDashboard } from "@/components/AffiliateDashboard";
 import { GlobalFooter } from "@/components/GlobalFooter";
 import { InvoicesTab } from "@/components/InvoicesTab";
@@ -249,15 +257,52 @@ export default function Dashboard() {
               <Search className="w-4 h-4 mr-2" />
               Analyse
             </Button>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                <User className="w-4 h-4 text-primary" />
-              </div>
-              <span className="text-sm font-medium hidden sm:inline">{user?.name || "User"}</span>
-            </div>
-            <Button variant="ghost" size="icon" onClick={logout}>
-              <LogOut className="w-4 h-4" />
-            </Button>
+            {/* Admin Button - nur für Admins */}
+            {user?.role === "admin" && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setLocation("/admin")}
+                className="hidden sm:flex items-center gap-2 border-purple-500/50 text-purple-400 hover:bg-purple-500/10"
+              >
+                <Shield className="w-4 h-4" />
+                Admin
+              </Button>
+            )}
+            
+            {/* User Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted/50 transition-colors">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/30 to-purple-500/30 flex items-center justify-center">
+                    <User className="w-4 h-4 text-primary" />
+                  </div>
+                  <span className="text-sm font-medium hidden sm:inline">{user?.name || "User"}</span>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <div className="px-3 py-2">
+                  <p className="font-medium">{user?.name || "User"}</p>
+                  <p className="text-xs text-muted-foreground">{user?.email}</p>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => setActiveTab("settings")}>
+                  <Settings className="w-4 h-4 mr-2" />
+                  Einstellungen
+                </DropdownMenuItem>
+                {user?.role === "admin" && (
+                  <DropdownMenuItem onClick={() => setLocation("/admin")} className="sm:hidden">
+                    <Shield className="w-4 h-4 mr-2" />
+                    Admin Dashboard
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={logout} className="text-red-400">
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Abmelden
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </header>
@@ -506,33 +551,49 @@ export default function Dashboard() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                       {dashboardData.savedAnalyses.slice(0, 3).map((analysis: any) => (
                         <motion.div
                           key={analysis.id}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
-                          className="p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
+                          className="p-5 rounded-xl bg-muted/30 hover:bg-muted/50 transition-all cursor-pointer border border-border/50 hover:border-primary/30 group"
                           onClick={() => setLocation(`/analysis?username=${analysis.username}`)}
                         >
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-cyan-500/20 flex items-center justify-center overflow-hidden">
-                              {analysis.profilePicUrl ? (
-                                <img src={analysis.profilePicUrl} alt={analysis.username} className="w-full h-full object-cover" />
-                              ) : (
-                                <User className="w-5 h-5 text-primary" />
-                              )}
+                          <div className="flex items-center gap-4">
+                            {/* Größeres Profilbild */}
+                            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-pink-500 via-purple-500 to-orange-500 p-0.5 flex-shrink-0">
+                              <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden">
+                                {analysis.profilePicUrl ? (
+                                  <img src={analysis.profilePicUrl} alt={analysis.username} className="w-full h-full object-cover" />
+                                ) : (
+                                  <Instagram className="w-6 h-6 text-primary" />
+                                )}
+                              </div>
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="font-medium truncate">@{analysis.username}</p>
-                              <p className="text-xs text-muted-foreground truncate">{analysis.fullName || "Instagram Account"}</p>
+                              <p className="font-semibold text-base truncate group-hover:text-primary transition-colors">@{analysis.username}</p>
+                              <p className="text-sm text-muted-foreground truncate">{analysis.fullName || "Instagram Account"}</p>
                             </div>
-                            {analysis.viralScore && (
-                              <Badge variant="outline" className="shrink-0">
+                          </div>
+                          {/* Viral Score Badge */}
+                          {analysis.viralScore && (
+                            <div className="mt-4 pt-4 border-t border-border/50 flex items-center justify-between">
+                              <span className="text-xs text-muted-foreground">Viral Score</span>
+                              <Badge 
+                                variant="outline" 
+                                className={`${
+                                  analysis.viralScore >= 70 
+                                    ? 'bg-green-500/20 text-green-400 border-green-500/50' 
+                                    : analysis.viralScore >= 40 
+                                    ? 'bg-amber-500/20 text-amber-400 border-amber-500/50' 
+                                    : 'bg-red-500/20 text-red-400 border-red-500/50'
+                                }`}
+                              >
                                 {analysis.viralScore}
                               </Badge>
-                            )}
-                          </div>
+                            </div>
+                          )}
                         </motion.div>
                       ))}
                     </div>
@@ -555,39 +616,52 @@ export default function Dashboard() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                     {[
-                      { rank: 1, username: "cristiano", growth: "+2.1M", followers: "669M", category: "Sports" },
-                      { rank: 2, username: "leomessi", growth: "+1.8M", followers: "504M", category: "Sports" },
-                      { rank: 3, username: "kyliejenner", growth: "+1.2M", followers: "399M", category: "Lifestyle" },
-                      { rank: 4, username: "selenagomez", growth: "+980K", followers: "429M", category: "Entertainment" },
-                      { rank: 5, username: "therock", growth: "+850K", followers: "395M", category: "Entertainment" },
-                      { rank: 6, username: "arianagrande", growth: "+720K", followers: "380M", category: "Music" },
-                      { rank: 7, username: "kimkardashian", growth: "+680K", followers: "364M", category: "Lifestyle" },
-                      { rank: 8, username: "beyonce", growth: "+620K", followers: "319M", category: "Music" },
-                      { rank: 9, username: "khloekardashian", growth: "+580K", followers: "311M", category: "Lifestyle" },
-                      { rank: 10, username: "nike", growth: "+540K", followers: "306M", category: "Brand" },
+                      { rank: 1, username: "cristiano", growth: "+2.1M", followers: "669M", category: "Sports", initials: "CR" },
+                      { rank: 2, username: "leomessi", growth: "+1.8M", followers: "504M", category: "Sports", initials: "LM" },
+                      { rank: 3, username: "kyliejenner", growth: "+1.2M", followers: "399M", category: "Lifestyle", initials: "KJ" },
+                      { rank: 4, username: "selenagomez", growth: "+980K", followers: "429M", category: "Entertainment", initials: "SG" },
+                      { rank: 5, username: "therock", growth: "+850K", followers: "395M", category: "Entertainment", initials: "TR" },
+                      { rank: 6, username: "arianagrande", growth: "+720K", followers: "380M", category: "Music", initials: "AG" },
+                      { rank: 7, username: "kimkardashian", growth: "+680K", followers: "364M", category: "Lifestyle", initials: "KK" },
+                      { rank: 8, username: "beyonce", growth: "+620K", followers: "319M", category: "Music", initials: "BE" },
+                      { rank: 9, username: "khloekardashian", growth: "+580K", followers: "311M", category: "Lifestyle", initials: "KK" },
+                      { rank: 10, username: "nike", growth: "+540K", followers: "306M", category: "Brand", initials: "NK" },
                     ].map((account) => (
                       <motion.div
                         key={account.rank}
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: account.rank * 0.05 }}
-                        className="p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all cursor-pointer group border border-transparent hover:border-orange-500/30"
+                        className="p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-all cursor-pointer group border border-border/50 hover:border-orange-500/30"
                         onClick={() => setLocation(`/analysis?username=${account.username}`)}
                       >
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${
-                            account.rank <= 3 ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white' : 'bg-muted text-muted-foreground'
-                          }`}>
-                            #{account.rank}
-                          </span>
-                          <span className="text-xs text-muted-foreground">{account.category}</span>
+                        {/* Profilbild mit Rang */}
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="relative">
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
+                              account.rank <= 3 
+                                ? 'bg-gradient-to-br from-orange-500 to-amber-500 text-white' 
+                                : 'bg-gradient-to-br from-primary/30 to-purple-500/30 text-foreground'
+                            }`}>
+                              {account.initials}
+                            </div>
+                            <span className={`absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                              account.rank <= 3 ? 'bg-orange-500 text-white' : 'bg-muted text-muted-foreground'
+                            }`}>
+                              {account.rank}
+                            </span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-sm truncate group-hover:text-orange-400 transition-colors">@{account.username}</p>
+                            <p className="text-xs text-muted-foreground">{account.category}</p>
+                          </div>
                         </div>
-                        <p className="font-medium text-sm truncate">@{account.username}</p>
-                        <div className="flex items-center justify-between mt-1">
+                        {/* Stats */}
+                        <div className="flex items-center justify-between pt-3 border-t border-border/50">
                           <span className="text-xs text-muted-foreground">{account.followers}</span>
-                          <span className="text-xs font-medium text-green-500 flex items-center gap-0.5">
+                          <span className="text-xs font-semibold text-green-500 flex items-center gap-0.5">
                             <ArrowUpRight className="w-3 h-3" />
                             {account.growth}
                           </span>
@@ -595,7 +669,7 @@ export default function Dashboard() {
                       </motion.div>
                     ))}
                   </div>
-                  <div className="mt-4 text-center">
+                  <div className="mt-6 text-center">
                     <Button variant="outline" size="sm" onClick={() => toast.info("Vollständige Top 50 Liste kommt bald!")}>
                       Alle 50 anzeigen
                     </Button>

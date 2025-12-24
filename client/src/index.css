@@ -188,7 +188,13 @@ p {
     .container {
       padding-left: 2rem;
       padding-right: 2rem;
-      max-width: 1400px;
+      max-width: 1200px;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .container {
+      max-width: 75%;
     }
   }
 
@@ -202,10 +208,11 @@ p {
     );
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid oklch(1 0 0 / 0.08);
+    border: 1px solid oklch(1 0 0 / 0.15);
     box-shadow: 
       0 3px 24px oklch(0 0 0 / 0.2),
-      inset 0 1px 0 oklch(1 0 0 / 0.05);
+      inset 0 1px 0 oklch(1 0 0 / 0.08),
+      0 0 0 1px oklch(0.3 0.02 260 / 0.3);
   }
 
   .glass-card::before {

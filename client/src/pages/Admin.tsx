@@ -309,6 +309,15 @@ export default function Admin() {
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Aktualisieren
               </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setLocation("/dashboard")}
+                className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10"
+              >
+                <Users className="h-4 w-4 mr-2" />
+                Mein Dashboard
+              </Button>
               <Button variant="ghost" size="sm" onClick={() => setLocation("/")}>
                 Zurück zur App
               </Button>
