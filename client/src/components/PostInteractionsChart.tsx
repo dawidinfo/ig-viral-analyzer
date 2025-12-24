@@ -230,11 +230,11 @@ export function PostInteractionsChart({ reels, className = "" }: PostInteraction
                     <Tooltip content={<CustomTooltip />} />
                     {viewMode === "interactions" ? (
                       <>
-                        <Bar dataKey="likes" stackId="a" fill="#3b82f6" radius={[0, 0, 0, 0]} />
-                        <Bar dataKey="comments" stackId="a" fill="#ec4899" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="likes" stackId="a" fill="#6b8ab8" radius={[0, 0, 0, 0]} />
+                        <Bar dataKey="comments" stackId="a" fill="#a87090" radius={[4, 4, 0, 0]} />
                       </>
                     ) : (
-                      <Bar dataKey="views" fill="#06b6d4" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="views" fill="#5a9aa8" radius={[4, 4, 0, 0]} />
                     )}
                   </BarChart>
                 </ResponsiveContainer>

@@ -81,7 +81,7 @@ export function AnalysisCTAPopup({ isOpen, onClose, viralScore = 0, username }: 
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[95vw] sm:max-w-lg bg-background/95 backdrop-blur-xl border-2 border-primary/50 p-4 sm:p-6 shadow-[0_0_30px_rgba(168,85,247,0.4),0_0_60px_rgba(168,85,247,0.2)] animate-pulse-glow">
+      <DialogContent className="max-w-[95vw] sm:max-w-lg bg-background/98 backdrop-blur-lg border border-border/50 p-4 sm:p-6 shadow-lg">
         <DialogHeader className="text-center pb-2">
           <div className="mx-auto mb-4">
             <motion.div

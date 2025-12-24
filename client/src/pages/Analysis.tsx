@@ -1333,7 +1333,7 @@ export default function Analysis() {
                         className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 rounded-lg transition-colors"
                       >
                         <Search className="w-4 h-4" />
-                        Meinen Account analysieren
+                        Meinen Account mit KI analysieren
                       </button>
                       <button
                         onClick={() => {

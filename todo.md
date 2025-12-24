@@ -731,3 +731,43 @@
 - [x] KI-Reel-Ideen-Generator mit 10 Content-Ideen
 - [x] Pricing-Tabelle mit allen Features erweitern (KI-Content, Monitoring, Statistiken, Vergleich)
 - [x] Alle Buttons mit KI-Keyword bestückt für mehr Hype
+
+## Design-Refresh für Premium-Look (24.12.2024)
+- [ ] Farbpalette dämpfen (weniger Neon, mehr Slate/gedämpftes Violett)
+- [ ] Typografie aufwerten (größere, boldere Headlines)
+- [ ] Whitespace erhöhen (mehr Luft zwischen Elementen)
+- [ ] Charts/Balken subtiler gestalten
+- [ ] Nur wichtige CTAs farbig, Rest neutral
+- [ ] Weichere Übergänge statt harte Kontraste
+
+## CSV-Export (24.12.2024)
+- [ ] CSV-Export Button in DetailedPostAnalysis
+- [ ] Export-Funktion für gefilterte Post-Daten
+- [ ] Download als .csv Datei
+
+## Onboarding-Flow (24.12.2024)
+- [ ] Onboarding-Wizard nach erstem Login
+- [ ] Frage nach Nische/Branche
+- [ ] Frage nach Follower-Zahl
+- [ ] Frage nach Zielen (Wachstum, Engagement, Monetarisierung)
+- [ ] Personalisierte Empfehlungen basierend auf Antworten
+
+## Wöchentlicher Email-Report Cron (24.12.2024)
+- [ ] Cron-Job für wöchentlichen Report (Montag 9:00)
+- [ ] Report nur an Premium-Nutzer mit tracked Accounts
+- [ ] Performance-Zusammenfassung der letzten Woche
+
+## Design-Vergleich A/B-Test (24.12.2024)
+- [ ] Design-Vergleichsseite erstellen (/design-compare)
+- [ ] Aktuelles "grelles" Design vs. neues "Premium" Design nebeneinander
+- [ ] Interaktive Umschaltung zwischen beiden Varianten
+
+## KI-Buttons Update (24.12.2024)
+- [ ] "KI" zu allen Analyse-Buttons hinzufügen
+
+## Premium Design Umstellung (24.12.2024)
+- [ ] Farbpalette dämpfen (weniger Neon, mehr Slate)
+- [ ] Glow-Effekte auf subtile Schatten reduzieren
+- [ ] Charts/Balken eleganter (dünner, keine Gradients)
+- [ ] Cards subtiler (weniger Border-Glow)
+- [ ] KI zu allen Analyse-Buttons hinzufügen

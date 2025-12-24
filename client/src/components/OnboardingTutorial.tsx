@@ -26,8 +26,8 @@ const steps: OnboardingStep[] = [
     icon: <Sparkles className="w-8 h-8 text-primary" />,
   },
   {
-    title: "Account analysieren",
-    description: "Gib einfach einen Instagram-Username ein und klicke auf 'Analysieren'. Unsere KI analysiert über 3.000 Parameter in Sekunden.",
+    title: "KI-Account-Analyse",
+    description: "Gib einfach einen Instagram-Username ein und klicke auf 'KI-Analyse starten'. Unsere KI analysiert über 3.000 Parameter in Sekunden.",
     icon: <Search className="w-8 h-8 text-cyan-400" />,
     highlight: "Tipp: Starte mit deinem eigenen Account oder einem Konkurrenten!",
   },
