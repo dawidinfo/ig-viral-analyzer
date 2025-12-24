@@ -599,3 +599,12 @@
 ## Mobile Layout Fix v8 (24.12.2024)
 - [x] Header-Abstand: Section-Padding Override entfernt
 - [x] Checkpunkte: Auf Mobile vertikal gestapelt (flex-col)
+
+## Checkpunkte Einrückung (24.12.2024)
+- [x] Checkpunkte auf Mobile zentriert eingerückt (w-fit mx-auto)
+
+## Hero Animation Demo (24.12.2024)
+- [x] Animierte Follower-Wachstumskurve (12K → 52K)
+- [x] View-Counter der hochzählt (250K → 1.25M)
+- [x] Mini-Video-Thumbnails mit Play-Icons und Engagement-Zahlen
+- [x] Schwebender Dashboard-Preview Container mit Live-Demo Indikator

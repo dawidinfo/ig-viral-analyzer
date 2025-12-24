@@ -1,6 +1,7 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import { GlobalFooter } from "@/components/GlobalFooter";
+import { HeroDemo } from "@/components/HeroDemo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -413,11 +414,14 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4 sm:mb-6"
             >
               <Sparkles className="w-4 h-4 text-primary" />
               <span className="text-sm font-medium">{t.hero.badge}</span>
             </motion.div>
+
+            {/* Animated Demo Preview */}
+            <HeroDemo />
 
             {/* Headline */}
             <h1 className="text-3xl sm:text-5xl md:text-7xl font-semibold tracking-[-0.035em] mb-4 sm:mb-6 hero-headline">
@@ -474,7 +478,7 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-xs sm:text-sm text-muted-foreground px-4 sm:px-0"
+              className="flex flex-col sm:flex-row items-start sm:items-center justify-center gap-1.5 sm:gap-6 text-xs sm:text-sm text-muted-foreground px-4 sm:px-0 mx-auto w-fit"
             >
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-accent shrink-0" />
