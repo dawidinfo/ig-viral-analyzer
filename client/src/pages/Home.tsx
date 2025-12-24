@@ -400,7 +400,7 @@ export default function Home() {
       )}
 
       {/* Hero Section */}
-      <section className="relative pt-16 sm:pt-24 md:pt-28 pb-10 sm:pb-16 overflow-hidden">
+      <section className="relative pt-4 sm:pt-20 md:pt-24 pb-8 sm:pb-16 overflow-hidden">
         <div className="container relative z-10">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}

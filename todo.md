@@ -592,3 +592,6 @@
 ## Mobile Suchfeld Fix (24.12.2024 - v6)
 - [x] Suchfeld auf Mobile: Gleiche Darstellung wie Desktop (IG-Logo, Input, Button inline in einer Zeile)
 - [x] Header-Abstand: Reduziert von pt-20 auf pt-16 für weniger leeren Raum
+
+## Header-Abstand Fix v7 (24.12.2024)
+- [x] Leerer Bereich zwischen Header und Badge auf Mobile reduziert (pt-4 statt pt-16)
