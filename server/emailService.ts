@@ -694,46 +694,139 @@ export async function sendUserInvitation(
 ): Promise<boolean> {
   const subject = "🎉 Du wurdest zu ReelSpy.ai eingeladen!";
   
-  const content = `
-<div style="text-align: center; margin-bottom: 24px;">
-  <div style="font-size: 48px; margin-bottom: 8px;">🎉</div>
-  <h2 style="margin: 0; font-size: 24px;">Willkommen bei ReelSpy.ai!</h2>
-</div>
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Willkommen bei ReelSpy.ai</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0a0a0a; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #1a1a1a; border-radius: 16px; overflow: hidden; border: 1px solid #333;">
+          <!-- Logo Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 50%, #06B6D4 100%); padding: 40px; text-align: center;">
+              <div style="background: rgba(0,0,0,0.3); border-radius: 16px; padding: 20px; display: inline-block;">
+                <img src="https://reelspy.ai/logo.svg" alt="ReelSpy.ai" style="height: 48px; width: auto;" />
+              </div>
+              <h1 style="color: #ffffff; margin: 20px 0 0 0; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">Willkommen bei ReelSpy.ai!</h1>
+              <p style="color: rgba(255,255,255,0.8); margin: 8px 0 0 0; font-size: 16px;">Virale Reels und Content liefern</p>
+            </td>
+          </tr>
+          
+          <!-- Content -->
+          <tr>
+            <td style="padding: 40px;">
+              <p style="color: #e5e5e5; font-size: 18px; line-height: 1.6; margin: 0 0 24px 0;">
+                Hallo <strong>${name || "Content Creator"}</strong>,
+              </p>
+              
+              <p style="color: #a3a3a3; font-size: 16px; line-height: 1.6; margin: 0 0 24px 0;">
+                Du wurdest persönlich zu <strong style="color: #8B5CF6;">ReelSpy.ai</strong> eingeladen – der KI-gestützten Plattform für Instagram-Analyse und Viral Content!
+              </p>
 
-<p style="font-size: 16px; line-height: 1.6;">
-  Hallo ${name || "Content Creator"},<br><br>
-  Du wurdest von einem Administrator zu <strong>ReelSpy.ai</strong> eingeladen – der KI-gestützten Plattform für Instagram-Analyse!
-</p>
+              <!-- CTA Box -->
+              <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 16px; padding: 32px; margin: 32px 0; text-align: center;">
+                <div style="font-size: 48px; margin-bottom: 16px;">🎁</div>
+                <p style="color: #ffffff; font-size: 20px; font-weight: 600; margin: 0;">Dein Account ist bereit!</p>
+                <p style="color: #888; font-size: 14px; margin: 12px 0 24px 0;">Klicke unten um dich einzuloggen und loszulegen.</p>
+                
+                <a href="https://reelspy.ai/dashboard" 
+                   style="display: inline-block; background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%); color: white; padding: 16px 40px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 16px; box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);">
+                  Jetzt einloggen →
+                </a>
+              </div>
 
-<div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 12px; padding: 20px; margin: 24px 0; text-align: center;">
-  <div style="font-size: 32px; margin-bottom: 10px;">🎁</div>
-  <p style="color: #8B5CF6; font-size: 18px; font-weight: 600; margin: 0;">Dein Account ist bereit!</p>
-  <p style="color: #888; font-size: 14px; margin: 8px 0 0 0;">Klicke unten um dich einzuloggen und loszulegen.</p>
-</div>
-
-<div style="text-align: center; margin: 24px 0;">
-  <a href="https://reelspy.ai/dashboard" 
-     style="display: inline-block; background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%); color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">
-    Jetzt einloggen →
-  </a>
-</div>
-
-<p style="font-size: 14px; color: #888; line-height: 1.6;">
-  <strong>Was dich erwartet:</strong><br>
-  • KI-Analyse von Instagram-Accounts mit 3.000+ Parametern<br>
-  • Viral Score & HAPSS-Framework Auswertung<br>
-  • Follower-Wachstum & Engagement-Tracking<br>
-  • Konkurrenz-Vergleich & Benchmarking
-</p>
-
-<p style="font-size: 14px; color: #888; margin-top: 24px;">
-  Bei Fragen erreichst du uns unter <a href="mailto:support@reelspy.ai" style="color: #8B5CF6;">support@reelspy.ai</a>
-</p>
+              <!-- Features -->
+              <p style="color: #ffffff; font-size: 16px; font-weight: 600; margin: 32px 0 16px 0;">Was dich erwartet:</p>
+              
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #333;">
+                    <table cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="width: 40px; vertical-align: top;">
+                          <div style="background: rgba(139, 92, 246, 0.2); border-radius: 8px; width: 32px; height: 32px; text-align: center; line-height: 32px;">🔍</div>
+                        </td>
+                        <td style="color: #a3a3a3; font-size: 14px; padding-left: 12px;">
+                          <strong style="color: #e5e5e5;">KI-Analyse</strong><br>
+                          3.000+ Parameter für jeden Instagram-Account
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #333;">
+                    <table cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="width: 40px; vertical-align: top;">
+                          <div style="background: rgba(236, 72, 153, 0.2); border-radius: 8px; width: 32px; height: 32px; text-align: center; line-height: 32px;">📈</div>
+                        </td>
+                        <td style="color: #a3a3a3; font-size: 14px; padding-left: 12px;">
+                          <strong style="color: #e5e5e5;">Viral Score & HAPSS</strong><br>
+                          Verstehe warum Content viral geht
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #333;">
+                    <table cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="width: 40px; vertical-align: top;">
+                          <div style="background: rgba(6, 182, 212, 0.2); border-radius: 8px; width: 32px; height: 32px; text-align: center; line-height: 32px;">📊</div>
+                        </td>
+                        <td style="color: #a3a3a3; font-size: 14px; padding-left: 12px;">
+                          <strong style="color: #e5e5e5;">Follower-Tracking</strong><br>
+                          Tägliches Wachstum & Engagement-Analyse
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 12px 0;">
+                    <table cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="width: 40px; vertical-align: top;">
+                          <div style="background: rgba(16, 185, 129, 0.2); border-radius: 8px; width: 32px; height: 32px; text-align: center; line-height: 32px;">🏆</div>
+                        </td>
+                        <td style="color: #a3a3a3; font-size: 14px; padding-left: 12px;">
+                          <strong style="color: #e5e5e5;">Konkurrenz-Vergleich</strong><br>
+                          Benchmarking gegen Top-Accounts
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #111; padding: 24px; text-align: center; border-top: 1px solid #333;">
+              <p style="color: #666; font-size: 12px; margin: 0;">
+                Bei Fragen erreichst du uns unter <a href="mailto:support@reelspy.ai" style="color: #8B5CF6; text-decoration: none;">support@reelspy.ai</a>
+              </p>
+              <p style="color: #444; font-size: 11px; margin: 16px 0 0 0;">
+                © 2024 ReelSpy.ai • QLIQ Marketing L.L.C.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
 `;
 
-  return sendEmail(email, subject, createEmailTemplate(
-    "Du wurdest eingeladen!",
-    content,
-    "new_signup"
-  ));
+  return sendEmail(email, subject, html);
 }

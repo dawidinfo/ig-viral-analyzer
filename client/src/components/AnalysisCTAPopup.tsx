@@ -81,7 +81,7 @@ export function AnalysisCTAPopup({ isOpen, onClose, viralScore = 0, username }: 
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-lg bg-background/95 backdrop-blur-xl border-primary/20">
+      <DialogContent className="max-w-[95vw] sm:max-w-lg bg-background/95 backdrop-blur-xl border-primary/20 p-4 sm:p-6">
         <DialogHeader className="text-center pb-2">
           <div className="mx-auto mb-4">
             <motion.div
@@ -93,7 +93,7 @@ export function AnalysisCTAPopup({ isOpen, onClose, viralScore = 0, username }: 
               <span className="text-4xl font-bold">{viralScore}</span>
             </motion.div>
           </div>
-          <DialogTitle className={`text-2xl ${scoreMessage.color}`}>
+          <DialogTitle className={`text-xl sm:text-2xl ${scoreMessage.color} break-words`}>
             {scoreMessage.title}
           </DialogTitle>
           <DialogDescription className="text-base">
@@ -101,7 +101,7 @@ export function AnalysisCTAPopup({ isOpen, onClose, viralScore = 0, username }: 
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-3 py-4">
+        <div className="space-y-2 sm:space-y-3 py-3 sm:py-4">
           {actions.map((action, index) => (
             <motion.div
               key={index}
@@ -111,7 +111,7 @@ export function AnalysisCTAPopup({ isOpen, onClose, viralScore = 0, username }: 
             >
               <Button
                 variant={action.primary ? "default" : "outline"}
-                className={`w-full justify-start h-auto py-4 px-4 ${
+                className={`w-full justify-start h-auto py-3 sm:py-4 px-3 sm:px-4 ${
                   action.primary ? "btn-gradient text-white" : "hover:bg-muted/50"
                 }`}
                 onClick={action.action}

@@ -512,3 +512,18 @@
 - [x] Credits-Zuweisung aus Admin-Bereich auf User-Accounts
 - [x] Erweiterte User-Parameter und Übersicht
 - [x] User-Verifizierung nach Einladung
+
+## Mobile Responsive Fixes v2
+- [x] CTA-Popup mobil: Text abgeschnitten, Emoji überlappt
+- [x] Header mobil: Buttons überlappen, "Speichern" abgeschnitten
+- [x] Copywriting-Analyse: Badge wird abgeschnitten
+- [x] Allgemeine mobile Optimierungen
+
+## Profilbild-Proxy
+- [x] Server-Proxy für Instagram-Profilbilder einrichten
+
+## Email-Templates Branding
+- [x] Einladungs-E-Mail mit ReelSpy Logo und Branding
+
+## Competitor Comparison
+- [x] Compare-Seite UI fertigstellen (bereits vollständig implementiert)

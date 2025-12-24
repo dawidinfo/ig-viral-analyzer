@@ -315,45 +315,45 @@ export default function Analysis() {
       
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
-        <div className="container flex items-center justify-between h-16">
-          <div className="flex items-center gap-4">
+        <div className="container flex items-center justify-between h-14 sm:h-16 px-2 sm:px-4">
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             <Button 
               variant="ghost" 
               size="icon"
               onClick={() => setLocation("/")}
-              className="hover:bg-muted"
+              className="hover:bg-muted h-8 w-8 sm:h-10 sm:w-10"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
-            <div className="flex items-center gap-3 cursor-pointer" onClick={() => setLocation("/")}>
-              <img src="/logo.svg" alt="ReelSpy.ai" className="h-8 w-auto" />
+            <div className="hidden sm:flex items-center gap-3 cursor-pointer" onClick={() => setLocation("/")}>
+              <img src="/logo.svg" alt="ReelSpy.ai" className="h-6 sm:h-8 w-auto" />
             </div>
           </div>
           
           {/* Search Bar with Gradient Border */}
-          <div className="flex items-center gap-2 max-w-lg flex-1 mx-4">
-            <div className="relative gradient-border rounded-xl p-[2px] flex-1">
-              <div className="flex items-center gap-2 bg-background rounded-xl">
+          <div className="flex items-center gap-1 sm:gap-2 max-w-lg flex-1 mx-1 sm:mx-4">
+            <div className="relative gradient-border rounded-lg sm:rounded-xl p-[1px] sm:p-[2px] flex-1">
+              <div className="flex items-center gap-1 sm:gap-2 bg-background rounded-lg sm:rounded-xl">
                 <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Search className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground" />
                   <Input
                     type="text"
-                    placeholder="@username analysieren..."
+                    placeholder="@username..."
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleAnalyze()}
-                    className="pl-10 h-10 bg-transparent border-0 focus-visible:ring-0 input-glow"
+                    className="pl-7 sm:pl-10 h-8 sm:h-10 text-sm bg-transparent border-0 focus-visible:ring-0 input-glow"
                   />
                 </div>
-                <Button onClick={handleAnalyze} className="btn-gradient text-white border-0 h-8 px-3 mr-1">
-                  <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                <Button onClick={handleAnalyze} className="btn-gradient text-white border-0 h-6 sm:h-8 px-2 sm:px-3 mr-1">
+                  <RefreshCw className={`w-3 h-3 sm:w-4 sm:h-4 ${isLoading ? 'animate-spin' : ''}`} />
                 </Button>
               </div>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             {analysisData && (
               <>
                 <Button
@@ -361,24 +361,25 @@ export default function Analysis() {
                   size="sm"
                   onClick={handleSaveAnalysis}
                   disabled={isSaved || isSaving || !user}
-                  className={isSaved ? 'bg-green-500/20 border-green-500/30 text-green-400' : ''}
+                  className={`h-8 px-2 sm:px-3 text-xs sm:text-sm ${isSaved ? 'bg-green-500/20 border-green-500/30 text-green-400' : ''}`}
                 >
                   {isSaving ? (
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
                   ) : isSaved ? (
-                    <BookmarkCheck className="w-4 h-4 mr-2" />
+                    <BookmarkCheck className="w-3 h-3 sm:w-4 sm:h-4" />
                   ) : (
-                    <Bookmark className="w-4 h-4 mr-2" />
+                    <Bookmark className="w-3 h-3 sm:w-4 sm:h-4" />
                   )}
-                  {isSaved ? 'Gespeichert' : 'Speichern'}
+                  <span className="hidden sm:inline ml-2">{isSaved ? 'Gespeichert' : 'Speichern'}</span>
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => generateAnalysisPDF(analysisData)}
+                  className="h-8 px-2 sm:px-3 text-xs sm:text-sm"
                 >
-                  <Download className="w-4 h-4 mr-2" />
-                  PDF
+                  <Download className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline ml-2">PDF</span>
                 </Button>
               </>
             )}
@@ -428,7 +429,10 @@ export default function Analysis() {
                 <div className="relative">
                   <div className="w-20 h-20 sm:w-32 sm:h-32 rounded-full bg-gradient-to-br from-primary to-secondary p-1 profile-avatar">
                     <img 
-                        src={analysisData.profile.profilePicUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(analysisData.profile.username)}&size=200&background=8B5CF6&color=fff&bold=true`} 
+                        src={analysisData.profile.profilePicUrl 
+                          ? `/api/proxy/instagram-image?url=${encodeURIComponent(analysisData.profile.profilePicUrl)}`
+                          : `https://ui-avatars.com/api/?name=${encodeURIComponent(analysisData.profile.username)}&size=200&background=8B5CF6&color=fff&bold=true`
+                        } 
                         alt={analysisData.profile.username}
                         className="w-full h-full rounded-full object-cover bg-muted"
                         onError={(e) => {

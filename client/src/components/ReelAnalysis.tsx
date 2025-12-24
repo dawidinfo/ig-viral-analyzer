@@ -645,10 +645,10 @@ export default function ReelAnalysis({ username }: ReelAnalysisProps) {
           className="flex items-center justify-between cursor-pointer"
           onClick={() => toggleSection('copywriting')}
         >
-          <div className="flex items-center gap-3">
-            <Award className="w-6 h-6 text-amber-400" />
-            <h4 className="font-bold text-lg">Copywriting-Meister Analyse</h4>
-            <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30">
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+            <Award className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400 shrink-0" />
+            <h4 className="font-bold text-base sm:text-lg">Copywriting-Meister Analyse</h4>
+            <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30 text-xs sm:text-sm whitespace-nowrap">
               Hopkins • Ogilvy • Schwartz
             </Badge>
           </div>
