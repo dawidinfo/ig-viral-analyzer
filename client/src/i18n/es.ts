@@ -23,7 +23,7 @@ export const es: Translations = {
     titleHighlight: "El contenido se vuelve viral",
     subtitle: "Analiza cualquier cuenta de Instagram. Comprende los patrones de engagement, optimiza tus descripciones y aumenta tu alcance con insights basados en datos.",
     placeholder: "Ingresa @usuario...",
-    cta: "Analizar",
+    cta: "Análisis IA",
     features: {
       free: "Prueba gratis",
       noSignup: "Sin registro",

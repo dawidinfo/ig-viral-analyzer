@@ -21,7 +21,7 @@ export const de = {
     titleHighlight: "Content viral geht",
     subtitle: "Analysiere jeden Instagram-Account. Verstehe Engagement-Muster, optimiere deine Captions und steigere deine Reichweite mit datengestützten Insights.",
     placeholder: "@username eingeben...",
-    cta: "Analysieren",
+    cta: "KI-Analyse",
     features: {
       free: "Kostenlos testen",
       noSignup: "Keine Anmeldung nötig",

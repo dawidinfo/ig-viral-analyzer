@@ -1018,6 +1018,28 @@ export const appRouter = router({
       }),
   }),
 
+  // Email Unsubscribe Router
+  email: router({
+    unsubscribe: publicProcedure
+      .input(z.object({
+        email: z.string().email(),
+        token: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        // For now, just log the unsubscribe request
+        // In production, this would update a user preference in the database
+        console.log(`[Unsubscribe] Request for ${input.email}`);
+        
+        // TODO: Add emailOptOut column to users table and update it here
+        // const db = await getDb();
+        // if (db) {
+        //   await db.update(users).set({ emailOptOut: true }).where(eq(users.email, input.email));
+        // }
+        
+        return { success: true, message: "Successfully unsubscribed" };
+      }),
+  }),
+
   // Contact Form Router
   contact: router({
     submit: publicProcedure

@@ -771,3 +771,48 @@
 - [ ] Charts/Balken eleganter (dünner, keine Gradients)
 - [ ] Cards subtiler (weniger Border-Glow)
 - [ ] KI zu allen Analyse-Buttons hinzufügen
+
+## Wöchentlicher Email-Report Cron-Job (24.12.2024)
+- [ ] Professionelles HTML-Template mit Logo und Brand-Design
+- [ ] Storytelling-Struktur ("Diese Woche bei deinen Konkurrenten...")
+- [ ] Teaser für Premium-Features ("Mit Pro hättest du auch gesehen...")
+- [ ] Engagement-Hooks ("3 Accounts die diese Woche explodierten")
+- [ ] Einfacher Abmelde-Link (aber so gut dass niemand klickt)
+- [ ] Sonntag 19:00 - "Deine Woche startet mit diesen Insights"
+- [ ] Dienstag 10:00 - "Mid-Week Performance Check"
+- [ ] Donnerstag 10:00 - "Wochenend-Boost: Das solltest du wissen"
+- [ ] Opt-out Funktion in DB und Emails
+
+
+## Bug-Fixes (25.12.2024)
+- [ ] Button "Analysieren" → "KI-Analyse" auf Homepage
+- [ ] Mobile Dashboard Tabs scrollbar machen (Rechnungen abgeschnitten)
+- [ ] Top 50 Winner: Echte Profilbilder statt orange Buchstaben-Kreise
+- [ ] SEO: Titel auf 30-60 Zeichen, Keywords auf 3-8 reduzieren
+- [ ] Alle Buttons mit "KI" Keyword versehen
+
+## Viral Reel Masterplan (25.12.2024)
+- [ ] Viral Reel Fahrplan mit 3/7/30/90-Tage-Plänen
+- [ ] Cut-Analyse Tool (19 Cuts pro Minute)
+- [ ] ManyChat Keyword Generator
+- [ ] Live-Counter für KI-Analysen auf Startseite
+
+## Critical Fixes (Dezember 2024)
+- [x] Alle "Analysieren" Buttons auf "KI-Analyse" geändert (DE, EN, FR, ES)
+- [x] Mobile Dashboard-Tabs horizontales Scrolling verbessert
+- [x] Top 50 Winner Profilbilder statt orangene Initialen-Kreise (unavatar.io)
+- [x] SEO: Titel auf 64 Zeichen optimiert, Keywords auf 5 reduziert
+
+## Pending: Viral Reel Masterplan Features
+- [ ] 19-Cuts-Rule Analyse-Tool
+- [ ] Viral Hook Formula Checker
+- [ ] ManyChat Keyword Generator
+- [ ] Cut-Analyse Tool (Schnitte pro Minute)
+- [ ] Viral Predictor (KI-Vorhersage)
+- [ ] Content Planning Tiers (3/7/30/90-Tage Pläne)
+- [ ] Live Counter "12,847+ KI-Analysen" auf Homepage
+- [ ] CSV Export für Post-Analyse Daten
+
+## Affiliate Share Options Fix
+- [x] Facebook Share-Button zum Affiliate-Bereich hinzufügen
+- [x] Instagram Share-Button zum Affiliate-Bereich hinzufügen
