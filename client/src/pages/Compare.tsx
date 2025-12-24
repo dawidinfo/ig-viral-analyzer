@@ -21,7 +21,10 @@ import {
   RefreshCw,
   ArrowLeftRight,
   Crown,
-  Zap
+  Zap,
+  Play,
+  ExternalLink,
+  Flame
 } from "lucide-react";
 import { useState, useMemo } from "react";
 import { useLocation, useSearch } from "wouter";
@@ -568,6 +571,224 @@ export default function Compare() {
                       />
                     </RadarChart>
                   </ResponsiveContainer>
+                </div>
+              </div>
+
+              {/* ==================== SPLIT-SCREEN REELS COMPARISON ==================== */}
+              <div className="glass-card rounded-2xl p-6 mb-6">
+                <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                  <Play className="w-5 h-5 text-red-500" />
+                  Reels Performance Vergleich
+                </h3>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Account 1 Reels */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-sm font-medium text-violet-400">@{data1.profile.username}</h4>
+                      <Badge variant="outline" className="text-xs">{data1.reels.length} Reels</Badge>
+                    </div>
+                    
+                    {/* Reel Stats Summary */}
+                    <div className="grid grid-cols-3 gap-2 text-center">
+                      <div className="bg-muted/30 rounded-lg p-2">
+                        <p className="text-lg font-bold text-violet-400">{formatNumber(data1.reels.reduce((sum, r) => sum + r.viewCount, 0) / Math.max(data1.reels.length, 1))}</p>
+                        <p className="text-xs text-muted-foreground">Ø Views</p>
+                      </div>
+                      <div className="bg-muted/30 rounded-lg p-2">
+                        <p className="text-lg font-bold text-violet-400">{formatNumber(data1.reels.reduce((sum, r) => sum + r.likeCount, 0) / Math.max(data1.reels.length, 1))}</p>
+                        <p className="text-xs text-muted-foreground">Ø Likes</p>
+                      </div>
+                      <div className="bg-muted/30 rounded-lg p-2">
+                        <p className="text-lg font-bold text-violet-400">
+                          {(data1.reels.reduce((sum, r) => sum + (r.viewCount > 0 ? (r.likeCount / r.viewCount) * 100 : 0), 0) / Math.max(data1.reels.length, 1)).toFixed(1)}%
+                        </p>
+                        <p className="text-xs text-muted-foreground">Ø Eng.</p>
+                      </div>
+                    </div>
+                    
+                    {/* Top 6 Reels Grid */}
+                    <div className="grid grid-cols-3 gap-2">
+                      {data1.reels.slice(0, 6).map((reel, index) => {
+                        const avgViews = data1.reels.reduce((sum, r) => sum + r.viewCount, 0) / data1.reels.length;
+                        const isViral = reel.viewCount > avgViews * 1.5;
+                        const reelUrl = reel.shortcode ? `https://www.instagram.com/reel/${reel.shortcode}/` : null;
+                        
+                        return (
+                          <div 
+                            key={reel.id || index} 
+                            className="relative group cursor-pointer"
+                            onClick={() => reelUrl && window.open(reelUrl, '_blank')}
+                            title="Klicke um das Reel auf Instagram zu öffnen"
+                          >
+                            {reel.thumbnailUrl ? (
+                              <img 
+                                src={reel.thumbnailUrl} 
+                                alt={`Reel ${index + 1}`}
+                                className="w-full aspect-[9/16] object-cover rounded-lg border-2 border-violet-500/30 group-hover:border-violet-500 transition-colors"
+                              />
+                            ) : (
+                              <div className="w-full aspect-[9/16] bg-muted rounded-lg flex items-center justify-center border-2 border-violet-500/30">
+                                <Play className="w-6 h-6 text-muted-foreground" />
+                              </div>
+                            )}
+                            
+                            {/* Viral Badge */}
+                            {isViral && (
+                              <div className="absolute top-1 left-1/2 -translate-x-1/2 z-10">
+                                <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white border-0 text-[10px] px-1.5 py-0">
+                                  🔥
+                                </Badge>
+                              </div>
+                            )}
+                            
+                            {/* Performance Overlay */}
+                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent rounded-b-lg p-1.5">
+                              <div className="flex items-center justify-between text-white text-[10px]">
+                                <span className="flex items-center gap-0.5">
+                                  <Eye className="w-2.5 h-2.5" />
+                                  {formatNumber(reel.viewCount)}
+                                </span>
+                                <span className="flex items-center gap-0.5">
+                                  <Heart className="w-2.5 h-2.5 text-red-400" />
+                                  {formatNumber(reel.likeCount)}
+                                </span>
+                              </div>
+                            </div>
+                            
+                            {/* Rank Badge */}
+                            <div className="absolute top-1 left-1">
+                              <Badge className="bg-violet-500 text-white text-[10px] px-1.5 py-0 h-4">
+                                #{index + 1}
+                              </Badge>
+                            </div>
+                            
+                            {/* Hover Overlay */}
+                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                              <ExternalLink className="w-5 h-5 text-white" />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  
+                  {/* Account 2 Reels */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-sm font-medium text-cyan-400">@{data2.profile.username}</h4>
+                      <Badge variant="outline" className="text-xs">{data2.reels.length} Reels</Badge>
+                    </div>
+                    
+                    {/* Reel Stats Summary */}
+                    <div className="grid grid-cols-3 gap-2 text-center">
+                      <div className="bg-muted/30 rounded-lg p-2">
+                        <p className="text-lg font-bold text-cyan-400">{formatNumber(data2.reels.reduce((sum, r) => sum + r.viewCount, 0) / Math.max(data2.reels.length, 1))}</p>
+                        <p className="text-xs text-muted-foreground">Ø Views</p>
+                      </div>
+                      <div className="bg-muted/30 rounded-lg p-2">
+                        <p className="text-lg font-bold text-cyan-400">{formatNumber(data2.reels.reduce((sum, r) => sum + r.likeCount, 0) / Math.max(data2.reels.length, 1))}</p>
+                        <p className="text-xs text-muted-foreground">Ø Likes</p>
+                      </div>
+                      <div className="bg-muted/30 rounded-lg p-2">
+                        <p className="text-lg font-bold text-cyan-400">
+                          {(data2.reels.reduce((sum, r) => sum + (r.viewCount > 0 ? (r.likeCount / r.viewCount) * 100 : 0), 0) / Math.max(data2.reels.length, 1)).toFixed(1)}%
+                        </p>
+                        <p className="text-xs text-muted-foreground">Ø Eng.</p>
+                      </div>
+                    </div>
+                    
+                    {/* Top 6 Reels Grid */}
+                    <div className="grid grid-cols-3 gap-2">
+                      {data2.reels.slice(0, 6).map((reel, index) => {
+                        const avgViews = data2.reels.reduce((sum, r) => sum + r.viewCount, 0) / data2.reels.length;
+                        const isViral = reel.viewCount > avgViews * 1.5;
+                        const reelUrl = reel.shortcode ? `https://www.instagram.com/reel/${reel.shortcode}/` : null;
+                        
+                        return (
+                          <div 
+                            key={reel.id || index} 
+                            className="relative group cursor-pointer"
+                            onClick={() => reelUrl && window.open(reelUrl, '_blank')}
+                            title="Klicke um das Reel auf Instagram zu öffnen"
+                          >
+                            {reel.thumbnailUrl ? (
+                              <img 
+                                src={reel.thumbnailUrl} 
+                                alt={`Reel ${index + 1}`}
+                                className="w-full aspect-[9/16] object-cover rounded-lg border-2 border-cyan-500/30 group-hover:border-cyan-500 transition-colors"
+                              />
+                            ) : (
+                              <div className="w-full aspect-[9/16] bg-muted rounded-lg flex items-center justify-center border-2 border-cyan-500/30">
+                                <Play className="w-6 h-6 text-muted-foreground" />
+                              </div>
+                            )}
+                            
+                            {/* Viral Badge */}
+                            {isViral && (
+                              <div className="absolute top-1 left-1/2 -translate-x-1/2 z-10">
+                                <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white border-0 text-[10px] px-1.5 py-0">
+                                  🔥
+                                </Badge>
+                              </div>
+                            )}
+                            
+                            {/* Performance Overlay */}
+                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent rounded-b-lg p-1.5">
+                              <div className="flex items-center justify-between text-white text-[10px]">
+                                <span className="flex items-center gap-0.5">
+                                  <Eye className="w-2.5 h-2.5" />
+                                  {formatNumber(reel.viewCount)}
+                                </span>
+                                <span className="flex items-center gap-0.5">
+                                  <Heart className="w-2.5 h-2.5 text-red-400" />
+                                  {formatNumber(reel.likeCount)}
+                                </span>
+                              </div>
+                            </div>
+                            
+                            {/* Rank Badge */}
+                            <div className="absolute top-1 left-1">
+                              <Badge className="bg-cyan-500 text-white text-[10px] px-1.5 py-0 h-4">
+                                #{index + 1}
+                              </Badge>
+                            </div>
+                            
+                            {/* Hover Overlay */}
+                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                              <ExternalLink className="w-5 h-5 text-white" />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Reels Comparison Summary */}
+                <div className="mt-6 pt-6 border-t border-border/50">
+                  <h4 className="text-sm font-medium mb-4 text-center">Reel-Performance Vergleich</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <MetricCompareCard 
+                      label="Ø Views pro Reel" 
+                      value1={data1.reels.reduce((sum, r) => sum + r.viewCount, 0) / Math.max(data1.reels.length, 1)} 
+                      value2={data2.reels.reduce((sum, r) => sum + r.viewCount, 0) / Math.max(data2.reels.length, 1)} 
+                      icon={Eye}
+                    />
+                    <MetricCompareCard 
+                      label="Ø Likes pro Reel" 
+                      value1={data1.reels.reduce((sum, r) => sum + r.likeCount, 0) / Math.max(data1.reels.length, 1)} 
+                      value2={data2.reels.reduce((sum, r) => sum + r.likeCount, 0) / Math.max(data2.reels.length, 1)} 
+                      icon={Heart}
+                    />
+                    <MetricCompareCard 
+                      label="Ø Engagement Rate" 
+                      value1={data1.reels.reduce((sum, r) => sum + (r.viewCount > 0 ? (r.likeCount / r.viewCount) * 100 : 0), 0) / Math.max(data1.reels.length, 1)} 
+                      value2={data2.reels.reduce((sum, r) => sum + (r.viewCount > 0 ? (r.likeCount / r.viewCount) * 100 : 0), 0) / Math.max(data2.reels.length, 1)} 
+                      icon={TrendingUp}
+                      format="percent"
+                    />
+                  </div>
                 </div>
               </div>
 

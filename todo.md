@@ -664,3 +664,12 @@
 - [x] Sortierung nach Views, Likes, Engagement-Rate
 - [x] Viral-Badge für überdurchschnittliche Performance
 - [x] Klickbare Reels - Original auf Instagram öffnen
+
+## Split-Screen Comparison View (24.12.2024)
+- [x] Create split-screen layout for two accounts
+- [x] Side-by-side Reel performance comparison
+- [x] Visual indicators showing which account performs better
+- [x] Comparison metrics: Views, Likes, Engagement, Viral Score
+- [x] Top 6 Reels grid for each account
+- [x] Viral badges on high-performing reels
+- [x] Clickable reels open on Instagram
