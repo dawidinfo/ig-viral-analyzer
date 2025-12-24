@@ -462,3 +462,10 @@
 - [x] Instagram-Button für Plattform-Auswahl (wie Socialblade)
 - [x] Top 50 Winner Section - virale Accounts die gerade wachsen
 - [x] Design 10% stärker - Rahmen kräftiger machen
+
+## UX & Design Verbesserungen (NotJustAnalytics Inspiration)
+- [x] Instagram-Icon im Eingabefeld (Startseite + Dashboard)
+- [x] Dashboard-Eingabefeld mit klarem Rahmen wie NJL
+- [x] "Profiles analyzed" Counter als Social Proof (bereits vorhanden: 50K+)
+- [ ] UX-Verbesserungen für mehr Engagement
+- [ ] Design eleganter und klarer machen

@@ -198,32 +198,30 @@ export default function Dashboard() {
           <div className="flex items-center gap-4">
             {/* Analyse-Eingabefeld mit Instagram-Button */}
             <div className="hidden md:flex items-center">
-              <div className="flex items-center border border-border rounded-lg overflow-hidden bg-background/50">
-                {/* Instagram Platform Button */}
-                <div className="flex items-center gap-1.5 px-3 py-2 border-r border-border bg-gradient-to-r from-pink-500/10 to-purple-500/10">
-                  <Instagram className="w-4 h-4 text-pink-500" />
-                  <span className="text-xs font-medium text-pink-500">Instagram</span>
+              <div className="flex items-center border-2 border-pink-500/50 rounded-xl overflow-hidden bg-background shadow-lg shadow-pink-500/10">
+                {/* Instagram Icon */}
+                <div className="flex items-center justify-center w-11 h-11 m-1 rounded-lg bg-gradient-to-br from-pink-500 via-purple-500 to-orange-500 shrink-0">
+                  <svg viewBox="0 0 24 24" className="w-5 h-5 text-white fill-current">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                  </svg>
                 </div>
                 {/* Input */}
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    type="text"
-                    placeholder="@username"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-9 w-48 h-9 border-0 bg-transparent text-sm focus-visible:ring-0"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && searchQuery.trim()) {
-                        setLocation(`/analysis?username=${searchQuery.trim().replace('@', '')}`);
-                      }
-                    }}
-                  />
-                </div>
+                <Input
+                  type="text"
+                  placeholder="Instagram @username eingeben..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="flex-1 h-11 border-0 bg-transparent text-sm focus-visible:ring-0 px-3"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && searchQuery.trim()) {
+                      setLocation(`/analysis?username=${searchQuery.trim().replace('@', '')}`);
+                    }
+                  }}
+                />
                 {/* Analyze Button */}
                 <Button
                   size="sm"
-                  className="rounded-none h-9 px-4"
+                  className="h-9 px-5 m-1 rounded-lg bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white border-0"
                   onClick={() => {
                     if (searchQuery.trim()) {
                       setLocation(`/analysis?username=${searchQuery.trim().replace('@', '')}`);
