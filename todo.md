@@ -620,3 +620,6 @@
 ## Hero Demo Tooltips (24.12.2024)
 - [x] Tooltip "Beispiel-Analyse ansehen" bei Hover über Video-Cards
 - [x] Bessere Thumbnails (Portrait-Fotos wie echte Creator-Reels)
+
+## Bug: Login 404 (24.12.2024)
+- [x] /api/auth/login 404-Fehler behoben - Dashboard.tsx verwendete falsche lokale getLoginUrl Funktion
