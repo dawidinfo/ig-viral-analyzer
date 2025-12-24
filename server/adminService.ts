@@ -640,3 +640,324 @@ export async function scanForSuspiciousUsers(): Promise<AdminUser[]> {
     return [];
   }
 }
+
+
+/**
+ * Create a new user with invitation email
+ */
+export async function createUserWithInvitation(
+  email: string,
+  name: string,
+  initialCredits: number = 10,
+  plan: string = "free"
+): Promise<{ success: boolean; userId?: number; error?: string }> {
+  try {
+    const db = await getDb();
+    if (!db) return { success: false, error: "Database not available" };
+
+    // Check if user already exists
+    const existing = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email.toLowerCase()))
+      .limit(1);
+
+    if (existing.length > 0) {
+      return { success: false, error: "User with this email already exists" };
+    }
+
+    // Generate a unique openId for the new user
+    const openId = `invited_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+
+    // Create the user - use valid plan enum value
+    const validPlan = ["free", "starter", "pro", "business", "enterprise"].includes(plan) 
+      ? plan as "free" | "starter" | "pro" | "business" | "enterprise"
+      : "free";
+    
+    await db.insert(users).values({
+      openId,
+      email: email.toLowerCase(),
+      name,
+      plan: validPlan,
+      credits: initialCredits,
+      role: "user",
+      status: "active",
+    });
+
+    // Get the created user ID
+    const createdUser = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.openId, openId))
+      .limit(1);
+    
+    const userId = createdUser[0]?.id || 0;
+
+    // Send invitation email
+    const { sendUserInvitation } = await import("./emailService");
+    await sendUserInvitation(email, name);
+
+    console.log(`[Admin] Created invited user: ${email} (ID: ${userId})`);
+
+    return { success: true, userId };
+  } catch (error) {
+    console.error("[Admin] Error creating user:", error);
+    return { success: false, error: String(error) };
+  }
+}
+
+/**
+ * Add credits to a user account (admin action)
+ */
+export async function adminAddCredits(
+  userId: number,
+  amount: number,
+  reason: string,
+  adminId: number
+): Promise<{ success: boolean; newBalance?: number; error?: string }> {
+  try {
+    const db = await getDb();
+    if (!db) return { success: false, error: "Database not available" };
+
+    // Get current user
+    const user = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+
+    if (user.length === 0) {
+      return { success: false, error: "User not found" };
+    }
+
+    const currentCredits = user[0].credits || 0;
+    const newBalance = currentCredits + amount;
+
+    // Update user credits
+    await db
+      .update(users)
+      .set({ credits: newBalance })
+      .where(eq(users.id, userId));
+
+    // Log the transaction
+    await db.insert(creditTransactions).values({
+      userId,
+      amount,
+      balanceAfter: newBalance,
+      type: "admin_adjustment",
+      description: `Admin (ID: ${adminId}): ${reason}`,
+      adminId,
+    });
+
+    console.log(`[Admin] Credits ${amount > 0 ? "added" : "removed"}: User ${userId}, Amount: ${amount}, Reason: ${reason}`);
+
+    return { success: true, newBalance };
+  } catch (error) {
+    console.error("[Admin] Error adding credits:", error);
+    return { success: false, error: String(error) };
+  }
+}
+
+/**
+ * Get detailed user information for admin view
+ */
+export async function getDetailedUserInfo(userId: number): Promise<{
+  user: AdminUser | null;
+  recentActivity: UserActivity[];
+  creditHistory: any[];
+  savedAccounts: any[];
+  error?: string;
+}> {
+  try {
+    const db = await getDb();
+    if (!db) return { user: null, recentActivity: [], creditHistory: [], savedAccounts: [], error: "Database not available" };
+
+    // Get user
+    const userResult = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+
+    if (userResult.length === 0) {
+      return { user: null, recentActivity: [], creditHistory: [], savedAccounts: [], error: "User not found" };
+    }
+
+    const u = userResult[0];
+
+    // Get total analyses
+    const analysesResult = await db
+      .select({ count: sql<number>`COUNT(*)` })
+      .from(usageTracking)
+      .where(eq(usageTracking.userId, userId));
+
+    // Get total spent
+    const spentResult = await db
+      .select({ total: sql<number>`COALESCE(SUM(amount), 0)` })
+      .from(creditTransactions)
+      .where(and(
+        eq(creditTransactions.userId, userId),
+        eq(creditTransactions.type, "purchase")
+      ));
+
+    // Get recent activity
+    const recentActivity = await db
+      .select()
+      .from(usageTracking)
+      .where(eq(usageTracking.userId, userId))
+      .orderBy(desc(usageTracking.createdAt))
+      .limit(20);
+
+    // Get credit history
+    const creditHistory = await db
+      .select()
+      .from(creditTransactions)
+      .where(eq(creditTransactions.userId, userId))
+      .orderBy(desc(creditTransactions.createdAt))
+      .limit(50);
+
+    // Get saved accounts
+    const savedAccounts = await db
+      .select()
+      .from(savedAnalyses)
+      .where(eq(savedAnalyses.userId, userId))
+      .orderBy(desc(savedAnalyses.createdAt))
+      .limit(50);
+
+    const adminUser: AdminUser = {
+      id: u.id,
+      openId: u.openId,
+      email: u.email,
+      name: u.name,
+      plan: u.plan || "free",
+      credits: u.credits || 0,
+      role: u.role || "user",
+      status: u.status || "active",
+      statusReason: u.statusReason,
+      createdAt: u.createdAt,
+      lastActivity: u.lastActivity,
+      totalAnalyses: Number(analysesResult[0]?.count) || 0,
+      totalSpent: Number(spentResult[0]?.total) || 0,
+      isSuspicious: false,
+      suspiciousReason: null,
+    };
+
+    return {
+      user: adminUser,
+      recentActivity: recentActivity.map(a => ({
+        id: a.id,
+        userId: a.userId,
+        action: a.actionType,
+        platform: a.platform || "instagram",
+        targetUsername: "",
+        creditsUsed: a.creditsUsed || 0,
+        timestamp: a.createdAt,
+      })),
+      creditHistory,
+      savedAccounts,
+    };
+  } catch (error) {
+    console.error("[Admin] Error getting detailed user info:", error);
+    return { user: null, recentActivity: [], creditHistory: [], savedAccounts: [], error: String(error) };
+  }
+}
+
+/**
+ * Get all users with extended info for admin dashboard
+ */
+export async function getAllUsersExtended(
+  page: number = 1,
+  limit: number = 50,
+  search?: string,
+  sortBy: string = "createdAt",
+  sortOrder: "asc" | "desc" = "desc"
+): Promise<{
+  users: AdminUser[];
+  total: number;
+  page: number;
+  totalPages: number;
+}> {
+  try {
+    const db = await getDb();
+    if (!db) return { users: [], total: 0, page: 1, totalPages: 0 };
+
+    const offset = (page - 1) * limit;
+
+    // Build query conditions
+    let conditions = [];
+    if (search) {
+      conditions.push(
+        or(
+          like(users.email, `%${search}%`),
+          like(users.name, `%${search}%`),
+          like(users.openId, `%${search}%`)
+        )
+      );
+    }
+
+    // Get total count
+    const countResult = await db
+      .select({ count: sql<number>`COUNT(*)` })
+      .from(users)
+      .where(conditions.length > 0 ? and(...conditions) : undefined);
+
+    const total = Number(countResult[0]?.count) || 0;
+
+    // Get users
+    const usersResult = await db
+      .select()
+      .from(users)
+      .where(conditions.length > 0 ? and(...conditions) : undefined)
+      .orderBy(sortOrder === "desc" ? desc(users.createdAt) : users.createdAt)
+      .limit(limit)
+      .offset(offset);
+
+    // Get additional stats for each user
+    const adminUsers: AdminUser[] = await Promise.all(
+      usersResult.map(async (u) => {
+        // Get total analyses
+        const analysesResult = await db
+          .select({ count: sql<number>`COUNT(*)` })
+          .from(usageTracking)
+          .where(eq(usageTracking.userId, u.id));
+
+        // Get total spent
+        const spentResult = await db
+          .select({ total: sql<number>`COALESCE(SUM(amount), 0)` })
+          .from(creditTransactions)
+          .where(and(
+            eq(creditTransactions.userId, u.id),
+            eq(creditTransactions.type, "purchase")
+          ));
+
+        return {
+          id: u.id,
+          openId: u.openId,
+          email: u.email,
+          name: u.name,
+          plan: u.plan || "free",
+          credits: u.credits || 0,
+          role: u.role || "user",
+          status: u.status || "active",
+          statusReason: u.statusReason,
+          createdAt: u.createdAt,
+          lastActivity: u.lastActivity,
+          totalAnalyses: Number(analysesResult[0]?.count) || 0,
+          totalSpent: Number(spentResult[0]?.total) || 0,
+          isSuspicious: false,
+          suspiciousReason: null,
+        };
+      })
+    );
+
+    return {
+      users: adminUsers,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    };
+  } catch (error) {
+    console.error("[Admin] Error getting all users extended:", error);
+    return { users: [], total: 0, page: 1, totalPages: 0 };
+  }
+}

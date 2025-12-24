@@ -484,3 +484,31 @@
 - [x] Erkennung von verdächtigen Following-Mustern
 - [x] Warnung bei großen Schwankungen
 - [x] Info-Box mit Erklärung
+
+## Mobile Design Optimierung
+- [ ] Startseite mobile responsive
+- [ ] Dashboard mobile responsive
+- [ ] Analysis-Seite mobile responsive
+- [ ] Navigation mobile (Hamburger Menu)
+
+## Account Logo/Icon Fix
+- [ ] Profilbilder von Instagram korrekt laden
+- [ ] Fallback-Avatar bei fehlenden Bildern
+
+## Echte Growth-Daten
+- [ ] Daily Growth Chart mit echten API-Daten
+- [ ] Historische Follower-Daten von RapidAPI
+
+## Competitor Comparison
+- [ ] Zwei Accounts nebeneinander vergleichen
+- [ ] Differenz-Anzeige für alle Metriken
+
+## Email-Benachrichtigungen
+- [ ] Alerts wenn Account viral geht
+- [ ] Benachrichtigung bei starkem Wachstum
+
+## Admin-Dashboard Erweiterungen
+- [x] User-Erstellung mit E-Mail/Name und Einladungs-E-Mail
+- [x] Credits-Zuweisung aus Admin-Bereich auf User-Accounts
+- [x] Erweiterte User-Parameter und Übersicht
+- [x] User-Verifizierung nach Einladung

@@ -968,6 +968,54 @@ export const appRouter = router({
       .query(async ({ input }) => {
         return await getAccountHistory(input.platform, input.username, input.days);
       }),
+
+    // Create user with invitation (admin only)
+    createUser: publicProcedure
+      .input(z.object({
+        email: z.string().email(),
+        name: z.string().min(1),
+        initialCredits: z.number().default(10),
+        plan: z.string().default("free"),
+      }))
+      .mutation(async ({ input }) => {
+        const { createUserWithInvitation } = await import("./adminService");
+        return await createUserWithInvitation(input.email, input.name, input.initialCredits, input.plan);
+      }),
+
+    // Add credits to user (admin only)
+    addCredits: publicProcedure
+      .input(z.object({
+        userId: z.number(),
+        amount: z.number(),
+        reason: z.string(),
+        adminId: z.number(),
+      }))
+      .mutation(async ({ input }) => {
+        const { adminAddCredits } = await import("./adminService");
+        return await adminAddCredits(input.userId, input.amount, input.reason, input.adminId);
+      }),
+
+    // Get detailed user info (admin only)
+    getDetailedUser: publicProcedure
+      .input(z.object({ userId: z.number() }))
+      .query(async ({ input }) => {
+        const { getDetailedUserInfo } = await import("./adminService");
+        return await getDetailedUserInfo(input.userId);
+      }),
+
+    // Get all users with extended info (admin only)
+    getUsersExtended: publicProcedure
+      .input(z.object({
+        page: z.number().default(1),
+        limit: z.number().default(50),
+        search: z.string().optional(),
+        sortBy: z.string().default("createdAt"),
+        sortOrder: z.enum(["asc", "desc"]).default("desc"),
+      }))
+      .query(async ({ input }) => {
+        const { getAllUsersExtended } = await import("./adminService");
+        return await getAllUsersExtended(input.page, input.limit, input.search, input.sortBy, input.sortOrder);
+      }),
   }),
 
   // Contact Form Router

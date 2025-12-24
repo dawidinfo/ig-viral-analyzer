@@ -69,6 +69,22 @@ export default function Admin() {
   const [trackingResult, setTrackingResult] = useState<{ totalAccounts: number; successful: number; failed: number } | null>(null);
   const [trackingPlatformFilter, setTrackingPlatformFilter] = useState<string>("all");
   const [trackingDaysFilter, setTrackingDaysFilter] = useState<number>(30);
+  
+  // New user creation state
+  const [createUserDialogOpen, setCreateUserDialogOpen] = useState(false);
+  const [newUserEmail, setNewUserEmail] = useState("");
+  const [newUserName, setNewUserName] = useState("");
+  const [newUserCredits, setNewUserCredits] = useState(10);
+  const [newUserPlan, setNewUserPlan] = useState("free");
+  
+  // Credits management state
+  const [creditsDialogOpen, setCreditsDialogOpen] = useState(false);
+  const [creditsAmount, setCreditsAmount] = useState(0);
+  const [creditsReason, setCreditsReason] = useState("");
+  
+  // User detail view state
+  const [detailUserId, setDetailUserId] = useState<number | null>(null);
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false);
 
   // Check if user is admin
   const { data: isAdmin, isLoading: checkingAdmin } = trpc.admin.isAdmin.useQuery(
@@ -182,6 +198,45 @@ export default function Admin() {
     },
     onError: (error) => {
       toast.error("Fehler beim Tracking: " + error.message);
+    },
+  });
+
+  // Create user mutation
+  const createUserMutation = trpc.admin.createUser.useMutation({
+    onSuccess: (data) => {
+      if (data.success) {
+        toast.success(`User erstellt und Einladung gesendet!`);
+        setCreateUserDialogOpen(false);
+        setNewUserEmail("");
+        setNewUserName("");
+        setNewUserCredits(10);
+        setNewUserPlan("free");
+        refetchUsers();
+      } else {
+        toast.error(data.error || "Fehler beim Erstellen");
+      }
+    },
+    onError: (error) => {
+      toast.error("Fehler: " + error.message);
+    },
+  });
+
+  // Add credits mutation
+  const addCreditsMutation = trpc.admin.addCredits.useMutation({
+    onSuccess: (data) => {
+      if (data.success) {
+        toast.success(`Credits aktualisiert! Neuer Stand: ${data.newBalance}`);
+        setCreditsDialogOpen(false);
+        setCreditsAmount(0);
+        setCreditsReason("");
+        setSelectedUser(null);
+        refetchUsers();
+      } else {
+        toast.error(data.error || "Fehler beim Aktualisieren");
+      }
+    },
+    onError: (error) => {
+      toast.error("Fehler: " + error.message);
     },
   });
 
@@ -420,6 +475,10 @@ export default function Admin() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <CardTitle>Benutzer-Verwaltung</CardTitle>
                   <div className="flex flex-wrap gap-2">
+                    <Button onClick={() => setCreateUserDialogOpen(true)} className="bg-gradient-to-r from-purple-500 to-pink-500">
+                      <Users className="h-4 w-4 mr-2" />
+                      Neuen User erstellen
+                    </Button>
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
@@ -503,6 +562,20 @@ export default function Admin() {
                             <Button
                               size="sm"
                               variant="ghost"
+                              title="Credits verwalten"
+                              onClick={() => {
+                                setSelectedUser(user);
+                                setCreditsAmount(0);
+                                setCreditsReason("");
+                                setCreditsDialogOpen(true);
+                              }}
+                            >
+                              <CreditCard className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              title="Rolle ändern"
                               onClick={() => {
                                 setSelectedUser(user);
                                 setNewRole(user.role);
@@ -1042,6 +1115,145 @@ export default function Admin() {
               disabled={!banReason}
             >
               Sperren
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Create User Dialog */}
+      <Dialog open={createUserDialogOpen} onOpenChange={setCreateUserDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Neuen User erstellen</DialogTitle>
+            <DialogDescription>
+              Erstelle einen neuen User und sende eine Einladungs-E-Mail
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">E-Mail *</label>
+              <Input
+                type="email"
+                placeholder="user@example.com"
+                value={newUserEmail}
+                onChange={(e) => setNewUserEmail(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Name *</label>
+              <Input
+                placeholder="Max Mustermann"
+                value={newUserName}
+                onChange={(e) => setNewUserName(e.target.value)}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Plan</label>
+                <Select value={newUserPlan} onValueChange={setNewUserPlan}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="free">Free</SelectItem>
+                    <SelectItem value="starter">Starter</SelectItem>
+                    <SelectItem value="pro">Pro</SelectItem>
+                    <SelectItem value="business">Business</SelectItem>
+                    <SelectItem value="enterprise">Enterprise</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Credits</label>
+                <Input
+                  type="number"
+                  value={newUserCredits}
+                  onChange={(e) => setNewUserCredits(Number(e.target.value))}
+                />
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCreateUserDialogOpen(false)}>
+              Abbrechen
+            </Button>
+            <Button
+              onClick={() => {
+                if (newUserEmail && newUserName) {
+                  createUserMutation.mutate({
+                    email: newUserEmail,
+                    name: newUserName,
+                    initialCredits: newUserCredits,
+                    plan: newUserPlan,
+                  });
+                } else {
+                  toast.error("E-Mail und Name sind erforderlich");
+                }
+              }}
+              disabled={createUserMutation.isPending}
+            >
+              {createUserMutation.isPending ? "Erstelle..." : "User erstellen & Einladung senden"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Credits Dialog */}
+      <Dialog open={creditsDialogOpen} onOpenChange={setCreditsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Credits verwalten</DialogTitle>
+            <DialogDescription>
+              Credits für {selectedUser?.name || selectedUser?.email || "diesen User"} anpassen
+              <br />
+              <span className="text-muted-foreground">Aktuell: {selectedUser?.credits || 0} Credits</span>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Anzahl Credits (positiv = hinzufügen, negativ = abziehen)</label>
+              <Input
+                type="number"
+                placeholder="z.B. 50 oder -10"
+                value={creditsAmount}
+                onChange={(e) => setCreditsAmount(Number(e.target.value))}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Grund *</label>
+              <Input
+                placeholder="z.B. Bonus für Feedback, Korrektur, etc."
+                value={creditsReason}
+                onChange={(e) => setCreditsReason(e.target.value)}
+              />
+            </div>
+            {creditsAmount !== 0 && (
+              <div className={`p-3 rounded-lg ${creditsAmount > 0 ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
+                Neuer Stand: {(selectedUser?.credits || 0) + creditsAmount} Credits
+                ({creditsAmount > 0 ? '+' : ''}{creditsAmount})
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCreditsDialogOpen(false)}>
+              Abbrechen
+            </Button>
+            <Button
+              onClick={() => {
+                if (selectedUser && creditsReason) {
+                  addCreditsMutation.mutate({
+                    userId: selectedUser.id,
+                    amount: creditsAmount,
+                    reason: creditsReason,
+                    adminId: user?.id || 0,
+                  });
+                } else {
+                  toast.error("Bitte Grund angeben");
+                }
+              }}
+              disabled={addCreditsMutation.isPending || !creditsReason}
+            >
+              {addCreditsMutation.isPending ? "Speichere..." : "Credits aktualisieren"}
             </Button>
           </DialogFooter>
         </DialogContent>

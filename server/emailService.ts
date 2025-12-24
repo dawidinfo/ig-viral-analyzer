@@ -24,7 +24,8 @@ export type NotificationType =
   | "account_banned"
   | "high_usage"
   | "error"
-  | "contact";
+  | "contact"
+  | "viral_alert";
 
 interface NotificationPayload {
   type: NotificationType;
@@ -86,6 +87,7 @@ function createEmailTemplate(title: string, content: string, type: NotificationT
     high_usage: "#3B82F6",
     error: "#EF4444",
     contact: "#06B6D4",
+    viral_alert: "#EC4899",
   };
 
   const typeEmojis: Record<NotificationType, string> = {
@@ -96,6 +98,7 @@ function createEmailTemplate(title: string, content: string, type: NotificationT
     high_usage: "📊",
     error: "❌",
     contact: "📧",
+    viral_alert: "🔥",
   };
 
   return `
@@ -349,6 +352,7 @@ export function getNotificationStats(): Record<NotificationType, number> {
     high_usage: 0,
     error: 0,
     contact: 0,
+    viral_alert: 0,
   };
 
   for (const notification of notificationQueue) {
@@ -587,4 +591,149 @@ Du erhältst ab jetzt automatische Benachrichtigungen bei:
   } catch (error: any) {
     return { success: false, error: error.message || "Unknown error" };
   }
+}
+
+
+/**
+ * Send viral alert email to user
+ * Triggered when a saved account shows significant growth
+ */
+export async function sendViralAlert(
+  userEmail: string,
+  username: string,
+  data: {
+    currentFollowers: number;
+    previousFollowers: number;
+    growthPercent: number;
+    viralScore: number;
+    platform: 'instagram' | 'tiktok' | 'youtube';
+  }
+): Promise<boolean> {
+  const growth = data.currentFollowers - data.previousFollowers;
+  const isViral = data.growthPercent > 10 || growth > 10000;
+  
+  const subject = isViral 
+    ? `🔥 @${username} geht viral! +${growth.toLocaleString()} Follower`
+    : `📈 @${username} wächst stark: +${data.growthPercent.toFixed(1)}%`;
+  
+  const content = `
+<div style="text-align: center; margin-bottom: 24px;">
+  <div style="font-size: 48px; margin-bottom: 8px;">${isViral ? '🔥' : '📈'}</div>
+  <h2 style="margin: 0; font-size: 24px;">@${username}</h2>
+  <p style="color: #888; margin: 8px 0 0 0;">${data.platform.charAt(0).toUpperCase() + data.platform.slice(1)}</p>
+</div>
+
+<div style="background: linear-gradient(135deg, #EC4899 0%, #8B5CF6 100%); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+  <div style="display: flex; justify-content: space-between; text-align: center;">
+    <div>
+      <p style="color: rgba(255,255,255,0.7); font-size: 12px; margin: 0;">Vorher</p>
+      <p style="color: white; font-size: 24px; font-weight: bold; margin: 4px 0 0 0;">${data.previousFollowers.toLocaleString()}</p>
+    </div>
+    <div>
+      <p style="color: rgba(255,255,255,0.7); font-size: 12px; margin: 0;">Jetzt</p>
+      <p style="color: white; font-size: 24px; font-weight: bold; margin: 4px 0 0 0;">${data.currentFollowers.toLocaleString()}</p>
+    </div>
+    <div>
+      <p style="color: rgba(255,255,255,0.7); font-size: 12px; margin: 0;">Wachstum</p>
+      <p style="color: #10B981; font-size: 24px; font-weight: bold; margin: 4px 0 0 0;">+${data.growthPercent.toFixed(1)}%</p>
+    </div>
+  </div>
+</div>
+
+<div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; margin-bottom: 24px;">
+  <p style="margin: 0 0 8px 0; font-weight: 600;">Was bedeutet das?</p>
+  <p style="margin: 0; color: #888; font-size: 14px;">
+    ${isViral 
+      ? `@${username} zeigt starkes virales Wachstum! Jetzt ist der perfekte Zeitpunkt, um den Content zu analysieren und die Erfolgsfaktoren zu verstehen.`
+      : `@${username} wächst überdurchschnittlich. Behalte den Account im Auge und analysiere die neuesten Posts.`
+    }
+  </p>
+</div>
+
+<div style="text-align: center;">
+  <a href="https://reelspy.ai/analysis?username=${username}" 
+     style="display: inline-block; background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+    Jetzt analysieren →
+  </a>
+</div>
+`;
+
+  return sendEmail(userEmail, subject, createEmailTemplate(
+    isViral ? "Viraler Account erkannt!" : "Starkes Wachstum erkannt",
+    content,
+    "viral_alert"
+  ));
+}
+
+/**
+ * Check saved accounts for viral growth and send alerts
+ * Should be called by a scheduled job
+ */
+export async function checkViralGrowthAlerts(): Promise<{ checked: number; alerts: number }> {
+  // This function would be called by a cron job to check all saved accounts
+  // and send alerts when significant growth is detected
+  
+  // Implementation would:
+  // 1. Get all users with saved accounts
+  // 2. For each saved account, compare current followers with last snapshot
+  // 3. If growth > threshold, send viral alert email
+  
+  console.log("[ViralAlerts] Checking for viral growth...");
+  
+  // Placeholder - actual implementation would query the database
+  return { checked: 0, alerts: 0 };
+}
+
+
+/**
+ * Send invitation email to a new user created by admin
+ */
+export async function sendUserInvitation(
+  email: string,
+  name: string
+): Promise<boolean> {
+  const subject = "🎉 Du wurdest zu ReelSpy.ai eingeladen!";
+  
+  const content = `
+<div style="text-align: center; margin-bottom: 24px;">
+  <div style="font-size: 48px; margin-bottom: 8px;">🎉</div>
+  <h2 style="margin: 0; font-size: 24px;">Willkommen bei ReelSpy.ai!</h2>
+</div>
+
+<p style="font-size: 16px; line-height: 1.6;">
+  Hallo ${name || "Content Creator"},<br><br>
+  Du wurdest von einem Administrator zu <strong>ReelSpy.ai</strong> eingeladen – der KI-gestützten Plattform für Instagram-Analyse!
+</p>
+
+<div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 12px; padding: 20px; margin: 24px 0; text-align: center;">
+  <div style="font-size: 32px; margin-bottom: 10px;">🎁</div>
+  <p style="color: #8B5CF6; font-size: 18px; font-weight: 600; margin: 0;">Dein Account ist bereit!</p>
+  <p style="color: #888; font-size: 14px; margin: 8px 0 0 0;">Klicke unten um dich einzuloggen und loszulegen.</p>
+</div>
+
+<div style="text-align: center; margin: 24px 0;">
+  <a href="https://reelspy.ai/dashboard" 
+     style="display: inline-block; background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%); color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">
+    Jetzt einloggen →
+  </a>
+</div>
+
+<p style="font-size: 14px; color: #888; line-height: 1.6;">
+  <strong>Was dich erwartet:</strong><br>
+  • KI-Analyse von Instagram-Accounts mit 3.000+ Parametern<br>
+  • Viral Score & HAPSS-Framework Auswertung<br>
+  • Follower-Wachstum & Engagement-Tracking<br>
+  • Konkurrenz-Vergleich & Benchmarking
+</p>
+
+<p style="font-size: 14px; color: #888; margin-top: 24px;">
+  Bei Fragen erreichst du uns unter <a href="mailto:support@reelspy.ai" style="color: #8B5CF6;">support@reelspy.ai</a>
+</p>
+`;
+
+  return sendEmail(email, subject, createEmailTemplate(
+    "Du wurdest eingeladen!",
+    content,
+    "new_signup"
+  ));
 }

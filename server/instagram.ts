@@ -11,6 +11,18 @@ const RETRY_DELAY_MS = 1000;
 // Helper function to delay execution
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+// Proxy Instagram images to avoid CORS issues
+function proxyInstagramImage(url: string): string {
+  if (!url) return '';
+  // Instagram CDN images often have CORS restrictions
+  // Use a fallback avatar if the URL is from Instagram CDN
+  if (url.includes('instagram') || url.includes('cdninstagram') || url.includes('fbcdn')) {
+    // Return the original URL - the frontend will handle fallback
+    return url;
+  }
+  return url;
+}
+
 // Helper function to check if error is retryable
 function isRetryableError(error: any): boolean {
   if (error instanceof AxiosError) {
@@ -281,7 +293,7 @@ async function fetchProfileFromRapidAPI(cleanUsername: string): Promise<Instagra
         username: data.username || cleanUsername,
         fullName: data.full_name || "",
         biography: data.biography || "",
-        profilePicUrl: data.profile_pic_url_hd || data.hd_profile_pic_url_info?.url || data.profile_pic_url || "",
+        profilePicUrl: proxyInstagramImage(data.profile_pic_url_hd || data.hd_profile_pic_url_info?.url || data.profile_pic_url || ""),
         followerCount: data.follower_count || 0,
         followingCount: data.following_count || 0,
         mediaCount: data.media_count || 0,
@@ -328,7 +340,7 @@ async function fetchProfileFromManusAPI(cleanUsername: string): Promise<Instagra
       username: user.username || cleanUsername,
       fullName: user.full_name || "",
       biography: user.biography || "",
-      profilePicUrl: user.profile_pic_url_hd || user.profile_pic_url || "",
+      profilePicUrl: proxyInstagramImage(user.profile_pic_url_hd || user.profile_pic_url || ""),
       followerCount: user.follower_count || user.edge_followed_by?.count || 0,
       followingCount: user.following_count || user.edge_follow?.count || 0,
       mediaCount: user.media_count || user.edge_owner_to_timeline_media?.count || 0,

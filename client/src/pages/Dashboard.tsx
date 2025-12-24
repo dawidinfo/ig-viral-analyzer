@@ -197,9 +197,9 @@ export default function Dashboard() {
 
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
-        <div className="container flex items-center justify-between h-16">
+        <div className="container flex items-center justify-between h-14 sm:h-16 px-3 sm:px-4">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => setLocation("/")}>
-            <img src="/logo.svg" alt="ReelSpy.ai" className="h-8 w-auto" />
+            <img src="/logo.svg" alt="ReelSpy.ai" className="h-6 sm:h-8 w-auto" />
           </div>
 
           <div className="flex items-center gap-4">
@@ -262,11 +262,11 @@ export default function Dashboard() {
       </header>
 
       {/* Main Content */}
-      <main className="pt-24 pb-12 relative z-10">
+      <main className="pt-20 sm:pt-24 pb-8 sm:pb-12 relative z-10">
         <div className="container">
           {/* Welcome Section */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">
+            <h1 className="text-xl sm:text-3xl font-bold mb-2">
               Willkommen zurück, {user?.name?.split(" ")[0] || "User"}!
             </h1>
             <p className="text-muted-foreground">
@@ -276,37 +276,40 @@ export default function Dashboard() {
 
           {/* Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="glass-card p-1">
-              <TabsTrigger value="overview" className="data-[state=active]:bg-primary/20">
-                <LayoutDashboard className="w-4 h-4 mr-2" />
-                Übersicht
+            <TabsList className="glass-card p-1 overflow-x-auto flex-nowrap dashboard-tabs">
+              <TabsTrigger value="overview" className="data-[state=active]:bg-primary/20 whitespace-nowrap text-xs sm:text-sm px-2 sm:px-3">
+                <LayoutDashboard className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Übersicht</span>
+                <span className="sm:hidden">Übersicht</span>
               </TabsTrigger>
-              <TabsTrigger value="analyses" className="data-[state=active]:bg-primary/20">
-                <Bookmark className="w-4 h-4 mr-2" />
-                Gespeicherte Analysen
+              <TabsTrigger value="analyses" className="data-[state=active]:bg-primary/20 whitespace-nowrap text-xs sm:text-sm px-2 sm:px-3">
+                <Bookmark className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Gespeicherte Analysen</span>
+                <span className="sm:hidden">Analysen</span>
               </TabsTrigger>
-              <TabsTrigger value="invoices" className="data-[state=active]:bg-primary/20">
-                <Receipt className="w-4 h-4 mr-2" />
+              <TabsTrigger value="invoices" className="data-[state=active]:bg-primary/20 whitespace-nowrap text-xs sm:text-sm px-2 sm:px-3">
+                <Receipt className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                 Rechnungen
               </TabsTrigger>
-              <TabsTrigger value="notes" className="data-[state=active]:bg-primary/20">
-                <StickyNote className="w-4 h-4 mr-2" />
+              <TabsTrigger value="notes" className="data-[state=active]:bg-primary/20 whitespace-nowrap text-xs sm:text-sm px-2 sm:px-3">
+                <StickyNote className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                 Notizen
               </TabsTrigger>
-              <TabsTrigger value="affiliate" className="data-[state=active]:bg-primary/20">
-                <Share2 className="w-4 h-4 mr-2" />
+              <TabsTrigger value="affiliate" className="data-[state=active]:bg-primary/20 whitespace-nowrap text-xs sm:text-sm px-2 sm:px-3">
+                <Share2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                 Affiliate
               </TabsTrigger>
-              <TabsTrigger value="settings" className="data-[state=active]:bg-primary/20">
-                <Settings className="w-4 h-4 mr-2" />
-                Einstellungen
+              <TabsTrigger value="settings" className="data-[state=active]:bg-primary/20 whitespace-nowrap text-xs sm:text-sm px-2 sm:px-3">
+                <Settings className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Einstellungen</span>
+                <span className="sm:hidden">Settings</span>
               </TabsTrigger>
             </TabsList>
 
             {/* Overview Tab */}
             <TabsContent value="overview" className="space-y-6">
               {/* Plan & Stats Row */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 dashboard-grid">
                 {/* Current Plan Card */}
                 <Card className="glass-card col-span-1">
                   <CardHeader className="pb-2">

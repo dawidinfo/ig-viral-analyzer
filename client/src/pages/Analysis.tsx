@@ -423,21 +423,19 @@ export default function Analysis() {
           >
             {/* Profile Header */}
             <div className="glass-card rounded-2xl p-8">
-              <div className="flex flex-col md:flex-row items-center gap-8">
+              <div className="flex flex-col md:flex-row items-center gap-4 sm:gap-8 profile-header">
                 {/* Profile Picture */}
                 <div className="relative">
-                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary to-secondary p-1">
-                    {analysisData.profile.profilePicUrl ? (
-                      <img 
-                        src={analysisData.profile.profilePicUrl} 
+                  <div className="w-20 h-20 sm:w-32 sm:h-32 rounded-full bg-gradient-to-br from-primary to-secondary p-1 profile-avatar">
+                    <img 
+                        src={analysisData.profile.profilePicUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(analysisData.profile.username)}&size=200&background=8B5CF6&color=fff&bold=true`} 
                         alt={analysisData.profile.username}
-                        className="w-full h-full rounded-full object-cover"
+                        className="w-full h-full rounded-full object-cover bg-muted"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(analysisData.profile.username)}&size=200&background=8B5CF6&color=fff&bold=true`;
+                        }}
                       />
-                    ) : (
-                      <div className="w-full h-full rounded-full bg-muted flex items-center justify-center">
-                        <Users className="w-12 h-12 text-muted-foreground" />
-                      </div>
-                    )}
                   </div>
                   {analysisData.profile.isVerified && (
                     <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
@@ -449,7 +447,7 @@ export default function Analysis() {
                 {/* Profile Info */}
                 <div className="flex-1 text-center md:text-left">
                   <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
-                    <h1 className="text-2xl font-bold">@{analysisData.profile.username}</h1>
+                    <h1 className="text-lg sm:text-2xl font-bold">@{analysisData.profile.username}</h1>
                     {analysisData.isDemo && (
                       <Badge variant="outline" className="bg-amber-500/20 border-amber-500/30 text-amber-400">
                         Demo-Daten
@@ -461,13 +459,13 @@ export default function Analysis() {
                   )}
                   
                   {/* Quick Stats */}
-                  <div className="flex flex-wrap justify-center md:justify-start gap-6">
+                  <div className="flex flex-wrap justify-center md:justify-start gap-3 sm:gap-6 profile-stats">
                     <div className="text-center">
-                      <p className="text-2xl font-bold">{formatNumber(analysisData.profile.followerCount)}</p>
+                      <p className="text-lg sm:text-2xl font-bold">{formatNumber(analysisData.profile.followerCount)}</p>
                       <p className="text-sm text-muted-foreground">Follower</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-2xl font-bold">{formatNumber(analysisData.profile.followingCount)}</p>
+                      <p className="text-lg sm:text-2xl font-bold">{formatNumber(analysisData.profile.followingCount)}</p>
                       <p className="text-sm text-muted-foreground">Following</p>
                     </div>
                     <div className="text-center">
@@ -552,7 +550,7 @@ export default function Analysis() {
                     <MessageSquare className="w-6 h-6 text-blue-500" />
                     <span className="text-xs text-muted-foreground">Ø pro Post</span>
                   </div>
-                  <p className="text-4xl font-bold">{formatNumber(analysisData.metrics.avgComments)}</p>
+                  <p className="text-lg sm:text-2xl font-bold">{formatNumber(analysisData.profile.mediaCount)}</p>
                   <p className="text-sm text-muted-foreground mt-1">Kommentare</p>
                 </div>
 
@@ -615,10 +613,8 @@ export default function Analysis() {
               <FollowerGrowthChart username={analysisData.profile.username} />
 
               {/* Daily Growth Chart (Balkendiagramm) */}
-              <DailyGrowthChart 
-                data={generateDemoGrowthData(90)} 
-                username={analysisData.profile.username} 
-              />
+              {/* Daily Growth Chart - nutzt die gleichen Daten wie FollowerGrowthChart */}
+              {/* Wird jetzt im FollowerGrowthChart integriert angezeigt */}
 
               {/* Engagement Chart */}
               <div className="glass-card rounded-xl p-6">

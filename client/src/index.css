@@ -449,3 +449,303 @@ p {
     background: oklch(0.35 0.02 260);
   }
 }
+
+
+/* ==================== */
+/* MOBILE OPTIMIZATIONS */
+/* ==================== */
+
+/* Mobile Hero Section */
+@media (max-width: 768px) {
+  /* Hero Headline */
+  .hero-headline {
+    font-size: 2.5rem !important;
+    line-height: 1.1 !important;
+  }
+  
+  /* Hero Input - Stack vertically on mobile */
+  .hero-input-wrapper {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+    padding: 0.75rem !important;
+  }
+  
+  .hero-input-wrapper .instagram-icon {
+    display: none !important;
+  }
+  
+  .hero-input-wrapper input {
+    height: 3rem !important;
+    font-size: 1rem !important;
+  }
+  
+  .hero-input-wrapper button {
+    width: 100% !important;
+    height: 3rem !important;
+  }
+  
+  /* Stats Grid */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.75rem !important;
+  }
+  
+  .stats-grid .stat-card {
+    padding: 1rem !important;
+  }
+  
+  .stats-grid .stat-value {
+    font-size: 1.5rem !important;
+  }
+  
+  /* Glass Cards */
+  .glass-card {
+    padding: 1rem !important;
+    border-radius: 0.75rem !important;
+  }
+  
+  /* Section Spacing */
+  section {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+  }
+  
+  /* Container Padding */
+  .container {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  /* Feature Cards */
+  .feature-card {
+    padding: 1.25rem !important;
+  }
+  
+  /* Pricing Cards */
+  .pricing-card {
+    padding: 1.5rem !important;
+  }
+  
+  /* Trust Badges - Wrap nicely */
+  .trust-badges {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+    align-items: flex-start !important;
+  }
+  
+  /* FAQ Items */
+  .faq-item {
+    padding: 1rem !important;
+  }
+  
+  /* Footer */
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 2rem !important;
+  }
+}
+
+/* Mobile Dashboard */
+@media (max-width: 768px) {
+  /* Dashboard Header */
+  .dashboard-header {
+    flex-direction: column !important;
+    gap: 1rem !important;
+    padding: 1rem !important;
+  }
+  
+  .dashboard-header .search-input {
+    width: 100% !important;
+  }
+  
+  /* Dashboard Tabs - Horizontal Scroll */
+  .dashboard-tabs {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    padding-bottom: 0.5rem !important;
+  }
+  
+  .dashboard-tabs::-webkit-scrollbar {
+    display: none !important;
+  }
+  
+  .dashboard-tabs button {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.875rem !important;
+  }
+  
+  /* Dashboard Cards Grid */
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+  
+  /* Quick Stats */
+  .quick-stats {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.75rem !important;
+  }
+  
+  .quick-stats .stat-item {
+    padding: 0.75rem !important;
+  }
+  
+  /* Usage Limits */
+  .usage-limits {
+    gap: 0.75rem !important;
+  }
+  
+  /* Top Winners */
+  .top-winners {
+    max-height: 300px !important;
+    overflow-y: auto !important;
+  }
+  
+  .winner-item {
+    padding: 0.75rem !important;
+    gap: 0.5rem !important;
+  }
+}
+
+/* Mobile Analysis Page */
+@media (max-width: 768px) {
+  /* Profile Header */
+  .profile-header {
+    flex-direction: column !important;
+    text-align: center !important;
+    gap: 1rem !important;
+  }
+  
+  .profile-avatar {
+    width: 80px !important;
+    height: 80px !important;
+  }
+  
+  .profile-stats {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 1rem !important;
+  }
+  
+  .profile-stat {
+    min-width: 80px !important;
+  }
+  
+  /* Viral Score Circle */
+  .viral-score-circle {
+    width: 100px !important;
+    height: 100px !important;
+  }
+  
+  .viral-score-value {
+    font-size: 2rem !important;
+  }
+  
+  /* Analysis Cards */
+  .analysis-card {
+    padding: 1rem !important;
+  }
+  
+  /* AI Scores Grid */
+  .ai-scores-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.75rem !important;
+  }
+  
+  .ai-score-item {
+    padding: 1rem !important;
+  }
+  
+  .ai-score-value {
+    font-size: 1.5rem !important;
+  }
+  
+  /* Charts */
+  .chart-container {
+    height: 200px !important;
+  }
+  
+  /* Analysis Tabs */
+  .analysis-tabs {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+  }
+  
+  .analysis-tabs::-webkit-scrollbar {
+    display: none !important;
+  }
+  
+  /* Framework Cards */
+  .framework-card {
+    padding: 1rem !important;
+  }
+  
+  /* Transcription */
+  .transcription-text {
+    font-size: 0.875rem !important;
+    line-height: 1.5 !important;
+  }
+}
+
+/* Small Mobile (< 480px) */
+@media (max-width: 480px) {
+  /* Even smaller hero */
+  .hero-headline {
+    font-size: 2rem !important;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem !important;
+  }
+  
+  /* Single column stats */
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Smaller buttons */
+  .btn-gradient {
+    padding: 0.75rem 1rem !important;
+    font-size: 0.875rem !important;
+  }
+  
+  /* AI Scores - Single column */
+  .ai-scores-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Quick Stats - Single column */
+  .quick-stats {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Touch-friendly tap targets */
+@media (max-width: 768px) {
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Larger touch targets for icons */
+  .icon-button {
+    padding: 0.75rem !important;
+  }
+}
+
+/* Prevent horizontal scroll */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Fix for iOS Safari */
+@supports (-webkit-touch-callout: none) {
+  .fixed {
+    position: -webkit-sticky;
+  }
+}
