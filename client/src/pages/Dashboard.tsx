@@ -84,11 +84,18 @@ export default function Dashboard() {
   const [editName, setEditName] = useState(user?.name || "");
   const [editEmail, setEditEmail] = useState(user?.email || "");
   const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [showAllTop50, setShowAllTop50] = useState(false);
 
   // Fetch dashboard data
   const { data: dashboardData, isLoading, refetch } = trpc.dashboard.getData.useQuery(
     { userId: user?.id ?? 0 },
     { enabled: !!user?.id }
+  );
+
+  // Fetch top growing accounts from API
+  const { data: topGrowingAccounts } = trpc.admin.getTopGrowing.useQuery(
+    { days: 30, limit: 50 },
+    { enabled: isAuthenticated }
   );
 
   // Mutations
@@ -617,23 +624,33 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                    {[
-                      { rank: 1, username: "cristiano", growth: "+2.1M", followers: "669M", category: "Sports", initials: "CR" },
-                      { rank: 2, username: "leomessi", growth: "+1.8M", followers: "504M", category: "Sports", initials: "LM" },
-                      { rank: 3, username: "kyliejenner", growth: "+1.2M", followers: "399M", category: "Lifestyle", initials: "KJ" },
-                      { rank: 4, username: "selenagomez", growth: "+980K", followers: "429M", category: "Entertainment", initials: "SG" },
-                      { rank: 5, username: "therock", growth: "+850K", followers: "395M", category: "Entertainment", initials: "TR" },
-                      { rank: 6, username: "arianagrande", growth: "+720K", followers: "380M", category: "Music", initials: "AG" },
-                      { rank: 7, username: "kimkardashian", growth: "+680K", followers: "364M", category: "Lifestyle", initials: "KK" },
-                      { rank: 8, username: "beyonce", growth: "+620K", followers: "319M", category: "Music", initials: "BE" },
-                      { rank: 9, username: "khloekardashian", growth: "+580K", followers: "311M", category: "Lifestyle", initials: "KK" },
-                      { rank: 10, username: "nike", growth: "+540K", followers: "306M", category: "Brand", initials: "NK" },
-                    ].map((account) => (
+                    {(topGrowingAccounts && topGrowingAccounts.length > 0 
+                      ? topGrowingAccounts.slice(0, showAllTop50 ? 50 : 10).map((acc, idx) => ({
+                          rank: idx + 1,
+                          username: acc.username,
+                          growth: acc.growth >= 1000000 ? `+${(acc.growth / 1000000).toFixed(1)}M` : acc.growth >= 1000 ? `+${(acc.growth / 1000).toFixed(0)}K` : `+${acc.growth}`,
+                          followers: acc.currentFollowers >= 1000000 ? `${(acc.currentFollowers / 1000000).toFixed(0)}M` : acc.currentFollowers >= 1000 ? `${(acc.currentFollowers / 1000).toFixed(0)}K` : `${acc.currentFollowers}`,
+                          category: acc.platform === 'instagram' ? 'Instagram' : acc.platform === 'tiktok' ? 'TikTok' : 'YouTube',
+                          initials: acc.username.slice(0, 2).toUpperCase(),
+                        }))
+                      : [
+                          { rank: 1, username: "cristiano", growth: "+2.1M", followers: "669M", category: "Sports", initials: "CR" },
+                          { rank: 2, username: "leomessi", growth: "+1.8M", followers: "504M", category: "Sports", initials: "LM" },
+                          { rank: 3, username: "kyliejenner", growth: "+1.2M", followers: "399M", category: "Lifestyle", initials: "KJ" },
+                          { rank: 4, username: "selenagomez", growth: "+980K", followers: "429M", category: "Entertainment", initials: "SG" },
+                          { rank: 5, username: "therock", growth: "+850K", followers: "395M", category: "Entertainment", initials: "TR" },
+                          { rank: 6, username: "arianagrande", growth: "+720K", followers: "380M", category: "Music", initials: "AG" },
+                          { rank: 7, username: "kimkardashian", growth: "+680K", followers: "364M", category: "Lifestyle", initials: "KK" },
+                          { rank: 8, username: "beyonce", growth: "+620K", followers: "319M", category: "Music", initials: "BE" },
+                          { rank: 9, username: "khloekardashian", growth: "+580K", followers: "311M", category: "Lifestyle", initials: "KK" },
+                          { rank: 10, username: "nike", growth: "+540K", followers: "306M", category: "Brand", initials: "NK" },
+                        ]
+                    ).map((account) => (
                       <motion.div
                         key={account.rank}
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: account.rank * 0.05 }}
+                        transition={{ delay: account.rank * 0.02 }}
                         className="p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-all cursor-pointer group border border-border/50 hover:border-orange-500/30"
                         onClick={() => setLocation(`/analysis?username=${account.username}`)}
                       >
@@ -670,8 +687,12 @@ export default function Dashboard() {
                     ))}
                   </div>
                   <div className="mt-6 text-center">
-                    <Button variant="outline" size="sm" onClick={() => toast.info("Vollständige Top 50 Liste kommt bald!")}>
-                      Alle 50 anzeigen
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => setShowAllTop50(!showAllTop50)}
+                    >
+                      {showAllTop50 ? "Weniger anzeigen" : "Alle 50 anzeigen"}
                     </Button>
                   </div>
                 </CardContent>

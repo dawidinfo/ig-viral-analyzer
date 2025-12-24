@@ -623,3 +623,14 @@
 
 ## Bug: Login 404 (24.12.2024)
 - [x] /api/auth/login 404-Fehler behoben - Dashboard.tsx verwendete falsche lokale getLoginUrl Funktion
+
+## Dashboard Letzte Analysen Links (24.12.2024)
+- [ ] Letzte Analysen in der Übersicht als klickbare Links zur Analyse-Seite
+
+## Top 50 Liste im Hintergrund laden (24.12.2024)
+- [x] Top 50 Liste lädt jetzt aus API (admin.getTopGrowing)
+- [x] Fallback auf statische Daten wenn API leer
+- [x] "Alle 50 anzeigen" Button togglet zwischen 10 und 50 Einträgen
+
+## SEO noindex für Firmendaten (24.12.2024)
+- [x] noindex, nofollow Meta-Tag hinzugefügt - Suchmaschinen indexieren die Seite nicht mehr
