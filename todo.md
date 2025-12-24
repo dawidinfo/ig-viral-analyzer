@@ -643,3 +643,8 @@
 - [x] "Meinen Account analysieren" CTA-Button - öffnet Analyse für eigenen Account
 - [x] "Meine Notizen ansehen" Button - Link zum Dashboard Notizen-Tab
 - [x] "Dein nächster Schritt" Sektion mit 5-Schritte-Anleitung
+
+## Pricing Toggle Monatlich/Jährlich (24.12.2024)
+- [x] Toggle-Switch zwischen monatlich und jährlich verbessert
+- [x] Prominentes Rabatt-Banner mit Animation hinzugefügt
+- [x] Preise dynamisch basierend auf Auswahl anzeigen

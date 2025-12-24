@@ -610,24 +610,47 @@ export default function Pricing() {
             </p>
 
             {/* Billing Toggle */}
-            <div className="inline-flex items-center gap-4 p-1 rounded-full bg-muted">
-              <button
-                onClick={() => setIsYearly(false)}
-                className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                  !isYearly ? 'bg-background shadow-sm' : 'text-muted-foreground'
-                }`}
-              >
-                Monatlich
-              </button>
-              <button
-                onClick={() => setIsYearly(true)}
-                className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                  isYearly ? 'bg-background shadow-sm' : 'text-muted-foreground'
-                }`}
-              >
-                Jährlich
-                <Badge className="ml-2 bg-emerald-500/20 text-emerald-500 text-xs">-20%</Badge>
-              </button>
+            <div className="relative inline-flex flex-col items-center gap-3">
+              {/* Rabatt-Banner */}
+              <div className="absolute -top-8 left-1/2 -translate-x-1/2">
+                <Badge className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white border-0 shadow-lg animate-pulse">
+                  🎉 Spare 20% bei jährlicher Zahlung
+                </Badge>
+              </div>
+              
+              <div className="flex items-center gap-2 p-1.5 rounded-full bg-muted/80 backdrop-blur-sm border border-border/50 shadow-lg">
+                <button
+                  onClick={() => setIsYearly(false)}
+                  className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
+                    !isYearly 
+                      ? 'bg-gradient-to-r from-violet-500 to-purple-500 text-white shadow-md' 
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  Monatlich
+                </button>
+                <button
+                  onClick={() => setIsYearly(true)}
+                  className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 flex items-center gap-2 ${
+                    isYearly 
+                      ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-white shadow-md' 
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  Jährlich
+                  {!isYearly && (
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-500 text-xs font-bold">
+                      -20%
+                    </span>
+                  )}
+                </button>
+              </div>
+              
+              {isYearly && (
+                <p className="text-sm text-emerald-500 font-medium">
+                  ✓ Jährliche Abrechnung aktiv - Du sparst bei jedem Plan!
+                </p>
+              )}
             </div>
           </motion.div>
 
