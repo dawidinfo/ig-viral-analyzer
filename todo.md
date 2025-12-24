@@ -588,3 +588,7 @@
 - [x] Suchfeld: Instagram-Logo im mobilen Suchfeld hinzugefügt (w-9 h-9)
 - [x] Suchfeld: Schlanker gemacht (Input und Button inline, h-10)
 - [x] Checkpunkte: Layout auf Mobile gefixed (horizontal, gap-3, whitespace-nowrap)
+
+## Mobile Suchfeld Fix (24.12.2024 - v6)
+- [x] Suchfeld auf Mobile: Gleiche Darstellung wie Desktop (IG-Logo, Input, Button inline in einer Zeile)
+- [x] Header-Abstand: Reduziert von pt-20 auf pt-16 für weniger leeren Raum
