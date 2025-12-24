@@ -25,3 +25,14 @@ Die Top 50 Winner zeigen jetzt farbcodierte Initialen-Kreise basierend auf der K
 - Button-Text "Analysieren" → "KI-Analyse" in allen Sprachen (DE, EN, FR, ES)
 - Mobile Dashboard-Tabs mit horizontalem Scrolling
 - SEO-Optimierung: Titel auf 64 Zeichen, Keywords auf 5 reduziert
+
+## Popup Glow-Effekt - Implementiert
+
+Das "Raum für Verbesserung" Popup wurde mit einem deutlichen Glow-Effekt versehen:
+
+- **Sehr starker lila Glow-Effekt** mit mehreren Schichten (box-shadow)
+- **Animierter pulsierender Effekt** (animate-pulse-glow)
+- **Deutlicher 2px Rand** in Lila
+- **Gradient-Hintergrund** für bessere Sichtbarkeit vom Hintergrund
+
+Der Effekt ist im Live-Browser deutlich sichtbar mit dem pulsierenden Glow.

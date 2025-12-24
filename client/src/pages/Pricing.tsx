@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import React from "react";
 import { GlobalFooter } from "@/components/GlobalFooter";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -901,9 +902,9 @@ export default function Pricing() {
                 </thead>
                 <tbody>
                   {featureCategories.map((category, catIndex) => (
-                    <>
+                    <React.Fragment key={`category-${catIndex}`}>
                       {/* Category Header */}
-                      <tr key={`cat-${catIndex}`} className="bg-muted/30">
+                      <tr className="bg-muted/30">
                         <td colSpan={6} className="py-4 px-4">
                           <div className="flex items-center gap-2 font-semibold">
                             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500/20 to-purple-500/20 flex items-center justify-center text-violet-500">
@@ -931,7 +932,7 @@ export default function Pricing() {
                           <td className="text-center py-4 px-2">{getTierValue(feature.tiers.enterprise)}</td>
                         </tr>
                       ))}
-                    </>
+                    </React.Fragment>
                   ))}
                 </tbody>
               </table>

@@ -816,3 +816,9 @@
 ## Affiliate Share Options Fix
 - [x] Facebook Share-Button zum Affiliate-Bereich hinzufügen
 - [x] Instagram Share-Button zum Affiliate-Bereich hinzufügen
+
+## Popup Styling Fix
+- [x] "Raum für Verbesserung" Popup mit deutlichem Rand oder Glow-Effekt hervorheben
+
+## Bug Fix
+- [x] React Key-Fehler auf Pricing-Seite beheben
