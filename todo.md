@@ -648,3 +648,14 @@
 - [x] Toggle-Switch zwischen monatlich und jährlich verbessert
 - [x] Prominentes Rabatt-Banner mit Animation hinzugefügt
 - [x] Preise dynamisch basierend auf Auswahl anzeigen
+
+## Bug Fix: 404 bei Animation-Klick (24.12.2024)
+- [x] 404-Fehler bei Klick auf HeroDemo Animation beheben
+- [x] Route /analysis/:username hinzugefügt
+- [x] Analysis.tsx unterstützt jetzt beide URL-Formate
+
+## Reel Performance Overlay (24.12.2024)
+- [x] Views und Likes direkt auf Reel-Thumbnails anzeigen (immer sichtbar)
+- [x] Permanentes Overlay am unteren Rand der Thumbnails
+- [x] Engagement-Rate als Prozent angezeigt
+- [x] Hover-Overlay für mehr Details

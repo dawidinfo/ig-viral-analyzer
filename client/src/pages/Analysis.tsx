@@ -54,7 +54,7 @@ import PostingTimeAnalysis from "@/components/PostingTimeAnalysis";
 import { DailyGrowthChart, generateDemoGrowthData } from "@/components/DailyGrowthChart";
 import { FeatureTooltip, tooltips, InfoTooltip } from "@/components/FeatureTooltip";
 import { generateAnalysisPDF } from "@/lib/pdfExport";
-import { useLocation, useSearch } from "wouter";
+import { useLocation, useSearch, useRoute } from "wouter";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -160,7 +160,12 @@ export default function Analysis() {
   const [, setLocation] = useLocation();
   const searchString = useSearch();
   const params = new URLSearchParams(searchString);
-  const usernameParam = params.get('username') || '';
+  
+  // Support both /analysis?username=xyz and /analysis/xyz routes
+  const [matchRoute, routeParams] = useRoute('/analysis/:username');
+  const usernameFromPath = routeParams?.username || '';
+  const usernameFromQuery = params.get('username') || '';
+  const usernameParam = usernameFromPath || usernameFromQuery;
   
   const [username, setUsername] = useState(usernameParam);
   const [isSaved, setIsSaved] = useState(false);
@@ -781,7 +786,7 @@ export default function Analysis() {
                 <div className="glass-card rounded-xl p-6">
                   <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                     {analysisData.reels.slice(0, 12).map((reel, index) => (
-                      <div key={reel.id || index} className="relative group">
+                      <div key={reel.id || index} className="relative group cursor-pointer">
                         {reel.thumbnailUrl ? (
                           <img 
                             src={reel.thumbnailUrl} 
@@ -793,17 +798,62 @@ export default function Analysis() {
                             <Play className="w-8 h-8 text-muted-foreground" />
                           </div>
                         )}
-                        <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex flex-col items-center justify-center p-2">
-                          <div className="text-center text-white text-xs space-y-1">
-                            <p className="flex items-center justify-center gap-1"><Eye className="w-3 h-3" /> {formatNumber(reel.viewCount)}</p>
-                            <p className="flex items-center justify-center gap-1"><Heart className="w-3 h-3" /> {formatNumber(reel.likeCount)}</p>
-                            <p className="flex items-center justify-center gap-1"><MessageSquare className="w-3 h-3" /> {formatNumber(reel.commentCount)}</p>
+                        
+                        {/* Permanentes Performance Overlay - immer sichtbar */}
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent rounded-b-lg p-3 pt-8">
+                          <div className="flex flex-col gap-1">
+                            <div className="flex items-center justify-between text-white">
+                              <span className="flex items-center gap-1.5 text-sm font-semibold">
+                                <Eye className="w-4 h-4 text-cyan-400" />
+                                {formatNumber(reel.viewCount)}
+                              </span>
+                              <span className="flex items-center gap-1.5 text-sm font-semibold">
+                                <Heart className="w-4 h-4 text-red-400" />
+                                {formatNumber(reel.likeCount)}
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between text-white/70 text-xs">
+                              <span className="flex items-center gap-1">
+                                <MessageSquare className="w-3 h-3" />
+                                {formatNumber(reel.commentCount)}
+                              </span>
+                              {reel.viewCount > 0 && (
+                                <span className="text-emerald-400 font-medium">
+                                  {((reel.likeCount / reel.viewCount) * 100).toFixed(1)}%
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
+                        
+                        {/* Hover Overlay für mehr Details */}
+                        <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex flex-col items-center justify-center p-3">
+                          <Play className="w-10 h-10 text-white mb-3" />
+                          <div className="text-center text-white space-y-2">
+                            <p className="flex items-center justify-center gap-2 text-lg font-bold">
+                              <Eye className="w-5 h-5 text-cyan-400" /> {formatNumber(reel.viewCount)}
+                            </p>
+                            <p className="flex items-center justify-center gap-2">
+                              <Heart className="w-4 h-4 text-red-400" /> {formatNumber(reel.likeCount)}
+                            </p>
+                            <p className="flex items-center justify-center gap-2 text-sm text-white/70">
+                              <MessageSquare className="w-4 h-4" /> {formatNumber(reel.commentCount)} Kommentare
+                            </p>
+                          </div>
+                        </div>
+                        
+                        {/* Rank Badge */}
                         <div className="absolute top-2 left-2">
-                          <Badge className="bg-black/60 text-white text-xs">
+                          <Badge className="bg-primary text-white text-xs font-bold shadow-lg">
                             #{index + 1}
                           </Badge>
+                        </div>
+                        
+                        {/* Play Icon */}
+                        <div className="absolute top-2 right-2">
+                          <div className="w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                            <Play className="w-4 h-4 text-white fill-white" />
+                          </div>
                         </div>
                       </div>
                     ))}
