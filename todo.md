@@ -608,3 +608,7 @@
 - [x] View-Counter der hochzählt (250K → 1.25M)
 - [x] Mini-Video-Thumbnails mit Play-Icons und Engagement-Zahlen
 - [x] Schwebender Dashboard-Preview Container mit Live-Demo Indikator
+
+## Hero Demo Kompakter (24.12.2024)
+- [x] Demo kompakter gemacht (max-w-xl, kleinere Elemente)
+- [x] Analyse-Button sichtbar im ersten Viewport
