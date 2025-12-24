@@ -822,3 +822,10 @@
 
 ## Bug Fix
 - [x] React Key-Fehler auf Pricing-Seite beheben
+
+## Landing Page Viralitäts-Optimierung
+- [x] Hero-Section mit KI-Zeitalter Messaging überarbeiten ("Im KI-Zeitalter viral gehen oder untergehen")
+- [x] Mehr Tipps-Vorschau zeigen - konkrete Beispiele was der User bekommt (4 KI-Tipps-Karten mit Beispielen)
+- [x] Neugierde erzeugen durch visuelle Darstellung der KI-Analyse (HeroDemo mit KI-Vorschau)
+- [ ] Features so überzeugend machen, dass Nutzer die Seite empfehlen
+- [ ] Above-the-Fold optimieren für maximale Conversion

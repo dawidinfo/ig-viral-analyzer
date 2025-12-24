@@ -60,6 +60,51 @@ export const fr: Translations = {
     items: ["🌍 Voyage", "💪 Fitness", "🍔 Food", "👗 Mode", "💄 Beauté", "🐶 Animaux", "🎨 Art", "📷 Photo", "🎵 Musique", "⚽ Sport", "🎮 Gaming", "💼 Business", "🏠 Déco", "🌱 Bien-être"],
   },
 
+  // AI Tips Preview Section
+  aiTipsPreview: {
+    badge: "COMMENT DEVENIR VIRAL",
+    title: "Conseils IA concrets",
+    titleHighlight: "qui font exploser votre engagement",
+    subtitle: "Notre IA analyse chaque aspect de votre contenu et vous donne des suggestions d'amélioration immédiatement applicables.",
+    tips: [
+      {
+        category: "Optimisation du Hook",
+        icon: "🎯",
+        title: "Votre hook est trop long",
+        description: "Les premières 0.8 secondes décident de tout. Commencez par une question provocante ou une déclaration surprenante.",
+        improvement: "+340% de temps de visionnage",
+        example: "\"99% font cette erreur...\" au lieu de \"Salut les amis, aujourd'hui je vous montre...\""
+      },
+      {
+        category: "Fréquence de coupe",
+        icon: "✂️",
+        title: "Plus de coupes = Plus d'attention",
+        description: "Les reels viraux ont une coupe toutes les 2-3 secondes. Vos vidéos n'en ont qu'une toutes les 8 secondes.",
+        improvement: "+180% d'engagement",
+        example: "Optimal: 15-20 coupes par reel de 30 secondes"
+      },
+      {
+        category: "Timing du CTA",
+        icon: "📣",
+        title: "CTA placé trop tard",
+        description: "Votre appel à l'action arrive à la fin. 73% des spectateurs sont déjà partis.",
+        improvement: "+95% de commentaires",
+        example: "Placez votre CTA à la seconde 3-5, pas à la fin"
+      },
+      {
+        category: "Audio Tendance",
+        icon: "🎵",
+        title: "Utilisez des sons viraux",
+        description: "Les reels avec des audios tendance obtiennent 3x plus de portée de l'algorithme.",
+        improvement: "+280% de portée",
+        example: "Nous vous montrons les 10 sons tendance de votre niche"
+      }
+    ],
+    cta: "Analyser mon compte maintenant",
+    ctaSubtext: "Gratuit • Sans inscription • Résultats instantanés",
+    exampleLabel: "Exemple"
+  },
+
   // Stats
   stats: {
     accounts: "Comptes analysés",

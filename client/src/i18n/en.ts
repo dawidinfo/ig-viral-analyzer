@@ -19,15 +19,15 @@ export const en: Translations = {
   // Hero Section
   hero: {
     badge: "AI-powered Instagram Analysis",
-    title: "Discover why",
-    titleHighlight: "Content goes viral",
-    subtitle: "Analyze any Instagram account. Understand engagement patterns, optimize your captions and boost your reach with data-driven insights.",
+    title: "In the AI era:",
+    titleHighlight: "Go viral or get buried",
+    subtitle: "Without AI analysis, you're creating boring content that gets buried by the algorithm. With ReelSpy, you get the same insights as top creators with millions of followers.",
     placeholder: "Enter @username...",
     cta: "AI Analysis",
     features: {
-      free: "Try for free",
+      free: "3 free analyses",
       noSignup: "No signup required",
-      instant: "Instant results",
+      instant: "47 viral factors in seconds",
     },
   },
 
@@ -58,6 +58,51 @@ export const en: Translations = {
   niches: {
     badge: "WORKS FOR ALL NICHES",
     items: ["🌍 Travel", "💪 Fitness", "🍔 Food", "👗 Fashion", "💄 Beauty", "🐶 Pets", "🎨 Art", "📷 Photography", "🎵 Music", "⚽ Sports", "🎮 Gaming", "💼 Business", "🏠 Home Decor", "🌱 Wellness"],
+  },
+
+  // AI Tips Preview Section
+  aiTipsPreview: {
+    badge: "HOW TO GO VIRAL",
+    title: "Concrete AI Tips",
+    titleHighlight: "that make your engagement explode",
+    subtitle: "Our AI analyzes every aspect of your content and gives you immediately actionable improvement suggestions.",
+    tips: [
+      {
+        category: "Hook Optimization",
+        icon: "🎯",
+        title: "Your hook is too long",
+        description: "The first 0.8 seconds decide everything. Start with a provocative question or surprising statement.",
+        improvement: "+340% more watch time",
+        example: "\"99% get this wrong...\" instead of \"Hey guys, today I'll show you...\""
+      },
+      {
+        category: "Cut Frequency",
+        icon: "✂️",
+        title: "More cuts = More attention",
+        description: "Viral reels have a cut every 2-3 seconds. Your videos only have one every 8 seconds.",
+        improvement: "+180% engagement",
+        example: "Optimal: 15-20 cuts per 30-second reel"
+      },
+      {
+        category: "CTA Timing",
+        icon: "📣",
+        title: "CTA placed too late",
+        description: "Your call-to-action comes at the end. 73% of viewers are already gone by then.",
+        improvement: "+95% more comments",
+        example: "Place your CTA at second 3-5, not at the end"
+      },
+      {
+        category: "Trending Audio",
+        icon: "🎵",
+        title: "Use viral sounds",
+        description: "Reels with trending audio get 3x more reach from the algorithm.",
+        improvement: "+280% reach",
+        example: "We show you the top 10 trending sounds in your niche"
+      }
+    ],
+    cta: "Analyze my account now",
+    ctaSubtext: "Free • No signup • Instant results",
+    exampleLabel: "Example"
   },
 
   // Stats

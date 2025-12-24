@@ -17,15 +17,15 @@ export const de = {
   // Hero Section
   hero: {
     badge: "KI-gestützte Instagram Analyse",
-    title: "Entdecke warum",
-    titleHighlight: "Content viral geht",
-    subtitle: "Analysiere jeden Instagram-Account. Verstehe Engagement-Muster, optimiere deine Captions und steigere deine Reichweite mit datengestützten Insights.",
+    title: "Im KI-Zeitalter",
+    titleHighlight: "viral gehen oder untergehen",
+    subtitle: "Ohne KI-Analyse lieferst du langweiligen Content, der im Algorithmus untergeht. Mit ReelSpy bekommst du die gleichen Insights wie Top-Creator mit Millionen Followern.",
     placeholder: "@username eingeben...",
     cta: "KI-Analyse",
     features: {
-      free: "Kostenlos testen",
+      free: "3 kostenlose Analysen",
       noSignup: "Keine Anmeldung nötig",
-      instant: "Sofortige Ergebnisse",
+      instant: "47 Viral-Faktoren in Sekunden",
     },
   },
 
@@ -56,6 +56,51 @@ export const de = {
   niches: {
     badge: "FUNKTIONIERT FÜR ALLE NISCHEN",
     items: ["🌍 Travel", "💪 Fitness", "🍔 Food", "👗 Fashion", "💄 Beauty", "🐶 Pets", "🎨 Art", "📷 Photography", "🎵 Music", "⚽ Sports", "🎮 Gaming", "💼 Business", "🏠 Home Decor", "🌱 Wellness"],
+  },
+
+  // AI Tips Preview Section
+  aiTipsPreview: {
+    badge: "SO WIRST DU VIRAL",
+    title: "Konkrete KI-Tipps",
+    titleHighlight: "die dein Engagement explodieren lassen",
+    subtitle: "Unsere KI analysiert jeden Aspekt deines Contents und gibt dir sofort umsetzbare Verbesserungsvorschläge.",
+    tips: [
+      {
+        category: "Hook-Optimierung",
+        icon: "🎯",
+        title: "Dein Hook ist zu lang",
+        description: "Die ersten 0.8 Sekunden entscheiden. Starte mit einer provokanten Frage oder überraschenden Aussage.",
+        improvement: "+340% mehr Watch-Time",
+        example: "\"Das macht 99% falsch...\" statt \"Hey Leute, heute zeige ich euch...\""
+      },
+      {
+        category: "Schnitt-Frequenz",
+        icon: "✂️",
+        title: "Mehr Schnitte = Mehr Aufmerksamkeit",
+        description: "Virale Reels haben alle 2-3 Sekunden einen Schnitt. Deine Videos haben nur alle 8 Sekunden einen.",
+        improvement: "+180% Engagement",
+        example: "Optimal: 15-20 Schnitte pro 30-Sekunden-Reel"
+      },
+      {
+        category: "CTA-Timing",
+        icon: "📣",
+        title: "CTA zu spät platziert",
+        description: "Dein Call-to-Action kommt erst am Ende. 73% der Zuschauer sind dann schon weg.",
+        improvement: "+95% mehr Kommentare",
+        example: "Platziere deinen CTA bei Sekunde 3-5, nicht am Ende"
+      },
+      {
+        category: "Trending Audio",
+        icon: "🎵",
+        title: "Nutze virale Sounds",
+        description: "Reels mit Trending Audio bekommen 3x mehr Reichweite vom Algorithmus.",
+        improvement: "+280% Reichweite",
+        example: "Wir zeigen dir die Top 10 Trending Sounds deiner Nische"
+      }
+    ],
+    cta: "Jetzt meinen Account analysieren",
+    ctaSubtext: "Kostenlos • Keine Anmeldung • Sofortige Ergebnisse",
+    exampleLabel: "Beispiel"
   },
 
   // Stats

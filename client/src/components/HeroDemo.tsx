@@ -285,15 +285,61 @@ export function HeroDemo() {
             />
           </div>
           
+          {/* AI Insights Preview */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.5 }}
+            className="mt-2 bg-gradient-to-r from-violet-500/10 to-cyan-500/10 rounded-lg p-2 border border-violet-500/20"
+          >
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <div className="w-4 h-4 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center">
+                <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <span className="text-[9px] sm:text-[11px] font-semibold text-white">KI-Analyse Vorschau</span>
+            </div>
+            <div className="space-y-1">
+              <motion.div 
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 2 }}
+                className="flex items-center gap-1.5 text-[8px] sm:text-[10px]"
+              >
+                <span className="text-green-400">✓</span>
+                <span className="text-white/80">Hook-Score: <span className="text-green-400 font-semibold">94/100</span> - Perfekter Pattern Interrupt</span>
+              </motion.div>
+              <motion.div 
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 2.3 }}
+                className="flex items-center gap-1.5 text-[8px] sm:text-[10px]"
+              >
+                <span className="text-yellow-400">⚠</span>
+                <span className="text-white/80">Tipp: <span className="text-yellow-400">CTA in Sekunde 3 einfügen</span> für +40% Engagement</span>
+              </motion.div>
+              <motion.div 
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 2.6 }}
+                className="flex items-center gap-1.5 text-[8px] sm:text-[10px]"
+              >
+                <span className="text-cyan-400">💡</span>
+                <span className="text-white/80">Viral-Potenzial: <span className="text-cyan-400 font-semibold">87%</span> - Trending Audio erkannt</span>
+              </motion.div>
+            </div>
+          </motion.div>
+          
           {/* Click hint */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 2 }}
+            transition={{ delay: 3 }}
             className="text-center mt-2"
           >
             <span className="text-[8px] sm:text-[10px] text-white/40">
-              Klicke auf ein Video für eine Beispiel-Analyse
+              Klicke auf ein Video für die vollständige KI-Analyse
             </span>
           </motion.div>
         </div>

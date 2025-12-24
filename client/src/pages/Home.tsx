@@ -567,6 +567,97 @@ export default function Home() {
         </div>
       </section>
 
+      {/* AI Tips Preview Section */}
+      <section className="py-24 bg-gradient-to-b from-background via-violet-950/10 to-background">
+        <div className="container">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <Badge className="badge-neon mb-4">{t.aiTipsPreview.badge}</Badge>
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-[-0.03em] mb-4">
+              {t.aiTipsPreview.title}
+              <br />
+              <span className="text-gradient">{t.aiTipsPreview.titleHighlight}</span>
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              {t.aiTipsPreview.subtitle}
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+            {t.aiTipsPreview.tips.map((tip, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="group relative bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-6 hover:border-primary/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(139,92,246,0.15)]"
+              >
+                {/* Category Badge */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl">{tip.icon}</span>
+                    <span className="text-xs font-medium text-primary uppercase tracking-wider">{tip.category}</span>
+                  </div>
+                  <div className="px-3 py-1 rounded-full bg-accent/20 text-accent text-xs font-bold">
+                    {tip.improvement}
+                  </div>
+                </div>
+
+                {/* Title */}
+                <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
+                  {tip.title}
+                </h3>
+
+                {/* Description */}
+                <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
+                  {tip.description}
+                </p>
+
+                {/* Example Box */}
+                <div className="bg-muted/50 rounded-xl p-4 border border-border/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Lightbulb className="w-4 h-4 text-yellow-500" />
+                    <span className="text-xs font-medium text-muted-foreground">{t.aiTipsPreview.exampleLabel}</span>
+                  </div>
+                  <p className="text-sm text-foreground/80 italic">
+                    {tip.example}
+                  </p>
+                </div>
+
+                {/* Hover Glow Effect */}
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+              </motion.div>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mt-12"
+          >
+            <Button 
+              onClick={() => document.getElementById('hero-input')?.focus()}
+              size="lg"
+              className="btn-gradient text-white border-0"
+            >
+              <Sparkles className="w-5 h-5 mr-2" />
+              {t.aiTipsPreview.cta}
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+            <p className="text-sm text-muted-foreground mt-4">
+              {t.aiTipsPreview.ctaSubtext}
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Problem/Solution Section */}
       <section className="py-24 bg-muted/10">
         <div className="container">
