@@ -1976,23 +1976,23 @@ export default function Home() {
                       Wische nach rechts für mehr
                       <ArrowRight className="w-3 h-3" />
                     </p>
-                    <div className="overflow-x-auto overflow-y-auto max-h-[500px] -mx-4 px-4 md:mx-0 md:px-0 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
-                      <table className="w-full min-w-[700px] text-xs md:text-sm feature-table-pro-highlight">
-                      <thead className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm">
+                    <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
+                      <table className="w-full min-w-[700px] text-xs md:text-sm feature-comparison-table">
+                      <thead>
                         <tr className="border-b border-border">
-                          <th className="text-left py-3 px-4 font-semibold bg-background/95">Feature</th>
-                          <th className="text-center py-3 px-4 font-semibold bg-background/95">Free</th>
-                          <th className="text-center py-3 px-4 font-semibold text-primary bg-background/95">Starter</th>
-                          <th className="text-center py-3 px-4 font-semibold relative bg-gradient-to-b from-accent/20 to-accent/5">
-                            <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                              <span className="bg-gradient-to-r from-accent to-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap shadow-lg">
-                                BELIEBTESTE WAHL
+                          <th className="text-left py-4 px-4 font-semibold text-foreground">Feature</th>
+                          <th className="text-center py-4 px-4 font-semibold text-muted-foreground">Free</th>
+                          <th className="text-center py-4 px-4 font-semibold text-primary">Starter</th>
+                          <th className="text-center py-4 px-4 font-semibold relative">
+                            <div className="absolute -top-6 left-1/2 -translate-x-1/2">
+                              <span className="bg-gradient-to-r from-accent to-emerald-500 text-white text-[10px] font-bold px-3 py-1 rounded-full whitespace-nowrap shadow-lg animate-pulse">
+                                ⭐ BELIEBTESTE WAHL
                               </span>
                             </div>
-                            <span className="text-accent">Pro</span>
+                            <span className="text-accent font-bold">Pro</span>
                           </th>
-                          <th className="text-center py-3 px-4 font-semibold text-yellow-500 bg-background/95">Business</th>
-                          <th className="text-center py-3 px-4 font-semibold text-pink-500 bg-background/95">Enterprise</th>
+                          <th className="text-center py-4 px-4 font-semibold text-yellow-500">Business</th>
+                          <th className="text-center py-4 px-4 font-semibold text-pink-500">Enterprise</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-border/50">

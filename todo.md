@@ -1025,3 +1025,8 @@
 - [x] Sticky Header für Feature-Tabelle (Plan-Namen beim Scrollen fixiert)
 - [x] Animierter Scroll-to-Top Button
 - [x] Feature-Filter Buttons (KI-Features, Team-Features, etc.)
+
+## Feature-Tabelle Redesign
+- [x] Scroll-Container (max-h-[500px]) entfernen für natürlicheres Layout
+- [x] Pro-Spalte Highlight verbessern (subtiler Hintergrund statt harter Rahmen)
+- [x] Tabelle visuell aufwerten (sauberes Design)
