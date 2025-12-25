@@ -1179,3 +1179,6 @@
 - [x] FollowerGrowthChart volle Zahlen anzeigen (71.874 statt 71.9K)
 - [x] Toggle für Zahlenformat (volle Zahlen vs. K/M Abkürzung)
 - [x] Speichern-Button sichtbarer machen
+- [x] Admin-Dashboard Prognosen prüfen
+- [x] Owner-Account aus Kalkulation ausschließen
+- [x] Kosten für Owner auf 0 setzen

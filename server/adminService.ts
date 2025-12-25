@@ -13,6 +13,9 @@ const ADMIN_EMAILS = [
   "qliq.marketing@proton.me"
 ];
 
+// Owner OpenID - exclude from statistics and set costs to 0
+const OWNER_OPEN_ID = process.env.OWNER_OPEN_ID || "";
+
 // List of forbidden keywords for adult content detection
 const FORBIDDEN_KEYWORDS = [
   "porn", "xxx", "adult", "nsfw", "onlyfans", "sex", "nude", "naked",
@@ -293,17 +296,21 @@ export async function getAdminStats(): Promise<AdminStats> {
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
-    // Total users
+    // Exclude owner from all statistics
+    const excludeOwnerCondition = OWNER_OPEN_ID ? sql`${users.openId} != ${OWNER_OPEN_ID}` : sql`1=1`;
+
+    // Total users (excluding owner)
     const totalUsersResult = await db
       .select({ count: sql<number>`count(*)` })
-      .from(users);
+      .from(users)
+      .where(excludeOwnerCondition);
     const totalUsers = Number(totalUsersResult[0]?.count || 0);
 
-    // Active users (last 30 days)
+    // Active users (last 30 days, excluding owner)
     const activeUsersResult = await db
       .select({ count: sql<number>`count(*)` })
       .from(users)
-      .where(gte(users.lastActivity, thirtyDaysAgo));
+      .where(and(gte(users.lastActivity, thirtyDaysAgo), excludeOwnerCondition));
     const activeUsers = Number(activeUsersResult[0]?.count || 0);
 
     // Total revenue (all time)
@@ -336,20 +343,21 @@ export async function getAdminStats(): Promise<AdminStats> {
       .where(gte(usageTracking.createdAt, monthStart));
     const monthlyAnalyses = Number(monthlyAnalysesResult[0]?.count || 0);
 
-    // Banned accounts
+    // Banned accounts (excluding owner)
     const bannedResult = await db
       .select({ count: sql<number>`count(*)` })
       .from(users)
-      .where(eq(users.status, "banned"));
+      .where(and(eq(users.status, "banned"), excludeOwnerCondition));
     const bannedAccounts = Number(bannedResult[0]?.count || 0);
 
-    // Plan distribution
+    // Plan distribution (excluding owner)
     const planDistResult = await db
       .select({
         plan: users.plan,
         count: sql<number>`count(*)`
       })
       .from(users)
+      .where(excludeOwnerCondition)
       .groupBy(users.plan);
     
     const planDistribution = planDistResult.map(p => ({
@@ -378,13 +386,14 @@ export async function getAdminStats(): Promise<AdminStats> {
     }, 0);
     const arr = mrr * 12;
 
-    // Churn Rate (Nutzer die in den letzten 30 Tagen inaktiv wurden)
+    // Churn Rate (Nutzer die in den letzten 30 Tagen inaktiv wurden, excluding owner)
     const inactiveUsersResult = await db
       .select({ count: sql<number>`count(*)` })
       .from(users)
       .where(and(
         lte(users.lastActivity, thirtyDaysAgo),
-        sql`${users.plan} != 'free'`
+        sql`${users.plan} != 'free'`,
+        excludeOwnerCondition
       ));
     const inactiveUsers = Number(inactiveUsersResult[0]?.count || 0);
     const churnRate = paidUsers > 0 ? (inactiveUsers / paidUsers) * 100 : 0;
@@ -440,7 +449,7 @@ export async function getAdminStats(): Promise<AdminStats> {
           count: sql<number>`count(*)`
         })
         .from(users)
-        .where(gte(users.createdAt, sevenDaysAgo))
+        .where(and(gte(users.createdAt, sevenDaysAgo), excludeOwnerCondition))
         .groupBy(sql`DATE(createdAt)`);
       
       recentSignups = recentSignupsResult.map(r => ({
