@@ -1199,3 +1199,4 @@
 - [x] Tooltips zu Dashboard-Tabs hinzufügen
 - [x] Dashboard-Navigation neu designen - modern und clean
 - [x] Hover-Effekte und aktive Button-Hervorhebung zur Dashboard-Navigation hinzufügen
+- [x] Cache-Reset-Funktion korrigieren - gespeicherte Analysen beim Leeren des Caches erhalten

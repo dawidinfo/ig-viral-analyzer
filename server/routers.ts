@@ -1289,7 +1289,7 @@ export const appRouter = router({
         return await checkCacheHealthAndAlert(input.minHitRate);
       }),
 
-    // Clear all caches (Admin only)
+    // Clear API caches only (Admin only) - User data (saved analyses, notes, etc.) is preserved
     clearAllCaches: publicProcedure
       .mutation(async () => {
         const db = await getDb();
@@ -1298,36 +1298,31 @@ export const appRouter = router({
         const steps: { name: string; status: 'success' | 'error'; count?: number; error?: string }[] = [];
         
         try {
-          // Step 1: Count and clear Instagram cache
+          // Step 1: Count and clear Instagram API cache (temporary data only)
           const instagramCacheCount = await db.select({ count: sql<number>`count(*)` }).from(instagramCache);
           await db.delete(instagramCache);
           steps.push({ 
-            name: "Instagram-Cache", 
+            name: "Instagram-API-Cache", 
             status: 'success', 
             count: Number(instagramCacheCount[0]?.count || 0) 
           });
           
-          // Step 2: Count and clear saved analyses
-          const savedAnalysesCount = await db.select({ count: sql<number>`count(*)` }).from(savedAnalyses);
-          await db.delete(savedAnalyses).where(sql`1=1`);
-          steps.push({ 
-            name: "Gespeicherte Analysen", 
-            status: 'success', 
-            count: Number(savedAnalysesCount[0]?.count || 0) 
-          });
+          // NOTE: User data is NEVER deleted:
+          // - Saved analyses (savedAnalyses) - user's saved profiles
+          // - Notes (notes) - user's personal notes
+          // - Invoices, referrals, badges, etc. - all user data preserved
           
-          // Step 3: Clear cache statistics (optional - keep for history)
-          // We don't delete cache_statistics to preserve historical data
+          // Step 2: Cache statistics are preserved for analytics
           steps.push({ 
             name: "Cache-Statistiken", 
             status: 'success', 
             count: 0 
           });
           
-          console.log("[Admin] All caches cleared:", steps);
+          console.log("[Admin] API caches cleared (user data preserved):", steps);
           return { 
             success: true, 
-            message: "Alle Caches wurden geleert",
+            message: "API-Cache wurde geleert (User-Daten bleiben erhalten)",
             clearedAt: new Date().toISOString(),
             steps
           };
