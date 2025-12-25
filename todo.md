@@ -1160,3 +1160,6 @@
 - [x] ContentPlanGenerator zurücksetzen
 - [x] InvoicesTab zurücksetzen
 - [x] Admin-Panel Empfehlungen zurücksetzen
+
+## 301-Weiterleitung www → non-www
+- [x] 301-Weiterleitung von www.reelspy.ai zu reelspy.ai im Server implementieren

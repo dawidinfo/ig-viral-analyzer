@@ -32,6 +32,15 @@ async function startServer() {
   const app = express();
   const server = createServer(app);
   
+  // 301 Redirect: www.reelspy.ai -> reelspy.ai (SEO canonical URL)
+  app.use((req, res, next) => {
+    const host = req.get('host') || '';
+    if (host === 'www.reelspy.ai') {
+      return res.redirect(301, `https://reelspy.ai${req.originalUrl}`);
+    }
+    next();
+  });
+  
   // Stripe webhook needs raw body - MUST be before express.json()
   app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), handleStripeWebhook);
   
