@@ -53,7 +53,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { LogIn, LogOut, Globe } from "lucide-react";
+import { LogIn, LogOut, Globe, Building2, ArrowDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -1326,7 +1326,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Pricing Comparison - 4 Tiers */}
+      {/* Pricing Comparison - 5 Tiers */}
       <section id="pricing" className="py-24">
         <div className="container">
           <motion.div 
@@ -1346,40 +1346,46 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <div className="max-w-6xl mx-auto overflow-visible">
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 pt-6 overflow-visible">
+          <div className="max-w-7xl mx-auto overflow-visible">
+            <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4 pt-6 overflow-visible">
               {/* Free Plan */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0 }}
                 viewport={{ once: true }}
-                className="glass-card rounded-2xl p-6"
+                className="glass-card rounded-2xl p-5"
               >
                 <div className="text-sm font-medium text-muted-foreground mb-2">FREE</div>
-                <h3 className="text-xl font-bold mb-1">{t.pricingPlans.free.name}</h3>
-                <p className="text-xs text-muted-foreground mb-4">{t.pricingPlans.free.tagline}</p>
-                <div className="text-3xl font-black mb-1">
+                <h3 className="text-lg font-bold mb-1">{t.pricingPlans.free.name}</h3>
+                <p className="text-xs text-muted-foreground mb-3">{t.pricingPlans.free.tagline}</p>
+                <div className="text-2xl font-black mb-1">
                   {t.pricingPlans.free.analyses}
                 </div>
-                <p className="text-xs text-muted-foreground mb-6">{t.pricingPlans.free.analysesNote}</p>
+                <p className="text-xs text-muted-foreground mb-4">{t.pricingPlans.free.analysesNote}</p>
                 <Button 
                   onClick={() => handlePurchase('free')}
                   variant="outline" 
-                  className="w-full mb-6"
+                  className="w-full mb-4"
                   size="sm"
                   disabled={checkoutMutation.isPending}
                 >
                   {t.pricingPlans.free.cta}
                 </Button>
-                <ul className="space-y-2 text-sm">
-                  {t.pricingPlans.free.features.map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2">
-                      <Check className="w-4 h-4 text-accent shrink-0" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="border-t border-border pt-4">
+                  <p className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1">
+                    <span className="inline-block w-5 h-5 rounded-full bg-muted flex items-center justify-center text-[10px]">6</span>
+                    Features inklusive
+                  </p>
+                  <ul className="space-y-1.5 text-xs max-h-48 overflow-y-auto pr-1">
+                    {t.pricingPlans.free.features.map((feature, i) => (
+                      <li key={i} className="flex items-start gap-1.5">
+                        <Check className="w-3 h-3 text-accent shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </motion.div>
 
               {/* Starter Plan */}
@@ -1388,32 +1394,38 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
                 viewport={{ once: true }}
-                className="glass-card rounded-2xl p-6"
+                className="glass-card rounded-2xl p-5"
               >
                 <div className="text-sm font-medium text-primary mb-2">STARTER</div>
-                <h3 className="text-xl font-bold mb-1">{t.pricingPlans.starter.name}</h3>
-                <p className="text-xs text-muted-foreground mb-4">{t.pricingPlans.starter.tagline}</p>
-                <div className="text-3xl font-black mb-1">
-                  €19<span className="text-lg font-normal text-muted-foreground">/mo</span>
+                <h3 className="text-lg font-bold mb-1">{t.pricingPlans.starter.name}</h3>
+                <p className="text-xs text-muted-foreground mb-3">{t.pricingPlans.starter.tagline}</p>
+                <div className="text-2xl font-black mb-1">
+                  €19<span className="text-sm font-normal text-muted-foreground">/mo</span>
                 </div>
-                <p className="text-xs text-muted-foreground mb-6">{t.pricingPlans.starter.analyses}</p>
+                <p className="text-xs text-muted-foreground mb-4">{t.pricingPlans.starter.analyses}</p>
                 <Button 
                   onClick={() => handlePurchase('starter')}
                   variant="outline" 
-                  className="w-full mb-6"
+                  className="w-full mb-4"
                   size="sm"
                   disabled={checkoutMutation.isPending}
                 >
                   {checkoutMutation.isPending ? "Wird geladen..." : t.pricingPlans.starter.cta}
                 </Button>
-                <ul className="space-y-2 text-sm">
-                  {t.pricingPlans.starter.features.map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2">
-                      <Check className="w-4 h-4 text-accent shrink-0" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="border-t border-border pt-4">
+                  <p className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1">
+                    <span className="inline-block w-5 h-5 rounded-full bg-primary/20 text-primary flex items-center justify-center text-[10px]">45</span>
+                    Features inklusive
+                  </p>
+                  <ul className="space-y-1.5 text-xs max-h-48 overflow-y-auto pr-1">
+                    {t.pricingPlans.starter.features.map((feature, i) => (
+                      <li key={i} className="flex items-start gap-1.5">
+                        <Check className="w-3 h-3 text-primary shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </motion.div>
 
               {/* Pro Plan - HIGHLIGHTED */}
@@ -1422,37 +1434,43 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
                 viewport={{ once: true }}
-                className="relative overflow-visible"
+                className="relative overflow-visible lg:-mt-2 lg:mb-2"
               >
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
-                  <Badge className="bg-accent text-accent-foreground font-bold px-4">{t.pricingPlans.pro.badge}</Badge>
+                  <Badge className="bg-accent text-accent-foreground font-bold px-3 text-xs">{t.pricingPlans.pro.badge}</Badge>
                 </div>
                 <div className="gradient-border rounded-2xl p-1 h-full">
-                  <div className="bg-background rounded-2xl p-6 h-full">
+                  <div className="bg-background rounded-2xl p-5 h-full">
                     <div className="text-sm font-medium text-accent mb-2">PRO</div>
-                    <h3 className="text-xl font-bold mb-1">{t.pricingPlans.pro.name}</h3>
-                    <p className="text-xs text-muted-foreground mb-4">{t.pricingPlans.pro.tagline}</p>
-                    <div className="text-3xl font-black mb-1">
-                      €49<span className="text-lg font-normal text-muted-foreground">/mo</span>
+                    <h3 className="text-lg font-bold mb-1">{t.pricingPlans.pro.name}</h3>
+                    <p className="text-xs text-muted-foreground mb-3">{t.pricingPlans.pro.tagline}</p>
+                    <div className="text-2xl font-black mb-1">
+                      €49<span className="text-sm font-normal text-muted-foreground">/mo</span>
                     </div>
-                    <p className="text-xs text-muted-foreground mb-6">{t.pricingPlans.pro.analyses}</p>
+                    <p className="text-xs text-muted-foreground mb-4">{t.pricingPlans.pro.analyses}</p>
                     <Button 
                       onClick={() => handlePurchase('pro')}
-                      className="btn-gradient w-full text-white border-0 mb-6"
+                      className="btn-gradient w-full text-white border-0 mb-4"
                       size="sm"
                       disabled={checkoutMutation.isPending}
                     >
-                      <Crown className="w-4 h-4 mr-1" />
+                      <Crown className="w-3 h-3 mr-1" />
                       {checkoutMutation.isPending ? "Wird geladen..." : t.pricingPlans.pro.cta}
                     </Button>
-                    <ul className="space-y-2 text-sm">
-                      {t.pricingPlans.pro.features.map((feature, i) => (
-                        <li key={i} className="flex items-center gap-2">
-                          <Check className="w-4 h-4 text-accent shrink-0" />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
+                    <div className="border-t border-accent/30 pt-4">
+                      <p className="text-xs font-semibold text-accent mb-2 flex items-center gap-1">
+                        <span className="inline-block w-5 h-5 rounded-full bg-accent/20 text-accent flex items-center justify-center text-[10px]">65</span>
+                        Features inklusive
+                      </p>
+                      <ul className="space-y-1.5 text-xs max-h-48 overflow-y-auto pr-1">
+                        {t.pricingPlans.pro.features.map((feature, i) => (
+                          <li key={i} className="flex items-start gap-1.5">
+                            <Check className="w-3 h-3 text-accent shrink-0 mt-0.5" />
+                            <span className="text-muted-foreground">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </motion.div>
@@ -1463,35 +1481,119 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
                 viewport={{ once: true }}
-                className="glass-card rounded-2xl p-6"
+                className="glass-card rounded-2xl p-5"
               >
                 <div className="text-sm font-medium text-yellow-500 mb-2">BUSINESS</div>
-                <h3 className="text-xl font-bold mb-1">{t.pricingPlans.business.name}</h3>
-                <p className="text-xs text-muted-foreground mb-4">{t.pricingPlans.business.tagline}</p>
-                <div className="text-3xl font-black mb-1">
-                  €99<span className="text-lg font-normal text-muted-foreground">/mo</span>
+                <h3 className="text-lg font-bold mb-1">{t.pricingPlans.business.name}</h3>
+                <p className="text-xs text-muted-foreground mb-3">{t.pricingPlans.business.tagline}</p>
+                <div className="text-2xl font-black mb-1">
+                  €99<span className="text-sm font-normal text-muted-foreground">/mo</span>
                 </div>
-                <p className="text-xs text-muted-foreground mb-6">{t.pricingPlans.business.analyses}</p>
+                <p className="text-xs text-muted-foreground mb-4">{t.pricingPlans.business.analyses}</p>
                 <Button 
                   onClick={() => handlePurchase('business')}
                   variant="outline" 
-                  className="w-full mb-6 border-yellow-500/50 hover:bg-yellow-500/10"
+                  className="w-full mb-4 border-yellow-500/50 hover:bg-yellow-500/10"
                   size="sm"
                   disabled={checkoutMutation.isPending}
                 >
-                  <Rocket className="w-4 h-4 mr-1" />
+                  <Rocket className="w-3 h-3 mr-1" />
                   {checkoutMutation.isPending ? "Wird geladen..." : t.pricingPlans.business.cta}
                 </Button>
-                <ul className="space-y-2 text-sm">
-                  {t.pricingPlans.business.features.map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2">
-                      <Check className="w-4 h-4 text-yellow-500 shrink-0" />
-                      <span>{feature}</span>
+                <div className="border-t border-yellow-500/30 pt-4">
+                  <p className="text-xs font-semibold text-yellow-500 mb-2 flex items-center gap-1">
+                    <span className="inline-block w-5 h-5 rounded-full bg-yellow-500/20 text-yellow-500 flex items-center justify-center text-[10px]">78</span>
+                    Features inklusive
+                  </p>
+                  <ul className="space-y-1.5 text-xs max-h-48 overflow-y-auto pr-1">
+                    {t.pricingPlans.business.features.map((feature, i) => (
+                      <li key={i} className="flex items-start gap-1.5">
+                        <Check className="w-3 h-3 text-yellow-500 shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </motion.div>
+
+              {/* Enterprise Plan */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                viewport={{ once: true }}
+                className="glass-card rounded-2xl p-5 border-orange-500/30"
+              >
+                <div className="text-sm font-medium text-orange-500 mb-2">ENTERPRISE</div>
+                <h3 className="text-lg font-bold mb-1">Enterprise</h3>
+                <p className="text-xs text-muted-foreground mb-3">Für große Agenturen</p>
+                <div className="text-2xl font-black mb-1">
+                  €299<span className="text-sm font-normal text-muted-foreground">/mo</span>
+                </div>
+                <p className="text-xs text-muted-foreground mb-4">Unbegrenzte Analysen</p>
+                <Button 
+                  onClick={() => handlePurchase('enterprise')}
+                  variant="outline" 
+                  className="w-full mb-4 border-orange-500/50 hover:bg-orange-500/10"
+                  size="sm"
+                  disabled={checkoutMutation.isPending}
+                >
+                  <Building2 className="w-3 h-3 mr-1" />
+                  {checkoutMutation.isPending ? "Wird geladen..." : "Kontakt aufnehmen"}
+                </Button>
+                <div className="border-t border-orange-500/30 pt-4">
+                  <p className="text-xs font-semibold text-orange-500 mb-2 flex items-center gap-1">
+                    <span className="inline-block w-5 h-5 rounded-full bg-orange-500/20 text-orange-500 flex items-center justify-center text-[10px]">83</span>
+                    Alle Features
+                  </p>
+                  <ul className="space-y-1.5 text-xs max-h-48 overflow-y-auto pr-1">
+                    <li className="flex items-start gap-1.5">
+                      <Check className="w-3 h-3 text-orange-500 shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">Unbegrenzte KI-Analysen</span>
                     </li>
-                  ))}
-                </ul>
+                    <li className="flex items-start gap-1.5">
+                      <Check className="w-3 h-3 text-orange-500 shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">Alles aus Business</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <Check className="w-3 h-3 text-orange-500 shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">Dedizierter Account Manager</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <Check className="w-3 h-3 text-orange-500 shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">Custom Integrationen</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <Check className="w-3 h-3 text-orange-500 shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">SLA Garantie</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <Check className="w-3 h-3 text-orange-500 shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">API Zugang</span>
+                    </li>
+                  </ul>
+                </div>
               </motion.div>
             </div>
+
+            {/* Alle Features vergleichen Button */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mt-12"
+            >
+              <Button
+                variant="outline"
+                size="lg"
+                className="gap-2 group"
+                onClick={() => setLocation('/pricing')}
+              >
+                Alle 83 Features vergleichen
+                <ArrowDown className="w-4 h-4 group-hover:translate-y-1 transition-transform" />
+              </Button>
+              <p className="text-xs text-muted-foreground mt-2">Detaillierte Feature-Tabelle auf der Pricing-Seite</p>
+            </motion.div>
 
           </div>
         </div>

@@ -877,3 +877,9 @@
 
 - [x] Pricing-Seite: Feature-Vergleichstabelle komplett ohne Akkordeon anzeigen (alle Features sichtbar)
 - [x] Home-Seite Pricing-Karten: Features direkt anzeigen ohne Akkordeon (nicht "X Features inklusive" eingeklappt)
+
+## Home-Seite Pricing-Sektion Überarbeitung
+- [x] Enterprise-Plan (€299) zur Home-Seite Pricing-Sektion hinzufügen
+- [x] "Alle Features vergleichen" Button mit großem Pfeil nach unten
+- [x] Visuell mehr Features bei höheren Plänen anzeigen (je teurer, desto mehr sichtbar)
+- [x] Feature-Tabelle unter den Pricing-Karten hinzufügen (wie short.io)
