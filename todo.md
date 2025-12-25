@@ -1195,3 +1195,4 @@
 - [x] Dashboard-Navigation größer, schöner und sticky machen
 - [x] Dashboard-Navigation Bug - Tabs abgeschnitten
 - [x] Schatteneffekt zur sticky Navigation hinzufügen
+- [x] Dashboard-Navigation kompakter machen - alle Tabs sichtbar
