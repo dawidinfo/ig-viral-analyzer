@@ -1659,11 +1659,11 @@ export default function Home() {
                 >
                   {billingCycle === 'yearly' ? (
                     <>
-                      <span className="line-through text-muted-foreground text-lg mr-1">€12,99</span>
-                      €10,42<span className="text-sm font-normal text-muted-foreground">/mo</span>
+                      <span className="line-through text-muted-foreground text-lg mr-1">€19</span>
+                      €15<span className="text-sm font-normal text-muted-foreground">/mo</span>
                     </>
                   ) : (
-                    <>€12,99<span className="text-sm font-normal text-muted-foreground">/mo</span></>
+                    <>€19<span className="text-sm font-normal text-muted-foreground">/mo</span></>
                   )}
                 </motion.div>
                 {billingCycle === 'yearly' && (
@@ -1673,7 +1673,7 @@ export default function Home() {
                     className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-medium mb-2"
                   >
                     <Sparkles className="w-3 h-3" />
-                    Spare €30/Jahr
+                    Spare €48/Jahr
                   </motion.div>
                 )}
                 <p className="text-xs text-muted-foreground mb-4">{t.pricingPlans.starter.analyses}</p>
@@ -1726,11 +1726,11 @@ export default function Home() {
                     >
                       {billingCycle === 'yearly' ? (
                         <>
-                          <span className="line-through text-muted-foreground text-lg mr-1">€24,99</span>
-                          €20<span className="text-sm font-normal text-muted-foreground">/mo</span>
+                          <span className="line-through text-muted-foreground text-lg mr-1">€49</span>
+                          €39<span className="text-sm font-normal text-muted-foreground">/mo</span>
                         </>
                       ) : (
-                        <>€24,99<span className="text-sm font-normal text-muted-foreground">/mo</span></>
+                        <>€49<span className="text-sm font-normal text-muted-foreground">/mo</span></>
                       )}
                     </motion.div>
                     {billingCycle === 'yearly' && (
@@ -1740,7 +1740,7 @@ export default function Home() {
                         className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-medium mb-2"
                       >
                         <Sparkles className="w-3 h-3" />
-                        Spare €60/Jahr
+                        Spare €120/Jahr
                       </motion.div>
                     )}
                     <p className="text-xs text-muted-foreground mb-4">{t.pricingPlans.pro.analyses}</p>
@@ -1790,11 +1790,11 @@ export default function Home() {
                 >
                   {billingCycle === 'yearly' ? (
                     <>
-                      <span className="line-through text-muted-foreground text-lg mr-1">€59,99</span>
-                      €48<span className="text-sm font-normal text-muted-foreground">/mo</span>
+                      <span className="line-through text-muted-foreground text-lg mr-1">€99</span>
+                      €79<span className="text-sm font-normal text-muted-foreground">/mo</span>
                     </>
                   ) : (
-                    <>€59,99<span className="text-sm font-normal text-muted-foreground">/mo</span></>
+                    <>€99<span className="text-sm font-normal text-muted-foreground">/mo</span></>
                   )}
                 </motion.div>
                 {billingCycle === 'yearly' && (
@@ -1804,7 +1804,7 @@ export default function Home() {
                     className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-medium mb-2"
                   >
                     <Sparkles className="w-3 h-3" />
-                    Spare €144/Jahr
+                    Spare €240/Jahr
                   </motion.div>
                 )}
                 <p className="text-xs text-muted-foreground mb-4">{t.pricingPlans.business.analyses}</p>
@@ -1853,11 +1853,11 @@ export default function Home() {
                 >
                   {billingCycle === 'yearly' ? (
                     <>
-                      <span className="line-through text-muted-foreground text-lg mr-1">€199,99</span>
-                      €160<span className="text-sm font-normal text-muted-foreground">/mo</span>
+                      <span className="line-through text-muted-foreground text-lg mr-1">€299</span>
+                      €239<span className="text-sm font-normal text-muted-foreground">/mo</span>
                     </>
                   ) : (
-                    <>€199,99<span className="text-sm font-normal text-muted-foreground">/mo</span></>
+                    <>€299<span className="text-sm font-normal text-muted-foreground">/mo</span></>
                   )}
                 </motion.div>
                 {billingCycle === 'yearly' && (
@@ -1867,7 +1867,7 @@ export default function Home() {
                     className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-medium mb-2"
                   >
                     <Sparkles className="w-3 h-3" />
-                    Spare €480/Jahr
+                    Spare €720/Jahr
                   </motion.div>
                 )}
                 <p className="text-xs text-muted-foreground mb-4">Unbegrenzte Analysen</p>
@@ -2027,8 +2027,8 @@ export default function Home() {
                             <span className="font-semibold text-primary">Starter</span>
                             <div className="text-lg font-bold text-foreground mt-1">
                               {billingCycle === 'yearly' ? (
-                                <><span className="line-through text-muted-foreground text-sm mr-1">€12,99</span>€10,42</>
-                              ) : '€12,99'}
+                                <><span className="line-through text-muted-foreground text-sm mr-1">€19</span>€15</>
+                              ) : '€19'}
                               <span className="text-xs font-normal text-muted-foreground">/Mo</span>
                             </div>
                             <div className="text-[10px] text-muted-foreground">28 Features</div>
@@ -2042,8 +2042,8 @@ export default function Home() {
                             <span className="text-accent font-bold">Pro</span>
                             <div className="text-lg font-bold text-foreground mt-1">
                               {billingCycle === 'yearly' ? (
-                                <><span className="line-through text-muted-foreground text-sm mr-1">€24,99</span>€20</>
-                              ) : '€24,99'}
+                                <><span className="line-through text-muted-foreground text-sm mr-1">€49</span>€39</>
+                              ) : '€49'}
                               <span className="text-xs font-normal text-muted-foreground">/Mo</span>
                             </div>
                             <div className="text-[10px] text-accent">52 Features</div>
@@ -2052,8 +2052,8 @@ export default function Home() {
                             <span className="font-semibold text-yellow-500">Business</span>
                             <div className="text-lg font-bold text-foreground mt-1">
                               {billingCycle === 'yearly' ? (
-                                <><span className="line-through text-muted-foreground text-sm mr-1">€59,99</span>€48</>
-                              ) : '€59,99'}
+                                <><span className="line-through text-muted-foreground text-sm mr-1">€99</span>€79</>
+                              ) : '€99'}
                               <span className="text-xs font-normal text-muted-foreground">/Mo</span>
                             </div>
                             <div className="text-[10px] text-muted-foreground">71 Features</div>
@@ -2062,8 +2062,8 @@ export default function Home() {
                             <span className="font-semibold text-pink-500">Enterprise</span>
                             <div className="text-lg font-bold text-foreground mt-1">
                               {billingCycle === 'yearly' ? (
-                                <><span className="line-through text-muted-foreground text-sm mr-1">€199,99</span>€160</>
-                              ) : '€199,99'}
+                                <><span className="line-through text-muted-foreground text-sm mr-1">€299</span>€239</>
+                              ) : '€299'}
                               <span className="text-xs font-normal text-muted-foreground">/Mo</span>
                             </div>
                             <div className="text-[10px] text-pink-500">Alle 83 Features</div>

@@ -23,8 +23,8 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
     id: "starter",
     name: "Starter",
     analysesPerMonth: 10,
-    monthlyPrice: 1299, // €12.99
-    yearlyPrice: 12499, // €124.99/year (~€10.42/month)
+    monthlyPrice: 1900, // €19
+    yearlyPrice: 18000, // €180/year (~€15/month)
     currency: "eur",
     description: "Für Einsteiger",
     features: [
@@ -41,8 +41,8 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
     id: "pro",
     name: "Pro",
     analysesPerMonth: 35,
-    monthlyPrice: 2499, // €24.99
-    yearlyPrice: 23999, // €239.99/year (~€20/month)
+    monthlyPrice: 4900, // €49
+    yearlyPrice: 46800, // €468/year (~€39/month)
     currency: "eur",
     description: "Für Creator",
     features: [
@@ -62,8 +62,8 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
     id: "business",
     name: "Business",
     analysesPerMonth: 100,
-    monthlyPrice: 5999, // €59.99
-    yearlyPrice: 57599, // €575.99/year (~€48/month)
+    monthlyPrice: 9900, // €99
+    yearlyPrice: 94800, // €948/year (~€79/month)
     currency: "eur",
     description: "Für Agenturen",
     features: [
@@ -82,8 +82,8 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
     id: "enterprise",
     name: "Enterprise",
     analysesPerMonth: -1, // Unlimited
-    monthlyPrice: 19999, // €199.99
-    yearlyPrice: 191999, // €1919.99/year (~€160/month)
+    monthlyPrice: 29900, // €299
+    yearlyPrice: 286800, // €2868/year (~€239/month)
     currency: "eur",
     description: "Für große Agenturen",
     features: [

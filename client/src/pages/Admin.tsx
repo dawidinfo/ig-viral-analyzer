@@ -532,10 +532,10 @@ export default function Admin() {
               <div className="space-y-2">
                 <h4 className="font-semibold text-sm">Aktuelle Preise</h4>
                 <div className="text-xs space-y-1">
-                  <p className="text-green-400">• Starter: €12,99/Monat (10 Analysen)</p>
-                  <p className="text-blue-400">• Pro: €24,99/Monat (35 Analysen)</p>
-                  <p className="text-purple-400">• Business: €59,99/Monat (100 Analysen)</p>
-                  <p className="text-amber-400">• Enterprise: €199,99/Monat (Unbegrenzt)</p>
+                  <p className="text-green-400">• Starter: €19/Monat (10 Analysen)</p>
+                  <p className="text-blue-400">• Pro: €49/Monat (35 Analysen)</p>
+                  <p className="text-purple-400">• Business: €99/Monat (100 Analysen)</p>
+                  <p className="text-amber-400">• Enterprise: €299/Monat (Unbegrenzt)</p>
                 </div>
               </div>
               <div className="space-y-2">

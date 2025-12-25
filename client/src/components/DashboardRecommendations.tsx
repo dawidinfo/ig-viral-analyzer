@@ -63,9 +63,9 @@ export function DashboardRecommendations({
   const [selectedPlan, setSelectedPlan] = useState<'starter' | 'pro' | 'business'>('pro');
   
   const planOptions = [
-    { id: 'starter' as const, name: 'Starter', price: '€12,99', color: 'from-blue-500 to-cyan-500' },
-    { id: 'pro' as const, name: 'Pro', price: '€24,99', color: 'from-violet-500 to-purple-600', popular: true },
-    { id: 'business' as const, name: 'Business', price: '€59,99', color: 'from-amber-500 to-orange-500' },
+    { id: 'starter' as const, name: 'Starter', price: '€19', color: 'from-blue-500 to-cyan-500' },
+    { id: 'pro' as const, name: 'Pro', price: '€49', color: 'from-violet-500 to-purple-600', popular: true },
+    { id: 'business' as const, name: 'Business', price: '€99', color: 'from-amber-500 to-orange-500' },
   ];
 
   // Stripe Checkout Mutation - direkt zum Pro Plan
@@ -155,7 +155,7 @@ export function DashboardRecommendations({
       id: "upgrade",
       type: "upgrade" as const,
       title: `Upgrade auf ${planOptions.find(p => p.id === selectedPlan)?.name || 'Pro'}`,
-      description: `Mehr Analysen + Premium Features für nur ${planOptions.find(p => p.id === selectedPlan)?.price || '€24,99'}/Monat`,
+      description: `Mehr Analysen + Premium Features für nur ${planOptions.find(p => p.id === selectedPlan)?.price || '€49'}/Monat`,
       action: "Jetzt freischalten",
       icon: <Crown className="w-6 h-6" />,
       gradient: planOptions.find(p => p.id === selectedPlan)?.color || "from-amber-500 to-orange-600",

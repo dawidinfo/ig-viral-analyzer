@@ -1151,3 +1151,12 @@
 - [ ] Icons im Cache-Dashboard werden nicht angezeigt
 - [x] Preisempfehlungen im Admin-Panel zeigen alte Preise
 - [x] Preise überall konsistent machen
+
+## Preise auf alte Werte zurücksetzen (höhere Marge)
+- [x] Stripe products.ts auf alte Preise zurücksetzen (€19, €49, €99, €299)
+- [x] Homepage Pricing-Bereich zurücksetzen
+- [x] Vergleichstabelle zurücksetzen
+- [x] DashboardRecommendations zurücksetzen
+- [x] ContentPlanGenerator zurücksetzen
+- [x] InvoicesTab zurücksetzen
+- [x] Admin-Panel Empfehlungen zurücksetzen
