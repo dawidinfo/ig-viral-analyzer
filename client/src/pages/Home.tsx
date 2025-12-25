@@ -1930,9 +1930,15 @@ export default function Home() {
                   transition={{ duration: 0.3 }}
                   className="mt-12 overflow-hidden"
                 >
-                  <div className="glass-card rounded-2xl p-6 overflow-x-auto">
-                    <h3 className="text-xl font-bold mb-6 text-center">Vollständiger Feature-Vergleich</h3>
-                    <table className="w-full min-w-[800px] text-sm">
+                  <div className="glass-card rounded-2xl p-4 md:p-6">
+                    <h3 className="text-xl font-bold mb-4 text-center">Vollständiger Feature-Vergleich</h3>
+                    <p className="text-xs text-muted-foreground text-center mb-4 md:hidden flex items-center justify-center gap-2">
+                      <ArrowRight className="w-3 h-3" />
+                      Wische nach rechts für mehr
+                      <ArrowRight className="w-3 h-3" />
+                    </p>
+                    <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+                      <table className="w-full min-w-[700px] text-xs md:text-sm">
                       <thead>
                         <tr className="border-b border-border">
                           <th className="text-left py-3 px-4 font-semibold">Feature</th>
@@ -1989,12 +1995,150 @@ export default function Home() {
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                         </tr>
                         
+                        {/* Engagement Metriken */}
+                        <tr className="bg-muted/30">
+                          <td colSpan={6} className="py-2 px-4 font-semibold text-xs uppercase tracking-wider text-muted-foreground">Engagement Metriken</td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Likes-Analyse</td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Comments-Analyse</td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Shares-Tracking</td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Saves-Tracking</td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Engagement-Rate Berechnung</td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Branchen-Benchmarks</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Trend-Erkennung</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        
+                        {/* Content Analyse */}
+                        <tr className="bg-muted/30">
+                          <td colSpan={6} className="py-2 px-4 font-semibold text-xs uppercase tracking-wider text-muted-foreground">Content Analyse</td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Hook-Qualität Bewertung</td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Caption-Analyse</td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">CTA-Effektivität</td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Hashtag-Strategie</td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Optimale Caption-Länge</td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Reel-Transkription</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Schnittfrequenz-Analyse</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Hook-Timing Analyse</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Copywriting-Formeln Check</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        
                         {/* Plattformen */}
                         <tr className="bg-muted/30">
                           <td colSpan={6} className="py-2 px-4 font-semibold text-xs uppercase tracking-wider text-muted-foreground">Plattformen</td>
                         </tr>
                         <tr className="hover:bg-muted/20">
-                          <td className="py-2 px-4">Instagram Analyse</td>
+                          <td className="py-2 px-4">Instagram Reels</td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
@@ -2002,7 +2146,23 @@ export default function Home() {
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                         </tr>
                         <tr className="hover:bg-muted/20">
-                          <td className="py-2 px-4">TikTok Analyse</td>
+                          <td className="py-2 px-4">Instagram Posts</td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Instagram Stories</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">TikTok Videos</td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
@@ -2010,11 +2170,35 @@ export default function Home() {
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                         </tr>
                         <tr className="hover:bg-muted/20">
-                          <td className="py-2 px-4">YouTube Analyse</td>
+                          <td className="py-2 px-4">YouTube Shorts</td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">YouTube Videos</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">LinkedIn Posts</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">X/Twitter Posts</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                         </tr>
                         
@@ -2039,10 +2223,50 @@ export default function Home() {
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                         </tr>
                         <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Interaktive Heatmap</td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
                           <td className="py-2 px-4">Competitor-Vergleich</td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Analyse-Verlauf speichern</td>
+                          <td className="text-center py-2 px-4">Letzte 3</td>
+                          <td className="text-center py-2 px-4 text-primary">Letzte 50</td>
+                          <td className="text-center py-2 px-4 text-accent">Unbegrenzt</td>
+                          <td className="text-center py-2 px-4 text-yellow-500">Unbegrenzt</td>
+                          <td className="text-center py-2 px-4 text-pink-500">Unbegrenzt</td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Favoriten markieren</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Wachstums-Alerts</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Viral-Trend Benachrichtigung</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                         </tr>
@@ -2060,11 +2284,141 @@ export default function Home() {
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                         </tr>
                         <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">CSV-Export</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Automatische Reports</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
                           <td className="py-2 px-4">White-Label Reports</td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Custom Branding</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        
+                        {/* KI-Features */}
+                        <tr className="bg-muted/30">
+                          <td colSpan={6} className="py-2 px-4 font-semibold text-xs uppercase tracking-wider text-muted-foreground">KI-Features</td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">KI-Tiefenanalyse</td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">HAPSS-Framework Analyse</td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">AIDA-Framework Analyse</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">KI-Content-Plan Generator</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">KI-Verbesserungsvorschläge</td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Nischen-Empfehlungen</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Viral-Potenzial Vorhersage</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Sentiment-Analyse</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        
+                        {/* Automatisierung */}
+                        <tr className="bg-muted/30">
+                          <td colSpan={6} className="py-2 px-4 font-semibold text-xs uppercase tracking-wider text-muted-foreground">Automatisierung</td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Geplante Analysen</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Automatische Wettbewerber-Scans</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Webhook-Integration</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Zapier-Integration</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                         </tr>
                         
@@ -2079,6 +2433,22 @@ export default function Home() {
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4 text-yellow-500">Bis 5</td>
                           <td className="text-center py-2 px-4 text-pink-500">Unbegrenzt</td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Rollen & Berechtigungen</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Aktivitäts-Log</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                         </tr>
                         <tr className="hover:bg-muted/20">
                           <td className="py-2 px-4">API-Zugang</td>
@@ -2097,6 +2467,14 @@ export default function Home() {
                           <td className="text-center py-2 px-4 text-xs text-pink-500">Account Manager</td>
                         </tr>
                         <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Onboarding-Session</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
+                        <tr className="hover:bg-muted/20">
                           <td className="py-2 px-4">SLA-Garantie</td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
@@ -2104,8 +2482,18 @@ export default function Home() {
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                         </tr>
+                        <tr className="hover:bg-muted/20">
+                          <td className="py-2 px-4">Custom Integrationen</td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
+                          <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
+                        </tr>
                       </tbody>
-                    </table>
+                      </table>
+                    </div>
+                    <p className="text-xs text-muted-foreground text-center mt-4">Gesamt: 83 Features über alle Pläne</p>
                   </div>
                 </motion.div>
               )}

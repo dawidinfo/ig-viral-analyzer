@@ -1006,3 +1006,8 @@
 
 ## Bug-Fixes (Navigation)
 - [x] "Alle 83 Features vergleichen" Button soll Features aufklappen, nicht zur Homepage navigieren
+
+## Stripe & Feature-Tabelle Verbesserungen
+- [x] Stripe Checkout mit neuen Price-IDs testen (alle 8 Preise funktionieren)
+- [x] Mobile Feature-Tabelle optimieren (besseres Scrolling)
+- [x] Feature-Tabelle auf alle 83 Features erweitern (10 Kategorien, 83 Features)
