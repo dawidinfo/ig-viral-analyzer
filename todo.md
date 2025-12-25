@@ -1020,3 +1020,8 @@
 - [x] Pro-Plan Spalte in Feature-Tabelle mit farbigem Rahmen hervorheben
 - [x] "Beliebteste Wahl" Badge im Header hinzufügen
 - [x] Grüner Gradient-Hintergrund für Pro-Spalte
+
+## UX-Verbesserungen Feature-Tabelle
+- [x] Sticky Header für Feature-Tabelle (Plan-Namen beim Scrollen fixiert)
+- [x] Animierter Scroll-to-Top Button
+- [x] Feature-Filter Buttons (KI-Features, Team-Features, etc.)

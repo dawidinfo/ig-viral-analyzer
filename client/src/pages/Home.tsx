@@ -51,9 +51,9 @@ import {
   Check,
   Minus
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { LogIn, LogOut, Globe, Building2, ArrowDown, Info, HelpCircle } from "lucide-react";
+import { LogIn, LogOut, Globe, Building2, ArrowDown, ArrowUp, Info, HelpCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -244,6 +244,21 @@ export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [showAllFeatures, setShowAllFeatures] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [featureFilter, setFeatureFilter] = useState<string>('all');
+
+  // Scroll-to-Top Button visibility
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 500);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
@@ -1932,19 +1947,43 @@ export default function Home() {
                 >
                   <div className="glass-card rounded-2xl p-4 md:p-6">
                     <h3 className="text-xl font-bold mb-4 text-center">Vollständiger Feature-Vergleich</h3>
+                    
+                    {/* Feature Filter Buttons */}
+                    <div className="flex flex-wrap justify-center gap-2 mb-4">
+                      {[
+                        { id: 'all', label: 'Alle Features' },
+                        { id: 'analyse', label: 'Analyse' },
+                        { id: 'ki', label: 'KI-Features' },
+                        { id: 'export', label: 'Export' },
+                        { id: 'team', label: 'Team & Support' },
+                      ].map((filter) => (
+                        <button
+                          key={filter.id}
+                          onClick={() => setFeatureFilter(filter.id)}
+                          className={`px-3 py-1.5 text-xs rounded-full transition-all ${
+                            featureFilter === filter.id
+                              ? 'bg-gradient-to-r from-accent to-emerald-500 text-white shadow-md'
+                              : 'bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground'
+                          }`}
+                        >
+                          {filter.label}
+                        </button>
+                      ))}
+                    </div>
+                    
                     <p className="text-xs text-muted-foreground text-center mb-4 md:hidden flex items-center justify-center gap-2">
                       <ArrowRight className="w-3 h-3" />
                       Wische nach rechts für mehr
                       <ArrowRight className="w-3 h-3" />
                     </p>
-                    <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+                    <div className="overflow-x-auto overflow-y-auto max-h-[500px] -mx-4 px-4 md:mx-0 md:px-0 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
                       <table className="w-full min-w-[700px] text-xs md:text-sm feature-table-pro-highlight">
-                      <thead>
+                      <thead className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm">
                         <tr className="border-b border-border">
-                          <th className="text-left py-3 px-4 font-semibold">Feature</th>
-                          <th className="text-center py-3 px-4 font-semibold">Free</th>
-                          <th className="text-center py-3 px-4 font-semibold text-primary">Starter</th>
-                          <th className="text-center py-3 px-4 font-semibold relative">
+                          <th className="text-left py-3 px-4 font-semibold bg-background/95">Feature</th>
+                          <th className="text-center py-3 px-4 font-semibold bg-background/95">Free</th>
+                          <th className="text-center py-3 px-4 font-semibold text-primary bg-background/95">Starter</th>
+                          <th className="text-center py-3 px-4 font-semibold relative bg-gradient-to-b from-accent/20 to-accent/5">
                             <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                               <span className="bg-gradient-to-r from-accent to-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap shadow-lg">
                                 BELIEBTESTE WAHL
@@ -1952,16 +1991,16 @@ export default function Home() {
                             </div>
                             <span className="text-accent">Pro</span>
                           </th>
-                          <th className="text-center py-3 px-4 font-semibold text-yellow-500">Business</th>
-                          <th className="text-center py-3 px-4 font-semibold text-pink-500">Enterprise</th>
+                          <th className="text-center py-3 px-4 font-semibold text-yellow-500 bg-background/95">Business</th>
+                          <th className="text-center py-3 px-4 font-semibold text-pink-500 bg-background/95">Enterprise</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-border/50">
                         {/* Analyse Features */}
-                        <tr className="bg-muted/30">
+                        <tr className={`bg-muted/30 ${featureFilter !== 'all' && featureFilter !== 'analyse' ? 'hidden' : ''}`} data-category="analyse">
                           <td colSpan={6} className="py-2 px-4 font-semibold text-xs uppercase tracking-wider text-muted-foreground">Analyse Features</td>
                         </tr>
-                        <tr className="hover:bg-muted/20">
+                        <tr className={`hover:bg-muted/20 ${featureFilter !== 'all' && featureFilter !== 'analyse' ? 'hidden' : ''}`}>
                           <td className="py-2 px-4">KI-Analysen pro Monat</td>
                           <td className="text-center py-2 px-4">3</td>
                           <td className="text-center py-2 px-4 text-primary">10</td>
@@ -2033,7 +2072,7 @@ export default function Home() {
                         </tr>
                         
                         {/* Engagement Metriken */}
-                        <tr className="bg-muted/30">
+                        <tr className={`bg-muted/30 ${featureFilter !== 'all' && featureFilter !== 'analyse' ? 'hidden' : ''}`}>
                           <td colSpan={6} className="py-2 px-4 font-semibold text-xs uppercase tracking-wider text-muted-foreground">Engagement Metriken</td>
                         </tr>
                         <tr className="hover:bg-muted/20">
@@ -2114,7 +2153,7 @@ export default function Home() {
                         </tr>
                         
                         {/* Content Analyse */}
-                        <tr className="bg-muted/30">
+                        <tr className={`bg-muted/30 ${featureFilter !== 'all' && featureFilter !== 'analyse' ? 'hidden' : ''}`}>
                           <td colSpan={6} className="py-2 px-4 font-semibold text-xs uppercase tracking-wider text-muted-foreground">Content Analyse</td>
                         </tr>
                         <tr className="hover:bg-muted/20">
@@ -2201,7 +2240,7 @@ export default function Home() {
                         </tr>
                         
                         {/* Plattformen */}
-                        <tr className="bg-muted/30">
+                        <tr className={`bg-muted/30 ${featureFilter !== 'all' && featureFilter !== 'analyse' ? 'hidden' : ''}`}>
                           <td colSpan={6} className="py-2 px-4 font-semibold text-xs uppercase tracking-wider text-muted-foreground">Plattformen</td>
                         </tr>
                         <tr className="hover:bg-muted/20">
@@ -2270,7 +2309,7 @@ export default function Home() {
                         </tr>
                         
                         {/* Tracking & Historie */}
-                        <tr className="bg-muted/30">
+                        <tr className={`bg-muted/30 ${featureFilter !== 'all' && featureFilter !== 'analyse' ? 'hidden' : ''}`}>
                           <td colSpan={6} className="py-2 px-4 font-semibold text-xs uppercase tracking-wider text-muted-foreground">Tracking & Historie</td>
                         </tr>
                         <tr className="hover:bg-muted/20">
@@ -2339,7 +2378,7 @@ export default function Home() {
                         </tr>
                         
                         {/* Export & Reports */}
-                        <tr className="bg-muted/30">
+                        <tr className={`bg-muted/30 ${featureFilter !== 'all' && featureFilter !== 'export' ? 'hidden' : ''}`}>
                           <td colSpan={6} className="py-2 px-4 font-semibold text-xs uppercase tracking-wider text-muted-foreground">Export & Reports</td>
                         </tr>
                         <tr className="hover:bg-muted/20">
@@ -2384,7 +2423,7 @@ export default function Home() {
                         </tr>
                         
                         {/* KI-Features */}
-                        <tr className="bg-muted/30">
+                        <tr className={`bg-muted/30 ${featureFilter !== 'all' && featureFilter !== 'ki' ? 'hidden' : ''}`}>
                           <td colSpan={6} className="py-2 px-4 font-semibold text-xs uppercase tracking-wider text-muted-foreground">KI-Features</td>
                         </tr>
                         <tr className="hover:bg-muted/20">
@@ -2493,7 +2532,7 @@ export default function Home() {
                         </tr>
                         
                         {/* Automatisierung */}
-                        <tr className="bg-muted/30">
+                        <tr className={`bg-muted/30 ${featureFilter !== 'all' && featureFilter !== 'ki' ? 'hidden' : ''}`}>
                           <td colSpan={6} className="py-2 px-4 font-semibold text-xs uppercase tracking-wider text-muted-foreground">Automatisierung</td>
                         </tr>
                         <tr className="hover:bg-muted/20">
@@ -2540,7 +2579,7 @@ export default function Home() {
                         </tr>
                         
                         {/* Team & Support */}
-                        <tr className="bg-muted/30">
+                        <tr className={`bg-muted/30 ${featureFilter !== 'all' && featureFilter !== 'team' ? 'hidden' : ''}`}>
                           <td colSpan={6} className="py-2 px-4 font-semibold text-xs uppercase tracking-wider text-muted-foreground">Team & Support</td>
                         </tr>
                         <tr className="hover:bg-muted/20">
@@ -2756,6 +2795,22 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+
+      {/* Scroll to Top Button */}
+      <AnimatePresence>
+        {showScrollTop && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            onClick={scrollToTop}
+            className="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-gradient-to-r from-accent to-emerald-500 text-white shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300"
+            aria-label="Scroll to top"
+          >
+            <ArrowUp className="w-5 h-5" />
+          </motion.button>
+        )}
+      </AnimatePresence>
 
       {/* Global Footer */}
       <GlobalFooter />
