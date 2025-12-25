@@ -1194,3 +1194,4 @@
 - [x] Detaillierte Statusmeldungen für Cache-Löschvorgang
 - [x] Dashboard-Navigation größer, schöner und sticky machen
 - [x] Dashboard-Navigation Bug - Tabs abgeschnitten
+- [x] Schatteneffekt zur sticky Navigation hinzufügen
