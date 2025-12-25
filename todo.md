@@ -999,3 +999,7 @@
 - [x] Visuelle Balkendiagramme für Variante A vs B
 - [x] Gewinner-Indikator mit Konfidenz-Anzeige
 - [x] Integration in Admin-Seite
+
+## Bug-Fixes (Stripe)
+- [x] Ungültige Stripe Price-ID 'price_1Si0DUKBt9XuvpG396rkn6d8' korrigieren
+- [x] Alle 4 Pläne mit neuen Stripe Products und Prices erstellt
