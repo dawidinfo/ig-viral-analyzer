@@ -669,7 +669,7 @@ export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }:
                       Upgrade auf Pro
                     </Button>
                     <p className="text-xs text-muted-foreground mt-3">
-                      Ab €49/Monat • Jederzeit kündbar
+                      Ab €24,99/Monat • Jederzeit kündbar
                     </p>
                   </CardContent>
                 </Card>

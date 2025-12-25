@@ -1146,3 +1146,8 @@
 - [x] Alerting-System für niedrige Cache-Hit-Rate
 - [x] Integration ins Admin-Panel
 - [x] Tests für Cache-Dashboard
+
+## Bug Fixes
+- [ ] Icons im Cache-Dashboard werden nicht angezeigt
+- [x] Preisempfehlungen im Admin-Panel zeigen alte Preise
+- [x] Preise überall konsistent machen

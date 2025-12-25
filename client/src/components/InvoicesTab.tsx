@@ -33,9 +33,10 @@ export function InvoicesTab({ userId }: InvoicesTabProps) {
   };
 
   const getPackagePrice = (amount: number) => {
-    if (amount >= 350) return '€99';
-    if (amount >= 100) return '€49';
-    if (amount >= 25) return '€19';
+    if (amount >= 19000) return '€199,99';
+    if (amount >= 5500) return '€59,99';
+    if (amount >= 2200) return '€24,99';
+    if (amount >= 1100) return '€12,99';
     return '€0';
   };
 
