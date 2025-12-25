@@ -938,19 +938,9 @@ export default function Pricing() {
           >
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold mb-4">Alle Features im Detail</h2>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-muted-foreground">
                 Vergleiche alle {featureCategories.reduce((acc, cat) => acc + cat.features.length, 0)} Features der verschiedenen Pläne
               </p>
-              <div className="flex justify-center gap-4">
-                <Button variant="outline" size="sm" onClick={expandAll} className="gap-2">
-                  <ChevronDown className="w-4 h-4" />
-                  Alle öffnen
-                </Button>
-                <Button variant="outline" size="sm" onClick={collapseAll} className="gap-2">
-                  <ChevronDown className="w-4 h-4 rotate-180" />
-                  Alle schließen
-                </Button>
-              </div>
             </div>
 
             {/* Sticky Header for Tier Names */}
@@ -965,60 +955,45 @@ export default function Pricing() {
               </div>
             </div>
 
-            {/* Accordion Categories */}
-            <div className="space-y-3">
+            {/* All Features - No Accordion */}
+            <div className="space-y-6">
               {featureCategories.map((category, catIndex) => (
                 <div key={`category-${catIndex}`} className="rounded-xl border border-border overflow-hidden bg-card">
-                  {/* Category Header - Clickable */}
-                  <button
-                    onClick={() => toggleCategory(catIndex)}
-                    className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-violet-500/20 to-purple-500/20 flex items-center justify-center text-violet-500">
-                        {category.icon}
-                      </div>
-                      <div className="text-left">
-                        <h3 className="font-semibold">{category.title}</h3>
-                        <p className="text-sm text-muted-foreground">{category.features.length} Features</p>
-                      </div>
+                  {/* Category Header */}
+                  <div className="flex items-center gap-3 p-4 bg-muted/30 border-b border-border">
+                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-violet-500/20 to-purple-500/20 flex items-center justify-center text-violet-500">
+                      {category.icon}
                     </div>
-                    <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform duration-300 ${expandedCategories.has(catIndex) ? 'rotate-180' : ''}`} />
-                  </button>
+                    <div>
+                      <h3 className="font-semibold">{category.title}</h3>
+                      <p className="text-sm text-muted-foreground">{category.features.length} Features</p>
+                    </div>
+                  </div>
 
-                  {/* Features - Expandable */}
-                  {expandedCategories.has(catIndex) && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="border-t border-border"
-                    >
-                      <div className="overflow-x-auto">
-                        <table className="w-full">
-                          <tbody>
-                            {category.features.map((feature, featIndex) => (
-                              <tr key={`feat-${catIndex}-${featIndex}`} className="border-b border-border/30 last:border-0 hover:bg-muted/20 transition-colors">
-                                <td className="py-3 px-4 w-1/3">
-                                  <div>
-                                    <div className="font-medium text-sm">{feature.name}</div>
-                                    <div className="text-xs text-muted-foreground">{feature.description}</div>
-                                  </div>
-                                </td>
-                                <td className="text-center py-3 px-2 w-[13.3%]">{getTierValue(feature.tiers.free)}</td>
-                                <td className="text-center py-3 px-2 w-[13.3%]">{getTierValue(feature.tiers.starter)}</td>
-                                <td className={`text-center py-3 px-2 w-[13.3%] ${pricingTiers[2].popular ? 'bg-violet-500/5' : ''}`}>
-                                  {getTierValue(feature.tiers.pro)}
-                                </td>
-                                <td className="text-center py-3 px-2 w-[13.3%]">{getTierValue(feature.tiers.business)}</td>
-                                <td className="text-center py-3 px-2 w-[13.3%]">{getTierValue(feature.tiers.enterprise)}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </motion.div>
-                  )}
+                  {/* Features - Always Visible */}
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <tbody>
+                        {category.features.map((feature, featIndex) => (
+                          <tr key={`feat-${catIndex}-${featIndex}`} className="border-b border-border/30 last:border-0 hover:bg-muted/20 transition-colors">
+                            <td className="py-3 px-4 w-1/3">
+                              <div>
+                                <div className="font-medium text-sm">{feature.name}</div>
+                                <div className="text-xs text-muted-foreground">{feature.description}</div>
+                              </div>
+                            </td>
+                            <td className="text-center py-3 px-2 w-[13.3%]">{getTierValue(feature.tiers.free)}</td>
+                            <td className="text-center py-3 px-2 w-[13.3%]">{getTierValue(feature.tiers.starter)}</td>
+                            <td className={`text-center py-3 px-2 w-[13.3%] ${pricingTiers[2].popular ? 'bg-violet-500/5' : ''}`}>
+                              {getTierValue(feature.tiers.pro)}
+                            </td>
+                            <td className="text-center py-3 px-2 w-[13.3%]">{getTierValue(feature.tiers.business)}</td>
+                            <td className="text-center py-3 px-2 w-[13.3%]">{getTierValue(feature.tiers.enterprise)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               ))}
             </div>

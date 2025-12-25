@@ -874,3 +874,5 @@
 - [x] Pricing-Seite: Alle Features direkt anzeigen (nicht im Akkordeon versteckt)
 - [x] Pricing-Seite: Kauf-Buttons direkt zum Stripe Checkout ohne Weiterleitung
 - [x] Home-Seite: Pricing-Buttons führen direkt zum Stripe Checkout
+
+- [x] Pricing-Seite: Feature-Vergleichstabelle komplett ohne Akkordeon anzeigen (alle Features sichtbar)
