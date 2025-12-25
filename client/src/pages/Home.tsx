@@ -53,7 +53,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { LogIn, LogOut, Globe, Building2, ArrowDown } from "lucide-react";
+import { LogIn, LogOut, Globe, Building2, ArrowDown, Info, HelpCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -1963,7 +1963,17 @@ export default function Home() {
                           <td className="text-center py-2 px-4 text-pink-500">Unbegrenzt</td>
                         </tr>
                         <tr className="hover:bg-muted/20">
-                          <td className="py-2 px-4">Viral Score Analyse</td>
+                          <td className="py-2 px-4">
+                            <span className="inline-flex items-center gap-1.5">
+                              Viral Score Analyse
+                              <span className="group relative">
+                                <HelpCircle className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
+                                <span className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-popover border border-border rounded-lg text-xs w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 shadow-lg">
+                                  Bewertet das Viral-Potenzial basierend auf 47 Faktoren wie Hook-Qualität, Engagement-Rate und optimale Posting-Zeit.
+                                </span>
+                              </span>
+                            </span>
+                          </td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
@@ -1971,7 +1981,17 @@ export default function Home() {
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                         </tr>
                         <tr className="hover:bg-muted/20">
-                          <td className="py-2 px-4">HAPSS-Framework</td>
+                          <td className="py-2 px-4">
+                            <span className="inline-flex items-center gap-1.5">
+                              HAPSS-Framework
+                              <span className="group relative">
+                                <HelpCircle className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
+                                <span className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-popover border border-border rounded-lg text-xs w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 shadow-lg">
+                                  <strong>H</strong>ook, <strong>A</strong>ttention, <strong>P</strong>roblem, <strong>S</strong>tory, <strong>S</strong>olution – bewährtes Framework für viralen Content.
+                                </span>
+                              </span>
+                            </span>
+                          </td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
@@ -1987,7 +2007,17 @@ export default function Home() {
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                         </tr>
                         <tr className="hover:bg-muted/20">
-                          <td className="py-2 px-4">Hopkins, Ogilvy, Schwartz Formeln</td>
+                          <td className="py-2 px-4">
+                            <span className="inline-flex items-center gap-1.5">
+                              Hopkins, Ogilvy, Schwartz
+                              <span className="group relative">
+                                <HelpCircle className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
+                                <span className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-popover border border-border rounded-lg text-xs w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 shadow-lg">
+                                  Klassische Copywriting-Formeln von Claude Hopkins, David Ogilvy und Eugene Schwartz für überzeugende Texte.
+                                </span>
+                              </span>
+                            </span>
+                          </td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
@@ -2032,7 +2062,17 @@ export default function Home() {
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                         </tr>
                         <tr className="hover:bg-muted/20">
-                          <td className="py-2 px-4">Engagement-Rate Berechnung</td>
+                          <td className="py-2 px-4">
+                            <span className="inline-flex items-center gap-1.5">
+                              Engagement-Rate
+                              <span className="group relative">
+                                <HelpCircle className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
+                                <span className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-popover border border-border rounded-lg text-xs w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 shadow-lg">
+                                  (Likes + Comments + Saves + Shares) / Follower × 100. Zeigt wie aktiv deine Community ist.
+                                </span>
+                              </span>
+                            </span>
+                          </td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
@@ -2040,7 +2080,17 @@ export default function Home() {
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                         </tr>
                         <tr className="hover:bg-muted/20">
-                          <td className="py-2 px-4">Branchen-Benchmarks</td>
+                          <td className="py-2 px-4">
+                            <span className="inline-flex items-center gap-1.5">
+                              Branchen-Benchmarks
+                              <span className="group relative">
+                                <HelpCircle className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
+                                <span className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-popover border border-border rounded-lg text-xs w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 shadow-lg">
+                                  Vergleiche deine Metriken mit Durchschnittswerten deiner Branche (Fitness, Beauty, Business, etc.).
+                                </span>
+                              </span>
+                            </span>
+                          </td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
@@ -2061,7 +2111,17 @@ export default function Home() {
                           <td colSpan={6} className="py-2 px-4 font-semibold text-xs uppercase tracking-wider text-muted-foreground">Content Analyse</td>
                         </tr>
                         <tr className="hover:bg-muted/20">
-                          <td className="py-2 px-4">Hook-Qualität Bewertung</td>
+                          <td className="py-2 px-4">
+                            <span className="inline-flex items-center gap-1.5">
+                              Hook-Qualität
+                              <span className="group relative">
+                                <HelpCircle className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
+                                <span className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-popover border border-border rounded-lg text-xs w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 shadow-lg">
+                                  Die ersten 3 Sekunden entscheiden. Wir analysieren Aufmerksamkeitsfaktoren, Neugier-Trigger und visuelle Hooks.
+                                </span>
+                              </span>
+                            </span>
+                          </td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
@@ -2329,7 +2389,17 @@ export default function Home() {
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                         </tr>
                         <tr className="hover:bg-muted/20">
-                          <td className="py-2 px-4">HAPSS-Framework Analyse</td>
+                          <td className="py-2 px-4">
+                            <span className="inline-flex items-center gap-1.5">
+                              HAPSS-Framework Analyse
+                              <span className="group relative">
+                                <HelpCircle className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
+                                <span className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-popover border border-border rounded-lg text-xs w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 shadow-lg">
+                                  <strong>H</strong>ook, <strong>A</strong>ttention, <strong>P</strong>roblem, <strong>S</strong>tory, <strong>S</strong>olution – bewährtes Framework für viralen Content.
+                                </span>
+                              </span>
+                            </span>
+                          </td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
@@ -2337,7 +2407,17 @@ export default function Home() {
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                         </tr>
                         <tr className="hover:bg-muted/20">
-                          <td className="py-2 px-4">AIDA-Framework Analyse</td>
+                          <td className="py-2 px-4">
+                            <span className="inline-flex items-center gap-1.5">
+                              AIDA-Framework Analyse
+                              <span className="group relative">
+                                <HelpCircle className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
+                                <span className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-popover border border-border rounded-lg text-xs w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 shadow-lg">
+                                  <strong>A</strong>ttention, <strong>I</strong>nterest, <strong>D</strong>esire, <strong>A</strong>ction – klassisches Marketing-Framework für überzeugende Inhalte.
+                                </span>
+                              </span>
+                            </span>
+                          </td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
@@ -2369,7 +2449,17 @@ export default function Home() {
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                         </tr>
                         <tr className="hover:bg-muted/20">
-                          <td className="py-2 px-4">Viral-Potenzial Vorhersage</td>
+                          <td className="py-2 px-4">
+                            <span className="inline-flex items-center gap-1.5">
+                              Viral-Potenzial Vorhersage
+                              <span className="group relative">
+                                <HelpCircle className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
+                                <span className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-popover border border-border rounded-lg text-xs w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 shadow-lg">
+                                  KI-Prognose wie wahrscheinlich ein Post viral geht, basierend auf historischen Daten ähnlicher Inhalte.
+                                </span>
+                              </span>
+                            </span>
+                          </td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
@@ -2377,7 +2467,17 @@ export default function Home() {
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                         </tr>
                         <tr className="hover:bg-muted/20">
-                          <td className="py-2 px-4">Sentiment-Analyse</td>
+                          <td className="py-2 px-4">
+                            <span className="inline-flex items-center gap-1.5">
+                              Sentiment-Analyse
+                              <span className="group relative">
+                                <HelpCircle className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
+                                <span className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-popover border border-border rounded-lg text-xs w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 shadow-lg">
+                                  KI-gestützte Analyse der Stimmung in Kommentaren – positiv, negativ oder neutral. Erkennt Trends in der Community.
+                                </span>
+                              </span>
+                            </span>
+                          </td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
@@ -2406,7 +2506,17 @@ export default function Home() {
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                         </tr>
                         <tr className="hover:bg-muted/20">
-                          <td className="py-2 px-4">Webhook-Integration</td>
+                          <td className="py-2 px-4">
+                            <span className="inline-flex items-center gap-1.5">
+                              Webhook-Integration
+                              <span className="group relative">
+                                <HelpCircle className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
+                                <span className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-popover border border-border rounded-lg text-xs w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 shadow-lg">
+                                  Automatische Benachrichtigungen an deine eigenen Systeme bei neuen Analysen oder wichtigen Events.
+                                </span>
+                              </span>
+                            </span>
+                          </td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
                           <td className="text-center py-2 px-4"><Minus className="w-4 h-4 mx-auto text-muted-foreground" /></td>
