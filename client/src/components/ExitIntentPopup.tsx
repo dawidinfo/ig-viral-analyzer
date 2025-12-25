@@ -5,6 +5,13 @@ import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
+import { useAuth } from "@/_core/hooks/useAuth";
+
+// Owner email addresses - don't show popup to owners
+const OWNER_EMAILS = [
+  "qliq.marketing@proton.me",
+  "dp@dawid.info"
+];
 
 const PROMO_CODE = "REELSPY20";
 const DISCOUNT_PERCENT = 20;
@@ -17,10 +24,19 @@ export function ExitIntentPopup() {
   const { t } = useLanguage();
   const [, setLocation] = useLocation();
 
+  const { user } = useAuth();
+
   useEffect(() => {
-    // Check if popup was already shown in this session
-    const shown = sessionStorage.getItem("exitIntentShown");
-    if (shown) {
+    // Don't show popup to owners
+    if (user?.email && OWNER_EMAILS.includes(user.email)) {
+      setHasShown(true);
+      return;
+    }
+
+    // Check if popup was permanently dismissed (localStorage) or shown in this session
+    const permanentlyDismissed = localStorage.getItem("exitIntentDismissed");
+    const shownThisSession = sessionStorage.getItem("exitIntentShown");
+    if (permanentlyDismissed || shownThisSession) {
       setHasShown(true);
       return;
     }
@@ -121,6 +137,8 @@ export function ExitIntentPopup() {
 
   const handleDismiss = () => {
     setIsVisible(false);
+    // Permanently dismiss for this user
+    localStorage.setItem("exitIntentDismissed", "true");
   };
 
   return (

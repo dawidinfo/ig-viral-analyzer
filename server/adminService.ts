@@ -16,6 +16,12 @@ const ADMIN_EMAILS = [
 // Owner OpenID - exclude from statistics and set costs to 0
 const OWNER_OPEN_ID = process.env.OWNER_OPEN_ID || "";
 
+// Owner email addresses - used as fallback to identify owner
+const OWNER_EMAILS = [
+  "qliq.marketing@proton.me",
+  "dp@dawid.info"
+];
+
 // List of forbidden keywords for adult content detection
 const FORBIDDEN_KEYWORDS = [
   "porn", "xxx", "adult", "nsfw", "onlyfans", "sex", "nude", "naked",
@@ -296,8 +302,11 @@ export async function getAdminStats(): Promise<AdminStats> {
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
-    // Exclude owner from all statistics
-    const excludeOwnerCondition = OWNER_OPEN_ID ? sql`${users.openId} != ${OWNER_OPEN_ID}` : sql`1=1`;
+    // Exclude owner from all statistics (by OpenID or email)
+    const excludeOwnerCondition = sql`(
+      ${users.openId} != ${OWNER_OPEN_ID || 'non-existent-id'}
+      AND ${users.email} NOT IN (${OWNER_EMAILS.map(e => `'${e}'`).join(', ')})
+    )`;
 
     // Total users (excluding owner)
     const totalUsersResult = await db

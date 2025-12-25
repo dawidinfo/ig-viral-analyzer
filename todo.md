@@ -1184,3 +1184,8 @@
 - [x] Kosten für Owner auf 0 setzen
 - [x] OAuth Login Bug beheben - code and state are required
 - [x] OAuth Login Bug auf reelspy.ai beheben - code and state fehlen
+- [ ] Social-Login-Buttons auf Homepage implementieren
+- [ ] Social-Login-Buttons auf Homepage implementieren
+- [ ] Login-Hinweise auf Startseite anzeigen
+- [x] ARR/MRR Berechnung korrigieren - Owner ausschließen
+- [x] Exit Popup für Owner deaktivieren und nach Wegklicken nicht mehr zeigen

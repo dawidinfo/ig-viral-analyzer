@@ -6,6 +6,12 @@ import { notifyPurchase } from "./emailService";
 // Owner OpenID - no credit costs for owner
 const OWNER_OPEN_ID = process.env.OWNER_OPEN_ID || "";
 
+// Owner email addresses - used as fallback to identify owner
+const OWNER_EMAILS = [
+  "qliq.marketing@proton.me",
+  "dp@dawid.info"
+];
+
 /**
  * Credit Service - Manages user credits, transactions, and usage tracking
  */
@@ -84,9 +90,11 @@ export async function useCredits(
   const db = await getDb();
   if (!db) return { success: false, newBalance: 0, error: "Database not available" };
 
-  // Check if user is owner - no credit cost for owner
-  const userResult = await db.select({ openId: users.openId, credits: users.credits }).from(users).where(eq(users.id, userId));
-  const isOwner = OWNER_OPEN_ID && userResult[0]?.openId === OWNER_OPEN_ID;
+  // Check if user is owner - no credit cost for owner (by OpenID or email)
+  const userResult = await db.select({ openId: users.openId, email: users.email, credits: users.credits }).from(users).where(eq(users.id, userId));
+  const userOpenId = userResult[0]?.openId;
+  const userEmail = userResult[0]?.email;
+  const isOwner = (OWNER_OPEN_ID && userOpenId === OWNER_OPEN_ID) || (userEmail && OWNER_EMAILS.includes(userEmail));
   
   // Owner pays no credits
   const cost = isOwner ? 0 : CREDIT_COSTS[action];

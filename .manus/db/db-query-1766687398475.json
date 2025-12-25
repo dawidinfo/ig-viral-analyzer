@@ -1,0 +1,17 @@
+{
+  "query": "SELECT openId, email, name, plan, credits FROM users LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user N7vrAoPF61tSW8u.60537d16f0ce --database 2NevksKXohCxXvgmcBxexU --execute SELECT openId, email, name, plan, credits FROM users LIMIT 10;",
+  "rows": [
+    {
+      "openId": "kMHeU3YMzZhtDMwavJp3Sa",
+      "email": "dp@dawid.info",
+      "name": "Dawid Przybylski",
+      "plan": "business",
+      "credits": "10"
+    }
+  ],
+  "messages": [],
+  "stdout": "openId\temail\tname\tplan\tcredits\nkMHeU3YMzZhtDMwavJp3Sa\tdp@dawid.info\tDawid Przybylski\tbusiness\t10\n",
+  "stderr": "",
+  "execution_time_ms": 4755
+}

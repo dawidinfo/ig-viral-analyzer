@@ -3,6 +3,7 @@ import { getLoginUrl } from "@/const";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { LoginButtonCompact, MobileLoginButton } from "@/components/LoginButton";
+import { SocialLoginButtons, LoginMethodsHint } from "@/components/SocialLoginButtons";
 import { GlobalFooter } from "@/components/GlobalFooter";
 import { HeroDemo } from "@/components/HeroDemo";
 import { Button } from "@/components/ui/button";
