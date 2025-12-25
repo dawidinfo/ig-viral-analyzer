@@ -552,6 +552,24 @@ export default function Home() {
               </div>
             </motion.div>
 
+            {/* Social Login Buttons - Only show if not authenticated */}
+            {!isAuthenticated && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.65 }}
+                className="mt-6 sm:mt-8"
+              >
+                <p className="text-center text-sm text-muted-foreground mb-3">
+                  Oder melde dich an für unbegrenzte Analysen:
+                </p>
+                <SocialLoginButtons variant="horizontal" showLabels={false} className="justify-center" />
+                <p className="text-center text-xs text-muted-foreground/60 mt-2">
+                  Schneller Login mit Google, Apple, Microsoft oder E-Mail
+                </p>
+              </motion.div>
+            )}
+
             {/* Animated Demo Preview - Below the fold */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}

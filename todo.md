@@ -1189,3 +1189,5 @@
 - [ ] Login-Hinweise auf Startseite anzeigen
 - [x] ARR/MRR Berechnung korrigieren - Owner ausschließen
 - [x] Exit Popup für Owner deaktivieren und nach Wegklicken nicht mehr zeigen
+- [x] Cache-Reset-Button im Admin-Dashboard
+- [x] Social-Login-Buttons auf Homepage integrieren

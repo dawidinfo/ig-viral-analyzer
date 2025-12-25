@@ -1288,6 +1288,31 @@ export const appRouter = router({
       .mutation(async ({ input }) => {
         return await checkCacheHealthAndAlert(input.minHitRate);
       }),
+
+    // Clear all caches (Admin only)
+    clearAllCaches: publicProcedure
+      .mutation(async () => {
+        const db = await getDb();
+        if (!db) return { success: false, error: "Database not available" };
+        
+        try {
+          // Clear Instagram cache
+          await db.delete(instagramCache);
+          
+          // Clear saved analyses cache
+          await db.delete(savedAnalyses).where(sql`1=1`);
+          
+          console.log("[Admin] All caches cleared");
+          return { 
+            success: true, 
+            message: "Alle Caches wurden geleert",
+            clearedAt: new Date().toISOString()
+          };
+        } catch (error) {
+          console.error("[Admin] Error clearing caches:", error);
+          return { success: false, error: String(error) };
+        }
+      }),
   }),
 
   // Email Router - Unsubscribe, Drip Campaign, A/B Tests

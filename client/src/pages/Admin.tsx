@@ -225,6 +225,21 @@ export default function Admin() {
     },
   });
 
+  // Clear all caches mutation
+  const clearCachesMutation = trpc.admin.clearAllCaches.useMutation({
+    onSuccess: (data) => {
+      if (data.success) {
+        toast.success("Alle Caches wurden geleert!");
+        refetchStats();
+      } else {
+        toast.error(data.error || "Fehler beim Leeren der Caches");
+      }
+    },
+    onError: (error) => {
+      toast.error("Fehler: " + error.message);
+    },
+  });
+
   // Add credits mutation
   const addCreditsMutation = trpc.admin.addCredits.useMutation({
     onSuccess: (data) => {
@@ -304,6 +319,20 @@ export default function Admin() {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => clearCachesMutation.mutate()}
+                disabled={clearCachesMutation.isPending}
+                className="border-red-500/50 text-red-400 hover:bg-red-500/10"
+              >
+                {clearCachesMutation.isPending ? (
+                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Database className="h-4 w-4 mr-2" />
+                )}
+                Cache leeren
+              </Button>
               <Button variant="outline" size="sm" onClick={() => {
                 refetchStats();
                 refetchUsers();
