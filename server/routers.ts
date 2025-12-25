@@ -1256,6 +1256,33 @@ export const appRouter = router({
     }),
   }),
 
+  // Growth Analysis Router
+  growthAnalysis: router({
+    // Get growth analysis with top days and post correlation
+    getAnalysis: publicProcedure
+      .input(z.object({
+        username: z.string().min(1),
+        platform: z.enum(['instagram', 'tiktok', 'youtube']).default('instagram'),
+        days: z.number().min(7).max(365).default(30),
+      }))
+      .query(async ({ input }) => {
+        const { getGrowthAnalysis } = await import("./services/growthAnalysisService");
+        return await getGrowthAnalysis(input.username, input.platform, input.days);
+      }),
+
+    // Get daily growth data for chart
+    getDailyData: publicProcedure
+      .input(z.object({
+        username: z.string().min(1),
+        platform: z.enum(['instagram', 'tiktok', 'youtube']).default('instagram'),
+        days: z.number().min(7).max(365).default(30),
+      }))
+      .query(async ({ input }) => {
+        const { getDailyGrowthData } = await import("./services/growthAnalysisService");
+        return await getDailyGrowthData(input.username, input.platform, input.days);
+      }),
+  }),
+
   // Contact Form Router
   contact: router({
     submit: publicProcedure

@@ -50,6 +50,7 @@ import ReelAnalysis from "@/components/ReelAnalysis";
 import DeepAnalysis from "@/components/DeepAnalysis";
 import { AnalysisCTAPopup } from "@/components/AnalysisCTAPopup";
 import FollowerGrowthChart from "@/components/FollowerGrowthChart";
+import { GrowthAnalysis } from "@/components/GrowthAnalysis";
 import PostingTimeAnalysis from "@/components/PostingTimeAnalysis";
 import { DailyGrowthChart, generateDemoGrowthData } from "@/components/DailyGrowthChart";
 import { PostInteractionsChart } from "@/components/PostInteractionsChart";
@@ -636,6 +637,9 @@ export default function Analysis() {
 
               {/* Follower Growth Chart */}
               <FollowerGrowthChart username={analysisData.profile.username} />
+
+              {/* Growth Analysis - Top Wachstumstage mit Post-Korrelation */}
+              <GrowthAnalysis username={analysisData.profile.username} platform="instagram" />
 
               {/* Daily Growth Chart (Balkendiagramm) */}
               {/* Daily Growth Chart - nutzt die gleichen Daten wie FollowerGrowthChart */}
