@@ -178,9 +178,13 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
               <CardTitle className="flex items-center gap-2 text-xl">
                 <Users className="w-6 h-6 text-blue-400" />
                 Follower-Wachstum
-                {isDemo && (
-                  <Badge variant="outline" className="bg-amber-500/20 border-amber-500/30 text-amber-400 text-xs">
-                    Demo
+                {isDemo ? (
+                  <Badge variant="outline" className="bg-amber-500/20 border-amber-500/30 text-amber-400 text-xs cursor-help" title="Prognose basierend auf Branchendurchschnitt. Echte Daten werden nach mehreren Analysen verfügbar.">
+                    Prognose
+                  </Badge>
+                ) : (
+                  <Badge variant="outline" className="bg-green-500/20 border-green-500/30 text-green-400 text-xs">
+                    Echte Daten
                   </Badge>
                 )}
               </CardTitle>

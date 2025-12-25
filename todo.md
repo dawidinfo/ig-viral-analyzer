@@ -1069,3 +1069,12 @@
 - [x] Cron-Job für tägliche Drip-Campaign (runDailyDripCampaign, runDailyFollowerTracking)
 - [x] Referral-Programm mit automatischen Belohnungen (Milestone-Rewards, Welcome-Bonus)
 - [x] Leaderboard für Top-Nutzer (Badges und Analysen, Score-System)
+
+## Bug-Fixes (Runde 3)
+- [ ] Follower-Wachstum zeigt 'Demo' an - untersuchen und beheben
+- [ ] Dashboard-Tabs sichtbarer machen (besserer Kontrast, größere Schrift)
+
+- [ ] API für historische Follower-Daten integrieren (Social Blade oder Alternative)
+- [x] API für historische Follower-Daten integrieren (Instagram Statistics API)
+- [x] Dashboard-Tabs sichtbarer gestalten
+- [x] Demo-Badge zu Prognose umbenennen mit Tooltip

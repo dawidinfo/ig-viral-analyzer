@@ -1,12 +1,13 @@
 /**
  * Follower History Service
  * Tracks and retrieves historical follower growth data
- * Uses real database snapshots with demo fallback for new accounts
+ * Uses Instagram Statistics API for real data, with demo fallback
  */
 
 import { getDb } from "./db";
 import { followerSnapshots } from "../drizzle/schema";
 import { eq, and, desc, gte, lte } from "drizzle-orm";
+import { getHistoricalFollowerData, isInstagramStatisticsApiConfigured } from "./services/instagramStatisticsApi";
 
 export interface FollowerDataPoint {
   date: string; // ISO date string (YYYY-MM-DD)
@@ -286,7 +287,7 @@ function calculateSummary(dataPoints: FollowerDataPoint[]): FollowerHistoryData[
 
 /**
  * Get follower history for a username
- * Combines real database snapshots with demo data for missing days
+ * Uses Instagram Statistics API for real data, falls back to demo data
  */
 export async function getFollowerHistory(
   username: string,
@@ -298,11 +299,51 @@ export async function getFollowerHistory(
   const days = config.days;
   const cleanUsername = username.toLowerCase().replace('@', '').trim();
   
-  // Get stored snapshots from database
+  // Try to get real historical data from Instagram Statistics API (Instagram only)
+  if (platform === 'instagram' && isInstagramStatisticsApiConfigured()) {
+    console.log(`[FollowerHistory] Attempting to fetch real data from Instagram Statistics API for @${cleanUsername}`);
+    
+    try {
+      const realData = await getHistoricalFollowerData(cleanUsername, days);
+      
+      if (realData && realData.dataPoints.length > 0) {
+        console.log(`[FollowerHistory] Got ${realData.dataPoints.length} real data points from API for @${cleanUsername}`);
+        
+        // Store the data points in our database for caching
+        for (const point of realData.dataPoints) {
+          await storeFollowerSnapshot(platform, cleanUsername, {
+            followerCount: point.followers,
+          }, true);
+        }
+        
+        return {
+          username: cleanUsername,
+          platform,
+          currentFollowers: realData.dataPoints[realData.dataPoints.length - 1]?.followers || currentFollowers,
+          timeRange,
+          dataPoints: realData.dataPoints,
+          summary: {
+            totalGrowth: realData.summary.totalGrowth,
+            totalGrowthPercent: realData.summary.totalGrowthPercent,
+            avgDailyGrowth: realData.summary.avgDailyGrowth,
+            bestDay: findBestDay(realData.dataPoints),
+            worstDay: findWorstDay(realData.dataPoints),
+            trend: realData.summary.trend,
+          },
+          isDemo: false,
+          realDataPoints: realData.dataPoints.length,
+        };
+      }
+    } catch (error) {
+      console.error(`[FollowerHistory] Error fetching from Instagram Statistics API:`, error);
+    }
+  }
+  
+  // Fallback: Get stored snapshots from database
   const storedSnapshots = await getStoredSnapshots(platform, cleanUsername, days);
   const realDataPoints = storedSnapshots.filter(s => s.isReal).length;
   
-  console.log(`[FollowerHistory] Found ${realDataPoints} real data points for @${cleanUsername} (${platform})`);
+  console.log(`[FollowerHistory] Found ${realDataPoints} stored data points for @${cleanUsername} (${platform}), using demo fallback`);
   
   // Generate data points (using real data where available, demo for the rest)
   const dataPoints = generateDemoFollowerHistory(
@@ -328,6 +369,24 @@ export async function getFollowerHistory(
     isDemo,
     realDataPoints
   };
+}
+
+/**
+ * Find the best day (highest growth) from data points
+ */
+function findBestDay(dataPoints: FollowerDataPoint[]): { date: string; growth: number } {
+  if (dataPoints.length === 0) return { date: '', growth: 0 };
+  const best = dataPoints.reduce((max, p) => p.change > max.change ? p : max, dataPoints[0]);
+  return { date: best.date, growth: best.change };
+}
+
+/**
+ * Find the worst day (lowest growth) from data points
+ */
+function findWorstDay(dataPoints: FollowerDataPoint[]): { date: string; growth: number } {
+  if (dataPoints.length === 0) return { date: '', growth: 0 };
+  const worst = dataPoints.reduce((min, p) => p.change < min.change ? p : min, dataPoints[0]);
+  return { date: worst.date, growth: worst.change };
 }
 
 /**
