@@ -35,7 +35,8 @@ async function startServer() {
   // 301 Redirect: www.reelspy.ai -> reelspy.ai (SEO canonical URL)
   app.use((req, res, next) => {
     const host = req.get('host') || '';
-    if (host === 'www.reelspy.ai') {
+    // Check for www subdomain (handles www.reelspy.ai, www.reelspy.ai:443, etc.)
+    if (host.startsWith('www.reelspy.ai')) {
       return res.redirect(301, `https://reelspy.ai${req.originalUrl}`);
     }
     next();
