@@ -236,6 +236,7 @@ export default function Home() {
   const [username, setUsername] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
@@ -469,14 +470,16 @@ export default function Home() {
               {t.hero.subtitle}
             </p>
 
-            {/* Search Input */}
+            {/* Search Input - Highlighted */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="max-w-xl mx-auto mb-6 sm:mb-8 px-4 sm:px-0"
+              className="max-w-xl mx-auto mb-6 sm:mb-8 px-4 sm:px-0 relative"
             >
-              <div className="relative gradient-border rounded-xl sm:rounded-2xl p-0.5 sm:p-1">
+              {/* Glow Effect hinter der Eingabe */}
+              <div className="absolute inset-0 bg-gradient-to-r from-pink-500/30 via-purple-500/30 to-cyan-500/30 blur-2xl rounded-3xl scale-110 animate-pulse" />
+              <div className="relative gradient-border rounded-xl sm:rounded-2xl p-0.5 sm:p-1 shadow-2xl shadow-purple-500/20">
                 <div className="flex items-center gap-2 bg-background rounded-lg sm:rounded-xl p-1.5 sm:p-2 hero-input-wrapper">
                   {/* Instagram Icon Button */}
                   <div className="flex items-center justify-center w-9 h-9 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-br from-pink-500 via-purple-500 to-orange-500 shrink-0 instagram-icon">
@@ -1341,20 +1344,45 @@ export default function Home() {
               <br />
               <span className="text-gradient">{t.pricing.free.features[0]}</span>
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
               {t.pricing.subtitle}
             </p>
+            
+            {/* Monatlich/Jährlich Toggle */}
+            <div className="inline-flex items-center gap-3 bg-muted/50 rounded-full p-1.5">
+              <button
+                onClick={() => setBillingCycle('monthly')}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                  billingCycle === 'monthly'
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                Monatlich
+              </button>
+              <button
+                onClick={() => setBillingCycle('yearly')}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${
+                  billingCycle === 'yearly'
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                Jährlich
+                <span className="bg-accent/20 text-accent text-xs px-2 py-0.5 rounded-full">-20%</span>
+              </button>
+            </div>
           </motion.div>
 
           <div className="max-w-7xl mx-auto overflow-visible">
-            <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4 pt-6 overflow-visible">
+            <div className="flex lg:grid lg:grid-cols-5 gap-4 pt-6 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               {/* Free Plan */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0 }}
                 viewport={{ once: true }}
-                className="glass-card rounded-2xl p-5"
+                className="glass-card rounded-2xl p-5 snap-center min-w-[280px] lg:min-w-0"
               >
                 <div className="text-sm font-medium text-muted-foreground mb-2">FREE</div>
                 <h3 className="text-lg font-bold mb-1">{t.pricingPlans.free.name}</h3>
@@ -1394,13 +1422,20 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
                 viewport={{ once: true }}
-                className="glass-card rounded-2xl p-5"
+                className="glass-card rounded-2xl p-5 snap-center min-w-[280px] lg:min-w-0"
               >
                 <div className="text-sm font-medium text-primary mb-2">STARTER</div>
                 <h3 className="text-lg font-bold mb-1">{t.pricingPlans.starter.name}</h3>
                 <p className="text-xs text-muted-foreground mb-3">{t.pricingPlans.starter.tagline}</p>
                 <div className="text-2xl font-black mb-1">
-                  €19<span className="text-sm font-normal text-muted-foreground">/mo</span>
+                  {billingCycle === 'yearly' ? (
+                    <>
+                      <span className="line-through text-muted-foreground text-lg mr-1">€19</span>
+                      €15<span className="text-sm font-normal text-muted-foreground">/mo</span>
+                    </>
+                  ) : (
+                    <>€19<span className="text-sm font-normal text-muted-foreground">/mo</span></>
+                  )}
                 </div>
                 <p className="text-xs text-muted-foreground mb-4">{t.pricingPlans.starter.analyses}</p>
                 <Button 
@@ -1434,7 +1469,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
                 viewport={{ once: true }}
-                className="relative overflow-visible lg:-mt-2 lg:mb-2"
+                className="relative overflow-visible lg:-mt-2 lg:mb-2 snap-center min-w-[280px] lg:min-w-0"
               >
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
                   <Badge className="bg-accent text-accent-foreground font-bold px-3 text-xs">{t.pricingPlans.pro.badge}</Badge>
@@ -1445,7 +1480,14 @@ export default function Home() {
                     <h3 className="text-lg font-bold mb-1">{t.pricingPlans.pro.name}</h3>
                     <p className="text-xs text-muted-foreground mb-3">{t.pricingPlans.pro.tagline}</p>
                     <div className="text-2xl font-black mb-1">
-                      €49<span className="text-sm font-normal text-muted-foreground">/mo</span>
+                      {billingCycle === 'yearly' ? (
+                        <>
+                          <span className="line-through text-muted-foreground text-lg mr-1">€49</span>
+                          €39<span className="text-sm font-normal text-muted-foreground">/mo</span>
+                        </>
+                      ) : (
+                        <>€49<span className="text-sm font-normal text-muted-foreground">/mo</span></>
+                      )}
                     </div>
                     <p className="text-xs text-muted-foreground mb-4">{t.pricingPlans.pro.analyses}</p>
                     <Button 
@@ -1481,13 +1523,20 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
                 viewport={{ once: true }}
-                className="glass-card rounded-2xl p-5"
+                className="glass-card rounded-2xl p-5 snap-center min-w-[280px] lg:min-w-0"
               >
                 <div className="text-sm font-medium text-yellow-500 mb-2">BUSINESS</div>
                 <h3 className="text-lg font-bold mb-1">{t.pricingPlans.business.name}</h3>
                 <p className="text-xs text-muted-foreground mb-3">{t.pricingPlans.business.tagline}</p>
                 <div className="text-2xl font-black mb-1">
-                  €99<span className="text-sm font-normal text-muted-foreground">/mo</span>
+                  {billingCycle === 'yearly' ? (
+                    <>
+                      <span className="line-through text-muted-foreground text-lg mr-1">€99</span>
+                      €79<span className="text-sm font-normal text-muted-foreground">/mo</span>
+                    </>
+                  ) : (
+                    <>€99<span className="text-sm font-normal text-muted-foreground">/mo</span></>
+                  )}
                 </div>
                 <p className="text-xs text-muted-foreground mb-4">{t.pricingPlans.business.analyses}</p>
                 <Button 
@@ -1522,13 +1571,20 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
                 viewport={{ once: true }}
-                className="glass-card rounded-2xl p-5 border-orange-500/30"
+                className="glass-card rounded-2xl p-5 border-orange-500/30 snap-center min-w-[280px] lg:min-w-0"
               >
                 <div className="text-sm font-medium text-orange-500 mb-2">ENTERPRISE</div>
                 <h3 className="text-lg font-bold mb-1">Enterprise</h3>
                 <p className="text-xs text-muted-foreground mb-3">Für große Agenturen</p>
                 <div className="text-2xl font-black mb-1">
-                  €299<span className="text-sm font-normal text-muted-foreground">/mo</span>
+                  {billingCycle === 'yearly' ? (
+                    <>
+                      <span className="line-through text-muted-foreground text-lg mr-1">€299</span>
+                      €239<span className="text-sm font-normal text-muted-foreground">/mo</span>
+                    </>
+                  ) : (
+                    <>€299<span className="text-sm font-normal text-muted-foreground">/mo</span></>
+                  )}
                 </div>
                 <p className="text-xs text-muted-foreground mb-4">Unbegrenzte Analysen</p>
                 <Button 

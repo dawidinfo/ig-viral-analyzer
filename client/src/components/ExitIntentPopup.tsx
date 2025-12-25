@@ -80,7 +80,15 @@ export function ExitIntentPopup() {
 
   const handleClaim = () => {
     setIsVisible(false);
-    setLocation("/analysis");
+    // Scroll zur Hero-Eingabe auf der Startseite
+    setLocation("/");
+    setTimeout(() => {
+      const heroInput = document.getElementById('hero-input');
+      if (heroInput) {
+        heroInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        heroInput.focus();
+      }
+    }, 100);
   };
 
   const handleDismiss = () => {

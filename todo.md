@@ -883,3 +883,12 @@
 - [x] "Alle Features vergleichen" Button mit großem Pfeil nach unten
 - [x] Visuell mehr Features bei höheren Plänen anzeigen (je teurer, desto mehr sichtbar)
 - [x] Feature-Tabelle unter den Pricing-Karten hinzufügen (wie short.io)
+
+## Pricing-Sektion Verbesserungen
+- [x] Monatlich/Jährlich Toggle mit 20% Rabatt bei jährlicher Zahlung
+- [x] Sticky Header für Pricing-Karten (Plan-Namen und Preise bleiben beim Scrollen sichtbar)
+- [x] Mobile Optimierung: 5-Spalten als horizontale Swipe-Karten
+
+## Bug Fixes
+- [x] Exit-Popup leitet zur falschen Seite (/analysis) - korrigieren
+- [x] Hero-Eingabe im ATF ist verrutscht - besser positionieren und hervorheben
