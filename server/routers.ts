@@ -1213,6 +1213,40 @@ export const appRouter = router({
       }),
   }),
 
+  // Leaderboard Router
+  leaderboard: router({
+    // Get leaderboard
+    getLeaderboard: publicProcedure
+      .input(z.object({
+        limit: z.number().min(1).max(100).default(50),
+        timeRange: z.enum(["all", "month", "week"]).default("all"),
+      }).optional())
+      .query(async ({ input }) => {
+        const { getLeaderboard } = await import("./services/leaderboardService");
+        return await getLeaderboard(input?.limit || 50, input?.timeRange || "all");
+      }),
+
+    // Get user rank
+    getUserRank: publicProcedure
+      .input(z.object({ userId: z.number() }))
+      .query(async ({ input }) => {
+        const { getUserRank } = await import("./services/leaderboardService");
+        return await getUserRank(input.userId);
+      }),
+
+    // Get leaderboard stats
+    getStats: publicProcedure.query(async () => {
+      const { getLeaderboardStats } = await import("./services/leaderboardService");
+      return await getLeaderboardStats();
+    }),
+
+    // Get badge definitions
+    getBadgeDefinitions: publicProcedure.query(async () => {
+      const { BADGE_DEFINITIONS } = await import("./services/leaderboardService");
+      return BADGE_DEFINITIONS;
+    }),
+  }),
+
   // Contact Form Router
   contact: router({
     submit: publicProcedure

@@ -314,6 +314,158 @@ export async function setVanityCode(userId: number, vanityCode: string): Promise
 }
 
 /**
+ * Give welcome bonus to referred user
+ */
+export async function giveReferredUserBonus(userId: number): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+
+  // Check if this user was referred
+  const referral = await db
+    .select()
+    .from(referrals)
+    .where(eq(referrals.referredUserId, userId))
+    .limit(1);
+
+  if (referral.length === 0) return false;
+
+  // Get current user balance
+  const user = await db
+    .select({ credits: users.credits })
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1);
+
+  if (user.length === 0) return false;
+
+  const newBalance = user[0].credits + AFFILIATE_CONFIG.referredUserBonus;
+
+  // Add bonus credits
+  await db
+    .update(users)
+    .set({ credits: newBalance })
+    .where(eq(users.id, userId));
+
+  // Log the transaction
+  await db.insert(creditTransactions).values({
+    userId,
+    type: "bonus",
+    amount: AFFILIATE_CONFIG.referredUserBonus,
+    balanceAfter: newBalance,
+    description: `Willkommensbonus für Empfehlung`,
+    actionType: "referral_welcome_bonus",
+  });
+
+  return true;
+}
+
+/**
+ * Check and award milestone rewards
+ */
+export async function checkMilestoneRewards(userId: number): Promise<{
+  awarded: boolean;
+  milestone?: { referrals: number; bonus: number; badge: string };
+}> {
+  const db = await getDb();
+  if (!db) return { awarded: false };
+
+  // Get referral code stats
+  const codeInfo = await db
+    .select()
+    .from(referralCodes)
+    .where(eq(referralCodes.userId, userId))
+    .limit(1);
+
+  if (codeInfo.length === 0) return { awarded: false };
+
+  const totalReferrals = codeInfo[0].totalReferrals;
+
+  // Check which milestones have been reached
+  for (const milestone of AFFILIATE_CONFIG.milestoneRewards) {
+    if (totalReferrals >= milestone.referrals) {
+      // Check if this milestone was already awarded
+      const existingReward = await db
+        .select()
+        .from(creditTransactions)
+        .where(
+          and(
+            eq(creditTransactions.userId, userId),
+            eq(creditTransactions.actionType, `milestone_${milestone.referrals}`)
+          )
+        )
+        .limit(1);
+
+      if (existingReward.length === 0) {
+        // Award the milestone
+        const user = await db
+          .select({ credits: users.credits })
+          .from(users)
+          .where(eq(users.id, userId))
+          .limit(1);
+
+        if (user.length > 0) {
+          const newBalance = user[0].credits + milestone.bonus;
+
+          await db
+            .update(users)
+            .set({ credits: newBalance })
+            .where(eq(users.id, userId));
+
+          await db.insert(creditTransactions).values({
+            userId,
+            type: "bonus",
+            amount: milestone.bonus,
+            balanceAfter: newBalance,
+            description: `Meilenstein-Bonus: ${milestone.referrals} Empfehlungen`,
+            actionType: `milestone_${milestone.referrals}`,
+          });
+
+          return { awarded: true, milestone };
+        }
+      }
+    }
+  }
+
+  return { awarded: false };
+}
+
+/**
+ * Get next milestone for user
+ */
+export async function getNextMilestone(userId: number): Promise<{
+  current: number;
+  next: { referrals: number; bonus: number; badge: string } | null;
+  progress: number;
+}> {
+  const db = await getDb();
+  if (!db) return { current: 0, next: AFFILIATE_CONFIG.milestoneRewards[0], progress: 0 };
+
+  const codeInfo = await db
+    .select()
+    .from(referralCodes)
+    .where(eq(referralCodes.userId, userId))
+    .limit(1);
+
+  const current = codeInfo.length > 0 ? codeInfo[0].totalReferrals : 0;
+
+  // Find next milestone
+  const nextMilestone = AFFILIATE_CONFIG.milestoneRewards.find(m => m.referrals > current);
+
+  if (!nextMilestone) {
+    return { current, next: null, progress: 100 };
+  }
+
+  // Calculate progress to next milestone
+  const prevMilestone = AFFILIATE_CONFIG.milestoneRewards
+    .filter(m => m.referrals <= current)
+    .pop();
+  const prevCount = prevMilestone ? prevMilestone.referrals : 0;
+  const progress = Math.round(((current - prevCount) / (nextMilestone.referrals - prevCount)) * 100);
+
+  return { current, next: nextMilestone, progress };
+}
+
+/**
  * Get affiliate dashboard stats
  */
 export async function getAffiliateStats(userId: number) {
@@ -325,6 +477,9 @@ export async function getAffiliateStats(userId: number) {
 
   const pendingCount = referralsList.filter((r: any) => r.status === "pending").length;
   const qualifiedCount = referralsList.filter((r: any) => r.status === "rewarded").length;
+
+  // Get milestone progress
+  const milestoneInfo = await getNextMilestone(userId);
 
   return {
     referralCode: codeInfo.vanityCode || codeInfo.code,
@@ -343,5 +498,12 @@ export async function getAffiliateStats(userId: number) {
     })),
     rewardAmount: AFFILIATE_CONFIG.rewardCredits,
     qualificationThreshold: AFFILIATE_CONFIG.qualificationThreshold,
+    referredUserBonus: AFFILIATE_CONFIG.referredUserBonus,
+    milestones: {
+      current: milestoneInfo.current,
+      next: milestoneInfo.next,
+      progress: milestoneInfo.progress,
+      allMilestones: AFFILIATE_CONFIG.milestoneRewards,
+    },
   };
 }

@@ -516,6 +516,16 @@ export const AFFILIATE_CONFIG = {
   qualificationThreshold: 500,
   /** Referral code prefix */
   codePrefix: "RS",
+  /** Bonus credits for the referred user (welcome bonus) */
+  referredUserBonus: 50,
+  /** Milestone rewards for referrers */
+  milestoneRewards: [
+    { referrals: 5, bonus: 250, badge: "referral_starter" },
+    { referrals: 10, bonus: 500, badge: "referral_pro" },
+    { referrals: 25, bonus: 1000, badge: "referral_expert" },
+    { referrals: 50, bonus: 2500, badge: "referral_master" },
+    { referrals: 100, bonus: 5000, badge: "referral_legend" },
+  ],
 } as const;
 
 /**

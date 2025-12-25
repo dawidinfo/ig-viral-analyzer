@@ -1,4 +1,6 @@
 import { sendWeeklyReport, ReportType } from "./weeklyReportService";
+import { runDripCampaign } from "./services/dripCampaignService";
+import { runScheduledTracking } from "./scheduledTracking";
 import { getDb } from "./db";
 import { users, savedAnalyses } from "../drizzle/schema";
 import { eq, isNull, or, desc } from "drizzle-orm";
@@ -231,4 +233,130 @@ export function stopCronJobs(): void {
     cronInterval = null;
     console.log("[CronJobs] Stopped cron job scheduler");
   }
+}
+
+// Track last drip campaign run
+let lastDripCampaignRun: Date | null = null;
+let lastFollowerTrackingRun: Date | null = null;
+
+/**
+ * Run daily drip campaign
+ * Should be called once per day
+ */
+export async function runDailyDripCampaign(): Promise<{
+  success: boolean;
+  message: string;
+  stats?: { processed: number; sent: number; errors: number };
+}> {
+  const minInterval = 12 * 60 * 60 * 1000; // 12 hours minimum between runs
+
+  if (lastDripCampaignRun && Date.now() - lastDripCampaignRun.getTime() < minInterval) {
+    const nextRun = new Date(lastDripCampaignRun.getTime() + minInterval);
+    return {
+      success: false,
+      message: `Drip campaign already ran recently. Next run available at ${nextRun.toISOString()}`,
+    };
+  }
+
+  try {
+    console.log("[CronJobs] Starting daily drip campaign...");
+    const stats = await runDripCampaign();
+    lastDripCampaignRun = new Date();
+
+    return {
+      success: true,
+      message: `Drip campaign completed: ${stats.sent} emails sent, ${stats.errors} errors`,
+      stats,
+    };
+  } catch (error) {
+    console.error("[CronJobs] Drip campaign error:", error);
+    return {
+      success: false,
+      message: `Drip campaign failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+    };
+  }
+}
+
+/**
+ * Run daily follower tracking
+ */
+export async function runDailyFollowerTracking(): Promise<{
+  success: boolean;
+  message: string;
+  stats?: { processed: number; updated: number; errors: number };
+}> {
+  const minInterval = 12 * 60 * 60 * 1000; // 12 hours minimum between runs
+
+  if (lastFollowerTrackingRun && Date.now() - lastFollowerTrackingRun.getTime() < minInterval) {
+    const nextRun = new Date(lastFollowerTrackingRun.getTime() + minInterval);
+    return {
+      success: false,
+      message: `Follower tracking already ran recently. Next run available at ${nextRun.toISOString()}`,
+    };
+  }
+
+  try {
+    console.log("[CronJobs] Starting daily follower tracking...");
+    const result = await runScheduledTracking();
+    lastFollowerTrackingRun = new Date();
+
+    return {
+      success: true,
+      message: `Follower tracking completed: ${result.successful} accounts updated, ${result.failed} errors`,
+      stats: {
+        processed: result.totalAccounts,
+        updated: result.successful,
+        errors: result.failed,
+      },
+    };
+  } catch (error) {
+    console.error("[CronJobs] Follower tracking error:", error);
+    return {
+      success: false,
+      message: `Follower tracking failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+    };
+  }
+}
+
+/**
+ * Run all daily jobs
+ */
+export async function runAllDailyJobs(): Promise<{
+  dripCampaign: { success: boolean; message: string };
+  followerTracking: { success: boolean; message: string };
+}> {
+  const [dripResult, trackingResult] = await Promise.all([
+    runDailyDripCampaign(),
+    runDailyFollowerTracking(),
+  ]);
+
+  return {
+    dripCampaign: dripResult,
+    followerTracking: trackingResult,
+  };
+}
+
+/**
+ * Get cron job status
+ */
+export function getCronJobStatus(): {
+  dripCampaign: { lastRun: Date | null; nextAvailable: Date | null };
+  followerTracking: { lastRun: Date | null; nextAvailable: Date | null };
+  weeklyReports: { nextScheduled: { reportType: ReportType; scheduledTime: Date } | null };
+} {
+  const minInterval = 12 * 60 * 60 * 1000;
+  
+  return {
+    dripCampaign: {
+      lastRun: lastDripCampaignRun,
+      nextAvailable: lastDripCampaignRun ? new Date(lastDripCampaignRun.getTime() + minInterval) : null,
+    },
+    followerTracking: {
+      lastRun: lastFollowerTrackingRun,
+      nextAvailable: lastFollowerTrackingRun ? new Date(lastFollowerTrackingRun.getTime() + minInterval) : null,
+    },
+    weeklyReports: {
+      nextScheduled: getNextScheduledReport(),
+    },
+  };
 }

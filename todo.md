@@ -1059,3 +1059,13 @@
 - [x] Push-Benachrichtigungen für Analyse-Tipps
 - [x] Onboarding-Tour für neue User (bereits implementiert)
 - [x] Gamification mit Badges und Achievements (10 Badges)
+
+## Neue Features (Runde 2)
+- [ ] Cron-Job für tägliche Drip-Campaign
+- [ ] Referral-Programm mit automatischen Belohnungen
+- [ ] Leaderboard für Top-Nutzer (Badges und Analysen)
+
+## Neue Features (Runde 2)
+- [x] Cron-Job für tägliche Drip-Campaign (runDailyDripCampaign, runDailyFollowerTracking)
+- [x] Referral-Programm mit automatischen Belohnungen (Milestone-Rewards, Welcome-Bonus)
+- [x] Leaderboard für Top-Nutzer (Badges und Analysen, Score-System)

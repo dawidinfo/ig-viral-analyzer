@@ -59,6 +59,8 @@ import { NotificationSettings } from "@/components/NotificationSettings";
 import { ContentPlanGenerator } from "@/components/ContentPlanGenerator";
 import { DashboardRecommendations } from "@/components/DashboardRecommendations";
 import { UserBadges } from "@/components/UserBadges";
+import { Leaderboard } from "@/components/Leaderboard";
+import { Trophy } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
@@ -472,6 +474,12 @@ export default function Dashboard() {
               <TabsTrigger value="affiliate" className="data-[state=active]:bg-primary/20 whitespace-nowrap text-xs sm:text-sm px-2 sm:px-3">
                 <Share2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                 Affiliate
+              </TabsTrigger>
+              <TabsTrigger value="leaderboard" className="data-[state=active]:bg-primary/20 whitespace-nowrap text-xs sm:text-sm px-2 sm:px-3 relative">
+                <Trophy className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Leaderboard</span>
+                <span className="sm:hidden">Ranking</span>
+                <Badge className="absolute -top-1 -right-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 text-[10px] px-1 py-0">NEU</Badge>
               </TabsTrigger>
               <TabsTrigger value="settings" className="data-[state=active]:bg-primary/20 whitespace-nowrap text-xs sm:text-sm px-2 sm:px-3">
                 <Settings className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
@@ -1050,6 +1058,11 @@ export default function Dashboard() {
             {/* Affiliate Tab */}
             <TabsContent value="affiliate" className="space-y-6">
               <AffiliateDashboard />
+            </TabsContent>
+
+            {/* Leaderboard Tab */}
+            <TabsContent value="leaderboard" className="space-y-6">
+              <Leaderboard currentUserId={user?.id} />
             </TabsContent>
 
             {/* Settings Tab */}
