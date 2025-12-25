@@ -57,7 +57,8 @@ import { LogIn, LogOut, Globe, Building2, ArrowDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSelector } from "@/components/LanguageSelector";
-import { AnimatedCounter } from "@/components/AnimatedCounter";
+import { AnimatedCounter } from '@/components/AnimatedCounter';
+import { AnimatedDemo } from '@/components/AnimatedDemo';
 
 const features = [
   {
@@ -125,40 +126,44 @@ const niches = [
 
 const testimonials = [
   {
-    name: "Sarah M.",
-    role: "Fitness Influencerin",
+    name: "Fitness Creator",
+    role: "Verifizierter Nutzer",
     followers: "125K Follower",
-    image: "SM",
+    image: "FC",
     text: "Seit ich ReelSpy nutze, hat sich mein Engagement verdreifacht. Die HAPSS-Analyse zeigt mir genau, wo meine Hooks schwächeln.",
     rating: 5,
-    metric: "+312% Engagement"
+    metric: "+312% Engagement",
+    beforeAfter: { before: "8.2K", after: "125K", label: "Follower in 3 Monaten" }
   },
   {
-    name: "Marco K.",
-    role: "Food Blogger",
+    name: "Food Blogger",
+    role: "Verifizierter Nutzer",
     followers: "89K Follower",
-    image: "MK",
+    image: "FB",
     text: "Die Posting-Zeit-Analyse war ein Game-Changer. Meine Reels erreichen jetzt 3x mehr Menschen zur richtigen Zeit.",
     rating: 5,
-    metric: "+280% Reichweite"
+    metric: "+280% Reichweite",
+    beforeAfter: { before: "2.1%", after: "8.7%", label: "Engagement Rate" }
   },
   {
-    name: "Lisa T.",
-    role: "Fashion Creator",
+    name: "Fashion Creator",
+    role: "Verifizierter Nutzer",
     followers: "210K Follower",
-    image: "LT",
+    image: "FA",
     text: "Endlich verstehe ich, warum manche Reels viral gehen und andere nicht. Die KI-Analyse ist unglaublich präzise.",
     rating: 5,
-    metric: "5 virale Reels"
+    metric: "5 virale Reels",
+    beforeAfter: { before: "45K", after: "210K", label: "Follower in 6 Monaten" }
   },
   {
-    name: "Tim B.",
-    role: "Business Coach",
+    name: "Business Coach",
+    role: "Verifizierter Nutzer",
     followers: "67K Follower",
-    image: "TB",
+    image: "BC",
     text: "Der Viral Score hat mir geholfen, meinen Content-Stil komplett zu optimieren. ROI innerhalb von 2 Wochen.",
     rating: 5,
-    metric: "+45K Follower"
+    metric: "+45K Follower",
+    beforeAfter: { before: "22K", after: "67K", label: "Follower in 2 Monaten" }
   }
 ];
 
@@ -451,23 +456,20 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4 sm:mb-6"
+              className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-primary/10 border border-primary/20 mb-3 sm:mb-6"
             >
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium">{t.hero.badge}</span>
+              <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+              <span className="text-xs sm:text-sm font-medium">{t.hero.badge}</span>
             </motion.div>
 
-            {/* Animated Demo Preview */}
-            <HeroDemo />
-
-            {/* Headline */}
-            <h1 className="text-3xl sm:text-5xl md:text-7xl font-semibold tracking-[-0.035em] mb-4 sm:mb-6 hero-headline">
+            {/* Headline - ABOVE THE FOLD */}
+            <h1 className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-semibold tracking-[-0.035em] mb-3 sm:mb-4 hero-headline px-2 sm:px-0">
               {t.hero.title}
               <br />
               <span className="text-gradient">{t.hero.titleHighlight}</span>
             </h1>
 
-            <p className="text-base sm:text-xl md:text-2xl text-muted-foreground mb-6 sm:mb-10 max-w-2xl mx-auto font-light tracking-[-0.01em] leading-relaxed hero-subtitle px-4 sm:px-0">
+            <p className="text-sm sm:text-lg md:text-xl text-muted-foreground mb-4 sm:mb-6 max-w-2xl mx-auto font-light tracking-[-0.01em] leading-relaxed hero-subtitle px-4 sm:px-0">
               {t.hero.subtitle}
             </p>
 
@@ -517,7 +519,7 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
-              className="flex flex-col sm:flex-row items-start sm:items-center justify-center gap-1.5 sm:gap-6 text-xs sm:text-sm text-muted-foreground px-4 sm:px-0 mx-auto w-fit"
+              className="flex flex-row flex-wrap items-center justify-center gap-2 sm:gap-6 text-xs sm:text-sm text-muted-foreground px-2 sm:px-0 mx-auto"
             >
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-accent shrink-0" />
@@ -531,6 +533,16 @@ export default function Home() {
                 <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-accent shrink-0" />
                 <span>{t.hero.features.instant}</span>
               </div>
+            </motion.div>
+
+            {/* Animated Demo Preview - Below the fold */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7, duration: 0.6 }}
+              className="mt-8 sm:mt-12"
+            >
+              <HeroDemo />
             </motion.div>
           </motion.div>
 
@@ -740,6 +752,9 @@ export default function Home() {
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               {t.testimonialsDetailed.subtitle}
+            </p>
+            <p className="text-xs text-muted-foreground/60 mt-3">
+              * Ergebnisse können variieren. Basierend auf Nutzerfeedback.
             </p>
           </motion.div>
 
@@ -1339,64 +1354,8 @@ export default function Home() {
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto pt-8 overflow-visible">
-            {[
-              {
-                step: "01",
-                title: t.howItWorks.step1.title,
-                description: t.howItWorks.step1.description,
-                icon: <Search className="w-6 h-6" />
-              },
-              {
-                step: "02",
-                title: t.howItWorks.step2.title,
-                description: t.howItWorks.step2.description,
-                icon: <Sparkles className="w-6 h-6" />
-              },
-              {
-                step: "03",
-                title: t.howItWorks.step3.title,
-                description: t.howItWorks.step3.description,
-                icon: <TrendingUp className="w-6 h-6" />
-              }
-            ].map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.2 }}
-                viewport={{ once: true }}
-                className="relative text-center"
-              >
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white mx-auto mb-6 glow-purple">
-                  {item.icon}
-                </div>
-                <span className="text-6xl font-black text-muted/30 absolute -top-4 left-1/2 -translate-x-1/2">
-                  {item.step}
-                </span>
-                <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
-                <p className="text-muted-foreground">{item.description}</p>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* CTA after steps */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mt-12"
-          >
-            <Button 
-              onClick={() => document.getElementById('hero-input')?.focus()}
-              size="lg"
-              className="btn-gradient h-14 px-10 text-white border-0 text-lg"
-            >
-              <Sparkles className="w-5 h-5 mr-2" />
-              {t.howItWorks.tryFree}
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-          </motion.div>
+          {/* Interactive Animated Demo */}
+          <AnimatedDemo />
         </div>
       </section>
 
@@ -1499,6 +1458,26 @@ export default function Home() {
                     <p className="text-xs text-primary">{testimonial.followers}</p>
                   </div>
                 </div>
+
+                {/* Before/After Growth */}
+                {testimonials[index]?.beforeAfter && (
+                  <div className="mt-4 pt-4 border-t border-border/50">
+                    <div className="flex items-center justify-between text-xs">
+                      <div className="text-center">
+                        <span className="text-muted-foreground">Vorher</span>
+                        <p className="text-lg font-bold text-red-400">{testimonials[index].beforeAfter.before}</p>
+                      </div>
+                      <div className="flex items-center gap-1 text-accent">
+                        <ArrowRight className="w-4 h-4" />
+                      </div>
+                      <div className="text-center">
+                        <span className="text-muted-foreground">Nachher</span>
+                        <p className="text-lg font-bold text-green-400">{testimonials[index].beforeAfter.after}</p>
+                      </div>
+                    </div>
+                    <p className="text-xs text-center text-muted-foreground mt-1">{testimonials[index].beforeAfter.label}</p>
+                  </div>
+                )}
 
                 {/* Rating */}
                 <div className="flex gap-1 mt-4">

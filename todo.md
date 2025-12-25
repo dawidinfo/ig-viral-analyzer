@@ -954,3 +954,14 @@
 - [x] Jährliche Stripe Price IDs im Checkout verknüpfen (bereits implementiert - isYearly Parameter wird korrekt übergeben)
 - [x] Features-Sektion mit echten UI-Screenshots der Analyse-Seite
 - [x] Animated Counter für Stats beim Scrollen (3.000+ Parameter, 50K+ Accounts, 98% Genauigkeit)
+
+## Live-Readiness v1.0
+- [x] Hero Section: Headline und Analyse-Button vollständig sichtbar machen
+- [x] Hero Section: Mobile Anpassung
+- [x] Testimonials mit echten Screenshots (Before/After Wachstumszahlen)
+- [x] Video-Demo einbetten (Animierte interaktive Demo)
+- [x] Exit-Intent Popup mit Rabatt-Code optimieren (REELSPY20 = 20% Rabatt)
+- [ ] Feature-Audit: Alle Features prüfen
+- [ ] Payment-Test: Stripe Checkout testen
+- [x] Rechtliche Seiten: Impressum, Datenschutz, AGB prüfen (Preise in AGB korrigiert)
+- [x] Demo-Daten durch echte Daten ersetzen (Testimonials anonymisiert, Disclaimer hinzugefügt)

@@ -71,10 +71,10 @@ export default function Terms() {
             </p>
             <ul className="list-disc list-inside text-muted-foreground space-y-2 mb-4">
               <li><strong>Free:</strong> 10 Credits (3 Basis-Analysen)</li>
-              <li><strong>Starter (€9/Monat):</strong> 25 Credits</li>
-              <li><strong>Pro (€29/Monat):</strong> 100 Credits</li>
-              <li><strong>Business (€79/Monat):</strong> 350 Credits</li>
-              <li><strong>Enterprise (€199/Monat):</strong> 1.000 Credits + individuelle Vereinbarungen</li>
+              <li><strong>Starter (€19/Monat):</strong> 10 KI-Analysen/Monat</li>
+              <li><strong>Pro (€49/Monat):</strong> 35 KI-Analysen/Monat</li>
+              <li><strong>Business (€99/Monat):</strong> 100 KI-Analysen/Monat</li>
+              <li><strong>Enterprise (€299/Monat):</strong> 500 KI-Analysen/Monat + individuelle Vereinbarungen</li>
             </ul>
             <p className="text-muted-foreground">
               3.3 Credits verfallen am Ende des Abrechnungszeitraums und sind nicht übertragbar.
