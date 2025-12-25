@@ -161,10 +161,10 @@ describe('i18n System', () => {
 
   describe('getTranslations', () => {
     it('should return correct translations for each language', () => {
-      expect(getTranslations('de').hero.cta).toBe('Analysieren');
-      expect(getTranslations('en').hero.cta).toBe('Analyze');
-      expect(getTranslations('fr').hero.cta).toBe('Analyser');
-      expect(getTranslations('es').hero.cta).toBe('Analizar');
+      expect(getTranslations('de').hero.cta).toBe('KI-Analyse');
+      expect(getTranslations('en').hero.cta).toBe('AI Analysis');
+      expect(getTranslations('fr').hero.cta).toBe('Analyse IA');
+      expect(getTranslations('es').hero.cta).toBe('Análisis IA');
     });
 
     it('should return default translations for invalid language', () => {
