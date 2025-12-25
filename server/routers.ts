@@ -24,8 +24,8 @@ import { CREDIT_PACKAGES as STRIPE_PACKAGES, SUBSCRIPTION_PLANS } from "./stripe
 import { instagramCache, savedAnalyses, usageTracking, users, CREDIT_COSTS, CREDIT_PACKAGES, creditTransactions, PLAN_LIMITS } from "../drizzle/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
 
-// Cache duration: 1 hour
-const CACHE_DURATION_MS = 60 * 60 * 1000;
+// Cache duration: 15 minutes for more accurate real-time data
+const CACHE_DURATION_MS = 15 * 60 * 1000;
 
 async function getCachedAnalysis(username: string): Promise<InstagramAnalysis | null> {
   const cleanUsername = username.replace("@", "").toLowerCase().trim();
@@ -111,12 +111,19 @@ export const appRouter = router({
 
   instagram: router({
     analyze: publicProcedure
-      .input(z.object({ username: z.string().min(1) }))
+      .input(z.object({ 
+        username: z.string().min(1),
+        forceRefresh: z.boolean().optional().default(false)
+      }))
       .query(async ({ input }) => {
-        // Check cache first
-        const cached = await getCachedAnalysis(input.username);
-        if (cached) {
-          return { ...cached, fromCache: true };
+        // Skip cache if forceRefresh is true
+        if (!input.forceRefresh) {
+          const cached = await getCachedAnalysis(input.username);
+          if (cached) {
+            return { ...cached, fromCache: true };
+          }
+        } else {
+          console.log(`[Cache] Force refresh requested for @${input.username}`);
         }
         
         // Fetch fresh data

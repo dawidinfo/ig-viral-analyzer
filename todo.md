@@ -1174,3 +1174,4 @@
 - [x] E-Mail-Templates mit ReelSpy.ai Branding aktualisieren
 - [x] Content-Plan Generator testen
 - [x] Bug: Content Plan erstellen Button scrollt zur Top 50 statt zum Content-Plan Tab
+- [x] Bug: Followerzahl nicht exakt aktuell - Cache auf 15min reduziert + Refresh-Button hinzugefügt

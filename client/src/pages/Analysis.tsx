@@ -186,6 +186,7 @@ export default function Analysis() {
   const [showCTAPopup, setShowCTAPopup] = useState(false);
   const [hasShownPopup, setHasShownPopup] = useState(false);
   const [reelSortBy, setReelSortBy] = useState<'views' | 'likes' | 'engagement'>('views');
+  const [forceRefresh, setForceRefresh] = useState(false);
 
   const togglePin = (section: string) => {
     setPinnedSections(prev => {
@@ -236,13 +237,25 @@ export default function Analysis() {
 
   // Fetch Instagram analysis data
   const { data: analysisData, isLoading, error, refetch } = trpc.instagram.analyze.useQuery(
-    { username: usernameParam },
+    { username: usernameParam, forceRefresh },
     { 
       enabled: !!usernameParam,
       retry: 1,
-      staleTime: 5 * 60 * 1000,
+      staleTime: forceRefresh ? 0 : 5 * 60 * 1000,
     }
   );
+  
+  // Reset forceRefresh after data is loaded
+  useEffect(() => {
+    if (forceRefresh && analysisData && !isLoading) {
+      setForceRefresh(false);
+    }
+  }, [forceRefresh, analysisData, isLoading]);
+  
+  const handleRefresh = () => {
+    setForceRefresh(true);
+    refetch();
+  };
 
   // Show CTA popup after analysis is loaded (with delay)
   useEffect(() => {
@@ -510,6 +523,25 @@ export default function Analysis() {
                         <p className="text-sm text-muted-foreground">Engagement</p>
                       </FeatureTooltip>
                     </div>
+                  </div>
+                  
+                  {/* Refresh Button & Cache Indicator */}
+                  <div className="flex items-center gap-2 mt-4">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleRefresh}
+                      disabled={isLoading || forceRefresh}
+                      className="text-xs"
+                    >
+                      <RefreshCw className={`w-3 h-3 mr-1 ${(isLoading || forceRefresh) ? 'animate-spin' : ''}`} />
+                      Aktualisieren
+                    </Button>
+                    {analysisData.fromCache && (
+                      <span className="text-xs text-muted-foreground">
+                        Gecached • Klicke zum Aktualisieren
+                      </span>
+                    )}
                   </div>
                 </div>
 
