@@ -791,3 +791,44 @@ html, body {
   animation: pulse-glow 2s ease-in-out infinite;
   border: 3px solid rgba(192, 132, 252, 0.8);
 }
+
+/* Pro Plan Highlight in Feature Table */
+.feature-table-pro-highlight th:nth-child(4),
+.feature-table-pro-highlight td:nth-child(4) {
+  position: relative;
+  background: linear-gradient(180deg, oklch(0.45 0.15 160 / 0.15) 0%, oklch(0.45 0.15 160 / 0.05) 100%);
+}
+
+.feature-table-pro-highlight th:nth-child(4)::before,
+.feature-table-pro-highlight td:nth-child(4)::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, oklch(0.65 0.20 160) 0%, oklch(0.55 0.15 145) 100%);
+}
+
+.feature-table-pro-highlight th:nth-child(4)::after,
+.feature-table-pro-highlight td:nth-child(4)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, oklch(0.65 0.20 160) 0%, oklch(0.55 0.15 145) 100%);
+}
+
+/* First row top border */
+.feature-table-pro-highlight thead th:nth-child(4) {
+  border-top: 2px solid oklch(0.65 0.20 160);
+  border-radius: 8px 8px 0 0;
+}
+
+/* Last row bottom border - applied via JS or specific selector */
+.feature-table-pro-highlight tbody tr:last-child td:nth-child(4) {
+  border-bottom: 2px solid oklch(0.55 0.15 145);
+  border-radius: 0 0 8px 8px;
+}

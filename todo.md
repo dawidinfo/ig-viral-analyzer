@@ -1015,3 +1015,8 @@
 ## Feature-Tabelle Tooltips
 - [x] Info-Icons mit Tooltips für komplexe Features hinzufügen (HAPSS, Sentiment, etc.)
 - [x] 11 Features mit Erklärungen versehen: Viral Score, HAPSS, Hopkins/Ogilvy/Schwartz, Engagement-Rate, Branchen-Benchmarks, Hook-Qualität, AIDA, Sentiment, Viral-Potenzial, Webhook
+
+## Pro-Plan Highlight
+- [x] Pro-Plan Spalte in Feature-Tabelle mit farbigem Rahmen hervorheben
+- [x] "Beliebteste Wahl" Badge im Header hinzufügen
+- [x] Grüner Gradient-Hintergrund für Pro-Spalte
