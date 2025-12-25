@@ -259,10 +259,23 @@ export default function Compare() {
             </div>
           </div>
           
-          <Badge className="bg-gradient-to-r from-violet-500 to-cyan-500 text-white border-0">
-            <ArrowLeftRight className="w-3 h-3 mr-1" />
-            Vergleichsmodus
-          </Badge>
+          {/* Navigation Links */}
+          <div className="hidden md:flex items-center gap-6">
+            <button onClick={() => setLocation('/')} className="text-sm text-muted-foreground hover:text-foreground transition-colors">Home</button>
+            <button onClick={() => setLocation('/dashboard')} className="text-sm text-muted-foreground hover:text-foreground transition-colors">Dashboard</button>
+            <Badge className="bg-gradient-to-r from-violet-500 to-cyan-500 text-white border-0">
+              <ArrowLeftRight className="w-3 h-3 mr-1" />
+              Vergleichsmodus
+            </Badge>
+          </div>
+          
+          {/* Mobile Badge */}
+          <div className="md:hidden">
+            <Badge className="bg-gradient-to-r from-violet-500 to-cyan-500 text-white border-0">
+              <ArrowLeftRight className="w-3 h-3 mr-1" />
+              Vergleichsmodus
+            </Badge>
+          </div>
         </div>
       </nav>
 
