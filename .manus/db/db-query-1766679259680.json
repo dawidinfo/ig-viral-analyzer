@@ -1,0 +1,36 @@
+{
+  "query": "SELECT * FROM users WHERE email LIKE '%dawid%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user N7vrAoPF61tSW8u.60537d16f0ce --database 2NevksKXohCxXvgmcBxexU --execute SELECT * FROM users WHERE email LIKE '%dawid%';",
+  "rows": [
+    {
+      "id": "1",
+      "openId": "kMHeU3YMzZhtDMwavJp3Sa",
+      "name": "Dawid Przybylski",
+      "email": "dp@dawid.info",
+      "loginMethod": "email",
+      "role": "admin",
+      "createdAt": "2025-12-22 20:06:11",
+      "updatedAt": "2025-12-25 16:14:01",
+      "lastSignedIn": "2025-12-25 16:13:56",
+      "plan": "free",
+      "stripeCustomerId": "NULL",
+      "subscriptionEndsAt": "NULL",
+      "credits": "10",
+      "totalCreditsPurchased": "0",
+      "modulesEnabled": "NULL",
+      "status": "active",
+      "statusReason": "NULL",
+      "lastActivity": "2025-12-23 18:19:08",
+      "stripeSubscriptionId": "NULL",
+      "subscriptionStatus": "active",
+      "emailOptOut": "0",
+      "lastDripEmailSent": "0",
+      "lastDripEmailAt": "NULL",
+      "emailVariant": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\topenId\tname\temail\tloginMethod\trole\tcreatedAt\tupdatedAt\tlastSignedIn\tplan\tstripeCustomerId\tsubscriptionEndsAt\tcredits\ttotalCreditsPurchased\tmodulesEnabled\tstatus\tstatusReason\tlastActivity\tstripeSubscriptionId\tsubscriptionStatus\temailOptOut\tlastDripEmailSent\tlastDripEmailAt\temailVariant\n1\tkMHeU3YMzZhtDMwavJp3Sa\tDawid Przybylski\tdp@dawid.info\temail\tadmin\t2025-12-22 20:06:11\t2025-12-25 16:14:01\t2025-12-25 16:13:56\tfree\tNULL\tNULL\t10\t0\tNULL\tactive\tNULL\t2025-12-23 18:19:08\tNULL\tactive\t0\t0\tNULL\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 4750
+}

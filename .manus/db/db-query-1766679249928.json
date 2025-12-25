@@ -1,0 +1,17 @@
+{
+  "query": "SELECT id, email, name, plan, \"isAdmin\" FROM users WHERE email = 'dp@dawid.info' OR email LIKE '%dawid%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user N7vrAoPF61tSW8u.60537d16f0ce --database 2NevksKXohCxXvgmcBxexU --execute SELECT id, email, name, plan, \"isAdmin\" FROM users WHERE email = 'dp@dawid.info' OR email LIKE '%dawid%';",
+  "rows": [
+    {
+      "id": "1",
+      "email": "dp@dawid.info",
+      "name": "Dawid Przybylski",
+      "plan": "free",
+      "isAdmin": "isAdmin"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\temail\tname\tplan\tisAdmin\n1\tdp@dawid.info\tDawid Przybylski\tfree\tisAdmin\n",
+  "stderr": "",
+  "execution_time_ms": 4825
+}
