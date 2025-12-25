@@ -67,6 +67,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useConfetti } from "@/hooks/useConfetti";
 
+// Helper function to proxy Instagram profile pictures
+const getProxiedImageUrl = (url: string | null | undefined): string | null => {
+  if (!url) return null;
+  // If it's already a proxied URL or a local URL, return as-is
+  if (url.startsWith('/api/') || url.startsWith('data:')) return url;
+  // Proxy Instagram CDN images
+  if (url.includes('instagram') || url.includes('cdninstagram') || url.includes('fbcdn')) {
+    return `/api/proxy/instagram-image?url=${encodeURIComponent(url)}`;
+  }
+  return url;
+};
+
 const planColors = {
   free: "bg-gray-500",
   starter: "bg-blue-500",
@@ -719,10 +731,11 @@ export default function Dashboard() {
                             <div className="w-14 h-14 rounded-full bg-gradient-to-br from-pink-500 via-purple-500 to-orange-500 p-0.5 flex-shrink-0">
                               <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden">
                                 {analysis.profilePicUrl ? (
-                                  <img src={analysis.profilePicUrl} alt={analysis.username} className="w-full h-full object-cover" />
-                                ) : (
-                                  <Instagram className="w-6 h-6 text-primary" />
-                                )}
+                                  <img src={getProxiedImageUrl(analysis.profilePicUrl) || ''} alt={analysis.username} className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
+                                ) : null}
+                                <span className={`text-xs font-bold text-white ${analysis.profilePicUrl ? 'hidden' : ''}`}>
+                                  {analysis.username?.slice(0, 5).toUpperCase()}
+                                </span>
                               </div>
                             </div>
                             <div className="flex-1 min-w-0">
@@ -957,7 +970,7 @@ export default function Dashboard() {
                           >
                             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-cyan-500/20 flex items-center justify-center overflow-hidden shrink-0">
                               {analysis.profilePicUrl ? (
-                                <img src={analysis.profilePicUrl} alt={analysis.username} className="w-full h-full object-cover" />
+                                <img src={getProxiedImageUrl(analysis.profilePicUrl) || ''} alt={analysis.username} className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                               ) : (
                                 <User className="w-6 h-6 text-primary" />
                               )}
