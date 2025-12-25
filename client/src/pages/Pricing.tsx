@@ -646,7 +646,7 @@ const featureCategories = [
 export default function Pricing() {
   const [, setLocation] = useLocation();
   const [isYearly, setIsYearly] = useState(false);
-  const [expandedCategories, setExpandedCategories] = useState<Set<number>>(new Set([0])); // First category expanded by default
+  const [expandedCategories, setExpandedCategories] = useState<Set<number>>(new Set(featureCategories.map((_, i) => i))); // All categories expanded by default
 
   const toggleCategory = (index: number) => {
     setExpandedCategories(prev => {

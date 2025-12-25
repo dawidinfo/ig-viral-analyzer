@@ -1,5 +1,7 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
+import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
 import { LoginButtonCompact, MobileLoginButton } from "@/components/LoginButton";
 import { GlobalFooter } from "@/components/GlobalFooter";
 import { HeroDemo } from "@/components/HeroDemo";
@@ -236,6 +238,49 @@ export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
+
+  // Stripe checkout mutation
+  const checkoutMutation = trpc.credits.createCheckout.useMutation({
+    onSuccess: (data) => {
+      toast.success("Weiterleitung zum Checkout...");
+      window.location.href = data.url;
+    },
+    onError: (error) => {
+      toast.error(error.message || "Fehler beim Erstellen des Checkouts");
+    },
+  });
+
+  const handlePurchase = (tierName: string) => {
+    // Free tier - just focus on input
+    if (tierName === "free") {
+      document.getElementById('hero-input')?.focus();
+      return;
+    }
+
+    // Check if user is logged in
+    if (!user) {
+      toast.info("Bitte melde dich zuerst an");
+      window.location.href = getLoginUrl();
+      return;
+    }
+
+    // Map tier names to package IDs
+    const packageMap: Record<string, "starter" | "pro" | "business" | "enterprise"> = {
+      starter: "starter",
+      pro: "pro",
+      business: "business",
+      enterprise: "enterprise",
+    };
+
+    const packageId = packageMap[tierName];
+    if (!packageId) {
+      toast.error("Ungültiger Plan");
+      return;
+    }
+
+    // Create checkout session (monthly by default)
+    checkoutMutation.mutate({ packageId, isYearly: false });
+  };
 
   const handleAnalyze = () => {
     if (username.trim()) {
@@ -1319,10 +1364,11 @@ export default function Home() {
                 </div>
                 <p className="text-xs text-muted-foreground mb-6">{t.pricingPlans.free.analysesNote}</p>
                 <Button 
-                  onClick={() => document.getElementById('hero-input')?.focus()}
+                  onClick={() => handlePurchase('free')}
                   variant="outline" 
                   className="w-full mb-6"
                   size="sm"
+                  disabled={checkoutMutation.isPending}
                 >
                   {t.pricingPlans.free.cta}
                 </Button>
@@ -1352,12 +1398,13 @@ export default function Home() {
                 </div>
                 <p className="text-xs text-muted-foreground mb-6">{t.pricingPlans.starter.analyses}</p>
                 <Button 
-                  onClick={() => setLocation('/pricing')}
+                  onClick={() => handlePurchase('starter')}
                   variant="outline" 
                   className="w-full mb-6"
                   size="sm"
+                  disabled={checkoutMutation.isPending}
                 >
-                  {t.pricingPlans.starter.cta}
+                  {checkoutMutation.isPending ? "Wird geladen..." : t.pricingPlans.starter.cta}
                 </Button>
                 <ul className="space-y-2 text-sm">
                   {t.pricingPlans.starter.features.map((feature, i) => (
@@ -1390,12 +1437,13 @@ export default function Home() {
                     </div>
                     <p className="text-xs text-muted-foreground mb-6">{t.pricingPlans.pro.analyses}</p>
                     <Button 
-                      onClick={() => setLocation('/pricing')}
+                      onClick={() => handlePurchase('pro')}
                       className="btn-gradient w-full text-white border-0 mb-6"
                       size="sm"
+                      disabled={checkoutMutation.isPending}
                     >
                       <Crown className="w-4 h-4 mr-1" />
-                      {t.pricingPlans.pro.cta}
+                      {checkoutMutation.isPending ? "Wird geladen..." : t.pricingPlans.pro.cta}
                     </Button>
                     <ul className="space-y-2 text-sm">
                       {t.pricingPlans.pro.features.map((feature, i) => (
@@ -1425,13 +1473,14 @@ export default function Home() {
                 </div>
                 <p className="text-xs text-muted-foreground mb-6">{t.pricingPlans.business.analyses}</p>
                 <Button 
-                  onClick={() => setLocation('/pricing')}
+                  onClick={() => handlePurchase('business')}
                   variant="outline" 
                   className="w-full mb-6 border-yellow-500/50 hover:bg-yellow-500/10"
                   size="sm"
+                  disabled={checkoutMutation.isPending}
                 >
                   <Rocket className="w-4 h-4 mr-1" />
-                  {t.pricingPlans.business.cta}
+                  {checkoutMutation.isPending ? "Wird geladen..." : t.pricingPlans.business.cta}
                 </Button>
                 <ul className="space-y-2 text-sm">
                   {t.pricingPlans.business.features.map((feature, i) => (

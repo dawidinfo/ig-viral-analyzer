@@ -866,3 +866,11 @@
 - [x] Akkordeon mit allen Features direkt bei jedem Plan einbauen
 - [x] Kauf-Button direkt beim Plan (Checkout öffnet im gleichen Tab)
 - [x] Conversion-optimiert: Alles auf einer Seite
+
+- [ ] Pricing-Seite: Alle Features direkt anzeigen (nicht im Akkordeon versteckt)
+- [ ] Pricing-Seite: Kauf-Buttons direkt zum Stripe Checkout ohne Weiterleitung
+
+## Pricing-Seite Verbesserungen
+- [x] Pricing-Seite: Alle Features direkt anzeigen (nicht im Akkordeon versteckt)
+- [x] Pricing-Seite: Kauf-Buttons direkt zum Stripe Checkout ohne Weiterleitung
+- [x] Home-Seite: Pricing-Buttons führen direkt zum Stripe Checkout
