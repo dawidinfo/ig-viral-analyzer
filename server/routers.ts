@@ -14,6 +14,7 @@ import { isUserAdmin, getAllUsers, getAdminStats, banUser, unbanUser, setUserRol
 import { runScheduledTracking, getTrackingStats, getSavedAccountsForTracking, getTopGrowingAccounts, getDecliningAccounts, getPlatformDistribution, getAccountHistory } from "./scheduledTracking";
 import { getOrCreateReferralCode, getReferralCodeInfo, getUserReferrals, applyReferralCode, setVanityCode, getAffiliateStats } from "./affiliateService";
 import { checkRateLimit, getSuspiciousUsers, getUserActivitySummary, unsuspendUser, RATE_LIMITS } from "./services/abuseProtectionService";
+import { testWebhooks, sendWebhookAlert } from "./services/webhookService";
 import { generateContentPlan, TargetAudienceProfile, ContentPlan, saveContentPlan, getUserContentPlans, getContentPlanById, deleteContentPlan, toggleFavorite } from "./services/contentPlanService";
 import { getDb } from "./db";
 import { getUserCredits, useCredits, addCredits, getCreditHistory, getCreditStats, canPerformAction, getActionCost } from "./creditService";
@@ -1183,6 +1184,27 @@ export const appRouter = router({
     getRateLimits: publicProcedure.query(() => {
       return RATE_LIMITS;
     }),
+
+    // Test webhooks (Slack/Discord)
+    testWebhooks: publicProcedure.mutation(async () => {
+      return await testWebhooks();
+    }),
+
+    // Send custom webhook alert
+    sendAlert: publicProcedure
+      .input(z.object({
+        title: z.string(),
+        message: z.string(),
+        severity: z.enum(['info', 'warning', 'error', 'critical'])
+      }))
+      .mutation(async ({ input }) => {
+        return await sendWebhookAlert({
+          type: 'suspicious_activity',
+          title: input.title,
+          message: input.message,
+          severity: input.severity
+        });
+      }),
   }),
 
   // Email Router - Unsubscribe, Drip Campaign, A/B Tests

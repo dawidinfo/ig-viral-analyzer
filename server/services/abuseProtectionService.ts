@@ -7,6 +7,7 @@ import { getDb } from "../db";
 import { users, usageTracking } from "../../drizzle/schema";
 import { eq, and, gte, sql, desc } from "drizzle-orm";
 import { sendAdminNotification } from "../emailService";
+import { alertUserSuspended, alertSuspiciousActivity, alertRateLimitExceeded } from "./webhookService";
 
 // Rate limits per plan (analyses per hour / per day)
 export const RATE_LIMITS = {
@@ -43,6 +44,11 @@ export interface UserActivity {
   requestsLastMinute: number;
   isSuspicious: boolean;
   suspiciousReasons: string[];
+  // Extended fields for admin panel
+  status?: 'active' | 'suspended' | 'warned';
+  severity?: 'low' | 'medium' | 'high' | 'critical';
+  suspendedAt?: string;
+  reason?: string;
 }
 
 /**
@@ -213,6 +219,9 @@ async function suspendUser(
 
     console.log(`[AbuseProtection] User ${userId} (${email}) suspended for abuse`);
 
+    // Send webhook alert
+    alertUserSuspended(userId, reasons.join(', ')).catch(console.error);
+
     // Send admin notification
     await sendAdminNotification(
       'security',
@@ -379,6 +388,12 @@ export async function getUserActivitySummary(userId: number): Promise<UserActivi
       suspiciousReasons.push('Nahe am täglichen Limit');
     }
 
+    // Determine severity based on activity
+    let severity: 'low' | 'medium' | 'high' | 'critical' = 'low';
+    if (requestsToday > 100) severity = 'critical';
+    else if (requestsToday > 50) severity = 'high';
+    else if (requestsToday > 30) severity = 'medium';
+
     return {
       userId,
       email: user.email || '',
@@ -388,7 +403,11 @@ export async function getUserActivitySummary(userId: number): Promise<UserActivi
       requestsToday,
       requestsLastMinute,
       isSuspicious: suspiciousReasons.length > 0,
-      suspiciousReasons
+      suspiciousReasons,
+      status: (user.status as 'active' | 'suspended' | 'warned') || 'active',
+      severity,
+      suspendedAt: user.status === 'suspended' ? new Date().toISOString() : undefined,
+      reason: user.statusReason || undefined
     };
   } catch (error) {
     console.error('[AbuseProtection] Error getting user activity:', error);

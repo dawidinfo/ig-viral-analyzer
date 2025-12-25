@@ -1115,3 +1115,8 @@
 - [x] User-Benachrichtigung bei Sperrung
 - [ ] Post-Korrelation mit Thumbnails
 - [x] Export-Funktion (CSV/PDF)
+
+## Admin & Alerts (Runde 4)
+- [x] Admin-Panel für gesperrte User
+- [x] Webhook für Slack/Discord Alerts
+- [x] Cron-Job Anleitung für cron-job.org

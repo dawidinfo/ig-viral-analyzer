@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { ABTestDashboard } from "@/components/ABTestDashboard";
+import { SuspendedUsersPanel } from "@/components/SuspendedUsersPanel";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -643,6 +644,10 @@ export default function Admin() {
               <BarChart3 className="h-4 w-4" />
               A/B-Tests
             </TabsTrigger>
+            <TabsTrigger value="suspended" className="gap-2">
+              <Ban className="h-4 w-4" />
+              Gesperrte User
+            </TabsTrigger>
           </TabsList>
 
           {/* Users Tab */}
@@ -1263,6 +1268,11 @@ export default function Admin() {
           {/* A/B-Test Tab */}
           <TabsContent value="abtest">
             <ABTestDashboard />
+          </TabsContent>
+
+          {/* Suspended Users Tab */}
+          <TabsContent value="suspended">
+            <SuspendedUsersPanel adminId={user?.id || 0} />
           </TabsContent>
         </Tabs>
       </main>
