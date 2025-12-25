@@ -279,8 +279,8 @@ export default function Home() {
       return;
     }
 
-    // Create checkout session (monthly by default)
-    checkoutMutation.mutate({ packageId, isYearly: false });
+    // Create checkout session basierend auf billingCycle
+    checkoutMutation.mutate({ packageId, isYearly: billingCycle === 'yearly' });
   };
 
   const handleAnalyze = () => {
@@ -1348,30 +1348,58 @@ export default function Home() {
               {t.pricing.subtitle}
             </p>
             
-            {/* Monatlich/Jährlich Toggle */}
-            <div className="inline-flex items-center gap-3 bg-muted/50 rounded-full p-1.5">
-              <button
-                onClick={() => setBillingCycle('monthly')}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                  billingCycle === 'monthly'
-                    ? 'bg-background text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Monatlich
-              </button>
-              <button
-                onClick={() => setBillingCycle('yearly')}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${
-                  billingCycle === 'yearly'
-                    ? 'bg-background text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Jährlich
-                <span className="bg-accent/20 text-accent text-xs px-2 py-0.5 rounded-full">-20%</span>
-              </button>
-            </div>
+            {/* Monatlich/Jährlich Toggle - Verbessert */}
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="relative inline-block"
+            >
+              {/* Glow Effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-cyan-500/20 blur-xl rounded-full scale-110" />
+              
+              <div className="relative inline-flex items-center gap-1 bg-background/80 backdrop-blur-sm border border-border/50 rounded-full p-1.5 shadow-lg">
+                <button
+                  onClick={() => setBillingCycle('monthly')}
+                  className={`relative px-6 py-3 rounded-full text-sm font-semibold transition-all duration-300 ${
+                    billingCycle === 'monthly'
+                      ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                  }`}
+                >
+                  Monatlich
+                </button>
+                <button
+                  onClick={() => setBillingCycle('yearly')}
+                  className={`relative px-6 py-3 rounded-full text-sm font-semibold transition-all duration-300 flex items-center gap-2 ${
+                    billingCycle === 'yearly'
+                      ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-white shadow-lg shadow-emerald-500/30'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                  }`}
+                >
+                  Jährlich
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-bold transition-all duration-300 ${
+                    billingCycle === 'yearly'
+                      ? 'bg-white/20 text-white'
+                      : 'bg-emerald-500/20 text-emerald-400 animate-pulse'
+                  }`}>-20%</span>
+                </button>
+              </div>
+              
+              {/* Empfehlung Badge */}
+              {billingCycle === 'monthly' && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap"
+                >
+                  <span className="text-xs text-emerald-400 flex items-center gap-1">
+                    <Sparkles className="w-3 h-3" />
+                    Spare 20% mit jährlicher Zahlung
+                  </span>
+                </motion.div>
+              )}
+            </motion.div>
           </motion.div>
 
           <div className="max-w-7xl mx-auto overflow-visible">
@@ -1427,7 +1455,12 @@ export default function Home() {
                 <div className="text-sm font-medium text-primary mb-2">STARTER</div>
                 <h3 className="text-lg font-bold mb-1">{t.pricingPlans.starter.name}</h3>
                 <p className="text-xs text-muted-foreground mb-3">{t.pricingPlans.starter.tagline}</p>
-                <div className="text-2xl font-black mb-1">
+                <motion.div 
+                  key={billingCycle}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-2xl font-black mb-1"
+                >
                   {billingCycle === 'yearly' ? (
                     <>
                       <span className="line-through text-muted-foreground text-lg mr-1">€19</span>
@@ -1436,7 +1469,17 @@ export default function Home() {
                   ) : (
                     <>€19<span className="text-sm font-normal text-muted-foreground">/mo</span></>
                   )}
-                </div>
+                </motion.div>
+                {billingCycle === 'yearly' && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-medium mb-2"
+                  >
+                    <Sparkles className="w-3 h-3" />
+                    Spare €48/Jahr
+                  </motion.div>
+                )}
                 <p className="text-xs text-muted-foreground mb-4">{t.pricingPlans.starter.analyses}</p>
                 <Button 
                   onClick={() => handlePurchase('starter')}
@@ -1479,7 +1522,12 @@ export default function Home() {
                     <div className="text-sm font-medium text-accent mb-2">PRO</div>
                     <h3 className="text-lg font-bold mb-1">{t.pricingPlans.pro.name}</h3>
                     <p className="text-xs text-muted-foreground mb-3">{t.pricingPlans.pro.tagline}</p>
-                    <div className="text-2xl font-black mb-1">
+                    <motion.div 
+                      key={billingCycle}
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-2xl font-black mb-1"
+                    >
                       {billingCycle === 'yearly' ? (
                         <>
                           <span className="line-through text-muted-foreground text-lg mr-1">€49</span>
@@ -1488,7 +1536,17 @@ export default function Home() {
                       ) : (
                         <>€49<span className="text-sm font-normal text-muted-foreground">/mo</span></>
                       )}
-                    </div>
+                    </motion.div>
+                    {billingCycle === 'yearly' && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-medium mb-2"
+                      >
+                        <Sparkles className="w-3 h-3" />
+                        Spare €120/Jahr
+                      </motion.div>
+                    )}
                     <p className="text-xs text-muted-foreground mb-4">{t.pricingPlans.pro.analyses}</p>
                     <Button 
                       onClick={() => handlePurchase('pro')}
@@ -1528,7 +1586,12 @@ export default function Home() {
                 <div className="text-sm font-medium text-yellow-500 mb-2">BUSINESS</div>
                 <h3 className="text-lg font-bold mb-1">{t.pricingPlans.business.name}</h3>
                 <p className="text-xs text-muted-foreground mb-3">{t.pricingPlans.business.tagline}</p>
-                <div className="text-2xl font-black mb-1">
+                <motion.div 
+                  key={billingCycle}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-2xl font-black mb-1"
+                >
                   {billingCycle === 'yearly' ? (
                     <>
                       <span className="line-through text-muted-foreground text-lg mr-1">€99</span>
@@ -1537,7 +1600,17 @@ export default function Home() {
                   ) : (
                     <>€99<span className="text-sm font-normal text-muted-foreground">/mo</span></>
                   )}
-                </div>
+                </motion.div>
+                {billingCycle === 'yearly' && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-medium mb-2"
+                  >
+                    <Sparkles className="w-3 h-3" />
+                    Spare €240/Jahr
+                  </motion.div>
+                )}
                 <p className="text-xs text-muted-foreground mb-4">{t.pricingPlans.business.analyses}</p>
                 <Button 
                   onClick={() => handlePurchase('business')}
@@ -1576,7 +1649,12 @@ export default function Home() {
                 <div className="text-sm font-medium text-orange-500 mb-2">ENTERPRISE</div>
                 <h3 className="text-lg font-bold mb-1">Enterprise</h3>
                 <p className="text-xs text-muted-foreground mb-3">Für große Agenturen</p>
-                <div className="text-2xl font-black mb-1">
+                <motion.div 
+                  key={billingCycle}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-2xl font-black mb-1"
+                >
                   {billingCycle === 'yearly' ? (
                     <>
                       <span className="line-through text-muted-foreground text-lg mr-1">€299</span>
@@ -1585,7 +1663,17 @@ export default function Home() {
                   ) : (
                     <>€299<span className="text-sm font-normal text-muted-foreground">/mo</span></>
                   )}
-                </div>
+                </motion.div>
+                {billingCycle === 'yearly' && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-medium mb-2"
+                  >
+                    <Sparkles className="w-3 h-3" />
+                    Spare €720/Jahr
+                  </motion.div>
+                )}
                 <p className="text-xs text-muted-foreground mb-4">Unbegrenzte Analysen</p>
                 <Button 
                   onClick={() => handlePurchase('enterprise')}

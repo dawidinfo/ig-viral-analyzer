@@ -892,3 +892,13 @@
 ## Bug Fixes
 - [x] Exit-Popup leitet zur falschen Seite (/analysis) - korrigieren
 - [x] Hero-Eingabe im ATF ist verrutscht - besser positionieren und hervorheben
+
+## Pricing Toggle Verbesserungen
+- [ ] Toggle deutlich sichtbarer und schöner gestalten
+- [ ] Animierter Preisübergang beim Toggle-Wechsel
+- [ ] Ersparnis-Badge "Spare €XX/Jahr" bei jährlicher Auswahl
+- [ ] Jährliche Price IDs im Stripe Checkout verknüpfen
+
+## Bug Fixes - Pricing Seite Logo
+- [x] Logo auf /pricing Seite zeigt falsches Icon (Balkendiagramm statt Auge)
+- [x] Toggle auf /pricing Seite schöner gestalten

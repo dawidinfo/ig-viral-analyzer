@@ -741,7 +741,7 @@ export default function Pricing() {
           </Button>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-              <BarChart3 className="w-5 h-5 text-white" />
+              <Eye className="w-5 h-5 text-white" />
             </div>
             <span className="font-bold text-lg">ReelSpy.ai</span>
           </div>
@@ -768,47 +768,59 @@ export default function Pricing() {
             </p>
 
             {/* Billing Toggle */}
-            <div className="relative inline-flex flex-col items-center gap-3">
-              {/* Rabatt-Banner */}
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2">
-                <Badge className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white border-0 shadow-lg animate-pulse">
-                  🎉 Spare 20% bei jährlicher Zahlung
-                </Badge>
-              </div>
-              
-              <div className="flex items-center gap-2 p-1.5 rounded-full bg-muted/80 backdrop-blur-sm border border-border/50 shadow-lg">
-                <button
-                  onClick={() => setIsYearly(false)}
-                  className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
-                    !isYearly 
-                      ? 'bg-gradient-to-r from-violet-500 to-purple-500 text-white shadow-md' 
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  Monatlich
-                </button>
-                <button
-                  onClick={() => setIsYearly(true)}
-                  className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 flex items-center gap-2 ${
-                    isYearly 
-                      ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-white shadow-md' 
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  Jährlich
-                  {!isYearly && (
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-500 text-xs font-bold">
+            <div className="relative inline-flex flex-col items-center gap-4">
+              {/* Großer Toggle mit Glow */}
+              <div className="relative">
+                {/* Glow-Effekt */}
+                <div className="absolute inset-0 bg-gradient-to-r from-violet-500/30 via-purple-500/30 to-emerald-500/30 rounded-2xl blur-xl opacity-60" />
+                
+                <div className="relative flex items-center gap-1 p-2 rounded-2xl bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-xl border border-white/10 shadow-2xl">
+                  <button
+                    onClick={() => setIsYearly(false)}
+                    className={`relative px-8 py-4 rounded-xl text-base font-bold transition-all duration-500 ${
+                      !isYearly 
+                        ? 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/30 scale-105' 
+                        : 'text-gray-400 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    <span className="relative z-10">Monatlich</span>
+                    {!isYearly && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-violet-500 to-purple-600 rounded-xl blur opacity-50" />
+                    )}
+                  </button>
+                  
+                  <button
+                    onClick={() => setIsYearly(true)}
+                    className={`relative px-8 py-4 rounded-xl text-base font-bold transition-all duration-500 flex items-center gap-3 ${
+                      isYearly 
+                        ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-white shadow-lg shadow-emerald-500/30 scale-105' 
+                        : 'text-gray-400 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    <span className="relative z-10">Jährlich</span>
+                    <span className={`px-3 py-1 rounded-full text-xs font-black transition-all duration-300 ${
+                      isYearly 
+                        ? 'bg-white/20 text-white' 
+                        : 'bg-emerald-500/20 text-emerald-400 animate-pulse'
+                    }`}>
                       -20%
                     </span>
-                  )}
-                </button>
+                    {isYearly && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-xl blur opacity-50" />
+                    )}
+                  </button>
+                </div>
               </div>
               
-              {isYearly && (
-                <p className="text-sm text-emerald-500 font-medium">
-                  ✓ Jährliche Abrechnung aktiv - Du sparst bei jedem Plan!
+              {/* Ersparnis-Hinweis */}
+              <div className={`flex items-center gap-2 transition-all duration-500 ${
+                isYearly ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
+              }`}>
+                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <p className="text-sm text-emerald-400 font-semibold">
+                  Du sparst bis zu €720/Jahr!
                 </p>
-              )}
+              </div>
             </div>
           </motion.div>
 
