@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
+import { ABTestDashboard } from "@/components/ABTestDashboard";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -474,6 +475,10 @@ export default function Admin() {
             <TabsTrigger value="tracking" className="gap-2">
               <Activity className="h-4 w-4" />
               Tracking
+            </TabsTrigger>
+            <TabsTrigger value="abtest" className="gap-2">
+              <BarChart3 className="h-4 w-4" />
+              A/B-Tests
             </TabsTrigger>
           </TabsList>
 
@@ -1090,6 +1095,11 @@ export default function Admin() {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* A/B-Test Tab */}
+          <TabsContent value="abtest">
+            <ABTestDashboard />
           </TabsContent>
         </Tabs>
       </main>

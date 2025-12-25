@@ -993,3 +993,9 @@
 - [x] Tracking-Pixel in alle E-Mail-Templates einbauen
 - [x] User-ID und E-Mail-Typ im Pixel-URL kodieren
 - [x] Click-Tracking mit Redirect implementiert
+
+## A/B-Test Dashboard
+- [x] Dashboard-Komponente mit Öffnungs- und Klickraten erstellen
+- [x] Visuelle Balkendiagramme für Variante A vs B
+- [x] Gewinner-Indikator mit Konfidenz-Anzeige
+- [x] Integration in Admin-Seite
