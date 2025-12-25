@@ -1176,3 +1176,4 @@
 - [x] Bug: Content Plan erstellen Button scrollt zur Top 50 statt zum Content-Plan Tab
 - [x] Bug: Followerzahl nicht exakt aktuell - Cache auf 15min reduziert + Refresh-Button hinzugefügt
 - [x] Followerzahl vollständig anzeigen (71.874 statt 71,8k)
+- [x] FollowerGrowthChart volle Zahlen anzeigen (71.874 statt 71.9K)

@@ -57,9 +57,8 @@ const TIME_RANGE_OPTIONS: { value: TimeRange; label: string }[] = [
   { value: 'max', label: 'Max' },
 ];
 
+// Format number with full digits and thousand separators (e.g., 71.874)
 function formatNumber(num: number): string {
-  if (Math.abs(num) >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-  if (Math.abs(num) >= 1000) return (num / 1000).toFixed(1) + 'K';
   return num.toLocaleString('de-DE');
 }
 
