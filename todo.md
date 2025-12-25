@@ -1193,3 +1193,4 @@
 - [x] Social-Login-Buttons auf Homepage integrieren
 - [x] Detaillierte Statusmeldungen für Cache-Löschvorgang
 - [x] Dashboard-Navigation größer, schöner und sticky machen
+- [x] Dashboard-Navigation Bug - Tabs abgeschnitten
