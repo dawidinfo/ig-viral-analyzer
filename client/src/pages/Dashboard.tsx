@@ -39,6 +39,8 @@ import {
   Instagram,
   ArrowUpRight,
   Shield,
+  Bell,
+  BellOff,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -48,6 +50,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { AffiliateDashboard } from "@/components/AffiliateDashboard";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { GlobalFooter } from "@/components/GlobalFooter";
 import { InvoicesTab } from "@/components/InvoicesTab";
 import { NotesTab } from "@/components/NotesTab";
@@ -55,6 +58,7 @@ import { OnboardingTutorial, useOnboarding } from "@/components/OnboardingTutori
 import { NotificationSettings } from "@/components/NotificationSettings";
 import { ContentPlanGenerator } from "@/components/ContentPlanGenerator";
 import { DashboardRecommendations } from "@/components/DashboardRecommendations";
+import { UserBadges } from "@/components/UserBadges";
 import { useState, useMemo, useEffect } from "react";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
@@ -93,6 +97,9 @@ export default function Dashboard() {
   
   // Konfetti für Upgrade-Erfolg
   const { fireSuccessConfetti } = useConfetti();
+  
+  // Push-Benachrichtigungen
+  const { permission: notificationPermission, isSupported: notificationsSupported, requestPermission: requestNotificationPermission, isEnabled: notificationsEnabled } = usePushNotifications();
   
   // Check for upgrade success from URL
   useEffect(() => {
@@ -369,38 +376,71 @@ export default function Dashboard() {
           </div>
 
           {/* Rabatt-Banner - nur für Free User */}
-          {plan === 'free' && (
-            <motion.div 
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-6 p-4 rounded-xl bg-gradient-to-r from-violet-600/20 via-purple-600/20 to-pink-600/20 border border-violet-500/30 relative overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxjaXJjbGUgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIgY3g9IjIwIiBjeT0iMjAiIHI9IjIiLz48L2c+PC9zdmc+')] opacity-50" />
-              <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 text-white">
-                    <Gift className="w-5 h-5" />
+          {plan === 'free' && (() => {
+            const now = new Date();
+            const month = now.getMonth(); // 0-11
+            const day = now.getDate();
+            
+            // Dynamische Promotion basierend auf Datum
+            let promoEmoji = '🚀';
+            let promoTitle = 'Neujahrs-Special';
+            let promoSubtitle = 'Starte 2025 mit mehr Reichweite!';
+            
+            if (month === 11 && day >= 24 && day <= 26) {
+              // Weihnachten (24-26. Dezember)
+              promoEmoji = '🎄';
+              promoTitle = 'Weihnachts-Special';
+              promoSubtitle = 'Frohe Weihnachten!';
+            } else if (month === 11 && day >= 27 && day <= 31) {
+              // Silvester (27-31. Dezember)
+              promoEmoji = '🎆';
+              promoTitle = 'Silvester-Special';
+              promoSubtitle = 'Starte ins neue Jahr durch!';
+            } else if (month === 0 && day >= 1 && day <= 7) {
+              // Neujahr (1-7. Januar)
+              promoEmoji = '🎉';
+              promoTitle = 'Neujahrs-Special';
+              promoSubtitle = 'Dein Jahr für viralen Content!';
+            } else {
+              // Standard-Promotion
+              promoEmoji = '⚡';
+              promoTitle = 'Limited Offer';
+              promoSubtitle = 'Nur für kurze Zeit!';
+            }
+            
+            return (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 p-4 rounded-xl bg-gradient-to-r from-violet-600/20 via-purple-600/20 to-pink-600/20 border border-violet-500/30 relative overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxjaXJjbGUgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIgY3g9IjIwIiBjeT0iMjAiIHI9IjIiLz48L2c+PC9zdmc+')] opacity-50" />
+                <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 text-white">
+                      <Gift className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-sm sm:text-base">
+                        {promoEmoji} {promoTitle}: <span className="text-violet-400">20% Rabatt</span> auf alle Pläne!
+                      </p>
+                      <p className="text-xs text-muted-foreground">{promoSubtitle} Code: <span className="font-mono bg-violet-500/20 px-1.5 py-0.5 rounded">REELSPY20</span></p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-semibold text-sm sm:text-base">
-                      🎉 Weihnachts-Special: <span className="text-violet-400">20% Rabatt</span> auf alle Pläne!
-                    </p>
-                    <p className="text-xs text-muted-foreground">Code: <span className="font-mono bg-violet-500/20 px-1.5 py-0.5 rounded">REELSPY20</span> • Nur noch heute!</p>
-                  </div>
+                  <Button 
+                    size="sm" 
+                    className="bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white whitespace-nowrap"
+                    onClick={() => {
+                      checkoutMutation.mutate({ packageId: 'pro', isYearly: false });
+                    }}
+                  >
+                    Jetzt upgraden
+                    <ArrowUpRight className="w-4 h-4 ml-1" />
+                  </Button>
                 </div>
-                <Button 
-                  size="sm" 
-                  className="bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white whitespace-nowrap"
-                  onClick={() => {
-                    checkoutMutation.mutate({ packageId: 'pro', isYearly: false });
-                  }}
-                >
-                  Jetzt upgraden
-                  <ArrowUpRight className="w-4 h-4 ml-1" />
-                </Button>
-              </div>
-            </motion.div>
-          )}
+              </motion.div>
+            );
+          })()}
 
           {/* Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
@@ -448,6 +488,15 @@ export default function Dashboard() {
                 hasAnalyses={(dashboardData?.savedAnalysesCount || 0) > 0}
                 analysisCount={dashboardData?.savedAnalysesCount || 0}
                 onNavigate={(tab) => setActiveTab(tab)}
+              />
+              
+              {/* User Badges / Gamification */}
+              <UserBadges 
+                analysisCount={dashboardData?.savedAnalysesCount || 0}
+                savedAnalysisCount={dashboardData?.savedAnalysesCount || 0}
+                contentPlansGenerated={0}
+                daysActive={Math.floor((Date.now() - new Date(user?.createdAt || Date.now()).getTime()) / (1000 * 60 * 60 * 24))}
+                isPro={plan === 'pro' || plan === 'business' || plan === 'enterprise'}
               />
               
               {/* Plan & Stats Row */}
@@ -1005,6 +1054,65 @@ export default function Dashboard() {
 
             {/* Settings Tab */}
             <TabsContent value="settings" className="space-y-6">
+              {/* Push-Benachrichtigungen */}
+              {notificationsSupported && (
+                <Card className="glass-card">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Bell className="w-5 h-5 text-primary" />
+                      Push-Benachrichtigungen
+                    </CardTitle>
+                    <CardDescription>
+                      Erhalte tägliche Tipps und Erinnerungen direkt auf deinem Gerät
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        {notificationsEnabled ? (
+                          <div className="p-2 rounded-lg bg-emerald-500/20">
+                            <Bell className="w-5 h-5 text-emerald-500" />
+                          </div>
+                        ) : (
+                          <div className="p-2 rounded-lg bg-muted">
+                            <BellOff className="w-5 h-5 text-muted-foreground" />
+                          </div>
+                        )}
+                        <div>
+                          <p className="font-medium">
+                            {notificationsEnabled ? 'Benachrichtigungen aktiv' : 'Benachrichtigungen deaktiviert'}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            {notificationsEnabled 
+                              ? 'Du erhältst tägliche Tipps und Analyse-Erinnerungen' 
+                              : 'Aktiviere Benachrichtigungen für tägliche Tipps'}
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        variant={notificationsEnabled ? 'outline' : 'default'}
+                        size="sm"
+                        onClick={requestNotificationPermission}
+                        disabled={notificationsEnabled}
+                        className={notificationsEnabled ? '' : 'bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700'}
+                      >
+                        {notificationsEnabled ? (
+                          <>
+                            <Check className="w-4 h-4 mr-2" />
+                            Aktiviert
+                          </>
+                        ) : (
+                          <>
+                            <Bell className="w-4 h-4 mr-2" />
+                            Aktivieren
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+              
               {/* Notification Settings */}
               <NotificationSettings />
               

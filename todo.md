@@ -1053,3 +1053,9 @@
 - [x] Erfolgs-Animation nach Upgrade (Konfetti)
 - [x] Plan-Auswahl Dropdown im Upgrade-Button
 - [x] Rabatt-Banner im Dashboard für höhere Conversion
+
+## Neue Features
+- [x] Silvester-Special Banner (automatisch wechselnd nach Datum)
+- [x] Push-Benachrichtigungen für Analyse-Tipps
+- [x] Onboarding-Tour für neue User (bereits implementiert)
+- [x] Gamification mit Badges und Achievements (10 Badges)
