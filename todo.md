@@ -1120,3 +1120,16 @@
 - [x] Admin-Panel für gesperrte User
 - [x] Webhook für Slack/Discord Alerts
 - [x] Cron-Job Anleitung für cron-job.org
+- [x] Sicheres CRON_SECRET generieren und konfigurieren
+- [x] Cron-Job auf cron-job.org einrichten
+
+## Historische Daten Caching (API-Kosten sparen)
+- [x] Datenbank-Schema für historische Profil-Daten (instagram_profiles_history)
+- [x] Datenbank-Schema für historische Posts/Reels (instagram_posts_history)
+- [x] Datenbank-Schema für Follower-Snapshots (follower_snapshots)
+- [x] Caching-Service für Instagram-Daten implementieren
+- [x] Bei jeder Analyse: Daten in DB speichern
+- [x] Bei Anfrage: Erst Cache prüfen, dann API
+- [x] Cache-Invalidierung nach 24h für aktive Profile
+- [x] Cron-Job für tägliche Follower-Snapshots
+- [x] Admin-Dashboard: Cache-Statistiken anzeigen

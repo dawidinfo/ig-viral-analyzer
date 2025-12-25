@@ -71,6 +71,13 @@
       "when": 1766657143621,
       "tag": "0009_worried_pestilence",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1766670736552,
+      "tag": "0010_lonely_miek",
+      "breakpoints": true
     }
   ]
 }

@@ -639,3 +639,207 @@ export const emailAbTests = mysqlTable("email_ab_tests", {
 
 export type EmailAbTest = typeof emailAbTests.$inferSelect;
 export type InsertEmailAbTest = typeof emailAbTests.$inferInsert;
+
+
+/**
+ * Instagram Profile History - stores complete profile data at each analysis
+ * This enables tracking changes over time and reduces API costs
+ */
+export const instagramProfileHistory = mysqlTable("instagram_profile_history", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Instagram username (lowercase, normalized) */
+  username: varchar("username", { length: 64 }).notNull(),
+  /** Instagram user ID (if available) */
+  instagramId: varchar("instagramId", { length: 64 }),
+  /** Full name */
+  fullName: varchar("fullName", { length: 128 }),
+  /** Bio text */
+  biography: text("biography"),
+  /** Profile picture URL */
+  profilePicUrl: text("profilePicUrl"),
+  /** External URL in bio */
+  externalUrl: text("externalUrl"),
+  /** Is verified account */
+  isVerified: int("isVerified").default(0).notNull(),
+  /** Is business account */
+  isBusinessAccount: int("isBusinessAccount").default(0).notNull(),
+  /** Business category */
+  businessCategory: varchar("businessCategory", { length: 128 }),
+  /** Follower count at snapshot time */
+  followerCount: int("followerCount").notNull(),
+  /** Following count */
+  followingCount: int("followingCount"),
+  /** Total post count */
+  postCount: int("postCount"),
+  /** Calculated engagement rate */
+  engagementRate: decimal("engagementRate", { precision: 5, scale: 2 }),
+  /** Average likes per post */
+  avgLikes: int("avgLikes"),
+  /** Average comments per post */
+  avgComments: int("avgComments"),
+  /** Average views per reel */
+  avgReelViews: int("avgReelViews"),
+  /** Calculated viral score */
+  viralScore: int("viralScore"),
+  /** Raw API response data (JSON) */
+  rawApiData: json("rawApiData"),
+  /** Date of snapshot (YYYY-MM-DD) */
+  snapshotDate: varchar("snapshotDate", { length: 10 }).notNull(),
+  /** Source of data (api, cache, manual) */
+  dataSource: varchar("dataSource", { length: 32 }).default("api").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type InstagramProfileHistory = typeof instagramProfileHistory.$inferSelect;
+export type InsertInstagramProfileHistory = typeof instagramProfileHistory.$inferInsert;
+
+/**
+ * Instagram Posts History - stores individual posts/reels data
+ * Enables tracking post performance over time
+ */
+export const instagramPostsHistory = mysqlTable("instagram_posts_history", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Instagram username */
+  username: varchar("username", { length: 64 }).notNull(),
+  /** Instagram post/reel ID */
+  postId: varchar("postId", { length: 64 }).notNull(),
+  /** Post type: image, video, carousel, reel */
+  postType: mysqlEnum("postType", ["image", "video", "carousel", "reel"]).notNull(),
+  /** Post shortcode for URL */
+  shortcode: varchar("shortcode", { length: 64 }),
+  /** Caption text */
+  caption: text("caption"),
+  /** Thumbnail/image URL */
+  thumbnailUrl: text("thumbnailUrl"),
+  /** Video URL (for reels/videos) */
+  videoUrl: text("videoUrl"),
+  /** Like count at snapshot time */
+  likeCount: int("likeCount").default(0).notNull(),
+  /** Comment count */
+  commentCount: int("commentCount").default(0).notNull(),
+  /** View count (for videos/reels) */
+  viewCount: int("viewCount"),
+  /** Play count (for reels) */
+  playCount: int("playCount"),
+  /** Share count (if available) */
+  shareCount: int("shareCount"),
+  /** Save count (if available) */
+  saveCount: int("saveCount"),
+  /** Video duration in seconds */
+  videoDuration: int("videoDuration"),
+  /** Hashtags used (JSON array) */
+  hashtags: json("hashtags").$type<string[]>(),
+  /** Mentions (JSON array) */
+  mentions: json("mentions").$type<string[]>(),
+  /** Location tag */
+  location: varchar("location", { length: 255 }),
+  /** Audio/music used */
+  audioName: varchar("audioName", { length: 255 }),
+  /** Original post timestamp */
+  postedAt: timestamp("postedAt"),
+  /** Date of this snapshot (YYYY-MM-DD) */
+  snapshotDate: varchar("snapshotDate", { length: 10 }).notNull(),
+  /** Raw API response data */
+  rawApiData: json("rawApiData"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type InstagramPostsHistory = typeof instagramPostsHistory.$inferSelect;
+export type InsertInstagramPostsHistory = typeof instagramPostsHistory.$inferInsert;
+
+/**
+ * AI Analysis Cache - stores AI analysis results to avoid re-processing
+ */
+export const aiAnalysisCache = mysqlTable("ai_analysis_cache", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Platform */
+  platform: mysqlEnum("platform", ["instagram", "tiktok", "youtube"]).notNull(),
+  /** Username or content ID */
+  identifier: varchar("identifier", { length: 128 }).notNull(),
+  /** Type of analysis */
+  analysisType: mysqlEnum("analysisType", ["profile", "post", "reel", "video", "deep"]).notNull(),
+  /** Content hash (to detect if content changed) */
+  contentHash: varchar("contentHash", { length: 64 }),
+  /** HAPSS analysis results */
+  hapssAnalysis: json("hapssAnalysis"),
+  /** AIDA analysis results */
+  aidaAnalysis: json("aidaAnalysis"),
+  /** Hook analysis */
+  hookAnalysis: json("hookAnalysis"),
+  /** Copywriting frameworks analysis */
+  copywritingAnalysis: json("copywritingAnalysis"),
+  /** Pattern recognition results */
+  patternAnalysis: json("patternAnalysis"),
+  /** Viral factors analysis */
+  viralFactors: json("viralFactors"),
+  /** Recommendations */
+  recommendations: json("recommendations"),
+  /** Full analysis data (JSON) */
+  fullAnalysisData: json("fullAnalysisData"),
+  /** Is this analysis still valid? */
+  isValid: int("isValid").default(1).notNull(),
+  /** When this analysis expires */
+  expiresAt: timestamp("expiresAt").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type AiAnalysisCache = typeof aiAnalysisCache.$inferSelect;
+export type InsertAiAnalysisCache = typeof aiAnalysisCache.$inferInsert;
+
+/**
+ * Data Collection Queue - tracks profiles to collect data for
+ * Used by cron job to automatically collect data for active/popular profiles
+ */
+export const dataCollectionQueue = mysqlTable("data_collection_queue", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Platform */
+  platform: mysqlEnum("platform", ["instagram", "tiktok", "youtube"]).notNull(),
+  /** Username or channel ID */
+  identifier: varchar("identifier", { length: 128 }).notNull(),
+  /** Priority (higher = more important) */
+  priority: int("priority").default(0).notNull(),
+  /** How often to collect (daily, weekly, monthly) */
+  frequency: mysqlEnum("frequency", ["daily", "weekly", "monthly"]).default("daily").notNull(),
+  /** Last successful collection */
+  lastCollectedAt: timestamp("lastCollectedAt"),
+  /** Next scheduled collection */
+  nextCollectionAt: timestamp("nextCollectionAt"),
+  /** Number of users tracking this profile */
+  trackerCount: int("trackerCount").default(1).notNull(),
+  /** Total API calls saved by caching */
+  apiCallsSaved: int("apiCallsSaved").default(0).notNull(),
+  /** Is active */
+  isActive: int("isActive").default(1).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type DataCollectionQueue = typeof dataCollectionQueue.$inferSelect;
+export type InsertDataCollectionQueue = typeof dataCollectionQueue.$inferInsert;
+
+/**
+ * Cache Statistics - tracks cache hit/miss rates and API savings
+ */
+export const cacheStatistics = mysqlTable("cache_statistics", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Date (YYYY-MM-DD) */
+  date: varchar("date", { length: 10 }).notNull(),
+  /** Platform */
+  platform: varchar("platform", { length: 32 }).notNull(),
+  /** Total requests */
+  totalRequests: int("totalRequests").default(0).notNull(),
+  /** Cache hits */
+  cacheHits: int("cacheHits").default(0).notNull(),
+  /** Cache misses (API calls made) */
+  cacheMisses: int("cacheMisses").default(0).notNull(),
+  /** Estimated API cost saved (in cents) */
+  costSaved: int("costSaved").default(0).notNull(),
+  /** Actual API cost (in cents) */
+  actualCost: int("actualCost").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type CacheStatistics = typeof cacheStatistics.$inferSelect;
+export type InsertCacheStatistics = typeof cacheStatistics.$inferInsert;

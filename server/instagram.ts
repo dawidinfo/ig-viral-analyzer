@@ -1,6 +1,13 @@
 import axios, { AxiosError } from "axios";
 import { callDataApi } from "./_core/dataApi";
 import { storeFollowerSnapshot } from "./followerHistory";
+import { 
+  saveInstagramProfileSnapshot, 
+  saveInstagramPostsSnapshot,
+  getCachedInstagramProfile,
+  getCachedInstagramPosts,
+  addToCollectionQueue 
+} from "./services/historicalDataService";
 
 const RAPIDAPI_HOST = "instagram-scraper-stable-api.p.rapidapi.com";
 
@@ -706,11 +713,39 @@ function calculateViralScore(
 
 export async function analyzeInstagramAccount(username: string): Promise<InstagramAnalysis> {
   try {
-    const [profile, posts, reels] = await Promise.all([
-      fetchInstagramProfile(username),
-      fetchInstagramPosts(username, 12),
-      fetchInstagramReels(username, 12),
-    ]);
+    // Check historical data cache first (24h validity)
+    const cachedProfile = await getCachedInstagramProfile(username, 24);
+    const cachedPosts = await getCachedInstagramPosts(username, 12);
+    
+    let profile, posts, reels;
+    let fromHistoricalCache = false;
+    
+    if (cachedProfile && cachedPosts) {
+      // Use cached data - saves API calls!
+      console.log(`[Instagram] Using historical cache for @${username}`);
+      profile = {
+        username: cachedProfile.username,
+        fullName: cachedProfile.fullName || '',
+        biography: cachedProfile.biography || '',
+        profilePicUrl: cachedProfile.profilePicUrl || '',
+        followerCount: cachedProfile.followerCount,
+        followingCount: cachedProfile.followingCount || 0,
+        mediaCount: cachedProfile.postCount || 0,
+        isVerified: cachedProfile.isVerified === 1,
+        isBusinessAccount: cachedProfile.isBusinessAccount === 1,
+        externalUrl: cachedProfile.externalUrl || undefined,
+      };
+      posts = cachedPosts.slice(0, 12);
+      reels = cachedPosts.filter((p: any) => p.postType === 'reel' || p.product_type === 'clips').slice(0, 12);
+      fromHistoricalCache = true;
+    } else {
+      // Fetch fresh data from APIs
+      [profile, posts, reels] = await Promise.all([
+        fetchInstagramProfile(username),
+        fetchInstagramPosts(username, 12),
+        fetchInstagramReels(username, 12),
+      ]);
+    }
 
     const allMedia = [...posts, ...reels];
     
@@ -743,6 +778,30 @@ export async function analyzeInstagramAccount(username: string): Promise<Instagr
       postCount: profile.mediaCount,
       engagementRate: engagementRate,
     }, true).catch(err => console.error('[Instagram] Failed to store snapshot:', err.message));
+
+    // Save to historical data cache (only if we fetched fresh data)
+    if (!fromHistoricalCache) {
+      // Save profile snapshot
+      saveInstagramProfileSnapshot(username, profile, {
+        followerCount: profile.followerCount,
+        followingCount: profile.followingCount,
+        postCount: profile.mediaCount,
+        engagementRate: engagementRate,
+        avgLikes: avgLikes,
+        avgComments: avgComments,
+        avgReelViews: avgViews,
+        viralScore: viralScore,
+      }, 'api').catch(err => console.error('[HistoricalData] Failed to save profile:', err.message));
+
+      // Save posts snapshot
+      const allPosts = [...posts, ...reels.map(r => ({ ...r, postType: 'reel' }))];
+      saveInstagramPostsSnapshot(username, allPosts)
+        .catch(err => console.error('[HistoricalData] Failed to save posts:', err.message));
+
+      // Add to collection queue for automatic daily updates
+      addToCollectionQueue('instagram', username, 'daily')
+        .catch(err => console.error('[HistoricalData] Failed to add to queue:', err.message));
+    }
 
     return {
       profile,

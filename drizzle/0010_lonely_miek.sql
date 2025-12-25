@@ -1,0 +1,103 @@
+CREATE TABLE `ai_analysis_cache` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`platform` enum('instagram','tiktok','youtube') NOT NULL,
+	`identifier` varchar(128) NOT NULL,
+	`analysisType` enum('profile','post','reel','video','deep') NOT NULL,
+	`contentHash` varchar(64),
+	`hapssAnalysis` json,
+	`aidaAnalysis` json,
+	`hookAnalysis` json,
+	`copywritingAnalysis` json,
+	`patternAnalysis` json,
+	`viralFactors` json,
+	`recommendations` json,
+	`fullAnalysisData` json,
+	`isValid` int NOT NULL DEFAULT 1,
+	`expiresAt` timestamp NOT NULL,
+	`createdAt` timestamp NOT NULL DEFAULT (now()),
+	`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT `ai_analysis_cache_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `cache_statistics` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`date` varchar(10) NOT NULL,
+	`platform` varchar(32) NOT NULL,
+	`totalRequests` int NOT NULL DEFAULT 0,
+	`cacheHits` int NOT NULL DEFAULT 0,
+	`cacheMisses` int NOT NULL DEFAULT 0,
+	`costSaved` int NOT NULL DEFAULT 0,
+	`actualCost` int NOT NULL DEFAULT 0,
+	`createdAt` timestamp NOT NULL DEFAULT (now()),
+	`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT `cache_statistics_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `data_collection_queue` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`platform` enum('instagram','tiktok','youtube') NOT NULL,
+	`identifier` varchar(128) NOT NULL,
+	`priority` int NOT NULL DEFAULT 0,
+	`frequency` enum('daily','weekly','monthly') NOT NULL DEFAULT 'daily',
+	`lastCollectedAt` timestamp,
+	`nextCollectionAt` timestamp,
+	`trackerCount` int NOT NULL DEFAULT 1,
+	`apiCallsSaved` int NOT NULL DEFAULT 0,
+	`isActive` int NOT NULL DEFAULT 1,
+	`createdAt` timestamp NOT NULL DEFAULT (now()),
+	`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT `data_collection_queue_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `instagram_posts_history` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`username` varchar(64) NOT NULL,
+	`postId` varchar(64) NOT NULL,
+	`postType` enum('image','video','carousel','reel') NOT NULL,
+	`shortcode` varchar(64),
+	`caption` text,
+	`thumbnailUrl` text,
+	`videoUrl` text,
+	`likeCount` int NOT NULL DEFAULT 0,
+	`commentCount` int NOT NULL DEFAULT 0,
+	`viewCount` int,
+	`playCount` int,
+	`shareCount` int,
+	`saveCount` int,
+	`videoDuration` int,
+	`hashtags` json,
+	`mentions` json,
+	`location` varchar(255),
+	`audioName` varchar(255),
+	`postedAt` timestamp,
+	`snapshotDate` varchar(10) NOT NULL,
+	`rawApiData` json,
+	`createdAt` timestamp NOT NULL DEFAULT (now()),
+	CONSTRAINT `instagram_posts_history_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `instagram_profile_history` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`username` varchar(64) NOT NULL,
+	`instagramId` varchar(64),
+	`fullName` varchar(128),
+	`biography` text,
+	`profilePicUrl` text,
+	`externalUrl` text,
+	`isVerified` int NOT NULL DEFAULT 0,
+	`isBusinessAccount` int NOT NULL DEFAULT 0,
+	`businessCategory` varchar(128),
+	`followerCount` int NOT NULL,
+	`followingCount` int,
+	`postCount` int,
+	`engagementRate` decimal(5,2),
+	`avgLikes` int,
+	`avgComments` int,
+	`avgReelViews` int,
+	`viralScore` int,
+	`rawApiData` json,
+	`snapshotDate` varchar(10) NOT NULL,
+	`dataSource` varchar(32) NOT NULL DEFAULT 'api',
+	`createdAt` timestamp NOT NULL DEFAULT (now()),
+	CONSTRAINT `instagram_profile_history_id` PRIMARY KEY(`id`)
+);

@@ -1,6 +1,7 @@
 import { sendWeeklyReport, ReportType } from "./weeklyReportService";
 import { runDripCampaign } from "./services/dripCampaignService";
 import { runScheduledTracking } from "./scheduledTracking";
+import { runDailyDataCollection, getCacheStatisticsSummary } from "./services/historicalDataService";
 import { getDb } from "./db";
 import { users, savedAnalyses } from "../drizzle/schema";
 import { eq, isNull, or, desc } from "drizzle-orm";
@@ -238,6 +239,7 @@ export function stopCronJobs(): void {
 // Track last drip campaign run
 let lastDripCampaignRun: Date | null = null;
 let lastFollowerTrackingRun: Date | null = null;
+let lastDataCollectionRun: Date | null = null;
 
 /**
  * Run daily drip campaign
@@ -319,20 +321,61 @@ export async function runDailyFollowerTracking(): Promise<{
 }
 
 /**
+ * Run daily historical data collection
+ * Collects data for profiles in the collection queue
+ */
+export async function runDailyDataCollectionJob(): Promise<{
+  success: boolean;
+  message: string;
+  stats?: { collected: number; errors: number; apiCallsSaved: number };
+}> {
+  const minInterval = 12 * 60 * 60 * 1000; // 12 hours minimum between runs
+
+  if (lastDataCollectionRun && Date.now() - lastDataCollectionRun.getTime() < minInterval) {
+    const nextRun = new Date(lastDataCollectionRun.getTime() + minInterval);
+    return {
+      success: false,
+      message: `Data collection already ran recently. Next run available at ${nextRun.toISOString()}`,
+    };
+  }
+
+  try {
+    console.log("[CronJobs] Starting daily historical data collection...");
+    const result = await runDailyDataCollection();
+    lastDataCollectionRun = new Date();
+
+    return {
+      success: true,
+      message: `Data collection completed: ${result.collected} profiles collected, ${result.apiCallsSaved} API calls saved`,
+      stats: result,
+    };
+  } catch (error) {
+    console.error("[CronJobs] Data collection error:", error);
+    return {
+      success: false,
+      message: `Data collection failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+    };
+  }
+}
+
+/**
  * Run all daily jobs
  */
 export async function runAllDailyJobs(): Promise<{
   dripCampaign: { success: boolean; message: string };
   followerTracking: { success: boolean; message: string };
+  dataCollection: { success: boolean; message: string };
 }> {
-  const [dripResult, trackingResult] = await Promise.all([
+  const [dripResult, trackingResult, dataCollectionResult] = await Promise.all([
     runDailyDripCampaign(),
     runDailyFollowerTracking(),
+    runDailyDataCollectionJob(),
   ]);
 
   return {
     dripCampaign: dripResult,
     followerTracking: trackingResult,
+    dataCollection: dataCollectionResult,
   };
 }
 
@@ -342,6 +385,7 @@ export async function runAllDailyJobs(): Promise<{
 export function getCronJobStatus(): {
   dripCampaign: { lastRun: Date | null; nextAvailable: Date | null };
   followerTracking: { lastRun: Date | null; nextAvailable: Date | null };
+  dataCollection: { lastRun: Date | null; nextAvailable: Date | null };
   weeklyReports: { nextScheduled: { reportType: ReportType; scheduledTime: Date } | null };
 } {
   const minInterval = 12 * 60 * 60 * 1000;
@@ -355,8 +399,27 @@ export function getCronJobStatus(): {
       lastRun: lastFollowerTrackingRun,
       nextAvailable: lastFollowerTrackingRun ? new Date(lastFollowerTrackingRun.getTime() + minInterval) : null,
     },
+    dataCollection: {
+      lastRun: lastDataCollectionRun,
+      nextAvailable: lastDataCollectionRun ? new Date(lastDataCollectionRun.getTime() + minInterval) : null,
+    },
     weeklyReports: {
       nextScheduled: getNextScheduledReport(),
     },
   };
+}
+
+/**
+ * Get cache statistics for admin dashboard
+ */
+export async function getCacheStats(): Promise<{
+  totalRequests: number;
+  cacheHits: number;
+  cacheMisses: number;
+  hitRate: number;
+  totalCostSaved: number;
+  totalActualCost: number;
+  byPlatform: Record<string, any>;
+}> {
+  return getCacheStatisticsSummary(30);
 }
