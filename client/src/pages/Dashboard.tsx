@@ -55,10 +55,11 @@ import { OnboardingTutorial, useOnboarding } from "@/components/OnboardingTutori
 import { NotificationSettings } from "@/components/NotificationSettings";
 import { ContentPlanGenerator } from "@/components/ContentPlanGenerator";
 import { DashboardRecommendations } from "@/components/DashboardRecommendations";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { useConfetti } from "@/hooks/useConfetti";
 
 const planColors = {
   free: "bg-gray-500",
@@ -88,6 +89,26 @@ export default function Dashboard() {
   const [editEmail, setEditEmail] = useState(user?.email || "");
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [showAllTop50, setShowAllTop50] = useState(false);
+  const [showUpgradeSuccess, setShowUpgradeSuccess] = useState(false);
+  
+  // Konfetti für Upgrade-Erfolg
+  const { fireSuccessConfetti } = useConfetti();
+  
+  // Check for upgrade success from URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('upgrade') === 'success') {
+      setShowUpgradeSuccess(true);
+      fireSuccessConfetti();
+      toast.success("🎉 Willkommen im Pro-Plan! Alle Features sind jetzt freigeschaltet.", {
+        duration: 5000,
+      });
+      // URL bereinigen
+      window.history.replaceState({}, '', '/dashboard');
+      // Nach 5 Sekunden ausblenden
+      setTimeout(() => setShowUpgradeSuccess(false), 5000);
+    }
+  }, []);
 
   // Fetch dashboard data
   const { data: dashboardData, isLoading, refetch } = trpc.dashboard.getData.useQuery(
@@ -346,6 +367,40 @@ export default function Dashboard() {
               Verwalte deine Analysen und behalte deine Nutzung im Blick.
             </p>
           </div>
+
+          {/* Rabatt-Banner - nur für Free User */}
+          {plan === 'free' && (
+            <motion.div 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 p-4 rounded-xl bg-gradient-to-r from-violet-600/20 via-purple-600/20 to-pink-600/20 border border-violet-500/30 relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxjaXJjbGUgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIgY3g9IjIwIiBjeT0iMjAiIHI9IjIiLz48L2c+PC9zdmc+')] opacity-50" />
+              <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 text-white">
+                    <Gift className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm sm:text-base">
+                      🎉 Weihnachts-Special: <span className="text-violet-400">20% Rabatt</span> auf alle Pläne!
+                    </p>
+                    <p className="text-xs text-muted-foreground">Code: <span className="font-mono bg-violet-500/20 px-1.5 py-0.5 rounded">REELSPY20</span> • Nur noch heute!</p>
+                  </div>
+                </div>
+                <Button 
+                  size="sm" 
+                  className="bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white whitespace-nowrap"
+                  onClick={() => {
+                    checkoutMutation.mutate({ packageId: 'pro', isYearly: false });
+                  }}
+                >
+                  Jetzt upgraden
+                  <ArrowUpRight className="w-4 h-4 ml-1" />
+                </Button>
+              </div>
+            </motion.div>
+          )}
 
           {/* Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">

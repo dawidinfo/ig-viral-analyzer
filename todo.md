@@ -1047,3 +1047,9 @@
 - [x] "Upgrade auf Pro" Button direkt zum Stripe Checkout
 - [x] Minimale Klicks für Upgrade-Prozess
 - [x] Einfache, intuitive UX für Influencer
+
+## Dashboard Verbesserungen
+- [x] Mobile Dashboard-Design optimieren (Schriften in einer Reihe)
+- [x] Erfolgs-Animation nach Upgrade (Konfetti)
+- [x] Plan-Auswahl Dropdown im Upgrade-Button
+- [x] Rabatt-Banner im Dashboard für höhere Conversion

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { 
   Lightbulb, 
@@ -20,6 +20,13 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
@@ -53,6 +60,13 @@ export function DashboardRecommendations({
 }: DashboardRecommendationsProps) {
   const [, setLocation] = useLocation();
   const [isUpgrading, setIsUpgrading] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<'starter' | 'pro' | 'business'>('pro');
+  
+  const planOptions = [
+    { id: 'starter' as const, name: 'Starter', price: '€19', color: 'from-blue-500 to-cyan-500' },
+    { id: 'pro' as const, name: 'Pro', price: '€49', color: 'from-violet-500 to-purple-600', popular: true },
+    { id: 'business' as const, name: 'Business', price: '€99', color: 'from-amber-500 to-orange-500' },
+  ];
 
   // Stripe Checkout Mutation - direkt zum Pro Plan
   const checkoutMutation = trpc.credits.createCheckout.useMutation({
@@ -67,10 +81,10 @@ export function DashboardRecommendations({
     }
   });
 
-  const handleUpgrade = () => {
+  const handleUpgrade = (planId?: 'starter' | 'pro' | 'business') => {
     setIsUpgrading(true);
-    // Direkt Pro Plan monatlich starten - einfachster Weg
-    checkoutMutation.mutate({ packageId: 'pro', isYearly: false });
+    const plan = planId || selectedPlan;
+    checkoutMutation.mutate({ packageId: plan, isYearly: false });
   };
 
   const handleAction = (rec: Recommendation) => {
@@ -140,13 +154,13 @@ export function DashboardRecommendations({
     ...(!isPro ? [{
       id: "upgrade",
       type: "upgrade" as const,
-      title: "Upgrade auf Pro",
-      description: "Unbegrenzte Analysen + KI Content-Plan für nur €49/Monat",
+      title: `Upgrade auf ${planOptions.find(p => p.id === selectedPlan)?.name || 'Pro'}`,
+      description: `Mehr Analysen + Premium Features für nur ${planOptions.find(p => p.id === selectedPlan)?.price || '€49'}/Monat`,
       action: "Jetzt freischalten",
       icon: <Crown className="w-6 h-6" />,
-      gradient: "from-amber-500 to-orange-600",
+      gradient: planOptions.find(p => p.id === selectedPlan)?.color || "from-amber-500 to-orange-600",
       bgGradient: "from-amber-500/20 via-orange-500/10 to-transparent",
-      badge: "BELIEBT"
+      badge: selectedPlan === 'pro' ? "BELIEBT" : undefined
     }] : [{
       id: "tip-hooks",
       type: "tip" as const,
@@ -165,22 +179,22 @@ export function DashboardRecommendations({
 
   return (
     <div className="mb-8">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold flex items-center gap-2">
-          <div className="p-2 rounded-lg bg-gradient-to-br from-violet-500/20 to-purple-500/20">
-            <Sparkles className="w-5 h-5 text-violet-500" />
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
+        <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2">
+          <div className="p-1.5 sm:p-2 rounded-lg bg-gradient-to-br from-violet-500/20 to-purple-500/20">
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-violet-500" />
           </div>
-          Empfehlungen für dich
+          <span className="whitespace-nowrap">Empfehlungen für dich</span>
         </h2>
         {hasAnalyses && (
-          <Badge variant="outline" className="text-muted-foreground border-border/50 bg-muted/30">
+          <Badge variant="outline" className="text-muted-foreground border-border/50 bg-muted/30 text-xs sm:text-sm whitespace-nowrap">
             <Star className="w-3 h-3 mr-1 text-amber-500" />
             {analysisCount} Analysen
           </Badge>
         )}
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {visibleRecommendations.map((rec, index) => (
           <motion.div
             key={rec.id}
@@ -196,14 +210,14 @@ export function DashboardRecommendations({
               {/* Background Gradient */}
               <div className={`absolute inset-0 bg-gradient-to-br ${rec.bgGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg`} />
               
-              <CardContent className="p-5 flex flex-col h-full relative z-10">
+              <CardContent className="p-3 sm:p-5 flex flex-col h-full relative z-10">
                 {rec.badge && (
                   <Badge className={`absolute -top-2 -right-2 bg-gradient-to-r ${rec.gradient} text-white border-0 text-xs shadow-lg`}>
                     {rec.badge}
                   </Badge>
                 )}
                 
-                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${rec.gradient} flex items-center justify-center text-white mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg`}>
+                <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br ${rec.gradient} flex items-center justify-center text-white mb-3 sm:mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg`}>
                   {rec.id === 'upgrade' && isUpgrading ? (
                     <Loader2 className="w-6 h-6 animate-spin" />
                   ) : (
@@ -211,39 +225,76 @@ export function DashboardRecommendations({
                   )}
                 </div>
                 
-                <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
+                <h3 className="font-semibold text-base sm:text-lg mb-1 sm:mb-2 flex items-center gap-2">
                   {rec.title}
                   {rec.isPro && !isPro && (
                     <Crown className="w-4 h-4 text-amber-500" />
                   )}
                 </h3>
                 
-                <p className="text-sm text-muted-foreground mb-4 flex-grow leading-relaxed">
+                <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4 flex-grow leading-relaxed">
                   {rec.description}
                 </p>
                 
-                <Button 
-                  variant={rec.id === 'upgrade' ? 'default' : 'ghost'}
-                  size="sm" 
-                  className={`w-full justify-between transition-all duration-300 ${
-                    rec.id === 'upgrade' 
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white shadow-lg' 
-                      : 'group-hover:bg-primary/10'
-                  }`}
-                  disabled={rec.id === 'upgrade' && isUpgrading}
-                >
-                  {rec.id === 'upgrade' && isUpgrading ? (
-                    <>
-                      <span>Wird geladen...</span>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    </>
-                  ) : (
-                    <>
-                      {rec.action}
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </>
-                  )}
-                </Button>
+                {rec.id === 'upgrade' ? (
+                  <div className="flex gap-2 w-full">
+                    <Button 
+                      variant="default"
+                      size="sm" 
+                      className={`flex-1 justify-center transition-all duration-300 bg-gradient-to-r ${planOptions.find(p => p.id === selectedPlan)?.color || 'from-amber-500 to-orange-600'} hover:opacity-90 text-white shadow-lg`}
+                      disabled={isUpgrading}
+                      onClick={(e) => { e.stopPropagation(); handleUpgrade(); }}
+                    >
+                      {isUpgrading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                          Laden...
+                        </>
+                      ) : (
+                        <>
+                          {rec.action}
+                          <ArrowRight className="w-4 h-4 ml-2" />
+                        </>
+                      )}
+                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="px-2 border-amber-500/50 hover:bg-amber-500/10"
+                          disabled={isUpgrading}
+                        >
+                          <ChevronDown className="w-4 h-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48">
+                        {planOptions.map((plan) => (
+                          <DropdownMenuItem 
+                            key={plan.id}
+                            onClick={(e) => { e.stopPropagation(); setSelectedPlan(plan.id); }}
+                            className={`flex justify-between ${selectedPlan === plan.id ? 'bg-primary/10' : ''}`}
+                          >
+                            <span className="flex items-center gap-2">
+                              {plan.name}
+                              {plan.popular && <Badge className="text-[10px] px-1 py-0 bg-violet-500">Beliebt</Badge>}
+                            </span>
+                            <span className="text-muted-foreground">{plan.price}/Mo</span>
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                ) : (
+                  <Button 
+                    variant="ghost"
+                    size="sm" 
+                    className="w-full justify-between transition-all duration-300 group-hover:bg-primary/10"
+                  >
+                    {rec.action}
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                )}
               </CardContent>
             </Card>
           </motion.div>
