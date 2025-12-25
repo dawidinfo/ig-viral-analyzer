@@ -398,20 +398,23 @@ export default function Analysis() {
             {analysisData && (
               <>
                 <Button
-                  variant="outline"
+                  variant={isSaved ? "outline" : "default"}
                   size="sm"
                   onClick={handleSaveAnalysis}
                   disabled={isSaved || isSaving || !user}
-                  className={`h-8 px-2 sm:px-3 text-xs sm:text-sm ${isSaved ? 'bg-green-500/20 border-green-500/30 text-green-400' : ''}`}
+                  className={`h-8 px-3 sm:px-4 text-xs sm:text-sm font-semibold transition-all ${isSaved 
+                    ? 'bg-green-500/20 border-green-500/50 text-green-400 hover:bg-green-500/30' 
+                    : 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40'
+                  }`}
                 >
                   {isSaving ? (
-                    <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin" />
                   ) : isSaved ? (
-                    <BookmarkCheck className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <BookmarkCheck className="w-4 h-4" />
                   ) : (
-                    <Bookmark className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <Bookmark className="w-4 h-4" />
                   )}
-                  <span className="hidden sm:inline ml-2">{isSaved ? 'Gespeichert' : 'Speichern'}</span>
+                  <span className="ml-2">{isSaved ? 'Gespeichert' : 'Speichern'}</span>
                 </Button>
                 <Button
                   variant="outline"

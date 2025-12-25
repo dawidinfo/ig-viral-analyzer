@@ -58,7 +58,14 @@ const TIME_RANGE_OPTIONS: { value: TimeRange; label: string }[] = [
 ];
 
 // Format number with full digits and thousand separators (e.g., 71.874)
-function formatNumber(num: number): string {
+function formatNumberFull(num: number): string {
+  return num.toLocaleString('de-DE');
+}
+
+// Format number with K/M suffix for compact display (e.g., 71,9K)
+function formatNumberCompact(num: number): string {
+  if (Math.abs(num) >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+  if (Math.abs(num) >= 1000) return (num / 1000).toFixed(1) + 'K';
   return num.toLocaleString('de-DE');
 }
 
@@ -89,7 +96,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         <div className="space-y-1">
           <div className="flex items-center justify-between gap-4">
             <span className="text-muted-foreground text-sm">Follower:</span>
-            <span className="font-bold">{formatNumber(data.followers)}</span>
+            <span className="font-bold">{formatNumberFull(data.followers)}</span>
           </div>
           {data.change !== 0 && (
             <div className="flex items-center justify-between gap-4">
@@ -98,7 +105,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
                 data.change > 0 ? 'text-green-400' : data.change < 0 ? 'text-red-400' : ''
               }`}>
                 {data.change > 0 ? <ArrowUp className="w-3 h-3" /> : data.change < 0 ? <ArrowDown className="w-3 h-3" /> : null}
-                {data.change > 0 ? '+' : ''}{formatNumber(data.change)}
+                {data.change > 0 ? '+' : ''}{formatNumberFull(data.change)}
                 <span className="text-xs opacity-70">
                   ({data.changePercent > 0 ? '+' : ''}{data.changePercent.toFixed(2)}%)
                 </span>
@@ -120,7 +127,11 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
     to: undefined
   });
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [useCompactNumbers, setUseCompactNumbers] = useState(false);
   const itemsPerPage = 10;
+  
+  // Dynamic format function based on toggle
+  const formatNumber = useCompactNumbers ? formatNumberCompact : formatNumberFull;
 
   // Format custom dates for API
   const customStartDate = customDateRange.from ? format(customDateRange.from, 'yyyy-MM-dd') : undefined;
@@ -310,6 +321,35 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
                   </div>
                 </PopoverContent>
               </Popover>
+              
+              {/* Number Format Toggle */}
+              <div className="ml-auto flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">Format:</span>
+                <div className="flex rounded-lg overflow-hidden border border-white/10">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setUseCompactNumbers(false)}
+                    className={`rounded-none px-3 py-1 h-8 text-xs ${!useCompactNumbers 
+                      ? 'bg-primary text-primary-foreground' 
+                      : 'bg-white/5 hover:bg-white/10'
+                    }`}
+                  >
+                    71.874
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setUseCompactNumbers(true)}
+                    className={`rounded-none px-3 py-1 h-8 text-xs ${useCompactNumbers 
+                      ? 'bg-primary text-primary-foreground' 
+                      : 'bg-white/5 hover:bg-white/10'
+                    }`}
+                  >
+                    71,9K
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </CardHeader>
