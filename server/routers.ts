@@ -16,7 +16,7 @@ import { getOrCreateReferralCode, getReferralCodeInfo, getUserReferrals, applyRe
 import { checkRateLimit, getSuspiciousUsers, getUserActivitySummary, unsuspendUser, RATE_LIMITS } from "./services/abuseProtectionService";
 import { testWebhooks, sendWebhookAlert } from "./services/webhookService";
 import { getCacheStatisticsSummary, getCacheStatisticsHistory, checkCacheHealthAndAlert } from "./services/historicalDataService";
-import { generateContentPlan, TargetAudienceProfile, ContentPlan, saveContentPlan, getUserContentPlans, getContentPlanById, deleteContentPlan, toggleFavorite } from "./services/contentPlanService";
+import { generateContentPlan, generateProfileBasedContentPlan, ProfileAnalysisData, TargetAudienceProfile, ContentPlan, saveContentPlan, getUserContentPlans, getContentPlanById, deleteContentPlan, toggleFavorite } from "./services/contentPlanService";
 import { getDb } from "./db";
 import { getUserCredits, useCredits, addCredits, getCreditHistory, getCreditStats, canPerformAction, getActionCost } from "./creditService";
 import { createCheckoutSession, getPaymentHistory, getOrCreateCustomer } from "./stripe/checkout";
@@ -640,6 +640,60 @@ export const appRouter = router({
         // Generate the content plan using AI
         const contentPlan = await generateContentPlan(
           input.profile as TargetAudienceProfile,
+          parseInt(input.duration) as 10 | 20 | 30
+        );
+
+        return contentPlan;
+      }),
+
+    // Generate Profile-Based AI Content Plan
+    generateFromProfile: publicProcedure
+      .input(z.object({
+        userId: z.number(),
+        profileData: z.object({
+          username: z.string(),
+          platform: z.enum(["instagram", "tiktok", "youtube"]),
+          topReels: z.array(z.object({
+            caption: z.string().optional(),
+            likes: z.number().optional(),
+            comments: z.number().optional(),
+            views: z.number().optional(),
+            hashtags: z.array(z.string()).optional()
+          })).optional(),
+          postingTimes: z.object({
+            bestDays: z.array(z.string()).optional(),
+            bestHours: z.array(z.number()).optional()
+          }).optional(),
+          commonHashtags: z.array(z.string()).optional(),
+          avgEngagement: z.number().optional(),
+          followerCount: z.number().optional(),
+          niche: z.string().optional(),
+          contentStyle: z.string().optional()
+        }),
+        duration: z.enum(["10", "20", "30"]),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        // Check if user has Pro or Business plan
+        const userResult = await db
+          .select()
+          .from(users)
+          .where(eq(users.id, input.userId))
+          .limit(1);
+        
+        const user = userResult[0];
+        if (!user) throw new Error("User not found");
+
+        const plan = user.plan || 'free';
+        if (plan !== 'pro' && plan !== 'business') {
+          throw new Error("Profil-basierter Content-Plan ist nur für Pro und Business Nutzer verfügbar");
+        }
+
+        // Generate the profile-based content plan using AI
+        const contentPlan = await generateProfileBasedContentPlan(
+          input.profileData as ProfileAnalysisData,
           parseInt(input.duration) as 10 | 20 | 30
         );
 

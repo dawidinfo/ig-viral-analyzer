@@ -88,6 +88,19 @@ export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }:
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedPlan, setGeneratedPlan] = useState<ContentPlanItem[] | null>(null);
   const [activeTab, setActiveTab] = useState("profile");
+  
+  // New: Mode selection and profile-based generation
+  const [generationMode, setGenerationMode] = useState<"manual" | "profile">("manual");
+  const [selectedAnalysis, setSelectedAnalysis] = useState<any>(null);
+  const [editingItemIndex, setEditingItemIndex] = useState<number | null>(null);
+  const [editedItem, setEditedItem] = useState<ContentPlanItem | null>(null);
+
+  // Fetch saved analyses for profile-based generation
+  const dashboardData = trpc.dashboard.getData.useQuery(
+    { userId: userId || 0 },
+    { enabled: !!userId && isPro }
+  );
+  const savedAnalysesList = dashboardData.data?.savedAnalyses || [];
 
   // Demo Content Plan für Blur-Vorschau
   const demoContentPlan: ContentPlanItem[] = [
@@ -177,6 +190,36 @@ export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }:
     }
   });
 
+  // New: Profile-based content plan mutation
+  const generateFromProfileMutation = trpc.dashboard.generateFromProfile.useMutation({
+    onSuccess: (data) => {
+      const transformedPlan: ContentPlanItem[] = data.items.map((item: any) => ({
+        day: item.day,
+        topic: item.topic,
+        hook: item.hook,
+        framework: item.framework,
+        scriptStructure: [
+          `Hook: ${item.scriptStructure.hook} (${item.scriptStructure.hookDuration})`,
+          `Body: ${item.scriptStructure.body} (${item.scriptStructure.bodyDuration})`,
+          `CTA: ${item.scriptStructure.cta} (${item.scriptStructure.ctaDuration})`
+        ],
+        cutRecommendation: item.cutRecommendation,
+        hashtags: item.hashtags,
+        bestTime: item.bestPostingTime,
+        trendingAudio: item.trendingAudio?.name || "Trending Audio",
+        copywritingTip: `${item.copywritingTip.author}: ${item.copywritingTip.tip}`
+      }));
+      setGeneratedPlan(transformedPlan);
+      setIsGenerating(false);
+      setActiveTab("plan");
+      toast.success(`${planDays}-Tage Content-Plan basierend auf @${selectedAnalysis?.username} generiert!`);
+    },
+    onError: (error) => {
+      setIsGenerating(false);
+      toast.error(error.message || "Fehler beim Generieren des Profil-basierten Content-Plans");
+    }
+  });
+
   const generateContentPlan = async () => {
     if (!isPro) {
       onUpgrade?.();
@@ -188,12 +231,46 @@ export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }:
       return;
     }
 
-    if (!profile.niche) {
-      toast.error("Bitte gib deine Nische an");
+    setIsGenerating(true);
+
+    // Profile-based generation mode
+    if (generationMode === "profile") {
+      if (!selectedAnalysis) {
+        toast.error("Bitte wähle ein analysiertes Profil aus");
+        setIsGenerating(false);
+        return;
+      }
+
+      generateFromProfileMutation.mutate({
+        userId,
+        profileData: {
+          username: selectedAnalysis.username,
+          platform: "instagram" as const,
+          topReels: selectedAnalysis.topReels?.map((r: any) => ({
+            caption: r.caption,
+            likes: r.likes,
+            comments: r.comments,
+            views: r.views,
+            hashtags: r.hashtags
+          })),
+          postingTimes: selectedAnalysis.postingTimes,
+          commonHashtags: selectedAnalysis.hashtags || selectedAnalysis.topHashtags,
+          avgEngagement: selectedAnalysis.engagementRate || selectedAnalysis.avgEngagement,
+          followerCount: selectedAnalysis.followers || selectedAnalysis.followerCount,
+          niche: selectedAnalysis.niche || selectedAnalysis.category,
+          contentStyle: selectedAnalysis.contentStyle || "educational"
+        },
+        duration: String(planDays) as "10" | "20" | "30"
+      });
       return;
     }
-    
-    setIsGenerating(true);
+
+    // Manual generation mode
+    if (!profile.niche) {
+      toast.error("Bitte gib deine Nische an");
+      setIsGenerating(false);
+      return;
+    }
     
     // Parse comma-separated strings into arrays
     const painPointsArray = profile.painPoints.split(",").map(s => s.trim()).filter(Boolean);
@@ -211,6 +288,30 @@ export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }:
       },
       duration: String(planDays) as "10" | "20" | "30"
     });
+  };
+
+  // Edit a content plan item
+  const startEditing = (index: number) => {
+    if (generatedPlan) {
+      setEditingItemIndex(index);
+      setEditedItem({ ...generatedPlan[index] });
+    }
+  };
+
+  const saveEdit = () => {
+    if (editedItem !== null && editingItemIndex !== null && generatedPlan) {
+      const updatedPlan = [...generatedPlan];
+      updatedPlan[editingItemIndex] = editedItem;
+      setGeneratedPlan(updatedPlan);
+      setEditingItemIndex(null);
+      setEditedItem(null);
+      toast.success("Änderungen gespeichert!");
+    }
+  };
+
+  const cancelEdit = () => {
+    setEditingItemIndex(null);
+    setEditedItem(null);
   };
 
   // PDF Export function
@@ -376,6 +477,97 @@ export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }:
           </Badge>
         )}
       </div>
+
+      {/* Mode Selection */}
+      <Card className="border-border/50 bg-card/50 backdrop-blur-sm mb-6">
+        <CardContent className="pt-6">
+          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+            <div>
+              <h3 className="font-semibold flex items-center gap-2">
+                <Brain className="w-5 h-5 text-violet-500" />
+                Generierungs-Modus
+              </h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Wähle wie dein Content-Plan erstellt werden soll
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant={generationMode === "manual" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setGenerationMode("manual")}
+                className={generationMode === "manual" ? "bg-gradient-to-r from-violet-500 to-purple-600" : ""}
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                Manuell
+              </Button>
+              <Button
+                variant={generationMode === "profile" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setGenerationMode("profile")}
+                className={generationMode === "profile" ? "bg-gradient-to-r from-cyan-500 to-blue-600" : ""}
+              >
+                <Sparkles className="w-4 h-4 mr-2" />
+                KI-Analyse
+              </Button>
+            </div>
+          </div>
+
+          {/* Profile Selection for KI-Analyse Mode */}
+          {generationMode === "profile" && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mt-4 pt-4 border-t border-border/50"
+            >
+              <Label className="mb-2 block">Wähle ein analysiertes Profil</Label>
+              <Select
+                value={selectedAnalysis?.id?.toString() || ""}
+                onValueChange={(value) => {
+                  const analysis = savedAnalysesList.find((a: any) => a.id.toString() === value);
+                  setSelectedAnalysis(analysis);
+                }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Wähle ein Profil aus deinen Analysen..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {savedAnalysesList.length === 0 ? (
+                    <SelectItem value="none" disabled>Keine gespeicherten Analysen</SelectItem>
+                  ) : (
+                    savedAnalysesList.map((analysis: any) => (
+                      <SelectItem key={analysis.id} value={analysis.id.toString()}>
+                        @{analysis.username} - {analysis.followers?.toLocaleString() || "?"} Follower
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+              {selectedAnalysis && (
+                <div className="mt-3 p-3 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-lg border border-cyan-500/20">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-bold">
+                      {selectedAnalysis.username?.[0]?.toUpperCase() || "?"}
+                    </div>
+                    <div>
+                      <p className="font-semibold">@{selectedAnalysis.username}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {selectedAnalysis.followers?.toLocaleString() || "?"} Follower • 
+                        {selectedAnalysis.engagementRate ? ` ${selectedAnalysis.engagementRate.toFixed(2)}% Engagement` : ""}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    <Sparkles className="w-4 h-4 inline mr-1 text-cyan-500" />
+                    Der Content-Plan wird basierend auf den Top-Reels und Engagement-Mustern dieses Profils generiert.
+                  </p>
+                </div>
+              )}
+            </motion.div>
+          )}
+        </CardContent>
+      </Card>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3 mb-6">

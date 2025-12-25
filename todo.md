@@ -1163,3 +1163,9 @@
 
 ## 301-Weiterleitung www → non-www
 - [x] 301-Weiterleitung von www.reelspy.ai zu reelspy.ai im Server implementieren
+
+## Content-Plan Generator Erweiterung
+- [ ] Backend-API für Profil-basierte Content-Vorschläge
+- [ ] UI mit Modus-Auswahl (KI-Analyse vs. Manuell)
+- [ ] Bearbeitungs- und Regenerierungs-Funktion
+- [ ] Integration mit Profil-Historie und Analyse-Daten
