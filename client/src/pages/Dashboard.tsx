@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   BarChart3,
   Bookmark,
@@ -469,43 +470,85 @@ export default function Dashboard() {
           {/* Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             {/* Sticky Navigation Bar */}
-            <div className="sticky top-16 z-40 -mx-4 px-2 sm:px-4 py-2 bg-background/95 backdrop-blur-xl border-b border-white/10 shadow-lg shadow-black/20">
-              <TabsList className="flex justify-center gap-0.5 sm:gap-1 p-2 overflow-x-auto flex-nowrap dashboard-tabs w-full bg-gradient-to-r from-violet-950/50 via-purple-950/50 to-fuchsia-950/50 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-purple-500/10" style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch' }}>
-                <TabsTrigger value="overview" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-md whitespace-nowrap text-xs sm:text-sm font-medium px-2 sm:px-3 py-2 rounded-lg transition-all duration-300 hover:bg-white/10 border border-transparent flex items-center gap-1">
-                  <LayoutDashboard className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  <span className="hidden lg:inline">Übersicht</span>
-                </TabsTrigger>
-                <TabsTrigger value="content-plan" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-md whitespace-nowrap text-xs sm:text-sm font-medium px-2 sm:px-3 py-2 rounded-lg transition-all duration-300 hover:bg-white/10 border border-transparent relative flex items-center gap-1">
-                  <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  <span className="hidden lg:inline">Content</span>
-                  <Badge className="absolute -top-1 -right-1 bg-gradient-to-r from-pink-500 to-rose-500 text-white border-0 text-[8px] px-1.5 py-0 z-10 shadow-md animate-pulse">NEU</Badge>
-                </TabsTrigger>
-                <TabsTrigger value="analyses" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-md whitespace-nowrap text-xs sm:text-sm font-medium px-2 sm:px-3 py-2 rounded-lg transition-all duration-300 hover:bg-white/10 border border-transparent flex items-center gap-1">
-                  <Bookmark className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  <span className="hidden lg:inline">Analysen</span>
-                </TabsTrigger>
-                <TabsTrigger value="invoices" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-md whitespace-nowrap text-xs sm:text-sm font-medium px-2 sm:px-3 py-2 rounded-lg transition-all duration-300 hover:bg-white/10 border border-transparent flex items-center gap-1">
-                  <Receipt className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  <span className="hidden lg:inline">Rechnung</span>
-                </TabsTrigger>
-                <TabsTrigger value="notes" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-md whitespace-nowrap text-xs sm:text-sm font-medium px-2 sm:px-3 py-2 rounded-lg transition-all duration-300 hover:bg-white/10 border border-transparent flex items-center gap-1">
-                  <StickyNote className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  <span className="hidden lg:inline">Notizen</span>
-                </TabsTrigger>
-                <TabsTrigger value="affiliate" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-md whitespace-nowrap text-xs sm:text-sm font-medium px-2 sm:px-3 py-2 rounded-lg transition-all duration-300 hover:bg-white/10 border border-transparent flex items-center gap-1">
-                  <Share2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  <span className="hidden lg:inline">Affiliate</span>
-                </TabsTrigger>
-                <TabsTrigger value="leaderboard" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-md whitespace-nowrap text-xs sm:text-sm font-medium px-2 sm:px-3 py-2 rounded-lg transition-all duration-300 hover:bg-white/10 border border-transparent relative flex items-center gap-1">
-                  <Trophy className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  <span className="hidden lg:inline">Ranking</span>
-                  <Badge className="absolute -top-1 -right-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 text-[8px] px-1.5 py-0 z-10 shadow-md">NEU</Badge>
-                </TabsTrigger>
-                <TabsTrigger value="settings" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-md whitespace-nowrap text-xs sm:text-sm font-medium px-2 sm:px-3 py-2 rounded-lg transition-all duration-300 hover:bg-white/10 border border-transparent flex items-center gap-1">
-                  <Settings className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  <span className="hidden lg:inline">Settings</span>
-                </TabsTrigger>
-              </TabsList>
+            <div className="sticky top-16 z-40 py-4 bg-background/80 backdrop-blur-md">
+              <TooltipProvider delayDuration={100}>
+                <TabsList className="flex justify-center gap-2 p-1.5 overflow-x-auto flex-nowrap w-fit mx-auto bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-full" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <TabsTrigger value="overview" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-sm text-zinc-400 hover:text-white whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
+                        <LayoutDashboard className="w-4 h-4" />
+                        <span className="hidden md:inline">Übersicht</span>
+                      </TabsTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="md:hidden">Übersicht</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <TabsTrigger value="content-plan" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-sm text-zinc-400 hover:text-white whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 relative flex items-center gap-2">
+                        <Calendar className="w-4 h-4" />
+                        <span className="hidden md:inline">Content-Plan</span>
+                        <span className="absolute -top-1 -right-1 w-2 h-2 bg-pink-500 rounded-full animate-pulse" />
+                      </TabsTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="md:hidden">Content-Plan</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <TabsTrigger value="analyses" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-sm text-zinc-400 hover:text-white whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
+                        <Bookmark className="w-4 h-4" />
+                        <span className="hidden md:inline">Analysen</span>
+                      </TabsTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="md:hidden">Analysen</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <TabsTrigger value="invoices" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-sm text-zinc-400 hover:text-white whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
+                        <Receipt className="w-4 h-4" />
+                        <span className="hidden md:inline">Rechnungen</span>
+                      </TabsTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="md:hidden">Rechnungen</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <TabsTrigger value="notes" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-sm text-zinc-400 hover:text-white whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
+                        <StickyNote className="w-4 h-4" />
+                        <span className="hidden md:inline">Notizen</span>
+                      </TabsTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="md:hidden">Notizen</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <TabsTrigger value="affiliate" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-sm text-zinc-400 hover:text-white whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
+                        <Share2 className="w-4 h-4" />
+                        <span className="hidden md:inline">Affiliate</span>
+                      </TabsTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="md:hidden">Affiliate</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <TabsTrigger value="leaderboard" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-sm text-zinc-400 hover:text-white whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 relative flex items-center gap-2">
+                        <Trophy className="w-4 h-4" />
+                        <span className="hidden md:inline">Leaderboard</span>
+                        <span className="absolute -top-1 -right-1 w-2 h-2 bg-amber-500 rounded-full" />
+                      </TabsTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="md:hidden">Leaderboard</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <TabsTrigger value="settings" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-sm text-zinc-400 hover:text-white whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
+                        <Settings className="w-4 h-4" />
+                        <span className="hidden md:inline">Einstellungen</span>
+                      </TabsTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="md:hidden">Einstellungen</TooltipContent>
+                  </Tooltip>
+                </TabsList>
+              </TooltipProvider>
             </div>
 
             {/* Overview Tab */}
