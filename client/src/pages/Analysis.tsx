@@ -82,7 +82,13 @@ import {
   Radar
 } from "recharts";
 
+// Format number with full digits and thousand separators (e.g., 71.874)
 const formatNumber = (num: number): string => {
+  return num.toLocaleString('de-DE');
+};
+
+// Format number with K/M suffix for compact display (e.g., 71,8K)
+const formatNumberCompact = (num: number): string => {
   if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
   if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
   return num.toString();
