@@ -1971,13 +1971,47 @@ export default function Home() {
                       ))}
                     </div>
                     
-                    <p className="text-xs text-muted-foreground text-center mb-4 md:hidden flex items-center justify-center gap-2">
-                      <ArrowRight className="w-3 h-3" />
-                      Wische nach rechts für mehr
-                      <ArrowRight className="w-3 h-3" />
-                    </p>
-                    <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
-                      <table className="w-full min-w-[700px] text-xs md:text-sm feature-comparison-table">
+                    {/* Billing Toggle für Feature-Tabelle */}
+                    <div className="flex justify-center mb-4">
+                      <div className="inline-flex items-center gap-1 p-1 rounded-full bg-muted/50 border border-border/50">
+                        <button
+                          onClick={() => setBillingCycle('monthly')}
+                          className={`px-4 py-1.5 text-xs rounded-full transition-all ${billingCycle === 'monthly' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                        >
+                          Monatlich
+                        </button>
+                        <button
+                          onClick={() => setBillingCycle('yearly')}
+                          className={`px-4 py-1.5 text-xs rounded-full transition-all flex items-center gap-1.5 ${billingCycle === 'yearly' ? 'bg-gradient-to-r from-accent to-emerald-500 text-white shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                        >
+                          Jährlich
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${billingCycle === 'yearly' ? 'bg-white/20' : 'bg-accent/20 text-accent'}`}>-20%</span>
+                        </button>
+                      </div>
+                    </div>
+                    
+                    {/* Mobile Swipe Indicator */}
+                    <div className="md:hidden mb-4">
+                      <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground bg-muted/30 rounded-full py-2 px-4 mx-auto w-fit">
+                        <motion.div
+                          animate={{ x: [0, 5, 0] }}
+                          transition={{ repeat: Infinity, duration: 1.5 }}
+                        >
+                          <ArrowRight className="w-3 h-3" />
+                        </motion.div>
+                        <span>Wische für alle Pläne</span>
+                        <motion.div
+                          animate={{ x: [0, 5, 0] }}
+                          transition={{ repeat: Infinity, duration: 1.5 }}
+                        >
+                          <ArrowRight className="w-3 h-3" />
+                        </motion.div>
+                      </div>
+                    </div>
+                    
+                    {/* Mobile: Horizontal scroll with snap */}
+                    <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 scroll-smooth snap-x snap-mandatory md:snap-none">
+                      <table className="w-full min-w-[800px] md:min-w-[700px] text-xs md:text-sm feature-comparison-table">
                       <thead>
                         <tr className="border-b border-border">
                           <th className="text-left py-4 px-4">
@@ -1991,7 +2025,12 @@ export default function Home() {
                           </th>
                           <th className="text-center py-4 px-4">
                             <span className="font-semibold text-primary">Starter</span>
-                            <div className="text-lg font-bold text-foreground mt-1">€19<span className="text-xs font-normal text-muted-foreground">/Mo</span></div>
+                            <div className="text-lg font-bold text-foreground mt-1">
+                              {billingCycle === 'yearly' ? (
+                                <><span className="line-through text-muted-foreground text-sm mr-1">€19</span>€15</>
+                              ) : '€19'}
+                              <span className="text-xs font-normal text-muted-foreground">/Mo</span>
+                            </div>
                             <div className="text-[10px] text-muted-foreground">28 Features</div>
                           </th>
                           <th className="text-center py-4 px-4 relative">
@@ -2001,17 +2040,32 @@ export default function Home() {
                               </span>
                             </div>
                             <span className="text-accent font-bold">Pro</span>
-                            <div className="text-lg font-bold text-foreground mt-1">€49<span className="text-xs font-normal text-muted-foreground">/Mo</span></div>
+                            <div className="text-lg font-bold text-foreground mt-1">
+                              {billingCycle === 'yearly' ? (
+                                <><span className="line-through text-muted-foreground text-sm mr-1">€49</span>€39</>
+                              ) : '€49'}
+                              <span className="text-xs font-normal text-muted-foreground">/Mo</span>
+                            </div>
                             <div className="text-[10px] text-accent">52 Features</div>
                           </th>
                           <th className="text-center py-4 px-4">
                             <span className="font-semibold text-yellow-500">Business</span>
-                            <div className="text-lg font-bold text-foreground mt-1">€99<span className="text-xs font-normal text-muted-foreground">/Mo</span></div>
+                            <div className="text-lg font-bold text-foreground mt-1">
+                              {billingCycle === 'yearly' ? (
+                                <><span className="line-through text-muted-foreground text-sm mr-1">€99</span>€79</>
+                              ) : '€99'}
+                              <span className="text-xs font-normal text-muted-foreground">/Mo</span>
+                            </div>
                             <div className="text-[10px] text-muted-foreground">71 Features</div>
                           </th>
                           <th className="text-center py-4 px-4">
                             <span className="font-semibold text-pink-500">Enterprise</span>
-                            <div className="text-lg font-bold text-foreground mt-1">€299<span className="text-xs font-normal text-muted-foreground">/Mo</span></div>
+                            <div className="text-lg font-bold text-foreground mt-1">
+                              {billingCycle === 'yearly' ? (
+                                <><span className="line-through text-muted-foreground text-sm mr-1">€299</span>€239</>
+                              ) : '€299'}
+                              <span className="text-xs font-normal text-muted-foreground">/Mo</span>
+                            </div>
                             <div className="text-[10px] text-pink-500">Alle 83 Features</div>
                           </th>
                         </tr>

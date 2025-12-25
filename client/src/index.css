@@ -812,3 +812,38 @@ html, body {
 .feature-comparison-table td:nth-child(4) {
   background: oklch(0.45 0.15 160 / 0.08);
 }
+
+/* Column highlight on hover - using CSS custom properties */
+.feature-comparison-table {
+  --highlight-col: 0;
+}
+
+/* Starter column hover */
+.feature-comparison-table th:nth-child(3):hover ~ *,
+.feature-comparison-table td:nth-child(3):hover {
+  background: oklch(0.55 0.20 280 / 0.15) !important;
+}
+
+/* Pro column hover */
+.feature-comparison-table th:nth-child(4):hover,
+.feature-comparison-table td:nth-child(4):hover {
+  background: oklch(0.45 0.15 160 / 0.2) !important;
+}
+
+/* Business column hover */
+.feature-comparison-table th:nth-child(5):hover,
+.feature-comparison-table td:nth-child(5):hover {
+  background: oklch(0.65 0.18 85 / 0.15) !important;
+}
+
+/* Enterprise column hover */
+.feature-comparison-table th:nth-child(6):hover,
+.feature-comparison-table td:nth-child(6):hover {
+  background: oklch(0.60 0.20 350 / 0.15) !important;
+}
+
+/* Smooth transition for all cells */
+.feature-comparison-table th,
+.feature-comparison-table td {
+  transition: background-color 0.2s ease;
+}

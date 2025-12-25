@@ -1035,3 +1035,10 @@
 - [x] Preise unter jedem Plan-Namen anzeigen
 - [x] Feature-Anzahl pro Plan im Header
 - [x] CTA-Buttons am Tabellenende
+
+## Dashboard & Feature-Tabelle Verbesserungen
+- [x] Dashboard Empfehlungen schöner gestalten
+- [x] "Plan erstellen" Button funktional machen
+- [x] Feature-Tabelle: Jährliche Preise Toggle
+- [x] Feature-Tabelle: Vergleichs-Highlight beim Hover
+- [x] Feature-Tabelle: Mobile Optimierung mit Swipe

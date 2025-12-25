@@ -376,6 +376,7 @@ export default function Dashboard() {
                 isPro={plan === 'pro' || plan === 'business'}
                 hasAnalyses={(dashboardData?.savedAnalysesCount || 0) > 0}
                 analysisCount={dashboardData?.savedAnalysesCount || 0}
+                onNavigate={(tab) => setActiveTab(tab)}
               />
               
               {/* Plan & Stats Row */}
