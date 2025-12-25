@@ -122,6 +122,22 @@ export default function Dashboard() {
     },
   });
 
+  // Stripe Checkout - direkt zum Pro Plan
+  const checkoutMutation = trpc.credits.createCheckout.useMutation({
+    onSuccess: (data: { url?: string }) => {
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    },
+    onError: () => {
+      toast.error("Fehler beim Starten des Checkouts. Bitte versuche es erneut.");
+    }
+  });
+
+  const handleUpgrade = () => {
+    checkoutMutation.mutate({ packageId: 'pro', isYearly: false });
+  };
+
   const updateProfileMutation = trpc.dashboard.updateProfile.useMutation({
     onSuccess: () => {
       toast.success("Profil aktualisiert");
@@ -545,11 +561,12 @@ export default function Dashboard() {
                   {plan !== "business" && (
                     <div className="pt-4 border-t border-border/50">
                       <Button
-                        onClick={() => setLocation("/pricing")}
+                        onClick={handleUpgrade}
+                        disabled={checkoutMutation.isPending}
                         className="w-full btn-gradient text-white"
                       >
                         <Zap className="w-4 h-4 mr-2" />
-                        Upgrade für mehr Limits
+                        {checkoutMutation.isPending ? "Lädt..." : "Upgrade für mehr Limits"}
                       </Button>
                     </div>
                   )}
@@ -769,7 +786,7 @@ export default function Dashboard() {
                 analysisData={{
                   topReels: dashboardData?.savedAnalyses?.slice(0, 5)
                 }}
-                onUpgrade={() => setLocation('/pricing')}
+                onUpgrade={handleUpgrade}
               />
             </TabsContent>
 
@@ -1028,11 +1045,12 @@ export default function Dashboard() {
                   
                   {plan !== "business" && (
                     <Button
-                      onClick={() => setLocation("/pricing")}
+                      onClick={handleUpgrade}
+                      disabled={checkoutMutation.isPending}
                       className="w-full btn-gradient text-white"
                     >
                       <Zap className="w-4 h-4 mr-2" />
-                      Plan upgraden
+                      {checkoutMutation.isPending ? "Lädt..." : "Plan upgraden"}
                     </Button>
                   )}
                 </CardContent>

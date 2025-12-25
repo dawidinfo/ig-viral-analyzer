@@ -1042,3 +1042,8 @@
 - [x] Feature-Tabelle: Jährliche Preise Toggle
 - [x] Feature-Tabelle: Vergleichs-Highlight beim Hover
 - [x] Feature-Tabelle: Mobile Optimierung mit Swipe
+
+## Upgrade-Flow Vereinfachung
+- [x] "Upgrade auf Pro" Button direkt zum Stripe Checkout
+- [x] Minimale Klicks für Upgrade-Prozess
+- [x] Einfache, intuitive UX für Influencer
