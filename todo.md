@@ -1106,3 +1106,4 @@
 - [x] Backend: Post-Korrelation für Wachstumstage
 - [x] Frontend: Wachstums-Analyse Komponente
 - [x] Frontend: Top-Posts die Follower gebracht haben
+- [x] Wachstums-Analyse mit Instagram Statistics API Daten
