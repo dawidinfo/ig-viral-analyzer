@@ -949,3 +949,8 @@
 - [ ] Features-Sektion mit mehr Bildern und visuellen Elementen
 - [ ] Animationen für KI-Analyse und Content-Plan hinzufügen
 - [ ] Mehr visuelle Elemente und Bilder auf der Homepage
+
+## Drei Homepage-Verbesserungen
+- [x] Jährliche Stripe Price IDs im Checkout verknüpfen (bereits implementiert - isYearly Parameter wird korrekt übergeben)
+- [x] Features-Sektion mit echten UI-Screenshots der Analyse-Seite
+- [x] Animated Counter für Stats beim Scrollen (3.000+ Parameter, 50K+ Accounts, 98% Genauigkeit)

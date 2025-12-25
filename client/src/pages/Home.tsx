@@ -57,6 +57,7 @@ import { LogIn, LogOut, Globe, Building2, ArrowDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { AnimatedCounter } from "@/components/AnimatedCounter";
 
 const features = [
   {
@@ -540,15 +541,31 @@ export default function Home() {
             transition={{ delay: 0.8, duration: 0.6 }}
             className="mt-8 sm:mt-16 grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 max-w-3xl mx-auto px-4 sm:px-0 stats-grid"
           >
-            {t.statsList.map((stat, index) => (
-              <div 
-                key={index}
-                className="glass-card rounded-xl sm:rounded-2xl p-3 sm:p-6 text-center stat-card"
-              >
-                <p className="text-xl sm:text-3xl font-bold text-gradient mb-1 stat-value">{stat.value}</p>
-                <p className="text-sm text-muted-foreground">{stat.label}</p>
-              </div>
-            ))}
+            {/* Animated Stats */}
+            <div className="glass-card rounded-xl sm:rounded-2xl p-3 sm:p-6 text-center stat-card">
+              <p className="text-xl sm:text-3xl font-bold text-gradient mb-1 stat-value">
+                <AnimatedCounter end={3000} suffix="+" duration={2.5} />
+              </p>
+              <p className="text-sm text-muted-foreground">KI-Parameter</p>
+            </div>
+            <div className="glass-card rounded-xl sm:rounded-2xl p-3 sm:p-6 text-center stat-card">
+              <p className="text-xl sm:text-3xl font-bold text-gradient mb-1 stat-value">
+                <AnimatedCounter end={50} suffix="K+" duration={2} />
+              </p>
+              <p className="text-sm text-muted-foreground">Analysierte Accounts</p>
+            </div>
+            <div className="glass-card rounded-xl sm:rounded-2xl p-3 sm:p-6 text-center stat-card">
+              <p className="text-xl sm:text-3xl font-bold text-gradient mb-1 stat-value">
+                <AnimatedCounter end={98} suffix="%" duration={1.5} />
+              </p>
+              <p className="text-sm text-muted-foreground">Genauigkeit</p>
+            </div>
+            <div className="glass-card rounded-xl sm:rounded-2xl p-3 sm:p-6 text-center stat-card">
+              <p className="text-xl sm:text-3xl font-bold text-gradient mb-1 stat-value">
+                <AnimatedCounter end={49} prefix="4." suffix="/5" duration={1.5} decimals={0} />
+              </p>
+              <p className="text-sm text-muted-foreground">Bewertung</p>
+            </div>
           </motion.div>
         </div>
 
@@ -1136,6 +1153,172 @@ export default function Home() {
               </motion.div>
             );})}
           </div>
+        </div>
+      </section>
+
+      {/* Feature Showcase with Screenshots */}
+      <section className="py-24 bg-gradient-to-b from-background via-violet-950/10 to-background overflow-hidden">
+        <div className="container">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <Badge className="badge-neon mb-4">LIVE DEMO</Badge>
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-[-0.03em] mb-4">
+              Sieh dir an, was
+              <br />
+              <span className="text-gradient">ReelSpy.ai kann</span>
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Echte Screenshots aus dem Dashboard - so sieht deine Analyse aus
+            </p>
+          </motion.div>
+
+          {/* Screenshot 1: Analysis Dashboard */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-20"
+          >
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <Badge className="mb-4 bg-primary/20 text-primary">KI-ANALYSE</Badge>
+                <h3 className="text-3xl font-bold mb-4">Viral Score & HAPSS-Framework</h3>
+                <p className="text-muted-foreground mb-6">
+                  Unsere KI analysiert jeden Aspekt deines Reels: Hook-Qualität, Attention-Retention, 
+                  Problem-Darstellung, Lösungs-Präsentation und Story-Engagement. Du bekommst einen 
+                  detaillierten Score von 0-100 für jeden Bereich.
+                </p>
+                <ul className="space-y-3">
+                  <li className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                      <Check className="w-4 h-4 text-emerald-500" />
+                    </div>
+                    <span>Viral Score aus 47 Faktoren berechnet</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                      <Check className="w-4 h-4 text-emerald-500" />
+                    </div>
+                    <span>HAPSS-Framework Einzelbewertungen</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                      <Check className="w-4 h-4 text-emerald-500" />
+                    </div>
+                    <span>KI-generierte Verbesserungsvorschläge</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 blur-3xl rounded-full" />
+                <img 
+                  src="/images/analysis-screenshot.png" 
+                  alt="ReelSpy.ai Analyse Dashboard" 
+                  className="relative rounded-2xl border border-border/50 shadow-2xl"
+                />
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Screenshot 2: Content Plan */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-20"
+          >
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="order-2 lg:order-1 relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-secondary/20 to-primary/20 blur-3xl rounded-full" />
+                <img 
+                  src="/images/content-plan-screenshot.png" 
+                  alt="ReelSpy.ai Content Plan" 
+                  className="relative rounded-2xl border border-border/50 shadow-2xl"
+                />
+                <Badge className="absolute top-4 right-4 bg-accent text-accent-foreground">PRO</Badge>
+              </div>
+              <div className="order-1 lg:order-2">
+                <Badge className="mb-4 bg-accent/20 text-accent">CONTENT-PLAN</Badge>
+                <h3 className="text-3xl font-bold mb-4">30-Tage KI-Content-Plan</h3>
+                <p className="text-muted-foreground mb-6">
+                  Basierend auf deiner Zielgruppe und den Erkenntnissen aus Top-Reels erstellt unsere KI 
+                  einen personalisierten Content-Plan mit Hook-Vorschlägen, Script-Strukturen, 
+                  Trending Audio Empfehlungen und optimalen Posting-Zeiten.
+                </p>
+                <ul className="space-y-3">
+                  <li className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center">
+                      <Check className="w-4 h-4 text-accent" />
+                    </div>
+                    <span>HAPSS oder AIDA Framework automatisch gewählt</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center">
+                      <Check className="w-4 h-4 text-accent" />
+                    </div>
+                    <span>Hopkins, Ogilvy, Schwartz Copywriting-Tipps</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center">
+                      <Check className="w-4 h-4 text-accent" />
+                    </div>
+                    <span>PDF-Export für dein Team</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Screenshot 3: Growth Tracking */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <Badge className="mb-4 bg-emerald-500/20 text-emerald-500">WACHSTUM</Badge>
+                <h3 className="text-3xl font-bold mb-4">Wachstums-Tracking & Konkurrenzanalyse</h3>
+                <p className="text-muted-foreground mb-6">
+                  Verfolge dein Follower-Wachstum über 90 Tage, vergleiche dich mit Konkurrenten 
+                  und finde die besten Posting-Zeiten für deine Zielgruppe. Erhalte Benachrichtigungen 
+                  bei wichtigen Veränderungen.
+                </p>
+                <ul className="space-y-3">
+                  <li className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                      <Check className="w-4 h-4 text-emerald-500" />
+                    </div>
+                    <span>90-Tage Wachstums-Historie</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                      <Check className="w-4 h-4 text-emerald-500" />
+                    </div>
+                    <span>Konkurrenz-Vergleich in Echtzeit</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                      <Check className="w-4 h-4 text-emerald-500" />
+                    </div>
+                    <span>Beste Posting-Zeiten Heatmap</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 blur-3xl rounded-full" />
+                <img 
+                  src="/images/growth-tracking-screenshot.png" 
+                  alt="ReelSpy.ai Wachstums-Tracking" 
+                  className="relative rounded-2xl border border-border/50 shadow-2xl"
+                />
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
