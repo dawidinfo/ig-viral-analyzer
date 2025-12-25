@@ -965,3 +965,16 @@
 - [ ] Payment-Test: Stripe Checkout testen
 - [x] Rechtliche Seiten: Impressum, Datenschutz, AGB prüfen (Preise in AGB korrigiert)
 - [x] Demo-Daten durch echte Daten ersetzen (Testimonials anonymisiert, Disclaimer hinzugefügt)
+
+## E-Mail-Verbesserungen
+- [x] Logo in alle E-Mail-Templates einfügen
+- [x] Admin-Dashboard Link aus E-Mails entfernen
+- [x] Drip Campaign implementieren (E-Mail-Serie):
+  - [x] Tag 1: Willkommen + erste Analyse starten
+  - [x] Tag 3: Tipps zur Nutzung (3 Geheimnisse viraler Reels)
+  - [x] Tag 7: Content-Plan Feature vorstellen
+  - [x] Tag 14: Upgrade-Angebot mit REELSPY20 Code
+- [x] Testvorschau der E-Mails an Admin gesendet
+
+## Button-Fix
+- [x] Buttons auf Homepage führen jetzt zur Hero-Section statt zu /analysis

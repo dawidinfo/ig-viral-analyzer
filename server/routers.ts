@@ -1133,6 +1133,12 @@ export const appRouter = router({
         const { getAllUsersExtended } = await import("./adminService");
         return await getAllUsersExtended(input.page, input.limit, input.search, input.sortBy, input.sortOrder);
       }),
+
+    // Send drip email preview to admin
+    sendDripEmailPreview: publicProcedure.mutation(async () => {
+      const { sendDripEmailPreview } = await import("./emailService");
+      return await sendDripEmailPreview();
+    }),
   }),
 
   // Email Unsubscribe Router
