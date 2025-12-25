@@ -1198,3 +1198,4 @@
 - [x] Dashboard-Navigation kompakter machen - alle Tabs sichtbar
 - [x] Tooltips zu Dashboard-Tabs hinzufügen
 - [x] Dashboard-Navigation neu designen - modern und clean
+- [x] Hover-Effekte und aktive Button-Hervorhebung zur Dashboard-Navigation hinzufügen

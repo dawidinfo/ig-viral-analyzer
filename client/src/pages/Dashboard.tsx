@@ -475,7 +475,7 @@ export default function Dashboard() {
                 <TabsList className="flex justify-center gap-2 p-1.5 overflow-x-auto flex-nowrap w-fit mx-auto bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-full" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="overview" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-sm text-zinc-400 hover:text-white whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
+                      <TabsTrigger value="overview" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-lg data-[state=active]:scale-105 text-zinc-400 hover:text-white hover:bg-zinc-800/60 hover:scale-102 whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
                         <LayoutDashboard className="w-4 h-4" />
                         <span className="hidden md:inline">Übersicht</span>
                       </TabsTrigger>
@@ -484,7 +484,7 @@ export default function Dashboard() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="content-plan" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-sm text-zinc-400 hover:text-white whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 relative flex items-center gap-2">
+                      <TabsTrigger value="content-plan" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-lg data-[state=active]:scale-105 text-zinc-400 hover:text-white hover:bg-zinc-800/60 hover:scale-102 whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 relative flex items-center gap-2">
                         <Calendar className="w-4 h-4" />
                         <span className="hidden md:inline">Content-Plan</span>
                         <span className="absolute -top-1 -right-1 w-2 h-2 bg-pink-500 rounded-full animate-pulse" />
@@ -494,7 +494,7 @@ export default function Dashboard() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="analyses" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-sm text-zinc-400 hover:text-white whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
+                      <TabsTrigger value="analyses" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-lg data-[state=active]:scale-105 text-zinc-400 hover:text-white hover:bg-zinc-800/60 hover:scale-102 whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
                         <Bookmark className="w-4 h-4" />
                         <span className="hidden md:inline">Analysen</span>
                       </TabsTrigger>
@@ -503,7 +503,7 @@ export default function Dashboard() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="invoices" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-sm text-zinc-400 hover:text-white whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
+                      <TabsTrigger value="invoices" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-lg data-[state=active]:scale-105 text-zinc-400 hover:text-white hover:bg-zinc-800/60 hover:scale-102 whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
                         <Receipt className="w-4 h-4" />
                         <span className="hidden md:inline">Rechnungen</span>
                       </TabsTrigger>
@@ -512,7 +512,7 @@ export default function Dashboard() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="notes" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-sm text-zinc-400 hover:text-white whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
+                      <TabsTrigger value="notes" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-lg data-[state=active]:scale-105 text-zinc-400 hover:text-white hover:bg-zinc-800/60 hover:scale-102 whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
                         <StickyNote className="w-4 h-4" />
                         <span className="hidden md:inline">Notizen</span>
                       </TabsTrigger>
@@ -521,7 +521,7 @@ export default function Dashboard() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="affiliate" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-sm text-zinc-400 hover:text-white whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
+                      <TabsTrigger value="affiliate" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-lg data-[state=active]:scale-105 text-zinc-400 hover:text-white hover:bg-zinc-800/60 hover:scale-102 whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
                         <Share2 className="w-4 h-4" />
                         <span className="hidden md:inline">Affiliate</span>
                       </TabsTrigger>
@@ -530,7 +530,7 @@ export default function Dashboard() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="leaderboard" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-sm text-zinc-400 hover:text-white whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 relative flex items-center gap-2">
+                      <TabsTrigger value="leaderboard" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-lg data-[state=active]:scale-105 text-zinc-400 hover:text-white hover:bg-zinc-800/60 hover:scale-102 whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 relative flex items-center gap-2">
                         <Trophy className="w-4 h-4" />
                         <span className="hidden md:inline">Leaderboard</span>
                         <span className="absolute -top-1 -right-1 w-2 h-2 bg-amber-500 rounded-full" />
@@ -540,7 +540,7 @@ export default function Dashboard() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="settings" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-sm text-zinc-400 hover:text-white whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
+                      <TabsTrigger value="settings" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-lg data-[state=active]:scale-105 text-zinc-400 hover:text-white hover:bg-zinc-800/60 hover:scale-102 whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
                         <Settings className="w-4 h-4" />
                         <span className="hidden md:inline">Einstellungen</span>
                       </TabsTrigger>
