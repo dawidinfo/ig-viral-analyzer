@@ -208,7 +208,7 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
                 Follower-Wachstum
                 <UITooltip>
                   <TooltipTrigger asChild>
-                    <Badge variant="outline" className="bg-green-500/20 border-green-500/30 text-green-400 text-xs cursor-help flex items-center gap-1">
+                    <Badge variant="outline" className="bg-green-500/20 border-green-500/30 text-green-400 text-xs cursor-help flex items-center gap-1 animate-verified-pulse">
                       <CheckCircle2 className="w-3 h-3" />
                       Verifiziert
                     </Badge>

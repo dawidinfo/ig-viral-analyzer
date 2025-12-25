@@ -338,7 +338,7 @@ export default function ReelAnalysis({ username }: ReelAnalysisProps) {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Badge className="bg-green-500/20 text-green-400 border-green-500/30 cursor-help flex items-center gap-1">
+                <Badge className="bg-green-500/20 text-green-400 border-green-500/30 cursor-help flex items-center gap-1 animate-verified-pulse">
                   <ShieldCheck className="w-3 h-3" />
                   Verifiziert
                 </Badge>

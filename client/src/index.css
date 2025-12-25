@@ -847,3 +847,34 @@ html, body {
 .feature-comparison-table td {
   transition: background-color 0.2s ease;
 }
+
+
+/* Verified Badge Pulse Animation */
+@keyframes verified-pulse {
+  0% {
+    box-shadow: 0 0 0 0 oklch(0.55 0.15 145 / 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 8px oklch(0.55 0.15 145 / 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 oklch(0.55 0.15 145 / 0);
+  }
+}
+
+@keyframes verified-glow {
+  0%, 100% {
+    box-shadow: 0 0 4px oklch(0.55 0.15 145 / 0.3);
+  }
+  50% {
+    box-shadow: 0 0 12px oklch(0.55 0.15 145 / 0.5);
+  }
+}
+
+.animate-verified-pulse {
+  animation: verified-pulse 2s ease-out 1, verified-glow 3s ease-in-out 2s infinite;
+}
+
+.animate-verified-glow {
+  animation: verified-glow 3s ease-in-out infinite;
+}
