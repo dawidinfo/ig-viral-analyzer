@@ -13,6 +13,7 @@ import { analyzeYouTubeChannel, fetchYouTubeChannel, searchYouTubeVideos, YouTub
 import { isUserAdmin, getAllUsers, getAdminStats, banUser, unbanUser, setUserRole, updateUserPlan, getUserActivity, getTopUsers, scanForSuspiciousUsers } from "./adminService";
 import { runScheduledTracking, getTrackingStats, getSavedAccountsForTracking, getTopGrowingAccounts, getDecliningAccounts, getPlatformDistribution, getAccountHistory } from "./scheduledTracking";
 import { getOrCreateReferralCode, getReferralCodeInfo, getUserReferrals, applyReferralCode, setVanityCode, getAffiliateStats } from "./affiliateService";
+import { generateContentPlan, TargetAudienceProfile, ContentPlan } from "./services/contentPlanService";
 import { getDb } from "./db";
 import { getUserCredits, useCredits, addCredits, getCreditHistory, getCreditStats, canPerformAction, getActionCost } from "./creditService";
 import { createCheckoutSession, getPaymentHistory, getOrCreateCustomer } from "./stripe/checkout";
@@ -589,6 +590,48 @@ export const appRouter = router({
           .where(eq(users.id, input.userId));
 
         return { success: true };
+      }),
+
+    // Generate AI Content Plan
+    generateContentPlan: publicProcedure
+      .input(z.object({
+        userId: z.number(),
+        profile: z.object({
+          niche: z.string().min(1),
+          painPoints: z.array(z.string()),
+          usps: z.array(z.string()),
+          benefits: z.array(z.string()),
+          tonality: z.string(),
+          accountUsername: z.string().optional(),
+        }),
+        duration: z.enum(["10", "20", "30"]),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        // Check if user has Pro or Business plan
+        const userResult = await db
+          .select()
+          .from(users)
+          .where(eq(users.id, input.userId))
+          .limit(1);
+        
+        const user = userResult[0];
+        if (!user) throw new Error("User not found");
+
+        const plan = user.plan || 'free';
+        if (plan !== 'pro' && plan !== 'business') {
+          throw new Error("Content-Plan ist nur für Pro und Business Nutzer verfügbar");
+        }
+
+        // Generate the content plan using AI
+        const contentPlan = await generateContentPlan(
+          input.profile as TargetAudienceProfile,
+          parseInt(input.duration) as 10 | 20 | 30
+        );
+
+        return contentPlan;
       }),
   }),
 

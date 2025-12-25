@@ -764,6 +764,7 @@ export default function Dashboard() {
             <TabsContent value="content-plan" className="space-y-6">
               <ContentPlanGenerator 
                 isPro={plan === 'pro' || plan === 'business'}
+                userId={user?.id}
                 analysisData={{
                   topReels: dashboardData?.savedAnalyses?.slice(0, 5)
                 }}

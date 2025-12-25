@@ -928,3 +928,9 @@
 - [x] Dashboard-Integration mit Empfehlungen oben
 - [x] Analyse-Seite Integration als Empfehlung
 - [x] Pricing-Pläne aktualisieren mit Content-Plan Feature (10 neue Features)
+
+## KI-Content-Plan Integration
+- [x] Backend API-Route für Content-Plan KI-Generierung erstellen
+- [x] Forge API Prompt für personalisierte Reel-Ideen
+- [x] Frontend ContentPlanGenerator mit API verbinden
+- [x] Loading-States und Error-Handling

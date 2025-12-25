@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Calendar, 
@@ -61,6 +63,7 @@ interface ContentPlanItem {
 
 interface ContentPlanGeneratorProps {
   isPro: boolean;
+  userId?: number;
   analysisData?: {
     topReels?: any[];
     postingTimes?: any;
@@ -70,7 +73,7 @@ interface ContentPlanGeneratorProps {
   onUpgrade?: () => void;
 }
 
-export function ContentPlanGenerator({ isPro, analysisData, onUpgrade }: ContentPlanGeneratorProps) {
+export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }: ContentPlanGeneratorProps) {
   const [profile, setProfile] = useState<TargetAudienceProfile>({
     niche: "",
     painPoints: "",
@@ -141,50 +144,71 @@ export function ContentPlanGenerator({ isPro, analysisData, onUpgrade }: Content
     }
   ];
 
+  // tRPC mutation for generating content plan
+  const generatePlanMutation = trpc.dashboard.generateContentPlan.useMutation({
+    onSuccess: (data) => {
+      // Transform API response to match local ContentPlanItem format
+      const transformedPlan: ContentPlanItem[] = data.items.map((item: any) => ({
+        day: item.day,
+        topic: item.topic,
+        hook: item.hook,
+        framework: item.framework,
+        scriptStructure: [
+          `Hook: ${item.scriptStructure.hook} (${item.scriptStructure.hookDuration})`,
+          `Body: ${item.scriptStructure.body} (${item.scriptStructure.bodyDuration})`,
+          `CTA: ${item.scriptStructure.cta} (${item.scriptStructure.ctaDuration})`
+        ],
+        cutRecommendation: item.cutRecommendation,
+        hashtags: item.hashtags,
+        bestTime: item.bestPostingTime,
+        trendingAudio: "Trending Audio",
+        copywritingTip: `${item.copywritingTip.author}: ${item.copywritingTip.tip}`
+      }));
+      setGeneratedPlan(transformedPlan);
+      setIsGenerating(false);
+      setActiveTab("plan");
+      toast.success(`${planDays}-Tage Content-Plan erfolgreich generiert!`);
+    },
+    onError: (error) => {
+      setIsGenerating(false);
+      toast.error(error.message || "Fehler beim Generieren des Content-Plans");
+    }
+  });
+
   const generateContentPlan = async () => {
     if (!isPro) {
       onUpgrade?.();
       return;
     }
-    
-    setIsGenerating(true);
-    // Simuliere KI-Generierung
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Generiere Plan basierend auf Profil und Analyse
-    const plan: ContentPlanItem[] = [];
-    const frameworks: ("HAPSS" | "AIDA")[] = ["HAPSS", "AIDA"];
-    const times = ["Montag 18:00", "Dienstag 12:00", "Mittwoch 19:00", "Donnerstag 18:00", "Freitag 12:00", "Samstag 10:00", "Sonntag 19:00"];
-    const copywritingTips = [
-      "Hopkins: Beginne mit dem stärksten Benefit",
-      "Ogilvy: Nutze spezifische Zahlen statt vager Aussagen",
-      "Schwartz: Sprich die Awareness-Stufe deiner Zielgruppe an",
-      "Hopkins: Teste verschiedene Headlines gegeneinander",
-      "Ogilvy: Die Headline ist 80% deines Erfolgs",
-      "Schwartz: Verstärke existierende Wünsche, erschaffe keine neuen"
-    ];
 
-    for (let i = 1; i <= planDays; i++) {
-      const framework = frameworks[i % 2];
-      plan.push({
-        day: i,
-        topic: `Content-Idee ${i}: ${profile.niche || "Deine Nische"} - ${["Pain Point", "Lösung", "Story", "Tutorial", "Behind the Scenes"][i % 5]}`,
-        hook: `Hook für Tag ${i} basierend auf: ${profile.painPoints || "Deine Pain Points"}`,
-        framework,
-        scriptStructure: framework === "HAPSS" 
-          ? ["Hook (0-3s)", "Attention (3-8s)", "Problem (8-15s)", "Story (15-25s)", "Solution (25-35s)"]
-          : ["Attention (0-3s)", "Interest (3-12s)", "Desire (12-22s)", "Action (22-30s)"],
-        cutRecommendation: "Schnitte alle 2-3 Sekunden für maximale Aufmerksamkeit",
-        hashtags: ["#" + (profile.niche || "business").toLowerCase().replace(/\s/g, ""), "#content", "#viral", "#reels"],
-        bestTime: times[i % 7],
-        trendingAudio: "Trending Audio der Woche",
-        copywritingTip: copywritingTips[i % copywritingTips.length]
-      });
+    if (!userId) {
+      toast.error("Bitte melde dich an um einen Content-Plan zu generieren");
+      return;
+    }
+
+    if (!profile.niche) {
+      toast.error("Bitte gib deine Nische an");
+      return;
     }
     
-    setGeneratedPlan(plan);
-    setIsGenerating(false);
-    setActiveTab("plan");
+    setIsGenerating(true);
+    
+    // Parse comma-separated strings into arrays
+    const painPointsArray = profile.painPoints.split(",").map(s => s.trim()).filter(Boolean);
+    const uspsArray = profile.usps.split(",").map(s => s.trim()).filter(Boolean);
+    const benefitsArray = profile.benefits.split(",").map(s => s.trim()).filter(Boolean);
+
+    generatePlanMutation.mutate({
+      userId,
+      profile: {
+        niche: profile.niche,
+        painPoints: painPointsArray.length > 0 ? painPointsArray : ["Keine Pain Points angegeben"],
+        usps: uspsArray.length > 0 ? uspsArray : ["Keine USPs angegeben"],
+        benefits: benefitsArray.length > 0 ? benefitsArray : ["Keine Benefits angegeben"],
+        tonality: profile.tonality,
+      },
+      duration: String(planDays) as "10" | "20" | "30"
+    });
   };
 
   return (
