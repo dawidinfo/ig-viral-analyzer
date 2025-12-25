@@ -15,6 +15,7 @@ import { runScheduledTracking, getTrackingStats, getSavedAccountsForTracking, ge
 import { getOrCreateReferralCode, getReferralCodeInfo, getUserReferrals, applyReferralCode, setVanityCode, getAffiliateStats } from "./affiliateService";
 import { checkRateLimit, getSuspiciousUsers, getUserActivitySummary, unsuspendUser, RATE_LIMITS } from "./services/abuseProtectionService";
 import { testWebhooks, sendWebhookAlert } from "./services/webhookService";
+import { getCacheStatisticsSummary, getCacheStatisticsHistory, checkCacheHealthAndAlert } from "./services/historicalDataService";
 import { generateContentPlan, TargetAudienceProfile, ContentPlan, saveContentPlan, getUserContentPlans, getContentPlanById, deleteContentPlan, toggleFavorite } from "./services/contentPlanService";
 import { getDb } from "./db";
 import { getUserCredits, useCredits, addCredits, getCreditHistory, getCreditStats, canPerformAction, getActionCost } from "./creditService";
@@ -1204,6 +1205,27 @@ export const appRouter = router({
           message: input.message,
           severity: input.severity
         });
+      }),
+
+    // Get cache statistics summary
+    getCacheStats: publicProcedure
+      .input(z.object({ days: z.number().default(30) }))
+      .query(async ({ input }) => {
+        return await getCacheStatisticsSummary(input.days);
+      }),
+
+    // Get cache statistics history for charts
+    getCacheHistory: publicProcedure
+      .input(z.object({ days: z.number().default(30) }))
+      .query(async ({ input }) => {
+        return await getCacheStatisticsHistory(input.days);
+      }),
+
+    // Check cache health and send alert if needed
+    checkCacheHealth: publicProcedure
+      .input(z.object({ minHitRate: z.number().default(50) }))
+      .mutation(async ({ input }) => {
+        return await checkCacheHealthAndAlert(input.minHitRate);
       }),
   }),
 

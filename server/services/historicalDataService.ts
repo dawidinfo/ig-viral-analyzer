@@ -985,3 +985,150 @@ export async function runDailyDataCollection(): Promise<{
   
   return { collected, errors, apiCallsSaved };
 }
+
+
+/**
+ * Get cache statistics history for charts
+ */
+export async function getCacheStatisticsHistory(
+  days: number = 30
+): Promise<{
+  dates: string[];
+  hits: number[];
+  misses: number[];
+  hitRates: number[];
+  costSaved: number[];
+  actualCost: number[];
+}> {
+  const db = await getDb();
+  if (!db) {
+    return {
+      dates: [],
+      hits: [],
+      misses: [],
+      hitRates: [],
+      costSaved: [],
+      actualCost: [],
+    };
+  }
+
+  const fromDate = new Date();
+  fromDate.setDate(fromDate.getDate() - days);
+  const fromDateStr = fromDate.toISOString().split("T")[0];
+
+  try {
+    const stats = await db
+      .select()
+      .from(cacheStatistics)
+      .where(gte(cacheStatistics.date, fromDateStr))
+      .orderBy(cacheStatistics.date);
+
+    // Group by date
+    const byDate = new Map<string, { hits: number; misses: number; costSaved: number; actualCost: number }>();
+    
+    for (const stat of stats) {
+      const existing = byDate.get(stat.date) || { hits: 0, misses: 0, costSaved: 0, actualCost: 0 };
+      existing.hits += stat.cacheHits;
+      existing.misses += stat.cacheMisses;
+      existing.costSaved += stat.costSaved;
+      existing.actualCost += stat.actualCost;
+      byDate.set(stat.date, existing);
+    }
+
+    const result = {
+      dates: [] as string[],
+      hits: [] as number[],
+      misses: [] as number[],
+      hitRates: [] as number[],
+      costSaved: [] as number[],
+      actualCost: [] as number[],
+    };
+
+    // Fill in all dates in range
+    const currentDate = new Date(fromDateStr);
+    const endDate = new Date();
+    
+    while (currentDate <= endDate) {
+      const dateStr = currentDate.toISOString().split("T")[0];
+      const data = byDate.get(dateStr) || { hits: 0, misses: 0, costSaved: 0, actualCost: 0 };
+      
+      result.dates.push(dateStr);
+      result.hits.push(data.hits);
+      result.misses.push(data.misses);
+      result.hitRates.push(
+        data.hits + data.misses > 0
+          ? Math.round((data.hits / (data.hits + data.misses)) * 100)
+          : 0
+      );
+      result.costSaved.push(data.costSaved);
+      result.actualCost.push(data.actualCost);
+      
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return result;
+  } catch (error) {
+    console.error("[HistoricalData] Error getting cache history:", error);
+    return {
+      dates: [],
+      hits: [],
+      misses: [],
+      hitRates: [],
+      costSaved: [],
+      actualCost: [],
+    };
+  }
+}
+
+/**
+ * Check cache health and send alert if hit rate is too low
+ */
+export async function checkCacheHealthAndAlert(
+  minHitRate: number = 50
+): Promise<{
+  healthy: boolean;
+  currentHitRate: number;
+  alertSent: boolean;
+  message: string;
+}> {
+  const stats = await getCacheStatisticsSummary(7); // Last 7 days
+  
+  const healthy = stats.hitRate >= minHitRate;
+  let alertSent = false;
+  let message = "";
+
+  if (!healthy && stats.totalRequests > 10) {
+    // Send alert via webhook
+    try {
+      const { sendWebhookAlert } = await import("./webhookService");
+      await sendWebhookAlert({
+        type: "suspicious_activity",
+        title: "⚠️ Cache Hit Rate Alert",
+        message: `Die Cache-Trefferquote ist auf ${stats.hitRate.toFixed(1)}% gefallen (unter ${minHitRate}% Schwellenwert).\n\n` +
+          `📊 Letzte 7 Tage:\n` +
+          `• Anfragen: ${stats.totalRequests}\n` +
+          `• Cache Hits: ${stats.cacheHits}\n` +
+          `• Cache Misses: ${stats.cacheMisses}\n` +
+          `• Gesparte Kosten: €${(stats.totalCostSaved / 100).toFixed(2)}\n` +
+          `• Tatsächliche Kosten: €${(stats.totalActualCost / 100).toFixed(2)}`,
+        severity: stats.hitRate < 30 ? "critical" : "warning",
+      });
+      alertSent = true;
+      message = `Alert gesendet: Cache-Hit-Rate (${stats.hitRate.toFixed(1)}%) unter Schwellenwert (${minHitRate}%)`;
+    } catch (error) {
+      console.error("[HistoricalData] Error sending cache alert:", error);
+      message = `Cache ungesund, aber Alert konnte nicht gesendet werden: ${error}`;
+    }
+  } else if (stats.totalRequests <= 10) {
+    message = "Nicht genügend Daten für Bewertung (weniger als 10 Anfragen)";
+  } else {
+    message = `Cache ist gesund: ${stats.hitRate.toFixed(1)}% Trefferquote`;
+  }
+
+  return {
+    healthy,
+    currentHitRate: stats.hitRate,
+    alertSent,
+    message,
+  };
+}

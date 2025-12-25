@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { ABTestDashboard } from "@/components/ABTestDashboard";
 import { SuspendedUsersPanel } from "@/components/SuspendedUsersPanel";
+import { CacheDashboard } from "@/components/CacheDashboard";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -40,6 +41,7 @@ import {
   Activity,
   Shield,
   Ban,
+  Database,
   Search,
   RefreshCw,
   AlertTriangle,
@@ -647,6 +649,10 @@ export default function Admin() {
             <TabsTrigger value="suspended" className="gap-2">
               <Ban className="h-4 w-4" />
               Gesperrte User
+            </TabsTrigger>
+            <TabsTrigger value="cache" className="gap-2">
+              <Database className="h-4 w-4" />
+              Cache
             </TabsTrigger>
           </TabsList>
 
@@ -1273,6 +1279,11 @@ export default function Admin() {
           {/* Suspended Users Tab */}
           <TabsContent value="suspended">
             <SuspendedUsersPanel adminId={user?.id || 0} />
+          </TabsContent>
+
+          {/* Cache Dashboard Tab */}
+          <TabsContent value="cache">
+            <CacheDashboard />
           </TabsContent>
         </Tabs>
       </main>
