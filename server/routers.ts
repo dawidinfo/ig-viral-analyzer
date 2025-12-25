@@ -1141,25 +1141,75 @@ export const appRouter = router({
     }),
   }),
 
-  // Email Unsubscribe Router
+  // Email Router - Unsubscribe, Drip Campaign, A/B Tests
   email: router({
+    // Unsubscribe from emails
     unsubscribe: publicProcedure
       .input(z.object({
         email: z.string().email(),
         token: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
-        // For now, just log the unsubscribe request
-        // In production, this would update a user preference in the database
         console.log(`[Unsubscribe] Request for ${input.email}`);
         
-        // TODO: Add emailOptOut column to users table and update it here
-        // const db = await getDb();
-        // if (db) {
-        //   await db.update(users).set({ emailOptOut: true }).where(eq(users.email, input.email));
-        // }
+        const db = await getDb();
+        if (db) {
+          await db.update(users).set({ emailOptOut: 1 }).where(eq(users.email, input.email));
+        }
         
-        return { success: true, message: "Successfully unsubscribed" };
+        return { success: true, message: "Du wurdest erfolgreich abgemeldet." };
+      }),
+
+    // Check if user is subscribed
+    checkSubscription: publicProcedure
+      .input(z.object({ email: z.string().email() }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return { subscribed: true };
+        
+        const user = await db.select().from(users).where(eq(users.email, input.email)).limit(1);
+        return { subscribed: user.length === 0 || user[0].emailOptOut === 0 };
+      }),
+
+    // Re-subscribe to emails
+    resubscribe: publicProcedure
+      .input(z.object({ email: z.string().email() }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (db) {
+          await db.update(users).set({ emailOptOut: 0 }).where(eq(users.email, input.email));
+        }
+        return { success: true };
+      }),
+
+    // Run drip campaign (admin only)
+    runDripCampaign: publicProcedure.mutation(async () => {
+      const { runDripCampaign } = await import("./services/dripCampaignService");
+      return await runDripCampaign();
+    }),
+
+    // Get A/B test results (admin only)
+    getAbTestResults: publicProcedure.query(async () => {
+      const { getAbTestResults } = await import("./services/dripCampaignService");
+      return await getAbTestResults();
+    }),
+
+    // Track email open
+    trackOpen: publicProcedure
+      .input(z.object({ userId: z.number(), emailType: z.string() }))
+      .mutation(async ({ input }) => {
+        const { trackEmailOpen } = await import("./services/dripCampaignService");
+        await trackEmailOpen(input.userId, input.emailType);
+        return { success: true };
+      }),
+
+    // Track email click
+    trackClick: publicProcedure
+      .input(z.object({ userId: z.number(), emailType: z.string() }))
+      .mutation(async ({ input }) => {
+        const { trackEmailClick } = await import("./services/dripCampaignService");
+        await trackEmailClick(input.userId, input.emailType);
+        return { success: true };
       }),
   }),
 

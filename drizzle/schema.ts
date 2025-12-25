@@ -33,6 +33,14 @@ export const users = mysqlTable("users", {
   statusReason: text("statusReason"),
   /** Last activity timestamp */
   lastActivity: timestamp("lastActivity").defaultNow().notNull(),
+  /** E-Mail opt-out flag */
+  emailOptOut: int("emailOptOut").default(0).notNull(),
+  /** Last drip email sent (1-4) */
+  lastDripEmailSent: int("lastDripEmailSent").default(0).notNull(),
+  /** Timestamp of last drip email */
+  lastDripEmailAt: timestamp("lastDripEmailAt"),
+  /** A/B test variant assigned (A or B) */
+  emailVariant: varchar("emailVariant", { length: 1 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
@@ -551,3 +559,73 @@ export const savedContentPlans = mysqlTable("saved_content_plans", {
 
 export type SavedContentPlan = typeof savedContentPlans.$inferSelect;
 export type InsertSavedContentPlan = typeof savedContentPlans.$inferInsert;
+
+
+/**
+ * E-Mail Tracking - tracks sent emails and A/B test results
+ */
+export const emailTracking = mysqlTable("email_tracking", {
+  id: int("id").autoincrement().primaryKey(),
+  /** User who received the email */
+  userId: int("userId").notNull(),
+  /** Email type (drip_day1, drip_day3, etc.) */
+  emailType: varchar("emailType", { length: 64 }).notNull(),
+  /** A/B test variant (A or B) */
+  variant: varchar("variant", { length: 1 }),
+  /** Subject line used */
+  subject: varchar("subject", { length: 255 }).notNull(),
+  /** Was the email opened? */
+  opened: int("opened").default(0).notNull(),
+  /** Timestamp when opened */
+  openedAt: timestamp("openedAt"),
+  /** Was a link clicked? */
+  clicked: int("clicked").default(0).notNull(),
+  /** Timestamp when clicked */
+  clickedAt: timestamp("clickedAt"),
+  /** Did user convert (purchase/upgrade)? */
+  converted: int("converted").default(0).notNull(),
+  /** Resend email ID */
+  resendId: varchar("resendId", { length: 128 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type EmailTracking = typeof emailTracking.$inferSelect;
+export type InsertEmailTracking = typeof emailTracking.$inferInsert;
+
+/**
+ * A/B Test Results - aggregated stats for email variants
+ */
+export const emailAbTests = mysqlTable("email_ab_tests", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Email type being tested */
+  emailType: varchar("emailType", { length: 64 }).notNull(),
+  /** Variant A subject line */
+  subjectA: varchar("subjectA", { length: 255 }).notNull(),
+  /** Variant B subject line */
+  subjectB: varchar("subjectB", { length: 255 }).notNull(),
+  /** Total sent for variant A */
+  sentA: int("sentA").default(0).notNull(),
+  /** Total sent for variant B */
+  sentB: int("sentB").default(0).notNull(),
+  /** Opens for variant A */
+  opensA: int("opensA").default(0).notNull(),
+  /** Opens for variant B */
+  opensB: int("opensB").default(0).notNull(),
+  /** Clicks for variant A */
+  clicksA: int("clicksA").default(0).notNull(),
+  /** Clicks for variant B */
+  clicksB: int("clicksB").default(0).notNull(),
+  /** Conversions for variant A */
+  conversionsA: int("conversionsA").default(0).notNull(),
+  /** Conversions for variant B */
+  conversionsB: int("conversionsB").default(0).notNull(),
+  /** Is the test still active? */
+  isActive: int("isActive").default(1).notNull(),
+  /** Winning variant (null if test ongoing) */
+  winner: varchar("winner", { length: 1 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type EmailAbTest = typeof emailAbTests.$inferSelect;
+export type InsertEmailAbTest = typeof emailAbTests.$inferInsert;

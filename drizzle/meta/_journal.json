@@ -64,6 +64,13 @@
       "when": 1766649535655,
       "tag": "0008_smart_sasquatch",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1766657143621,
+      "tag": "0009_worried_pestilence",
+      "breakpoints": true
     }
   ]
 }

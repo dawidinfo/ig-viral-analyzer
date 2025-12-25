@@ -978,3 +978,12 @@
 
 ## Button-Fix
 - [x] Buttons auf Homepage führen jetzt zur Hero-Section statt zu /analysis
+
+## E-Mail Automatisierung & A/B-Tests
+- [x] Datenbank-Schema erweitern (emailOptOut, dripEmailsSent, lastDripEmail)
+- [x] Drip Campaign Cron-Job implementieren (Tag 1, 3, 7, 14)
+- [x] Abmelde-Funktion mit Unsubscribe-Seite
+- [x] A/B-Test System für E-Mail-Betreffzeilen mit Tracking
+
+## Bug-Fixes
+- [x] Pricing-Link in Navigation soll zur Homepage-Section scrollen, nicht zu /pricing

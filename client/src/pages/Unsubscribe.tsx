@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Mail, MailX, CheckCircle, AlertCircle, ArrowLeft } from "lucide-react";
+import { Mail, MailX, CheckCircle, AlertCircle, ArrowLeft, RefreshCw } from "lucide-react";
+import { trpc } from "@/lib/trpc";
 
 export default function Unsubscribe() {
   const [, setLocation] = useLocation();
-  const [status, setStatus] = useState<"loading" | "success" | "error" | "confirm">("confirm");
+  const [status, setStatus] = useState<"loading" | "success" | "error" | "confirm" | "resubscribed">("confirm");
   const [email, setEmail] = useState<string>("");
 
   useEffect(() => {
@@ -17,27 +18,31 @@ export default function Unsubscribe() {
     }
   }, []);
 
+  const unsubscribeMutation = trpc.email.unsubscribe.useMutation({
+    onSuccess: () => setStatus("success"),
+    onError: () => setStatus("error"),
+  });
+
+  const resubscribeMutation = trpc.email.resubscribe.useMutation({
+    onSuccess: () => {
+      setStatus("resubscribed");
+    },
+  });
+
   const handleUnsubscribe = async () => {
-    setStatus("loading");
-    
-    try {
-      const params = new URLSearchParams(window.location.search);
-      const token = params.get("token");
-      
-      const response = await fetch("/api/unsubscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, token })
-      });
-      
-      if (response.ok) {
-        setStatus("success");
-      } else {
-        setStatus("error");
-      }
-    } catch {
+    if (!email) {
       setStatus("error");
+      return;
     }
+    setStatus("loading");
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token") || undefined;
+    unsubscribeMutation.mutate({ email, token });
+  };
+
+  const handleResubscribe = () => {
+    if (!email) return;
+    resubscribeMutation.mutate({ email });
   };
 
   const handleKeepSubscribed = () => {
@@ -129,15 +134,41 @@ export default function Unsubscribe() {
           {status === "success" && (
             <div className="space-y-4">
               <p className="text-sm text-center text-muted-foreground">
-                Du kannst die E-Mails jederzeit in deinen Dashboard-Einstellungen wieder aktivieren.
+                Du kannst die E-Mails jederzeit wieder aktivieren.
               </p>
               <Button
-                onClick={() => setLocation("/")}
+                onClick={handleResubscribe}
                 variant="outline"
+                className="w-full"
+              >
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Doch wieder anmelden
+              </Button>
+              <Button
+                onClick={() => setLocation("/")}
+                variant="ghost"
                 className="w-full"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Zurück zur Startseite
+              </Button>
+            </div>
+          )}
+
+          {status === "resubscribed" && (
+            <div className="space-y-4">
+              <div className="mx-auto w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mb-4">
+                <CheckCircle className="w-8 h-8 text-green-500" />
+              </div>
+              <p className="text-center text-lg font-medium">Willkommen zurück!</p>
+              <p className="text-sm text-center text-muted-foreground">
+                Du erhältst wieder E-Mails von uns.
+              </p>
+              <Button
+                onClick={() => setLocation("/")}
+                className="w-full bg-gradient-to-r from-primary to-cyan-500"
+              >
+                Zur Startseite
               </Button>
             </div>
           )}
