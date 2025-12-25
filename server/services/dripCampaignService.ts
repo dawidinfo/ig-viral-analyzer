@@ -139,8 +139,8 @@ export async function sendTrackedDripEmail(
   const subject = AB_TEST_SUBJECTS[emailType][variant];
 
   try {
-    // Send the email
-    const sent = await sendDripEmail(email, name, emailType);
+    // Send the email with tracking pixel
+    const sent = await sendDripEmail(email, name, emailType, userId);
 
     if (sent) {
       // Update user's drip status

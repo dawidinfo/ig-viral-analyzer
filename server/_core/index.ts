@@ -72,6 +72,58 @@ async function startServer() {
       res.status(500).send("Error fetching image");
     }
   });
+
+  // Email tracking pixel - 1x1 transparent GIF
+  // URL format: /api/email/track.gif?u=userId&e=emailType&t=timestamp
+  app.get("/api/email/track.gif", async (req, res) => {
+    const userId = parseInt(req.query.u as string);
+    const emailType = req.query.e as string;
+    
+    // Return 1x1 transparent GIF immediately
+    const transparentGif = Buffer.from(
+      "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+      "base64"
+    );
+    res.setHeader("Content-Type", "image/gif");
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
+    res.send(transparentGif);
+    
+    // Track the open asynchronously
+    if (userId && emailType) {
+      try {
+        const { trackEmailOpen } = await import("../services/dripCampaignService");
+        await trackEmailOpen(userId, emailType);
+        console.log(`[EmailTracking] Opened: user=${userId}, type=${emailType}`);
+      } catch (error) {
+        console.error("[EmailTracking] Error tracking open:", error);
+      }
+    }
+  });
+
+  // Email click tracking redirect
+  // URL format: /api/email/click?u=userId&e=emailType&r=redirectUrl
+  app.get("/api/email/click", async (req, res) => {
+    const userId = parseInt(req.query.u as string);
+    const emailType = req.query.e as string;
+    const redirectUrl = req.query.r as string || "https://reelspy.ai";
+    
+    // Track the click asynchronously
+    if (userId && emailType) {
+      try {
+        const { trackEmailClick } = await import("../services/dripCampaignService");
+        await trackEmailClick(userId, emailType);
+        console.log(`[EmailTracking] Clicked: user=${userId}, type=${emailType}`);
+      } catch (error) {
+        console.error("[EmailTracking] Error tracking click:", error);
+      }
+    }
+    
+    // Redirect to the target URL
+    res.redirect(302, redirectUrl);
+  });
+
   // tRPC API
   app.use(
     "/api/trpc",

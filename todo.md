@@ -987,3 +987,9 @@
 
 ## Bug-Fixes
 - [x] Pricing-Link in Navigation soll zur Homepage-Section scrollen, nicht zu /pricing
+
+## E-Mail Tracking-Pixel
+- [x] API-Endpoint für Tracking-Pixel erstellen (1x1 transparentes GIF)
+- [x] Tracking-Pixel in alle E-Mail-Templates einbauen
+- [x] User-ID und E-Mail-Typ im Pixel-URL kodieren
+- [x] Click-Tracking mit Redirect implementiert

@@ -1632,7 +1632,8 @@ function createDripDay14Template(name: string | null): string {
 export async function sendDripEmail(
   email: string,
   name: string | null,
-  type: DripEmailType
+  type: DripEmailType,
+  userId?: number
 ): Promise<boolean> {
   if (!email) {
     console.warn("[Email] Cannot send drip email - no email address provided");
@@ -1665,7 +1666,22 @@ export async function sendDripEmail(
   }
 
   try {
-    const html = config.template(name);
+    let html = config.template(name);
+    
+    // Add tracking pixel if userId is provided
+    if (userId) {
+      const trackingPixel = `<img src="https://reelspy.ai/api/email/track.gif?u=${userId}&e=${type}&t=${Date.now()}" width="1" height="1" style="display:block;width:1px;height:1px;border:0;" alt="" />`;
+      // Insert tracking pixel before closing body tag
+      html = html.replace('</body>', `${trackingPixel}</body>`);
+      
+      // Replace all CTA links with tracked versions
+      const baseUrl = 'https://reelspy.ai';
+      html = html.replace(
+        /href="(https:\/\/reelspy\.ai[^"]*)"/g,
+        (match, url) => `href="${baseUrl}/api/email/click?u=${userId}&e=${type}&r=${encodeURIComponent(url)}"`
+      );
+    }
+    
     const sent = await sendEmail(email, config.subject, html);
     console.log(`[Email] Drip email ${type} to ${email}: ${sent ? 'sent' : 'failed'}`);
     return sent;
