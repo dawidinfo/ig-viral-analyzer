@@ -1096,3 +1096,4 @@
 - [x] Preise anpassen (Starter €12.99, Pro €24.99, Business €59.99)
 - [x] Cron-Job Endpoint für externe Aufrufe
 - [x] Instagram Statistics API Pro Plan Hinweis
+- [x] Infoblasen/Tooltips für Follower-Wachstum Statistiken (echte Daten Hinweis)

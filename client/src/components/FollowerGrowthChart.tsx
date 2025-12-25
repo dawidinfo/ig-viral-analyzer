@@ -16,8 +16,17 @@ import {
   Sparkles,
   ChevronLeft,
   ChevronRight,
-  CalendarRange
+  CalendarRange,
+  Info,
+  CheckCircle2,
+  Database
 } from "lucide-react";
+import {
+  Tooltip as UITooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import {
@@ -300,41 +309,127 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
         
         <CardContent>
           {/* Summary Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-            <div className="bg-white/5 rounded-xl p-4 text-center">
-              <p className="text-xs text-muted-foreground mb-1">Aktuell</p>
-              <p className="text-2xl font-bold">{formatNumber(historyData.currentFollowers)}</p>
+          <TooltipProvider delayDuration={200}>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+              <UITooltip>
+                <TooltipTrigger asChild>
+                  <div className="bg-white/5 rounded-xl p-4 text-center cursor-help hover:bg-white/10 transition-colors group relative">
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Info className="w-3.5 h-3.5 text-blue-400" />
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-1">Aktuell</p>
+                    <p className="text-2xl font-bold">{formatNumber(historyData.currentFollowers)}</p>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-[250px] p-3">
+                  <div className="flex items-start gap-2">
+                    <Database className="w-4 h-4 text-green-400 mt-0.5 shrink-0" />
+                    <div>
+                      <p className="font-semibold text-green-400 mb-1">Echte Daten</p>
+                      <p className="text-xs text-muted-foreground">Aktuelle Follower-Zahl direkt von Instagram. Wird bei jeder Analyse aktualisiert.</p>
+                    </div>
+                  </div>
+                </TooltipContent>
+              </UITooltip>
+
+              <UITooltip>
+                <TooltipTrigger asChild>
+                  <div className="bg-white/5 rounded-xl p-4 text-center cursor-help hover:bg-white/10 transition-colors group relative">
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Info className="w-3.5 h-3.5 text-blue-400" />
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-1">Wachstum</p>
+                    <p className={`text-2xl font-bold ${summary.totalGrowth >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                      {summary.totalGrowth >= 0 ? '+' : ''}{formatNumber(summary.totalGrowth)}
+                    </p>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-[250px] p-3">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 shrink-0" />
+                    <div>
+                      <p className="font-semibold text-green-400 mb-1">Echte historische Daten</p>
+                      <p className="text-xs text-muted-foreground">Gesamtwachstum im ausgewählten Zeitraum. Berechnet aus echten Instagram-Statistiken.</p>
+                    </div>
+                  </div>
+                </TooltipContent>
+              </UITooltip>
+
+              <UITooltip>
+                <TooltipTrigger asChild>
+                  <div className="bg-white/5 rounded-xl p-4 text-center cursor-help hover:bg-white/10 transition-colors group relative">
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Info className="w-3.5 h-3.5 text-blue-400" />
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-1">Prozent</p>
+                    <p className={`text-2xl font-bold ${summary.totalGrowthPercent >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                      {summary.totalGrowthPercent >= 0 ? '+' : ''}{summary.totalGrowthPercent}%
+                    </p>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-[250px] p-3">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 shrink-0" />
+                    <div>
+                      <p className="font-semibold text-green-400 mb-1">Echte Wachstumsrate</p>
+                      <p className="text-xs text-muted-foreground">Prozentuales Wachstum basierend auf echten historischen Follower-Daten von Instagram.</p>
+                    </div>
+                  </div>
+                </TooltipContent>
+              </UITooltip>
+
+              <UITooltip>
+                <TooltipTrigger asChild>
+                  <div className="bg-white/5 rounded-xl p-4 text-center cursor-help hover:bg-white/10 transition-colors group relative">
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Info className="w-3.5 h-3.5 text-blue-400" />
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-1">Ø Täglich</p>
+                    <p className={`text-2xl font-bold ${summary.avgDailyGrowth >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                      {summary.avgDailyGrowth >= 0 ? '+' : ''}{formatNumber(summary.avgDailyGrowth)}
+                    </p>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-[250px] p-3">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 shrink-0" />
+                    <div>
+                      <p className="font-semibold text-green-400 mb-1">Echte Tagesdaten</p>
+                      <p className="text-xs text-muted-foreground">Durchschnittliches tägliches Wachstum berechnet aus echten Instagram-Statistiken.</p>
+                    </div>
+                  </div>
+                </TooltipContent>
+              </UITooltip>
+
+              <UITooltip>
+                <TooltipTrigger asChild>
+                  <div className={`rounded-xl p-4 text-center border ${trendBg} cursor-help hover:opacity-90 transition-opacity group relative`}>
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Info className="w-3.5 h-3.5 text-blue-400" />
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-1">Trend</p>
+                    <div className={`flex items-center justify-center gap-2 ${trendColor}`}>
+                      {summary.trend === 'rising' && <TrendingUp className="w-5 h-5" />}
+                      {summary.trend === 'declining' && <TrendingDown className="w-5 h-5" />}
+                      {summary.trend === 'stable' && <Minus className="w-5 h-5" />}
+                      <span className="font-bold capitalize">
+                        {summary.trend === 'rising' ? 'Steigend' : summary.trend === 'declining' ? 'Fallend' : 'Stabil'}
+                      </span>
+                    </div>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-[250px] p-3">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 shrink-0" />
+                    <div>
+                      <p className="font-semibold text-green-400 mb-1">Echte Trendanalyse</p>
+                      <p className="text-xs text-muted-foreground">Trend basierend auf echten historischen Daten. Zeigt die Entwicklungsrichtung des Accounts.</p>
+                    </div>
+                  </div>
+                </TooltipContent>
+              </UITooltip>
             </div>
-            <div className="bg-white/5 rounded-xl p-4 text-center">
-              <p className="text-xs text-muted-foreground mb-1">Wachstum</p>
-              <p className={`text-2xl font-bold ${summary.totalGrowth >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                {summary.totalGrowth >= 0 ? '+' : ''}{formatNumber(summary.totalGrowth)}
-              </p>
-            </div>
-            <div className="bg-white/5 rounded-xl p-4 text-center">
-              <p className="text-xs text-muted-foreground mb-1">Prozent</p>
-              <p className={`text-2xl font-bold ${summary.totalGrowthPercent >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                {summary.totalGrowthPercent >= 0 ? '+' : ''}{summary.totalGrowthPercent}%
-              </p>
-            </div>
-            <div className="bg-white/5 rounded-xl p-4 text-center">
-              <p className="text-xs text-muted-foreground mb-1">Ø Täglich</p>
-              <p className={`text-2xl font-bold ${summary.avgDailyGrowth >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                {summary.avgDailyGrowth >= 0 ? '+' : ''}{formatNumber(summary.avgDailyGrowth)}
-              </p>
-            </div>
-            <div className={`rounded-xl p-4 text-center border ${trendBg}`}>
-              <p className="text-xs text-muted-foreground mb-1">Trend</p>
-              <div className={`flex items-center justify-center gap-2 ${trendColor}`}>
-                {summary.trend === 'rising' && <TrendingUp className="w-5 h-5" />}
-                {summary.trend === 'declining' && <TrendingDown className="w-5 h-5" />}
-                {summary.trend === 'stable' && <Minus className="w-5 h-5" />}
-                <span className="font-bold capitalize">
-                  {summary.trend === 'rising' ? 'Steigend' : summary.trend === 'declining' ? 'Fallend' : 'Stabil'}
-                </span>
-              </div>
-            </div>
-          </div>
+          </TooltipProvider>
 
           {/* Chart */}
           <div className="h-[300px] mt-4">
