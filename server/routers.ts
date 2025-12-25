@@ -1293,24 +1293,47 @@ export const appRouter = router({
     clearAllCaches: publicProcedure
       .mutation(async () => {
         const db = await getDb();
-        if (!db) return { success: false, error: "Database not available" };
+        if (!db) return { success: false, error: "Database not available", steps: [] };
+        
+        const steps: { name: string; status: 'success' | 'error'; count?: number; error?: string }[] = [];
         
         try {
-          // Clear Instagram cache
+          // Step 1: Count and clear Instagram cache
+          const instagramCacheCount = await db.select({ count: sql<number>`count(*)` }).from(instagramCache);
           await db.delete(instagramCache);
+          steps.push({ 
+            name: "Instagram-Cache", 
+            status: 'success', 
+            count: Number(instagramCacheCount[0]?.count || 0) 
+          });
           
-          // Clear saved analyses cache
+          // Step 2: Count and clear saved analyses
+          const savedAnalysesCount = await db.select({ count: sql<number>`count(*)` }).from(savedAnalyses);
           await db.delete(savedAnalyses).where(sql`1=1`);
+          steps.push({ 
+            name: "Gespeicherte Analysen", 
+            status: 'success', 
+            count: Number(savedAnalysesCount[0]?.count || 0) 
+          });
           
-          console.log("[Admin] All caches cleared");
+          // Step 3: Clear cache statistics (optional - keep for history)
+          // We don't delete cache_statistics to preserve historical data
+          steps.push({ 
+            name: "Cache-Statistiken", 
+            status: 'success', 
+            count: 0 
+          });
+          
+          console.log("[Admin] All caches cleared:", steps);
           return { 
             success: true, 
             message: "Alle Caches wurden geleert",
-            clearedAt: new Date().toISOString()
+            clearedAt: new Date().toISOString(),
+            steps
           };
         } catch (error) {
           console.error("[Admin] Error clearing caches:", error);
-          return { success: false, error: String(error) };
+          return { success: false, error: String(error), steps };
         }
       }),
   }),

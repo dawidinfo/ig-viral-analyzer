@@ -1191,3 +1191,4 @@
 - [x] Exit Popup für Owner deaktivieren und nach Wegklicken nicht mehr zeigen
 - [x] Cache-Reset-Button im Admin-Dashboard
 - [x] Social-Login-Buttons auf Homepage integrieren
+- [x] Detaillierte Statusmeldungen für Cache-Löschvorgang

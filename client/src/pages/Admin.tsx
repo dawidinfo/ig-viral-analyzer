@@ -226,17 +226,43 @@ export default function Admin() {
   });
 
   // Clear all caches mutation
+  const [cacheStatus, setCacheStatus] = useState<string | null>(null);
   const clearCachesMutation = trpc.admin.clearAllCaches.useMutation({
+    onMutate: () => {
+      setCacheStatus("Starte Cache-Bereinigung...");
+      toast.loading("Lösche Instagram-Cache...", { id: "cache-clear" });
+    },
     onSuccess: (data) => {
-      if (data.success) {
-        toast.success("Alle Caches wurden geleert!");
+      if (data.success && data.steps) {
+        // Show detailed success messages
+        let totalCleared = 0;
+        data.steps.forEach((step: { name: string; status: string; count?: number }) => {
+          if (step.count && step.count > 0) {
+            totalCleared += step.count;
+          }
+        });
+        
+        toast.success(
+          <div className="space-y-1">
+            <p className="font-semibold">Cache erfolgreich geleert!</p>
+            {data.steps.map((step: { name: string; status: string; count?: number }, i: number) => (
+              <p key={i} className="text-sm text-muted-foreground">
+                ✓ {step.name}: {step.count || 0} Einträge gelöscht
+              </p>
+            ))}
+          </div>,
+          { id: "cache-clear", duration: 5000 }
+        );
+        setCacheStatus(null);
         refetchStats();
       } else {
-        toast.error(data.error || "Fehler beim Leeren der Caches");
+        toast.error(data.error || "Fehler beim Leeren der Caches", { id: "cache-clear" });
+        setCacheStatus(null);
       }
     },
     onError: (error) => {
-      toast.error("Fehler: " + error.message);
+      toast.error("Fehler: " + error.message, { id: "cache-clear" });
+      setCacheStatus(null);
     },
   });
 
