@@ -44,8 +44,15 @@ export function registerOAuthRoutes(app: Express) {
       const cookieOptions = getSessionCookieOptions(req);
       res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
 
-      // Check if this is a popup login (state contains popup marker)
-      const isPopup = state.includes('popup=true') || req.query.popup === 'true';
+      // Check if this is a popup login (decode state to check popup flag)
+      let isPopup = false;
+      try {
+        const stateData = JSON.parse(atob(state));
+        isPopup = stateData.popup === true;
+      } catch {
+        // Fallback for old state format
+        isPopup = state.includes('popup') || req.query.popup === 'true';
+      }
       
       if (isPopup) {
         // Return HTML that sends message to parent window and closes

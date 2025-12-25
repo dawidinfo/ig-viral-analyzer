@@ -12,8 +12,14 @@ export const getLoginUrl = (options?: { popup?: boolean }) => {
     origin = 'https://reelspy.ai';
   }
   
-  const redirectUri = `${origin}/api/oauth/callback${isPopup ? '?popup=true' : ''}`;
-  const state = btoa(redirectUri + (isPopup ? '&popup=true' : ''));
+  // IMPORTANT: Do NOT add query parameters to redirectUri
+  // The OAuth server appends ?code=...&state=... to the redirectUri
+  // Adding ?popup=true would result in ?popup=true?code=... which is invalid
+  const redirectUri = `${origin}/api/oauth/callback`;
+  
+  // Encode popup flag in state instead (will be decoded on callback)
+  const stateData = JSON.stringify({ redirectUri, popup: isPopup });
+  const state = btoa(stateData);
 
   const url = new URL(`${oauthPortalUrl}/app-auth`);
   url.searchParams.set("appId", appId);
