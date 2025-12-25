@@ -1030,3 +1030,8 @@
 - [x] Scroll-Container (max-h-[500px]) entfernen für natürlicheres Layout
 - [x] Pro-Spalte Highlight verbessern (subtiler Hintergrund statt harter Rahmen)
 - [x] Tabelle visuell aufwerten (sauberes Design)
+
+## Feature-Tabelle Erweiterung
+- [x] Preise unter jedem Plan-Namen anzeigen
+- [x] Feature-Anzahl pro Plan im Header
+- [x] CTA-Buttons am Tabellenende

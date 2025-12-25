@@ -1980,19 +1980,40 @@ export default function Home() {
                       <table className="w-full min-w-[700px] text-xs md:text-sm feature-comparison-table">
                       <thead>
                         <tr className="border-b border-border">
-                          <th className="text-left py-4 px-4 font-semibold text-foreground">Feature</th>
-                          <th className="text-center py-4 px-4 font-semibold text-muted-foreground">Free</th>
-                          <th className="text-center py-4 px-4 font-semibold text-primary">Starter</th>
-                          <th className="text-center py-4 px-4 font-semibold relative">
+                          <th className="text-left py-4 px-4">
+                            <span className="font-semibold text-foreground">Feature</span>
+                            <div className="text-[10px] text-muted-foreground mt-1">83 Features insgesamt</div>
+                          </th>
+                          <th className="text-center py-4 px-4">
+                            <span className="font-semibold text-muted-foreground">Free</span>
+                            <div className="text-lg font-bold text-foreground mt-1">€0</div>
+                            <div className="text-[10px] text-muted-foreground">12 Features</div>
+                          </th>
+                          <th className="text-center py-4 px-4">
+                            <span className="font-semibold text-primary">Starter</span>
+                            <div className="text-lg font-bold text-foreground mt-1">€19<span className="text-xs font-normal text-muted-foreground">/Mo</span></div>
+                            <div className="text-[10px] text-muted-foreground">28 Features</div>
+                          </th>
+                          <th className="text-center py-4 px-4 relative">
                             <div className="absolute -top-6 left-1/2 -translate-x-1/2">
                               <span className="bg-gradient-to-r from-accent to-emerald-500 text-white text-[10px] font-bold px-3 py-1 rounded-full whitespace-nowrap shadow-lg animate-pulse">
                                 ⭐ BELIEBTESTE WAHL
                               </span>
                             </div>
                             <span className="text-accent font-bold">Pro</span>
+                            <div className="text-lg font-bold text-foreground mt-1">€49<span className="text-xs font-normal text-muted-foreground">/Mo</span></div>
+                            <div className="text-[10px] text-accent">52 Features</div>
                           </th>
-                          <th className="text-center py-4 px-4 font-semibold text-yellow-500">Business</th>
-                          <th className="text-center py-4 px-4 font-semibold text-pink-500">Enterprise</th>
+                          <th className="text-center py-4 px-4">
+                            <span className="font-semibold text-yellow-500">Business</span>
+                            <div className="text-lg font-bold text-foreground mt-1">€99<span className="text-xs font-normal text-muted-foreground">/Mo</span></div>
+                            <div className="text-[10px] text-muted-foreground">71 Features</div>
+                          </th>
+                          <th className="text-center py-4 px-4">
+                            <span className="font-semibold text-pink-500">Enterprise</span>
+                            <div className="text-lg font-bold text-foreground mt-1">€299<span className="text-xs font-normal text-muted-foreground">/Mo</span></div>
+                            <div className="text-[10px] text-pink-500">Alle 83 Features</div>
+                          </th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-border/50">
@@ -2647,9 +2668,53 @@ export default function Home() {
                           <td className="text-center py-2 px-4"><Check className="w-4 h-4 mx-auto text-emerald-500" /></td>
                         </tr>
                       </tbody>
+                      <tfoot>
+                        <tr className="border-t border-border">
+                          <td className="py-4 px-4"></td>
+                          <td className="text-center py-4 px-4">
+                            <button
+                              onClick={() => document.getElementById('hero')?.scrollIntoView({ behavior: 'smooth' })}
+                              className="px-4 py-2 text-xs rounded-lg bg-muted hover:bg-muted/80 text-foreground transition-colors"
+                            >
+                              Kostenlos testen
+                            </button>
+                          </td>
+                          <td className="text-center py-4 px-4">
+                            <button
+                              onClick={() => handlePurchase('starter')}
+                              className="px-4 py-2 text-xs rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground transition-colors"
+                            >
+                              Starter wählen
+                            </button>
+                          </td>
+                          <td className="text-center py-4 px-4">
+                            <button
+                              onClick={() => handlePurchase('pro')}
+                              className="px-4 py-2 text-xs rounded-lg bg-gradient-to-r from-accent to-emerald-500 hover:opacity-90 text-white font-semibold transition-opacity shadow-lg"
+                            >
+                              Pro wählen
+                            </button>
+                          </td>
+                          <td className="text-center py-4 px-4">
+                            <button
+                              onClick={() => handlePurchase('business')}
+                              className="px-4 py-2 text-xs rounded-lg bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-500 border border-yellow-500/50 transition-colors"
+                            >
+                              Business wählen
+                            </button>
+                          </td>
+                          <td className="text-center py-4 px-4">
+                            <button
+                              onClick={() => handlePurchase('enterprise')}
+                              className="px-4 py-2 text-xs rounded-lg bg-pink-500/20 hover:bg-pink-500/30 text-pink-500 border border-pink-500/50 transition-colors"
+                            >
+                              Enterprise wählen
+                            </button>
+                          </td>
+                        </tr>
+                      </tfoot>
                       </table>
                     </div>
-                    <p className="text-xs text-muted-foreground text-center mt-4">Gesamt: 83 Features über alle Pläne</p>
                   </div>
                 </motion.div>
               )}
