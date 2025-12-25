@@ -1182,3 +1182,4 @@
 - [x] Admin-Dashboard Prognosen prüfen
 - [x] Owner-Account aus Kalkulation ausschließen
 - [x] Kosten für Owner auf 0 setzen
+- [x] OAuth Login Bug beheben - code and state are required
