@@ -21,8 +21,16 @@ import {
   Brain,
   Quote,
   Star,
-  Award
+  Award,
+  Database,
+  ShieldCheck
 } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
@@ -327,11 +335,25 @@ export default function ReelAnalysis({ username }: ReelAnalysisProps) {
               <p className="text-sm text-muted-foreground">Hook, AIDA & HAPSS Framework</p>
             </div>
           </div>
-          {analysis.isDemo && (
-            <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30">
-              Demo-Analyse
-            </Badge>
-          )}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Badge className="bg-green-500/20 text-green-400 border-green-500/30 cursor-help flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3" />
+                  Verifiziert
+                </Badge>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-[280px] p-3">
+                <div className="flex items-start gap-2">
+                  <Database className="w-4 h-4 text-green-400 mt-0.5 shrink-0" />
+                  <div>
+                    <p className="font-semibold text-green-400 mb-1">Echte Reel-Daten</p>
+                    <p className="text-xs text-muted-foreground">Diese Analyse basiert auf echten Instagram-Daten. Views, Likes und Engagement werden direkt von Instagram abgerufen.</p>
+                  </div>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
 
         {/* Score Overview */}

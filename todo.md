@@ -1097,3 +1097,5 @@
 - [x] Cron-Job Endpoint für externe Aufrufe
 - [x] Instagram Statistics API Pro Plan Hinweis
 - [x] Infoblasen/Tooltips für Follower-Wachstum Statistiken (echte Daten Hinweis)
+- [x] Prognose-Badge durch grünes Verifiziert-Badge ersetzen
+- [x] Demo-Analyse Badge in AI Reel-Analyse durch Verifiziert ersetzen

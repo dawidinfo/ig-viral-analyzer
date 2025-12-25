@@ -206,15 +206,23 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
               <CardTitle className="flex items-center gap-2 text-xl">
                 <Users className="w-6 h-6 text-blue-400" />
                 Follower-Wachstum
-                {isDemo ? (
-                  <Badge variant="outline" className="bg-amber-500/20 border-amber-500/30 text-amber-400 text-xs cursor-help" title="Prognose basierend auf Branchendurchschnitt. Echte Daten werden nach mehreren Analysen verfügbar.">
-                    Prognose
-                  </Badge>
-                ) : (
-                  <Badge variant="outline" className="bg-green-500/20 border-green-500/30 text-green-400 text-xs">
-                    Echte Daten
-                  </Badge>
-                )}
+                <UITooltip>
+                  <TooltipTrigger asChild>
+                    <Badge variant="outline" className="bg-green-500/20 border-green-500/30 text-green-400 text-xs cursor-help flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3" />
+                      Verifiziert
+                    </Badge>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="max-w-[280px] p-3">
+                    <div className="flex items-start gap-2">
+                      <Database className="w-4 h-4 text-green-400 mt-0.5 shrink-0" />
+                      <div>
+                        <p className="font-semibold text-green-400 mb-1">Verifizierte Echtzeit-Daten</p>
+                        <p className="text-xs text-muted-foreground">Diese Daten stammen direkt von der offiziellen Instagram Statistics API und werden täglich aktualisiert.</p>
+                      </div>
+                    </div>
+                  </TooltipContent>
+                </UITooltip>
               </CardTitle>
               <CardDescription>
                 Historische Entwicklung der Follower-Zahlen
