@@ -1091,3 +1091,8 @@
 - [x] Conversion-Metriken
 - [x] Feature-Nutzung Statistiken
 - [x] Preisberechnung für echte Follower-Daten
+
+## Preise & API Update
+- [x] Preise anpassen (Starter €12.99, Pro €24.99, Business €59.99)
+- [x] Cron-Job Endpoint für externe Aufrufe
+- [x] Instagram Statistics API Pro Plan Hinweis

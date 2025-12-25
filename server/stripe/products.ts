@@ -23,8 +23,8 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
     id: "starter",
     name: "Starter",
     analysesPerMonth: 10,
-    monthlyPrice: 1900, // €19
-    yearlyPrice: 18000, // €180/year (€15/month)
+    monthlyPrice: 1299, // €12.99
+    yearlyPrice: 12499, // €124.99/year (~€10.42/month)
     currency: "eur",
     description: "Für Einsteiger",
     features: [
@@ -34,15 +34,15 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       "HAPSS-Analyse",
       "E-Mail Support",
     ],
-    stripePriceIdMonthly: "price_1SiBfQDffvKeT7w70fLtMb7W",
-    stripePriceIdYearly: "price_1SiBfQDffvKeT7w7lb38q0SG",
+    stripePriceIdMonthly: "price_1SiDoJDffvKeT7w7072eciVj",
+    stripePriceIdYearly: "price_1SiDoKDffvKeT7w70nEo85o2",
   },
   {
     id: "pro",
     name: "Pro",
     analysesPerMonth: 35,
-    monthlyPrice: 4900, // €49
-    yearlyPrice: 46800, // €468/year (€39/month)
+    monthlyPrice: 2499, // €24.99
+    yearlyPrice: 23999, // €239.99/year (~€20/month)
     currency: "eur",
     description: "Für Creator",
     features: [
@@ -55,15 +55,15 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       "Prioritäts-Support",
     ],
     isPopular: true,
-    stripePriceIdMonthly: "price_1SiBfRDffvKeT7w7afh5lIPi",
-    stripePriceIdYearly: "price_1SiBfRDffvKeT7w7cZ2vMaLU",
+    stripePriceIdMonthly: "price_1SiDoMDffvKeT7w7JYTosb7J",
+    stripePriceIdYearly: "price_1SiDoNDffvKeT7w7QCH4HkWB",
   },
   {
     id: "business",
     name: "Business",
     analysesPerMonth: 100,
-    monthlyPrice: 9900, // €99
-    yearlyPrice: 94800, // €948/year (€79/month)
+    monthlyPrice: 5999, // €59.99
+    yearlyPrice: 57599, // €575.99/year (~€48/month)
     currency: "eur",
     description: "Für Agenturen",
     features: [
@@ -75,15 +75,15 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       "API-Zugang",
       "Dedizierter Support",
     ],
-    stripePriceIdMonthly: "price_1SiBfSDffvKeT7w7hHfA8UYP",
-    stripePriceIdYearly: "price_1SiBfSDffvKeT7w7i0tUCVU7",
+    stripePriceIdMonthly: "price_1SiDoPDffvKeT7w7lkhDcaNx",
+    stripePriceIdYearly: "price_1SiDoQDffvKeT7w7tzvzOBkk",
   },
   {
     id: "enterprise",
     name: "Enterprise",
     analysesPerMonth: -1, // Unlimited
-    monthlyPrice: 29900, // €299
-    yearlyPrice: 298800, // €2988/year (€249/month)
+    monthlyPrice: 19999, // €199.99
+    yearlyPrice: 191999, // €1919.99/year (~€160/month)
     currency: "eur",
     description: "Für große Agenturen",
     features: [
@@ -95,8 +95,8 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       "Dedicated Account Manager",
       "SLA-Garantie",
     ],
-    stripePriceIdMonthly: "price_1SiBfTDffvKeT7w7Ir1GiHHo",
-    stripePriceIdYearly: "price_1SiBfTDffvKeT7w7wI1VwqBg",
+    stripePriceIdMonthly: "price_1SiDoSDffvKeT7w7q4RSLPIJ",
+    stripePriceIdYearly: "price_1SiDoSDffvKeT7w73HQl5Qpi",
   },
 ];
 

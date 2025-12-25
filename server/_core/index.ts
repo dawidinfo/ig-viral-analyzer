@@ -102,6 +102,50 @@ async function startServer() {
     }
   });
 
+  // Cron Job Endpoint for external schedulers (e.g., cron-job.org)
+  // URL format: /api/cron/daily?secret=YOUR_SECRET
+  app.get("/api/cron/daily", async (req, res) => {
+    const secret = req.query.secret as string;
+    const expectedSecret = process.env.CRON_SECRET || "reelspy-cron-2024";
+    
+    // Simple secret validation to prevent unauthorized access
+    if (secret !== expectedSecret) {
+      console.log("[Cron] Unauthorized access attempt");
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    
+    try {
+      console.log("[Cron] Running daily jobs via external trigger...");
+      const { runAllDailyJobs, getCronJobStatus } = await import("../cronJobs");
+      const results = await runAllDailyJobs();
+      const status = getCronJobStatus();
+      
+      res.json({
+        success: true,
+        timestamp: new Date().toISOString(),
+        results,
+        status,
+      });
+    } catch (error) {
+      console.error("[Cron] Error running daily jobs:", error);
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
+  });
+
+  // Cron Job Status Endpoint
+  app.get("/api/cron/status", async (req, res) => {
+    try {
+      const { getCronJobStatus } = await import("../cronJobs");
+      const status = getCronJobStatus();
+      res.json({ success: true, status });
+    } catch (error) {
+      res.status(500).json({ success: false, error: "Failed to get status" });
+    }
+  });
+
   // Email click tracking redirect
   // URL format: /api/email/click?u=userId&e=emailType&r=redirectUrl
   app.get("/api/email/click", async (req, res) => {

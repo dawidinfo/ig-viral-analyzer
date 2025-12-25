@@ -436,12 +436,12 @@ export async function getAdminStats(): Promise<AdminStats> {
     try {
       const recentSignupsResult = await db
         .select({
-          signupDate: sql<string>`DATE(created_at)`.as('signup_date'),
+          signupDate: sql<string>`DATE(createdAt)`.as('signup_date'),
           count: sql<number>`count(*)`
         })
         .from(users)
         .where(gte(users.createdAt, sevenDaysAgo))
-        .groupBy(sql`DATE(created_at)`);
+        .groupBy(sql`DATE(createdAt)`);
       
       recentSignups = recentSignupsResult.map(r => ({
         date: String(r.signupDate),
