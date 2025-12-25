@@ -468,47 +468,50 @@ export default function Dashboard() {
 
           {/* Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="glass-card p-2 pt-4 overflow-x-auto flex-nowrap dashboard-tabs w-full max-w-full bg-black/40 backdrop-blur-xl border border-white/10 rounded-xl shadow-lg" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
-              <TabsTrigger value="overview" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500/30 data-[state=active]:to-purple-500/30 data-[state=active]:text-white data-[state=active]:border-violet-500/50 whitespace-nowrap text-sm px-3 py-2 rounded-lg transition-all duration-200 hover:bg-white/10 border border-transparent">
-                <LayoutDashboard className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                <span className="hidden sm:inline">Übersicht</span>
-                <span className="sm:hidden">Übersicht</span>
-              </TabsTrigger>
-              <TabsTrigger value="content-plan" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500/30 data-[state=active]:to-purple-500/30 data-[state=active]:text-white data-[state=active]:border-violet-500/50 whitespace-nowrap text-sm px-3 py-2 rounded-lg transition-all duration-200 hover:bg-white/10 border border-transparent relative">
-                <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                <span className="hidden sm:inline">Content-Plan</span>
-                <span className="sm:hidden">Plan</span>
-                <Badge className="absolute -top-2 -right-2 bg-gradient-to-r from-violet-500 to-purple-500 text-white border-0 text-[10px] px-1.5 py-0.5 z-10 shadow-lg">NEU</Badge>
-              </TabsTrigger>
-              <TabsTrigger value="analyses" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500/30 data-[state=active]:to-purple-500/30 data-[state=active]:text-white data-[state=active]:border-violet-500/50 whitespace-nowrap text-sm px-3 py-2 rounded-lg transition-all duration-200 hover:bg-white/10 border border-transparent">
-                <Bookmark className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                <span className="hidden sm:inline">Gespeicherte Analysen</span>
-                <span className="sm:hidden">Analysen</span>
-              </TabsTrigger>
-              <TabsTrigger value="invoices" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500/30 data-[state=active]:to-purple-500/30 data-[state=active]:text-white data-[state=active]:border-violet-500/50 whitespace-nowrap text-sm px-3 py-2 rounded-lg transition-all duration-200 hover:bg-white/10 border border-transparent">
-                <Receipt className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                Rechnungen
-              </TabsTrigger>
-              <TabsTrigger value="notes" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500/30 data-[state=active]:to-purple-500/30 data-[state=active]:text-white data-[state=active]:border-violet-500/50 whitespace-nowrap text-sm px-3 py-2 rounded-lg transition-all duration-200 hover:bg-white/10 border border-transparent">
-                <StickyNote className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                Notizen
-              </TabsTrigger>
-              <TabsTrigger value="affiliate" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500/30 data-[state=active]:to-purple-500/30 data-[state=active]:text-white data-[state=active]:border-violet-500/50 whitespace-nowrap text-sm px-3 py-2 rounded-lg transition-all duration-200 hover:bg-white/10 border border-transparent">
-                <Share2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                Affiliate
-              </TabsTrigger>
-              <TabsTrigger value="leaderboard" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500/30 data-[state=active]:to-purple-500/30 data-[state=active]:text-white data-[state=active]:border-violet-500/50 whitespace-nowrap text-sm px-3 py-2 rounded-lg transition-all duration-200 hover:bg-white/10 border border-transparent relative">
-                <Trophy className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                <span className="hidden sm:inline">Leaderboard</span>
-                <span className="sm:hidden">Ranking</span>
-                <Badge className="absolute -top-1 -right-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 text-[10px] px-1 py-0">NEU</Badge>
-              </TabsTrigger>
-              <TabsTrigger value="settings" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500/30 data-[state=active]:to-purple-500/30 data-[state=active]:text-white data-[state=active]:border-violet-500/50 whitespace-nowrap text-sm px-3 py-2 rounded-lg transition-all duration-200 hover:bg-white/10 border border-transparent">
-                <Settings className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                <span className="hidden sm:inline">Einstellungen</span>
-                <span className="sm:hidden">Settings</span>
-              </TabsTrigger>
-            </TabsList>
+            {/* Sticky Navigation Bar */}
+            <div className="sticky top-16 z-40 -mx-4 px-4 py-3 bg-background/80 backdrop-blur-xl border-b border-white/5">
+              <TabsList className="flex justify-center gap-1 sm:gap-2 p-3 overflow-x-auto flex-nowrap dashboard-tabs w-full max-w-5xl mx-auto bg-gradient-to-r from-violet-950/50 via-purple-950/50 to-fuchsia-950/50 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl shadow-purple-500/10" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
+                <TabsTrigger value="overview" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-500/30 whitespace-nowrap text-sm sm:text-base font-medium px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl transition-all duration-300 hover:bg-white/10 border border-transparent">
+                  <LayoutDashboard className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                  <span>Übersicht</span>
+                </TabsTrigger>
+                <TabsTrigger value="content-plan" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-500/30 whitespace-nowrap text-sm sm:text-base font-medium px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl transition-all duration-300 hover:bg-white/10 border border-transparent relative">
+                  <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                  <span className="hidden sm:inline">Content-Plan</span>
+                  <span className="sm:hidden">Plan</span>
+                  <Badge className="absolute -top-2 -right-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white border-0 text-[10px] px-2 py-0.5 z-10 shadow-lg animate-pulse">NEU</Badge>
+                </TabsTrigger>
+                <TabsTrigger value="analyses" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-500/30 whitespace-nowrap text-sm sm:text-base font-medium px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl transition-all duration-300 hover:bg-white/10 border border-transparent">
+                  <Bookmark className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                  <span className="hidden sm:inline">Analysen</span>
+                  <span className="sm:hidden">Analysen</span>
+                </TabsTrigger>
+                <TabsTrigger value="invoices" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-500/30 whitespace-nowrap text-sm sm:text-base font-medium px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl transition-all duration-300 hover:bg-white/10 border border-transparent">
+                  <Receipt className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                  <span className="hidden sm:inline">Rechnungen</span>
+                  <span className="sm:hidden">Rechnung</span>
+                </TabsTrigger>
+                <TabsTrigger value="notes" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-500/30 whitespace-nowrap text-sm sm:text-base font-medium px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl transition-all duration-300 hover:bg-white/10 border border-transparent">
+                  <StickyNote className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                  <span>Notizen</span>
+                </TabsTrigger>
+                <TabsTrigger value="affiliate" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-500/30 whitespace-nowrap text-sm sm:text-base font-medium px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl transition-all duration-300 hover:bg-white/10 border border-transparent">
+                  <Share2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                  <span>Affiliate</span>
+                </TabsTrigger>
+                <TabsTrigger value="leaderboard" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-500/30 whitespace-nowrap text-sm sm:text-base font-medium px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl transition-all duration-300 hover:bg-white/10 border border-transparent relative">
+                  <Trophy className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                  <span className="hidden sm:inline">Leaderboard</span>
+                  <span className="sm:hidden">Ranking</span>
+                  <Badge className="absolute -top-2 -right-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 text-[10px] px-2 py-0.5 z-10 shadow-lg">NEU</Badge>
+                </TabsTrigger>
+                <TabsTrigger value="settings" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-500/30 whitespace-nowrap text-sm sm:text-base font-medium px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl transition-all duration-300 hover:bg-white/10 border border-transparent">
+                  <Settings className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                  <span className="hidden sm:inline">Einstellungen</span>
+                  <span className="sm:hidden">Settings</span>
+                </TabsTrigger>
+              </TabsList>
+            </div>
 
             {/* Overview Tab */}
             <TabsContent value="overview" className="space-y-6">
