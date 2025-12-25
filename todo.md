@@ -934,3 +934,11 @@
 - [x] Forge API Prompt für personalisierte Reel-Ideen
 - [x] Frontend ContentPlanGenerator mit API verbinden
 - [x] Loading-States und Error-Handling
+
+## Pricing-Seite UX Verbesserung
+- [x] Sticky Pricing-Header für Feature-Tabelle (Preise und Kauf-Buttons beim Scrollen sichtbar)
+
+## Content-Plan Erweiterungen
+- [x] Content-Plan PDF-Export
+- [x] Gespeicherte Content-Pläne in Datenbank
+- [x] Trending Audio Integration

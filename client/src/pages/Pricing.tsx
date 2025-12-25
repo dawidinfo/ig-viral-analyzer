@@ -1002,13 +1002,51 @@ export default function Pricing() {
               </p>
             </div>
 
-            {/* Sticky Header for Tier Names */}
-            <div className="sticky top-16 z-40 bg-background/95 backdrop-blur-sm border-b border-border mb-4 py-3">
-              <div className="grid grid-cols-6 gap-2 text-center text-sm font-medium">
-                <div className="text-left pl-4 text-muted-foreground">Kategorie</div>
-                {pricingTiers.map((tier) => (
-                  <div key={tier.name} className={tier.popular ? 'text-violet-500' : 'text-muted-foreground'}>
-                    {tier.name}
+            {/* Sticky Header with Prices and CTA Buttons */}
+            <div className="sticky top-0 z-50 bg-background/98 backdrop-blur-md border-b border-border shadow-lg mb-4">
+              <div className="grid grid-cols-6 gap-2 py-4">
+                <div className="text-left pl-4 flex flex-col justify-center">
+                  <span className="text-sm font-semibold text-muted-foreground">Feature</span>
+                  <span className="text-xs text-muted-foreground/70">Vergleiche alle Pläne</span>
+                </div>
+                {pricingTiers.map((tier, index) => (
+                  <div key={tier.name} className={`text-center flex flex-col items-center gap-1 ${tier.popular ? 'relative' : ''}`}>
+                    {tier.popular && (
+                      <div className="absolute -top-1 left-1/2 -translate-x-1/2">
+                        <Badge className="bg-gradient-to-r from-violet-500 to-purple-500 text-white text-[10px] px-2 py-0.5 border-0">
+                          Beliebt
+                        </Badge>
+                      </div>
+                    )}
+                    <span className={`font-bold text-sm ${tier.popular ? 'text-violet-500 mt-3' : 'text-foreground'}`}>
+                      {tier.name}
+                    </span>
+                    <div className="flex items-baseline gap-0.5">
+                      <span className={`text-lg font-bold ${tier.popular ? 'text-violet-500' : ''}`}>
+                        €{isYearly ? tier.yearlyPrice : tier.price}
+                      </span>
+                      <span className="text-xs text-muted-foreground">/mo</span>
+                    </div>
+                    {tier.price > 0 && (
+                      <button
+                        onClick={() => handlePurchase(tier.name.toLowerCase())}
+                        className={`mt-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                          tier.popular 
+                            ? 'bg-gradient-to-r from-violet-500 to-purple-500 text-white hover:from-violet-600 hover:to-purple-600 shadow-lg shadow-violet-500/25' 
+                            : 'bg-muted hover:bg-muted/80 text-foreground'
+                        }`}
+                      >
+                        {tier.cta}
+                      </button>
+                    )}
+                    {tier.price === 0 && (
+                      <button
+                        onClick={() => setLocation('/dashboard')}
+                        className="mt-1 px-3 py-1.5 rounded-lg text-xs font-medium bg-muted hover:bg-muted/80 text-foreground transition-all"
+                      >
+                        Kostenlos
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>

@@ -509,3 +509,45 @@ export const AFFILIATE_CONFIG = {
   /** Referral code prefix */
   codePrefix: "RS",
 } as const;
+
+/**
+ * Saved Content Plans - User's generated content plans
+ */
+export const savedContentPlans = mysqlTable("saved_content_plans", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  /** Plan name/title */
+  name: varchar("name", { length: 128 }).notNull(),
+  /** Target audience profile */
+  profile: json("profile").$type<{
+    niche: string;
+    painPoints: string[];
+    usps: string[];
+    benefits: string[];
+    tonality: string;
+  }>(),
+  /** Plan duration in days */
+  duration: int("duration").notNull(),
+  /** Selected framework preference */
+  framework: mysqlEnum("framework", ["HAPSS", "AIDA", "mixed"]).default("mixed").notNull(),
+  /** Generated content plan items */
+  planItems: json("planItems").$type<{
+    day: number;
+    topic: string;
+    hook: string;
+    framework: "HAPSS" | "AIDA";
+    scriptStructure: string[];
+    cutRecommendation: string;
+    hashtags: string[];
+    bestTime: string;
+    trendingAudio: string;
+    copywritingTip: string;
+  }[]>(),
+  /** Is this plan marked as favorite */
+  isFavorite: int("isFavorite").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type SavedContentPlan = typeof savedContentPlans.$inferSelect;
+export type InsertSavedContentPlan = typeof savedContentPlans.$inferInsert;

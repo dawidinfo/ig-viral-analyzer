@@ -22,7 +22,9 @@ import {
   TrendingUp,
   MessageSquare,
   Play,
-  Star
+  Star,
+  Download,
+  Music
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -209,6 +211,149 @@ export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }:
       },
       duration: String(planDays) as "10" | "20" | "30"
     });
+  };
+
+  // PDF Export function
+  const exportToPDF = async () => {
+    if (!generatedPlan || generatedPlan.length === 0) {
+      toast.error("Bitte generiere zuerst einen Content-Plan");
+      return;
+    }
+
+    toast.info("PDF wird erstellt...");
+
+    // Create PDF content as HTML
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>Content-Plan - ${profile.niche || 'Mein Plan'}</title>
+        <style>
+          body { font-family: 'Segoe UI', Arial, sans-serif; padding: 40px; max-width: 800px; margin: 0 auto; color: #333; }
+          h1 { color: #7c3aed; border-bottom: 3px solid #7c3aed; padding-bottom: 10px; }
+          h2 { color: #6366f1; margin-top: 30px; }
+          .header { background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%); color: white; padding: 30px; border-radius: 12px; margin-bottom: 30px; }
+          .header h1 { color: white; border: none; margin: 0; }
+          .header p { margin: 10px 0 0 0; opacity: 0.9; }
+          .profile { background: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+          .profile h3 { margin-top: 0; color: #7c3aed; }
+          .day-card { border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 20px; page-break-inside: avoid; }
+          .day-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+          .day-number { background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%); color: white; padding: 8px 16px; border-radius: 20px; font-weight: bold; }
+          .framework { background: #fef3c7; color: #92400e; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+          .topic { font-size: 18px; font-weight: 600; color: #1e293b; margin-bottom: 10px; }
+          .hook { background: #f0fdf4; border-left: 4px solid #22c55e; padding: 12px; margin: 15px 0; font-style: italic; }
+          .section { margin: 15px 0; }
+          .section-title { font-weight: 600; color: #475569; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+          .section-title::before { content: ''; width: 4px; height: 16px; background: #7c3aed; border-radius: 2px; }
+          .script-step { background: #f8fafc; padding: 8px 12px; margin: 4px 0; border-radius: 6px; font-size: 14px; }
+          .hashtags { display: flex; flex-wrap: wrap; gap: 8px; }
+          .hashtag { background: #ede9fe; color: #7c3aed; padding: 4px 10px; border-radius: 12px; font-size: 13px; }
+          .meta { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px; padding-top: 15px; border-top: 1px solid #e2e8f0; }
+          .meta-item { font-size: 13px; }
+          .meta-label { color: #64748b; }
+          .meta-value { font-weight: 600; color: #1e293b; }
+          .tip { background: #fef3c7; padding: 12px; border-radius: 8px; margin-top: 15px; font-size: 13px; }
+          .tip-author { font-weight: 600; color: #92400e; }
+          .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 2px solid #e2e8f0; color: #64748b; font-size: 12px; }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>📅 ${planDays}-Tage Content-Plan</h1>
+          <p>Generiert für: ${profile.niche || 'Deine Nische'} | ${new Date().toLocaleDateString('de-DE')}</p>
+        </div>
+        
+        <div class="profile">
+          <h3>🎯 Zielgruppen-Profil</h3>
+          <p><strong>Nische:</strong> ${profile.niche || '-'}</p>
+          <p><strong>Pain Points:</strong> ${profile.painPoints || '-'}</p>
+          <p><strong>USPs:</strong> ${profile.usps || '-'}</p>
+          <p><strong>Benefits:</strong> ${profile.benefits || '-'}</p>
+          <p><strong>Tonalität:</strong> ${profile.tonality || '-'}</p>
+        </div>
+
+        <h2>🎬 Dein Content-Plan</h2>
+        
+        ${generatedPlan.map(item => `
+          <div class="day-card">
+            <div class="day-header">
+              <span class="day-number">Tag ${item.day}</span>
+              <span class="framework">${item.framework}</span>
+            </div>
+            <div class="topic">${item.topic}</div>
+            <div class="hook">
+              <strong>🎣 Hook:</strong> "${item.hook}"
+            </div>
+            
+            <div class="section">
+              <div class="section-title">📝 Script-Struktur</div>
+              ${item.scriptStructure.map(step => `<div class="script-step">${step}</div>`).join('')}
+            </div>
+            
+            <div class="section">
+              <div class="section-title">✂️ Schnitt-Empfehlung</div>
+              <p>${item.cutRecommendation}</p>
+            </div>
+            
+            <div class="section">
+              <div class="section-title">#️⃣ Hashtags</div>
+              <div class="hashtags">
+                ${item.hashtags.map(tag => `<span class="hashtag">${tag}</span>`).join('')}
+              </div>
+            </div>
+            
+            <div class="meta">
+              <div class="meta-item">
+                <div class="meta-label">⏰ Beste Zeit</div>
+                <div class="meta-value">${item.bestTime}</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">🎵 Audio</div>
+                <div class="meta-value">${item.trendingAudio}</div>
+              </div>
+            </div>
+            
+            <div class="tip">
+              <span class="tip-author">💡 Copywriting-Tipp:</span> ${item.copywritingTip}
+            </div>
+          </div>
+        `).join('')}
+        
+        <div class="footer">
+          <p>Erstellt mit ReelSpy.ai - KI-powered Instagram Analyse</p>
+          <p>www.reelspy.ai</p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    // Create blob and download
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    
+    // Open in new window for printing/saving as PDF
+    const printWindow = window.open(url, '_blank');
+    if (printWindow) {
+      printWindow.onload = () => {
+        setTimeout(() => {
+          printWindow.print();
+        }, 500);
+      };
+      toast.success("PDF-Vorschau geöffnet! Nutze 'Als PDF speichern' im Druckdialog.");
+    } else {
+      // Fallback: Download as HTML
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `content-plan-${planDays}-tage-${profile.niche || 'plan'}.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      toast.success("Content-Plan als HTML heruntergeladen!");
+    }
+    
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -537,8 +682,8 @@ export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }:
             <div className="space-y-4">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold">Dein {planDays}-Tage Content-Plan</h3>
-                <Button variant="outline" size="sm">
-                  <FileText className="w-4 h-4 mr-2" />
+                <Button variant="outline" size="sm" onClick={exportToPDF}>
+                  <Download className="w-4 h-4 mr-2" />
                   Als PDF exportieren
                 </Button>
               </div>

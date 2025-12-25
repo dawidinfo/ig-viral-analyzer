@@ -57,6 +57,13 @@
       "when": 1766612244171,
       "tag": "0007_cold_drax",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1766649535655,
+      "tag": "0008_smart_sasquatch",
+      "breakpoints": true
     }
   ]
 }

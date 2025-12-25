@@ -1,4 +1,5 @@
 import { invokeLLM } from "../_core/llm";
+import { getAudioForContent, TrendingAudio } from "./trendingAudioService";
 
 export interface TargetAudienceProfile {
   niche: string;
@@ -30,6 +31,12 @@ export interface ContentPlanItem {
   hashtags: string[];
   bestPostingTime: string;
   estimatedViews: string;
+  trendingAudio: {
+    name: string;
+    artist: string;
+    category: string;
+    useCase: string;
+  };
 }
 
 export interface ContentPlan {
@@ -204,7 +211,16 @@ Antworte NUR mit einem validen JSON-Array ohne zusätzlichen Text.`;
         ? item.hashtags.slice(0, 5) 
         : ["#reels", "#viral", "#tipps", "#content", "#creator"],
       bestPostingTime: item.bestPostingTime || ["18:00", "19:00", "20:00", "12:00", "21:00"][index % 5],
-      estimatedViews: item.estimatedViews || `${Math.floor(Math.random() * 50 + 10)}K-${Math.floor(Math.random() * 100 + 50)}K`
+      estimatedViews: item.estimatedViews || `${Math.floor(Math.random() * 50 + 10)}K-${Math.floor(Math.random() * 100 + 50)}K`,
+      trendingAudio: (() => {
+        const audio = getAudioForContent(item.topic || "", profile.niche, item.framework === "AIDA" ? "AIDA" : "HAPSS");
+        return {
+          name: audio.name,
+          artist: audio.artist,
+          category: audio.category,
+          useCase: audio.useCase
+        };
+      })()
     }));
 
     return {
@@ -289,7 +305,16 @@ function generateDemoContentPlan(
         "#creator"
       ],
       bestPostingTime: ["18:00", "19:00", "20:00", "12:00", "21:00"][i % 5],
-      estimatedViews: `${Math.floor(Math.random() * 50 + 10)}K-${Math.floor(Math.random() * 100 + 50)}K`
+      estimatedViews: `${Math.floor(Math.random() * 50 + 10)}K-${Math.floor(Math.random() * 100 + 50)}K`,
+      trendingAudio: (() => {
+        const audio = getAudioForContent(topicData.topic, profile.niche, framework);
+        return {
+          name: audio.name,
+          artist: audio.artist,
+          category: audio.category,
+          useCase: audio.useCase
+        };
+      })()
     });
   }
 
@@ -302,3 +327,113 @@ function generateDemoContentPlan(
 }
 
 export { generateDemoContentPlan };
+
+
+// Database functions for saving/loading content plans
+import { getDb } from "../db";
+import { savedContentPlans } from "../../drizzle/schema";
+import { eq, desc } from "drizzle-orm";
+
+export async function saveContentPlan(
+  userId: number,
+  name: string,
+  profile: TargetAudienceProfile,
+  duration: number,
+  framework: "HAPSS" | "AIDA" | "mixed",
+  planItems: ContentPlanItem[]
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(savedContentPlans).values({
+    userId,
+    name,
+    profile: {
+      niche: profile.niche,
+      painPoints: profile.painPoints,
+      usps: profile.usps,
+      benefits: profile.benefits,
+      tonality: profile.tonality
+    },
+    duration,
+    framework,
+    planItems: planItems.map(item => ({
+      day: item.day,
+      topic: item.topic,
+      hook: item.hook,
+      framework: item.framework,
+      scriptStructure: [
+        `Hook (${item.scriptStructure.hookDuration}): ${item.scriptStructure.hook}`,
+        `Body (${item.scriptStructure.bodyDuration}): ${item.scriptStructure.body}`,
+        `CTA (${item.scriptStructure.ctaDuration}): ${item.scriptStructure.cta}`
+      ],
+      cutRecommendation: item.cutRecommendation,
+      hashtags: item.hashtags,
+      bestTime: item.bestPostingTime,
+      trendingAudio: "Trending Sound",
+      copywritingTip: `${item.copywritingTip.author}: ${item.copywritingTip.tip}`
+    }))
+  });
+
+  return result;
+}
+
+export async function getUserContentPlans(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const plans = await db
+    .select()
+    .from(savedContentPlans)
+    .where(eq(savedContentPlans.userId, userId))
+    .orderBy(desc(savedContentPlans.createdAt));
+
+  return plans;
+}
+
+export async function getContentPlanById(planId: number, userId: number) {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const plans = await db
+    .select()
+    .from(savedContentPlans)
+    .where(eq(savedContentPlans.id, planId));
+
+  const plan = plans[0];
+  if (!plan || plan.userId !== userId) {
+    return null;
+  }
+
+  return plan;
+}
+
+export async function deleteContentPlan(planId: number, userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const plan = await getContentPlanById(planId, userId);
+  if (!plan) {
+    throw new Error("Plan not found or access denied");
+  }
+
+  await db.delete(savedContentPlans).where(eq(savedContentPlans.id, planId));
+  return true;
+}
+
+export async function toggleFavorite(planId: number, userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const plan = await getContentPlanById(planId, userId);
+  if (!plan) {
+    throw new Error("Plan not found or access denied");
+  }
+
+  await db
+    .update(savedContentPlans)
+    .set({ isFavorite: plan.isFavorite ? 0 : 1 })
+    .where(eq(savedContentPlans.id, planId));
+
+  return !plan.isFavorite;
+}

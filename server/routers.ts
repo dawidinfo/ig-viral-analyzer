@@ -13,7 +13,7 @@ import { analyzeYouTubeChannel, fetchYouTubeChannel, searchYouTubeVideos, YouTub
 import { isUserAdmin, getAllUsers, getAdminStats, banUser, unbanUser, setUserRole, updateUserPlan, getUserActivity, getTopUsers, scanForSuspiciousUsers } from "./adminService";
 import { runScheduledTracking, getTrackingStats, getSavedAccountsForTracking, getTopGrowingAccounts, getDecliningAccounts, getPlatformDistribution, getAccountHistory } from "./scheduledTracking";
 import { getOrCreateReferralCode, getReferralCodeInfo, getUserReferrals, applyReferralCode, setVanityCode, getAffiliateStats } from "./affiliateService";
-import { generateContentPlan, TargetAudienceProfile, ContentPlan } from "./services/contentPlanService";
+import { generateContentPlan, TargetAudienceProfile, ContentPlan, saveContentPlan, getUserContentPlans, getContentPlanById, deleteContentPlan, toggleFavorite } from "./services/contentPlanService";
 import { getDb } from "./db";
 import { getUserCredits, useCredits, addCredits, getCreditHistory, getCreditStats, canPerformAction, getActionCost } from "./creditService";
 import { createCheckoutSession, getPaymentHistory, getOrCreateCustomer } from "./stripe/checkout";
@@ -632,6 +632,73 @@ export const appRouter = router({
         );
 
         return contentPlan;
+      }),
+
+    // Save a generated content plan
+    save: publicProcedure
+      .input(z.object({
+        userId: z.number(),
+        name: z.string().min(1).max(128),
+        profile: z.object({
+          niche: z.string(),
+          painPoints: z.array(z.string()),
+          usps: z.array(z.string()),
+          benefits: z.array(z.string()),
+          tonality: z.string()
+        }),
+        duration: z.number(),
+        framework: z.enum(["HAPSS", "AIDA", "mixed"]),
+        planItems: z.array(z.any())
+      }))
+      .mutation(async ({ input }) => {
+        await saveContentPlan(
+          input.userId,
+          input.name,
+          input.profile as TargetAudienceProfile,
+          input.duration,
+          input.framework,
+          input.planItems
+        );
+        return { success: true };
+      }),
+
+    // Get user's saved content plans
+    getAll: publicProcedure
+      .input(z.object({ userId: z.number() }))
+      .query(async ({ input }) => {
+        return await getUserContentPlans(input.userId);
+      }),
+
+    // Get a specific content plan
+    getById: publicProcedure
+      .input(z.object({
+        planId: z.number(),
+        userId: z.number()
+      }))
+      .query(async ({ input }) => {
+        return await getContentPlanById(input.planId, input.userId);
+      }),
+
+    // Delete a content plan
+    delete: publicProcedure
+      .input(z.object({
+        planId: z.number(),
+        userId: z.number()
+      }))
+      .mutation(async ({ input }) => {
+        await deleteContentPlan(input.planId, input.userId);
+        return { success: true };
+      }),
+
+    // Toggle favorite status for content plan
+    togglePlanFavorite: publicProcedure
+      .input(z.object({
+        planId: z.number(),
+        userId: z.number()
+      }))
+      .mutation(async ({ input }) => {
+        const isFavorite = await toggleFavorite(input.planId, input.userId);
+        return { isFavorite };
       }),
   }),
 
