@@ -742,7 +742,7 @@
 
 ## CSV-Export (24.12.2024)
 - [ ] CSV-Export Button in DetailedPostAnalysis
-- [ ] Export-Funktion für gefilterte Post-Daten
+- [x] Export-Funktion für gefilterte Post-Daten
 - [ ] Download als .csv Datei
 
 ## Onboarding-Flow (24.12.2024)
@@ -1107,3 +1107,11 @@
 - [x] Frontend: Wachstums-Analyse Komponente
 - [x] Frontend: Top-Posts die Follower gebracht haben
 - [x] Wachstums-Analyse mit Instagram Statistics API Daten
+
+## Sicherheitsmechanismus gegen API-Missbrauch
+- [ ] Rate-Limiting Service mit Schwellenwerten
+- [x] Auto-Sperrung bei Überschreitung
+- [x] Admin-Benachrichtigung per E-Mail
+- [x] User-Benachrichtigung bei Sperrung
+- [ ] Post-Korrelation mit Thumbnails
+- [x] Export-Funktion (CSV/PDF)

@@ -13,6 +13,7 @@ import { analyzeYouTubeChannel, fetchYouTubeChannel, searchYouTubeVideos, YouTub
 import { isUserAdmin, getAllUsers, getAdminStats, banUser, unbanUser, setUserRole, updateUserPlan, getUserActivity, getTopUsers, scanForSuspiciousUsers } from "./adminService";
 import { runScheduledTracking, getTrackingStats, getSavedAccountsForTracking, getTopGrowingAccounts, getDecliningAccounts, getPlatformDistribution, getAccountHistory } from "./scheduledTracking";
 import { getOrCreateReferralCode, getReferralCodeInfo, getUserReferrals, applyReferralCode, setVanityCode, getAffiliateStats } from "./affiliateService";
+import { checkRateLimit, getSuspiciousUsers, getUserActivitySummary, unsuspendUser, RATE_LIMITS } from "./services/abuseProtectionService";
 import { generateContentPlan, TargetAudienceProfile, ContentPlan, saveContentPlan, getUserContentPlans, getContentPlanById, deleteContentPlan, toggleFavorite } from "./services/contentPlanService";
 import { getDb } from "./db";
 import { getUserCredits, useCredits, addCredits, getCreditHistory, getCreditStats, canPerformAction, getActionCost } from "./creditService";
@@ -756,6 +757,16 @@ export const appRouter = router({
         return { ...result, cost };
       }),
 
+    // Check rate limit for user (abuse protection)
+    checkRateLimit: publicProcedure
+      .input(z.object({
+        userId: z.number(),
+        actionType: z.string().default("analysis")
+      }))
+      .query(async ({ input }) => {
+        return await checkRateLimit(input.userId, input.actionType);
+      }),
+
     // Use credits for an action
     use: publicProcedure
       .input(z.object({
@@ -1147,6 +1158,30 @@ export const appRouter = router({
     sendDripEmailPreview: publicProcedure.mutation(async () => {
       const { sendDripEmailPreview } = await import("./emailService");
       return await sendDripEmailPreview();
+    }),
+
+    // Get suspicious users (abuse protection)
+    getSuspiciousUsers: publicProcedure.query(async () => {
+      return await getSuspiciousUsers();
+    }),
+
+    // Get user activity summary (abuse protection)
+    getUserActivityAbuse: publicProcedure
+      .input(z.object({ userId: z.number() }))
+      .query(async ({ input }) => {
+        return await getUserActivitySummary(input.userId);
+      }),
+
+    // Unsuspend user (admin action)
+    unsuspendUser: publicProcedure
+      .input(z.object({ userId: z.number(), adminId: z.number() }))
+      .mutation(async ({ input }) => {
+        return await unsuspendUser(input.userId, input.adminId);
+      }),
+
+    // Get rate limits config
+    getRateLimits: publicProcedure.query(() => {
+      return RATE_LIMITS;
     }),
   }),
 

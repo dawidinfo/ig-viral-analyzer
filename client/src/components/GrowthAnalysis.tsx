@@ -18,8 +18,18 @@ import {
   BarChart3,
   Lightbulb,
   ChevronRight,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Download,
+  FileSpreadsheet,
+  FileText
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -31,6 +41,180 @@ interface GrowthAnalysisProps {
 export function GrowthAnalysis({ username, platform = 'instagram' }: GrowthAnalysisProps) {
   const [days, setDays] = useState<number>(30);
   const [showAllInsights, setShowAllInsights] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  
+
+  // Export to CSV
+  const exportToCSV = () => {
+    if (!analysis) return;
+    setIsExporting(true);
+    
+    try {
+      const headers = ['Datum', 'Wochentag', 'Follower', 'Wachstum', 'Wachstum %'];
+      const rows = analysis.topGrowthDays.map(day => [
+        new Date(day.date).toLocaleDateString('de-DE'),
+        new Date(day.date).toLocaleDateString('de-DE', { weekday: 'long' }),
+        day.followers,
+        day.growth,
+        day.growthPercent
+      ]);
+      
+      const csvContent = [
+        headers.join(';'),
+        ...rows.map(row => row.join(';'))
+      ].join('\n');
+      
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${username}_wachstum_${days}tage.csv`;
+      link.click();
+      
+      toast.success('Export erfolgreich', {
+        description: 'Die CSV-Datei wurde heruntergeladen.',
+      });
+    } catch (error) {
+      toast.error('Export fehlgeschlagen', {
+        description: 'Bitte versuche es erneut.',
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  // Export to PDF (generates HTML report)
+  const exportToPDF = () => {
+    if (!analysis) return;
+    setIsExporting(true);
+    
+    try {
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html lang="de">
+        <head>
+          <meta charset="UTF-8">
+          <title>Wachstums-Analyse @${username}</title>
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 40px; max-width: 800px; margin: 0 auto; }
+            h1 { color: #8b5cf6; border-bottom: 2px solid #8b5cf6; padding-bottom: 10px; }
+            h2 { color: #333; margin-top: 30px; }
+            .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0; }
+            .stat { background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; }
+            .stat-value { font-size: 24px; font-weight: bold; color: #10b981; }
+            .stat-label { font-size: 12px; color: #666; }
+            table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+            th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+            th { background: #f8f9fa; font-weight: 600; }
+            .positive { color: #10b981; }
+            .negative { color: #ef4444; }
+            .insight { background: #f0fdf4; border-left: 4px solid #10b981; padding: 15px; margin: 10px 0; border-radius: 4px; }
+            .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 12px; }
+          </style>
+        </head>
+        <body>
+          <h1>📈 Wachstums-Analyse: @${username}</h1>
+          <p>Zeitraum: ${analysis.period.days} Tage (${new Date(analysis.period.start).toLocaleDateString('de-DE')} - ${new Date(analysis.period.end).toLocaleDateString('de-DE')})</p>
+          
+          <div class="stats">
+            <div class="stat">
+              <div class="stat-value">${analysis.totalGrowth >= 0 ? '+' : ''}${formatNumber(analysis.totalGrowth)}</div>
+              <div class="stat-label">Gesamtwachstum</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">${analysis.totalGrowthPercent >= 0 ? '+' : ''}${analysis.totalGrowthPercent}%</div>
+              <div class="stat-label">Prozentual</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">${analysis.averageDailyGrowth >= 0 ? '+' : ''}${formatNumber(analysis.averageDailyGrowth)}</div>
+              <div class="stat-label">Ø Täglich</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">+${formatNumber(analysis.topGrowthDays[0]?.growth || 0)}</div>
+              <div class="stat-label">Bester Tag</div>
+            </div>
+          </div>
+
+          <h2>🚀 Top 5 Wachstumstage</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Datum</th>
+                <th>Follower</th>
+                <th>Wachstum</th>
+                <th>%</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${analysis.topGrowthDays.map((day, i) => `
+                <tr>
+                  <td>${i + 1}</td>
+                  <td>${new Date(day.date).toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' })}</td>
+                  <td>${formatNumber(day.followers)}</td>
+                  <td class="positive">+${formatNumber(day.growth)}</td>
+                  <td class="positive">+${day.growthPercent}%</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+
+          ${analysis.worstGrowthDays.some(d => d.growth < 0) ? `
+            <h2>⚠️ Schwächste Tage</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Datum</th>
+                  <th>Wachstum</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${analysis.worstGrowthDays.filter(d => d.growth < 0).slice(0, 3).map((day, i) => `
+                  <tr>
+                    <td>${i + 1}</td>
+                    <td>${new Date(day.date).toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' })}</td>
+                    <td class="negative">${formatNumber(day.growth)}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          ` : ''}
+
+          ${analysis.insights && analysis.insights.length > 0 ? `
+            <h2>💡 Erkenntnisse</h2>
+            ${analysis.insights.map(insight => `
+              <div class="insight">
+                <strong>${insight.title}</strong><br>
+                <span style="color: #666;">${insight.description}</span>
+              </div>
+            `).join('')}
+          ` : ''}
+
+          <div class="footer">
+            <p>Erstellt mit ReelSpy.ai am ${new Date().toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+            <p>Echte Daten von Instagram Statistics API</p>
+          </div>
+        </body>
+        </html>
+      `;
+      
+      const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${username}_wachstum_report.html`;
+      link.click();
+      
+      toast.success('Report erstellt', {
+        description: 'Der HTML-Report wurde heruntergeladen. Öffne ihn im Browser und drucke als PDF.',
+      });
+    } catch (error) {
+      toast.error('Export fehlgeschlagen', {
+        description: 'Bitte versuche es erneut.',
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const { data: analysis, isLoading, error } = trpc.growthAnalysis.getAnalysis.useQuery(
     { username, platform, days },
@@ -103,18 +287,39 @@ export function GrowthAnalysis({ username, platform = 'instagram' }: GrowthAnaly
             </div>
           </div>
 
-          <Select value={days.toString()} onValueChange={(v) => setDays(parseInt(v))}>
-            <SelectTrigger className="w-[140px] bg-white/5 border-white/10">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="7">7 Tage</SelectItem>
-              <SelectItem value="30">30 Tage</SelectItem>
-              <SelectItem value="90">3 Monate</SelectItem>
-              <SelectItem value="180">6 Monate</SelectItem>
-              <SelectItem value="365">1 Jahr</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex items-center gap-2">
+            <Select value={days.toString()} onValueChange={(v) => setDays(parseInt(v))}>
+              <SelectTrigger className="w-[140px] bg-white/5 border-white/10">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="7">7 Tage</SelectItem>
+                <SelectItem value="30">30 Tage</SelectItem>
+                <SelectItem value="90">3 Monate</SelectItem>
+                <SelectItem value="180">6 Monate</SelectItem>
+                <SelectItem value="365">1 Jahr</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="bg-white/5 border-white/10" disabled={isExporting}>
+                  <Download className="w-4 h-4 mr-2" />
+                  Export
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={exportToCSV}>
+                  <FileSpreadsheet className="w-4 h-4 mr-2" />
+                  Als CSV exportieren
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={exportToPDF}>
+                  <FileText className="w-4 h-4 mr-2" />
+                  Als PDF/Report exportieren
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </CardHeader>
 

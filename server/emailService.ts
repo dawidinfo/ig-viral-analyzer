@@ -25,7 +25,8 @@ export type NotificationType =
   | "high_usage"
   | "error"
   | "contact"
-  | "viral_alert";
+  | "viral_alert"
+  | "security";
 
 interface NotificationPayload {
   type: NotificationType;
@@ -88,6 +89,7 @@ function createEmailTemplate(title: string, content: string, type: NotificationT
     error: "#EF4444",
     contact: "#06B6D4",
     viral_alert: "#EC4899",
+    security: "#DC2626",
   };
 
   const typeEmojis: Record<NotificationType, string> = {
@@ -99,6 +101,7 @@ function createEmailTemplate(title: string, content: string, type: NotificationT
     error: "❌",
     contact: "📧",
     viral_alert: "🔥",
+    security: "🚨",
   };
 
   return `
@@ -354,6 +357,7 @@ export function getNotificationStats(): Record<NotificationType, number> {
     error: 0,
     contact: 0,
     viral_alert: 0,
+    security: 0,
   };
 
   for (const notification of notificationQueue) {
