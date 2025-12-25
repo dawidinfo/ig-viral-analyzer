@@ -1,0 +1,8 @@
+# ReelSpy.ai - Instagram Analytics Tool
+# https://reelspy.ai
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://reelspy.ai/sitemap.xml

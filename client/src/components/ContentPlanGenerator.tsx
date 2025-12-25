@@ -554,7 +554,7 @@ export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }:
                       <p className="font-semibold">@{selectedAnalysis.username}</p>
                       <p className="text-xs text-muted-foreground">
                         {selectedAnalysis.followers?.toLocaleString() || "?"} Follower • 
-                        {selectedAnalysis.engagementRate ? ` ${selectedAnalysis.engagementRate.toFixed(2)}% Engagement` : ""}
+                        {selectedAnalysis.engagementRate ? ` ${Number(selectedAnalysis.engagementRate).toFixed(2)}% Engagement` : ""}
                       </p>
                     </div>
                   </div>

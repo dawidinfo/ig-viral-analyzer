@@ -1169,3 +1169,7 @@
 - [ ] UI mit Modus-Auswahl (KI-Analyse vs. Manuell)
 - [ ] Bearbeitungs- und Regenerierungs-Funktion
 - [ ] Integration mit Profil-Historie und Analyse-Daten
+
+- [x] robots.txt auf index,follow setzen für Google-Indexierung
+- [x] E-Mail-Templates mit ReelSpy.ai Branding aktualisieren
+- [x] Content-Plan Generator testen
