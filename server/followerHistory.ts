@@ -20,7 +20,7 @@ export interface FollowerHistoryData {
   username: string;
   platform: 'instagram' | 'tiktok' | 'youtube';
   currentFollowers: number;
-  timeRange: '7d' | '1m' | '3m' | '6m' | '1y' | 'max';
+  timeRange: '7d' | '1m' | '3m' | '6m' | '1y' | 'max' | 'custom';
   dataPoints: FollowerDataPoint[];
   summary: {
     totalGrowth: number;
@@ -41,7 +41,8 @@ const TIME_RANGES = {
   '3m': { days: 90, label: '3 Monate' },
   '6m': { days: 180, label: '6 Monate' },
   '1y': { days: 365, label: '1 Jahr' },
-  'max': { days: 730, label: 'Max (2 Jahre)' }
+  'max': { days: 730, label: 'Max (2 Jahre)' },
+  'custom': { days: 30, label: 'Benutzerdefiniert' }
 };
 
 /**
@@ -292,11 +293,23 @@ function calculateSummary(dataPoints: FollowerDataPoint[]): FollowerHistoryData[
 export async function getFollowerHistory(
   username: string,
   currentFollowers: number,
-  timeRange: '7d' | '1m' | '3m' | '6m' | '1y' | 'max' = '1m',
-  platform: 'instagram' | 'tiktok' | 'youtube' = 'instagram'
+  timeRange: '7d' | '1m' | '3m' | '6m' | '1y' | 'max' | 'custom' = '1m',
+  platform: 'instagram' | 'tiktok' | 'youtube' = 'instagram',
+  customStartDate?: string, // ISO date string (YYYY-MM-DD)
+  customEndDate?: string // ISO date string (YYYY-MM-DD)
 ): Promise<FollowerHistoryData> {
-  const config = TIME_RANGES[timeRange];
-  const days = config.days;
+  let days: number;
+  
+  if (timeRange === 'custom' && customStartDate && customEndDate) {
+    const start = new Date(customStartDate);
+    const end = new Date(customEndDate);
+    days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    // Limit to max 2 years
+    days = Math.min(days, 730);
+  } else {
+    const config = TIME_RANGES[timeRange];
+    days = config.days;
+  }
   const cleanUsername = username.toLowerCase().replace('@', '').trim();
   
   // Try to get real historical data from Instagram Statistics API (Instagram only)

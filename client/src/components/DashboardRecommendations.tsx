@@ -178,7 +178,7 @@ export function DashboardRecommendations({
   const visibleRecommendations = recommendations.slice(0, 4);
 
   return (
-    <div className="mb-8">
+    <div className="mb-8 p-4 sm:p-6 rounded-2xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 backdrop-blur-sm shadow-xl">
       <div className="flex items-center justify-between mb-4 sm:mb-6">
         <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2">
           <div className="p-1.5 sm:p-2 rounded-lg bg-gradient-to-br from-violet-500/20 to-purple-500/20">

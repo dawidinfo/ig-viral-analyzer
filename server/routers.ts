@@ -217,7 +217,9 @@ export const appRouter = router({
     followerHistory: publicProcedure
       .input(z.object({ 
         username: z.string().min(1),
-        timeRange: z.enum(['7d', '1m', '3m', '6m', '1y', 'max']).default('1m')
+        timeRange: z.enum(['7d', '1m', '3m', '6m', '1y', 'max', 'custom']).default('1m'),
+        customStartDate: z.string().optional(), // ISO date string (YYYY-MM-DD)
+        customEndDate: z.string().optional() // ISO date string (YYYY-MM-DD)
       }))
       .query(async ({ input }) => {
         // Get current follower count from cache or fetch
@@ -237,7 +239,14 @@ export const appRouter = router({
           }
         }
         
-        const history = await getFollowerHistory(input.username, currentFollowers, input.timeRange);
+        const history = await getFollowerHistory(
+          input.username, 
+          currentFollowers, 
+          input.timeRange,
+          'instagram',
+          input.customStartDate,
+          input.customEndDate
+        );
         return history;
       }),
 

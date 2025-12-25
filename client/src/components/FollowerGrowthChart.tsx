@@ -3,6 +3,8 @@ import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -13,8 +15,11 @@ import {
   ArrowDown,
   Sparkles,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  CalendarRange
 } from "lucide-react";
+import { format } from "date-fns";
+import { de } from "date-fns/locale";
 import {
   LineChart,
   Line,
@@ -32,7 +37,7 @@ interface FollowerGrowthChartProps {
   username: string;
 }
 
-type TimeRange = '7d' | '1m' | '3m' | '6m' | '1y' | 'max';
+type TimeRange = '7d' | '1m' | '3m' | '6m' | '1y' | 'max' | 'custom';
 
 const TIME_RANGE_OPTIONS: { value: TimeRange; label: string }[] = [
   { value: '7d', label: '7 Tage' },
@@ -102,11 +107,25 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export default function FollowerGrowthChart({ username }: FollowerGrowthChartProps) {
   const [timeRange, setTimeRange] = useState<TimeRange>('1m');
   const [currentPage, setCurrentPage] = useState(0);
+  const [customDateRange, setCustomDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
+    from: undefined,
+    to: undefined
+  });
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const itemsPerPage = 10;
 
+  // Format custom dates for API
+  const customStartDate = customDateRange.from ? format(customDateRange.from, 'yyyy-MM-dd') : undefined;
+  const customEndDate = customDateRange.to ? format(customDateRange.to, 'yyyy-MM-dd') : undefined;
+
   const { data: historyData, isLoading, error } = trpc.instagram.followerHistory.useQuery(
-    { username, timeRange },
-    { enabled: !!username }
+    { 
+      username, 
+      timeRange,
+      customStartDate: timeRange === 'custom' ? customStartDate : undefined,
+      customEndDate: timeRange === 'custom' ? customEndDate : undefined
+    },
+    { enabled: !!username && (timeRange !== 'custom' || (!!customStartDate && !!customEndDate)) }
   );
 
   // Prepare chart data
@@ -194,7 +213,7 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
             </div>
             
             {/* Time Range Selector */}
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               {TIME_RANGE_OPTIONS.map((option) => (
                 <Button
                   key={option.value}
@@ -212,6 +231,69 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
                   {option.label}
                 </Button>
               ))}
+              
+              {/* Custom Date Range Picker */}
+              <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={timeRange === 'custom' ? "default" : "outline"}
+                    size="sm"
+                    className={`gap-2 ${timeRange === 'custom' 
+                      ? "bg-purple-500 hover:bg-purple-600" 
+                      : "bg-white/5 border-white/10 hover:bg-white/10"
+                    }`}
+                  >
+                    <CalendarRange className="w-4 h-4" />
+                    {timeRange === 'custom' && customDateRange.from && customDateRange.to ? (
+                      <span className="text-xs">
+                        {format(customDateRange.from, 'dd.MM.yy', { locale: de })} - {format(customDateRange.to, 'dd.MM.yy', { locale: de })}
+                      </span>
+                    ) : (
+                      "Zeitraum"
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0 bg-background/95 backdrop-blur-sm border-border" align="end">
+                  <div className="p-4 space-y-4">
+                    <div className="text-sm font-medium text-center">Zeitraum auswählen</div>
+                    <CalendarComponent
+                      mode="range"
+                      selected={{ from: customDateRange.from, to: customDateRange.to }}
+                      onSelect={(range) => {
+                        setCustomDateRange({ from: range?.from, to: range?.to });
+                        if (range?.from && range?.to) {
+                          setTimeRange('custom');
+                          setCurrentPage(0);
+                          // Close popover after selection
+                          setTimeout(() => setIsDatePickerOpen(false), 300);
+                        }
+                      }}
+                      numberOfMonths={2}
+                      disabled={(date) => date > new Date() || date < new Date('2020-01-01')}
+                      locale={de}
+                      className="rounded-md"
+                    />
+                    <div className="flex justify-between items-center pt-2 border-t border-border">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setCustomDateRange({ from: undefined, to: undefined });
+                          setTimeRange('1m');
+                          setIsDatePickerOpen(false);
+                        }}
+                      >
+                        Zurücksetzen
+                      </Button>
+                      {customDateRange.from && customDateRange.to && (
+                        <div className="text-xs text-muted-foreground">
+                          {Math.ceil((customDateRange.to.getTime() - customDateRange.from.getTime()) / (1000 * 60 * 60 * 24)) + 1} Tage
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
         </CardHeader>

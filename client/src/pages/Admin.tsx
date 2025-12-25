@@ -383,6 +383,169 @@ export default function Admin() {
           </Card>
         </div>
 
+        {/* Business Metriken */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+          <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/20">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">MRR</p>
+                  <p className="text-2xl font-bold text-green-400">{formatCurrency(stats?.mrr || 0)}</p>
+                  <p className="text-xs text-muted-foreground">Monthly Recurring Revenue</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/20">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">ARR</p>
+                  <p className="text-2xl font-bold text-blue-400">{formatCurrency(stats?.arr || 0)}</p>
+                  <p className="text-xs text-muted-foreground">Annual Recurring Revenue</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-red-500/10 to-orange-500/10 border-red-500/20">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Churn Rate</p>
+                  <p className="text-2xl font-bold text-red-400">{stats?.churnRate?.toFixed(1) || 0}%</p>
+                  <p className="text-xs text-muted-foreground">Monatliche Abwanderung</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/20">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">LTV</p>
+                  <p className="text-2xl font-bold text-purple-400">{formatCurrency(stats?.ltv || 0)}</p>
+                  <p className="text-xs text-muted-foreground">Lifetime Value</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-amber-500/10 to-yellow-500/10 border-amber-500/20">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">LTV:CAC</p>
+                  <p className="text-2xl font-bold text-amber-400">{((stats?.ltv || 0) / (stats?.cac || 5)).toFixed(1)}x</p>
+                  <p className="text-xs text-muted-foreground">CAC: {formatCurrency(stats?.cac || 5)}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* API Kosten & Feature Usage */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Activity className="h-5 w-5 text-cyan-500" />
+                API-Kosten (Instagram Statistics)
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Requests diesen Monat</span>
+                  <span className="font-bold">{formatNumber(stats?.apiCosts?.instagramStatistics?.used || 0)} / {formatNumber(stats?.apiCosts?.instagramStatistics?.limit || 10000)}</span>
+                </div>
+                <div className="w-full bg-muted rounded-full h-3">
+                  <div 
+                    className="bg-gradient-to-r from-cyan-500 to-blue-500 h-3 rounded-full transition-all"
+                    style={{ width: `${Math.min(((stats?.apiCosts?.instagramStatistics?.used || 0) / (stats?.apiCosts?.instagramStatistics?.limit || 10000)) * 100, 100)}%` }}
+                  />
+                </div>
+                <div className="flex justify-between items-center pt-2 border-t border-border">
+                  <span className="text-sm text-muted-foreground">Geschätzte Kosten</span>
+                  <span className="font-bold text-green-400">${stats?.apiCosts?.instagramStatistics?.cost?.toFixed(2) || '0.00'} / $75.00</span>
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  Pro Plan: $75/Monat für 10.000 Requests (â $0.0075/Request)
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="h-5 w-5 text-purple-500" />
+                Feature-Nutzung (Monat)
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {stats?.featureUsage && stats.featureUsage.length > 0 ? (
+                  stats.featureUsage.slice(0, 6).map((feature: any, index: number) => (
+                    <div key={index} className="flex justify-between items-center">
+                      <span className="text-sm capitalize">{feature.feature.replace(/_/g, ' ')}</span>
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs text-muted-foreground">{feature.uniqueUsers} User</span>
+                        <Badge variant="secondary">{formatNumber(feature.usageCount)}x</Badge>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-muted-foreground text-center py-4">Keine Daten verfügbar</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Preisberechnung für echte Follower-Daten */}
+        <Card className="mb-8 bg-gradient-to-br from-violet-500/5 to-purple-500/5 border-violet-500/20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CreditCard className="h-5 w-5 text-violet-500" />
+              Preisberechnung für echte Follower-Daten
+            </CardTitle>
+            <CardDescription>
+              Kalkulation basierend auf Instagram Statistics API Kosten
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="space-y-2">
+                <h4 className="font-semibold text-sm">API-Kosten</h4>
+                <div className="text-xs space-y-1 text-muted-foreground">
+                  <p>• Pro Plan: $75/Monat (10.000 Requests)</p>
+                  <p>• Kosten pro Request: ~$0.0075</p>
+                  <p>• Ultra Plan: $189/Monat (50.000 Requests)</p>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <h4 className="font-semibold text-sm">Empfohlene Preisanpassung</h4>
+                <div className="text-xs space-y-1">
+                  <p className="text-green-400">• Starter: €9.99 → €12.99 (+30%)</p>
+                  <p className="text-blue-400">• Pro: €19.99 → €24.99 (+25%)</p>
+                  <p className="text-purple-400">• Business: €49.99 → €59.99 (+20%)</p>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <h4 className="font-semibold text-sm">Break-Even Analyse</h4>
+                <div className="text-xs space-y-1 text-muted-foreground">
+                  <p>• API-Kosten/Monat: ~${stats?.apiCosts?.totalMonthlyCost?.toFixed(2) || '0.00'}</p>
+                  <p>• MRR: {formatCurrency(stats?.mrr || 0)}</p>
+                  <p className="text-green-400">• Marge: {formatCurrency((stats?.mrr || 0) - (stats?.apiCosts?.totalMonthlyCost || 0))}</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Plan Distribution */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
           <Card className="lg:col-span-2">

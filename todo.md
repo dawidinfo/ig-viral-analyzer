@@ -1078,3 +1078,16 @@
 - [x] API für historische Follower-Daten integrieren (Instagram Statistics API)
 - [x] Dashboard-Tabs sichtbarer gestalten
 - [x] Demo-Badge zu Prognose umbenennen mit Tooltip
+- [x] Benutzerdefinierter Zeitraum-Filter für Follower-Wachstum
+
+## UI-Fixes (Responsive)
+- [x] Dashboard Navigation Responsive Fix
+- [x] NEU-Badges sichtbar machen
+- [x] Empfehlungen-Bereich mit softem Rahmen
+
+## Admin-Dashboard Erweiterungen
+- [x] Business-Metriken (MRR, ARR, Churn Rate)
+- [x] API-Kosten-Tracking
+- [x] Conversion-Metriken
+- [x] Feature-Nutzung Statistiken
+- [x] Preisberechnung für echte Follower-Daten

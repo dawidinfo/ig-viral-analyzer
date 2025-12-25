@@ -54,6 +54,24 @@ export interface AdminStats {
   revenueByPlan: { plan: string; revenue: number }[];
   dailySignups: { date: string; count: number }[];
   dailyRevenue: { date: string; revenue: number }[];
+  // Neue Business-Metriken
+  mrr: number; // Monthly Recurring Revenue
+  arr: number; // Annual Recurring Revenue
+  churnRate: number; // Prozent der Nutzer, die abgewandert sind
+  ltv: number; // Lifetime Value
+  cac: number; // Customer Acquisition Cost (geschätzt)
+  trialToProConversion: number; // Free zu Paid Conversion
+  apiCosts: {
+    instagramStatistics: { used: number; limit: number; cost: number };
+    totalMonthlyCost: number;
+  };
+  featureUsage: {
+    feature: string;
+    usageCount: number;
+    uniqueUsers: number;
+  }[];
+  recentSignups: { date: string; count: number }[];
+  recentChurns: { date: string; count: number }[];
 }
 
 export interface UserActivity {
@@ -346,6 +364,94 @@ export async function getAdminStats(): Promise<AdminStats> {
       .reduce((sum, p) => sum + p.count, 0);
     const conversionRate = totalUsers > 0 ? (paidUsers / totalUsers) * 100 : 0;
 
+    // MRR Berechnung basierend auf aktiven Abonnements
+    // Preise: Starter €9.99, Pro €19.99, Business €49.99
+    const planPrices: Record<string, number> = {
+      starter: 9.99,
+      pro: 19.99,
+      business: 49.99,
+      enterprise: 199.99
+    };
+    
+    const mrr = planDistribution.reduce((sum, p) => {
+      return sum + (planPrices[p.plan] || 0) * p.count;
+    }, 0);
+    const arr = mrr * 12;
+
+    // Churn Rate (Nutzer die in den letzten 30 Tagen inaktiv wurden)
+    const inactiveUsersResult = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(users)
+      .where(and(
+        lte(users.lastActivity, thirtyDaysAgo),
+        sql`${users.plan} != 'free'`
+      ));
+    const inactiveUsers = Number(inactiveUsersResult[0]?.count || 0);
+    const churnRate = paidUsers > 0 ? (inactiveUsers / paidUsers) * 100 : 0;
+
+    // LTV (Lifetime Value) = ARPU / Churn Rate
+    const ltv = churnRate > 0 ? (avgRevenuePerUser / (churnRate / 100)) : avgRevenuePerUser * 12;
+
+    // CAC geschätzt (Marketing-Kosten / Neue Nutzer)
+    // Annahme: ~€5 pro Nutzer für Marketing
+    const cac = 5;
+
+    // Trial to Pro Conversion
+    const freeUsers = planDistribution.find(p => p.plan === "free")?.count || 0;
+    const trialToProConversion = totalUsers > 0 ? ((totalUsers - freeUsers) / totalUsers) * 100 : 0;
+
+    // API-Kosten Berechnung
+    // Instagram Statistics API: $75/Monat für 10.000 Requests
+    const apiRequestsThisMonth = monthlyAnalyses; // Jede Analyse = 1 API Request
+    const instagramApiCost = Math.min(apiRequestsThisMonth * 0.0075, 75); // Max $75
+    const apiCosts = {
+      instagramStatistics: {
+        used: apiRequestsThisMonth,
+        limit: 10000,
+        cost: Math.round(instagramApiCost * 100) / 100
+      },
+      totalMonthlyCost: Math.round(instagramApiCost * 100) / 100
+    };
+
+    // Feature Usage (basierend auf usageTracking)
+    const featureUsageResult = await db
+      .select({
+        actionType: usageTracking.actionType,
+        count: sql<number>`count(*)`,
+        uniqueUsers: sql<number>`count(distinct ${usageTracking.userId})`
+      })
+      .from(usageTracking)
+      .where(gte(usageTracking.createdAt, monthStart))
+      .groupBy(usageTracking.actionType);
+    
+    const featureUsage = featureUsageResult.map(f => ({
+      feature: f.actionType || 'unknown',
+      usageCount: Number(f.count),
+      uniqueUsers: Number(f.uniqueUsers)
+    }));
+
+    // Recent Signups (letzte 7 Tage)
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    let recentSignups: { date: string; count: number }[] = [];
+    try {
+      const recentSignupsResult = await db
+        .select({
+          signupDate: sql<string>`DATE(created_at)`.as('signup_date'),
+          count: sql<number>`count(*)`
+        })
+        .from(users)
+        .where(gte(users.createdAt, sevenDaysAgo))
+        .groupBy(sql`DATE(created_at)`);
+      
+      recentSignups = recentSignupsResult.map(r => ({
+        date: String(r.signupDate),
+        count: Number(r.count)
+      }));
+    } catch (e) {
+      console.error('[Admin] Error getting recent signups:', e);
+      recentSignups = [];
+    }
+
     return {
       totalUsers,
       activeUsers,
@@ -355,12 +461,23 @@ export async function getAdminStats(): Promise<AdminStats> {
       monthlyAnalyses,
       avgRevenuePerUser: Math.round(avgRevenuePerUser * 100) / 100,
       conversionRate: Math.round(conversionRate * 100) / 100,
-      suspiciousAccounts: 0, // Would need to scan all users
+      suspiciousAccounts: 0,
       bannedAccounts,
       planDistribution,
-      revenueByPlan: [], // Would need complex query
-      dailySignups: [], // Would need date grouping
-      dailyRevenue: [], // Would need date grouping
+      revenueByPlan: [],
+      dailySignups: [],
+      dailyRevenue: [],
+      // Neue Metriken
+      mrr: Math.round(mrr * 100) / 100,
+      arr: Math.round(arr * 100) / 100,
+      churnRate: Math.round(churnRate * 100) / 100,
+      ltv: Math.round(ltv * 100) / 100,
+      cac,
+      trialToProConversion: Math.round(trialToProConversion * 100) / 100,
+      apiCosts,
+      featureUsage,
+      recentSignups,
+      recentChurns: [] // TODO: Implement churn tracking
     };
   } catch (error) {
     console.error("[Admin] Error getting stats:", error);
@@ -384,6 +501,19 @@ function getEmptyStats(): AdminStats {
     revenueByPlan: [],
     dailySignups: [],
     dailyRevenue: [],
+    mrr: 0,
+    arr: 0,
+    churnRate: 0,
+    ltv: 0,
+    cac: 5,
+    trialToProConversion: 0,
+    apiCosts: {
+      instagramStatistics: { used: 0, limit: 10000, cost: 0 },
+      totalMonthlyCost: 0
+    },
+    featureUsage: [],
+    recentSignups: [],
+    recentChurns: []
   };
 }
 
