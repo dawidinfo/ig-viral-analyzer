@@ -1173,3 +1173,4 @@
 - [x] robots.txt auf index,follow setzen für Google-Indexierung
 - [x] E-Mail-Templates mit ReelSpy.ai Branding aktualisieren
 - [x] Content-Plan Generator testen
+- [x] Bug: Content Plan erstellen Button scrollt zur Top 50 statt zum Content-Plan Tab

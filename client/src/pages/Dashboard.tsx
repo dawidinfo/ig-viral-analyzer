@@ -115,9 +115,19 @@ export default function Dashboard() {
   // Push-Benachrichtigungen
   const { permission: notificationPermission, isSupported: notificationsSupported, requestPermission: requestNotificationPermission, isEnabled: notificationsEnabled } = usePushNotifications();
   
-  // Check for upgrade success from URL
+  // Check for upgrade success and tab parameter from URL
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
+    
+    // Handle tab parameter
+    const tabParam = urlParams.get('tab');
+    if (tabParam && ['overview', 'content-plan', 'analyses', 'invoices', 'notes', 'affiliate', 'leaderboard', 'settings'].includes(tabParam)) {
+      setActiveTab(tabParam);
+      // Clean up URL after setting tab
+      window.history.replaceState({}, '', '/dashboard');
+    }
+    
+    // Handle upgrade success
     if (urlParams.get('upgrade') === 'success') {
       setShowUpgradeSuccess(true);
       fireSuccessConfetti();
