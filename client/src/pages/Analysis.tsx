@@ -60,6 +60,7 @@ import { CaptionGenerator } from "@/components/CaptionGenerator";
 import { AccountMonitoring } from "@/components/AccountMonitoring";
 import { ReelIdeasGenerator } from "@/components/ReelIdeasGenerator";
 import { AnalysisPaywall } from "@/components/AnalysisPaywall";
+import { ContentPlanCTA } from "@/components/ContentPlanCTA";
 import { FeatureTooltip, tooltips, InfoTooltip } from "@/components/FeatureTooltip";
 import { generateAnalysisPDF } from "@/lib/pdfExport";
 import { useLocation, useSearch, useRoute } from "wouter";
@@ -779,6 +780,19 @@ export default function Analysis() {
                   ))}
                 </div>
               </div>
+            </section>
+
+            {/* ==================== SECTION 5.5: CONTENT-PLAN CTA ==================== */}
+            <section className="space-y-6">
+              <ContentPlanCTA 
+                isPro={user?.plan === 'pro' || user?.plan === 'business'}
+                username={analysisData.profile.username}
+                analysisHighlights={{
+                  bestPostingTime: "18:00",
+                  viralScore: analysisData.viralScore,
+                  avgEngagement: analysisData.metrics.engagementRate
+                }}
+              />
             </section>
 
             {/* ==================== SECTION 6: REELS ÜBERSICHT ==================== */}

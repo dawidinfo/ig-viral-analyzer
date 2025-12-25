@@ -477,6 +477,62 @@ const featureCategories = [
     ]
   },
   {
+    title: "KI Content-Plan Generator",
+    icon: <Calendar className="w-5 h-5" />,
+    features: [
+      {
+        name: "10/20/30-Tage Content-Plan",
+        description: "Personalisierter Reel-Plan basierend auf deiner Zielgruppe",
+        tiers: { free: false, starter: false, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "Zielgruppen-Profil erstellen",
+        description: "Definiere Pain Points, USPs, Benefits und Tonalität",
+        tiers: { free: false, starter: false, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "HAPSS/AIDA Framework-Auswahl",
+        description: "Automatische Auswahl des besten Frameworks pro Reel",
+        tiers: { free: false, starter: false, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "Hook-Vorschläge für jeden Tag",
+        description: "KI-generierte Hooks basierend auf Pain Points",
+        tiers: { free: false, starter: false, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "Script-Struktur mit Zeitangaben",
+        description: "Detaillierte Anleitung für jeden Reel-Abschnitt",
+        tiers: { free: false, starter: false, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "Schnitt-Empfehlungen",
+        description: "Optimale Schnitt-Frequenz für maximale Retention",
+        tiers: { free: false, starter: false, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "Hopkins/Ogilvy/Schwartz Tipps",
+        description: "Copywriting-Tipps von den Legenden für jeden Reel",
+        tiers: { free: false, starter: false, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "Optimale Posting-Zeiten",
+        description: "Beste Zeiten für jeden Tag im Plan",
+        tiers: { free: false, starter: false, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "Hashtag-Sets pro Reel",
+        description: "Passende Hashtags für jedes Reel im Plan",
+        tiers: { free: false, starter: false, pro: true, business: true, enterprise: true }
+      },
+      {
+        name: "PDF-Export des Plans",
+        description: "Lade deinen Content-Plan als PDF herunter",
+        tiers: { free: false, starter: false, pro: true, business: true, enterprise: true }
+      }
+    ]
+  },
+  {
     title: "Account-Monitoring & Alerts",
     icon: <Eye className="w-5 h-5" />,
     features: [

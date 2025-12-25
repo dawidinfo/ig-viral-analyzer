@@ -53,6 +53,8 @@ import { InvoicesTab } from "@/components/InvoicesTab";
 import { NotesTab } from "@/components/NotesTab";
 import { OnboardingTutorial, useOnboarding } from "@/components/OnboardingTutorial";
 import { NotificationSettings } from "@/components/NotificationSettings";
+import { ContentPlanGenerator } from "@/components/ContentPlanGenerator";
+import { DashboardRecommendations } from "@/components/DashboardRecommendations";
 import { useState, useMemo } from "react";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
@@ -337,6 +339,12 @@ export default function Dashboard() {
                 <span className="hidden sm:inline">Übersicht</span>
                 <span className="sm:hidden">Übersicht</span>
               </TabsTrigger>
+              <TabsTrigger value="content-plan" className="data-[state=active]:bg-primary/20 whitespace-nowrap text-xs sm:text-sm px-2 sm:px-3 relative">
+                <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Content-Plan</span>
+                <span className="sm:hidden">Plan</span>
+                <Badge className="absolute -top-1 -right-1 bg-gradient-to-r from-violet-500 to-purple-500 text-white border-0 text-[10px] px-1 py-0">NEU</Badge>
+              </TabsTrigger>
               <TabsTrigger value="analyses" className="data-[state=active]:bg-primary/20 whitespace-nowrap text-xs sm:text-sm px-2 sm:px-3">
                 <Bookmark className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                 <span className="hidden sm:inline">Gespeicherte Analysen</span>
@@ -363,6 +371,13 @@ export default function Dashboard() {
 
             {/* Overview Tab */}
             <TabsContent value="overview" className="space-y-6">
+              {/* Recommendations Section */}
+              <DashboardRecommendations 
+                isPro={plan === 'pro' || plan === 'business'}
+                hasAnalyses={(dashboardData?.savedAnalysesCount || 0) > 0}
+                analysisCount={dashboardData?.savedAnalysesCount || 0}
+              />
+              
               {/* Plan & Stats Row */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 dashboard-grid">
                 {/* Current Plan Card */}
@@ -743,6 +758,17 @@ export default function Dashboard() {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            {/* Content-Plan Tab */}
+            <TabsContent value="content-plan" className="space-y-6">
+              <ContentPlanGenerator 
+                isPro={plan === 'pro' || plan === 'business'}
+                analysisData={{
+                  topReels: dashboardData?.savedAnalyses?.slice(0, 5)
+                }}
+                onUpgrade={() => setLocation('/pricing')}
+              />
             </TabsContent>
 
             {/* Saved Analyses Tab */}

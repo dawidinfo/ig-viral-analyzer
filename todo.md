@@ -902,3 +902,29 @@
 ## Bug Fixes - Pricing Seite Logo
 - [x] Logo auf /pricing Seite zeigt falsches Icon (Balkendiagramm statt Auge)
 - [x] Toggle auf /pricing Seite schöner gestalten
+
+## Content-Plan Feature (Pro)
+- [ ] Zielgruppen-Profil Formular (Nische, Pain Points, USPs, Benefits, Tonalität)
+- [ ] KI-Content-Plan Generator mit HAPSS/AIDA Framework-Auswahl
+- [ ] Hopkins/Ogilvy/Schwartz Copywriting-Prinzipien integrieren
+- [ ] 10/20/30 Tage Plan mit konkreten Reel-Ideen
+- [ ] Hook-Vorschläge basierend auf Zielgruppen-Pain-Points
+- [ ] Script-Struktur und Schnitt-Empfehlungen
+- [ ] Blur-Paywall für Free-User (Vorschau sichtbar aber geblurred)
+- [ ] "Mit Pro freischalten" Button und Teaser
+- [ ] Dashboard-Integration: Empfehlungen oben anzeigen
+- [ ] Analyse-Seite: Content-Plan als Empfehlung einbauen
+- [ ] Pricing-Pläne: Content-Plan Feature hervorheben
+
+## Content-Plan Feature (Pro) - ERLEDIGT
+- [x] Zielgruppen-Profil Formular (Nische, Pain Points, USPs, Benefits, Tonalität)
+- [x] KI-Content-Plan Generator (10/20/30 Tage)
+- [x] HAPSS/AIDA Framework automatische Auswahl
+- [x] Hopkins/Ogilvy/Schwartz Copywriting-Tipps
+- [x] Hook-Vorschläge basierend auf Pain Points
+- [x] Script-Struktur mit Zeitangaben
+- [x] Schnitt-Empfehlungen
+- [x] Blur-Paywall für Free User (Vorschau sichtbar aber geblurred)
+- [x] Dashboard-Integration mit Empfehlungen oben
+- [x] Analyse-Seite Integration als Empfehlung
+- [x] Pricing-Pläne aktualisieren mit Content-Plan Feature (10 neue Features)
