@@ -873,42 +873,33 @@ export default function Pricing() {
                     </p>
                   </div>
 
-                  {/* Features Accordion */}
+                  {/* Features - Always Visible */}
                   <div className="mb-4 flex-1">
-                    <button
-                      onClick={() => setExpandedTier(expandedTier === tier.name ? null : tier.name)}
-                      className="w-full flex items-center justify-between text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
-                    >
-                      <span className="flex items-center gap-2">
-                        <Check className="w-4 h-4 text-emerald-500" />
-                        {tier.name === "Free" ? "6" : tier.name === "Starter" ? "45" : tier.name === "Pro" ? "65" : tier.name === "Business" ? "78" : "83"} Features inklusive
-                      </span>
-                      <ChevronDown className={`w-4 h-4 transition-transform ${expandedTier === tier.name ? 'rotate-180' : ''}`} />
-                    </button>
-                    
-                    {expandedTier === tier.name && (
-                      <div className="mt-2 space-y-1 max-h-60 overflow-y-auto pr-2 text-xs">
-                        {featureCategories.map((category) => {
-                          const tierKey = tier.name.toLowerCase() as keyof typeof category.features[0]['tiers'];
-                          const availableFeatures = category.features.filter(f => f.tiers[tierKey]);
-                          if (availableFeatures.length === 0) return null;
-                          return (
-                            <div key={category.title} className="mb-2">
-                              <div className="font-semibold text-muted-foreground flex items-center gap-1 mb-1">
-                                {category.icon}
-                                {category.title}
-                              </div>
-                              {availableFeatures.map((feature) => (
-                                <div key={feature.name} className="flex items-start gap-2 py-0.5 pl-4">
-                                  <Check className="w-3 h-3 text-emerald-500 mt-0.5 flex-shrink-0" />
-                                  <span className="text-muted-foreground">{feature.name}</span>
-                                </div>
-                              ))}
+                    <div className="text-sm text-muted-foreground mb-2 flex items-center gap-2">
+                      <Check className="w-4 h-4 text-emerald-500" />
+                      {tier.name === "Free" ? "6" : tier.name === "Starter" ? "45" : tier.name === "Pro" ? "65" : tier.name === "Business" ? "78" : "83"} Features inklusive
+                    </div>
+                    <div className="space-y-1 max-h-80 overflow-y-auto pr-2 text-xs">
+                      {featureCategories.map((category) => {
+                        const tierKey = tier.name.toLowerCase() as keyof typeof category.features[0]['tiers'];
+                        const availableFeatures = category.features.filter(f => f.tiers[tierKey]);
+                        if (availableFeatures.length === 0) return null;
+                        return (
+                          <div key={category.title} className="mb-2">
+                            <div className="font-semibold text-muted-foreground flex items-center gap-1 mb-1">
+                              {category.icon}
+                              {category.title}
                             </div>
-                          );
-                        })}
-                      </div>
-                    )}
+                            {availableFeatures.map((feature) => (
+                              <div key={feature.name} className="flex items-start gap-2 py-0.5 pl-4">
+                                <Check className="w-3 h-3 text-emerald-500 mt-0.5 flex-shrink-0" />
+                                <span className="text-muted-foreground">{feature.name}</span>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
 
                   {/* CTA */}
