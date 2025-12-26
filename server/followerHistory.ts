@@ -487,3 +487,194 @@ export async function getTrackedAccountsCount(): Promise<{ instagram: number; ti
     return { instagram: 0, tiktok: 0, youtube: 0, total: 0 };
   }
 }
+
+
+/**
+ * Get benchmark data for similar accounts (same follower range)
+ * Compares growth rates with accounts in similar size category
+ */
+export async function getBenchmarkData(
+  platform: 'instagram' | 'tiktok' | 'youtube',
+  currentFollowers: number,
+  excludeUsername?: string
+): Promise<{
+  categoryName: string;
+  categoryRange: { min: number; max: number };
+  accountsInCategory: number;
+  avgDailyGrowth: number;
+  avgDailyGrowthPercent: number;
+  avgWeeklyGrowth: number;
+  avgWeeklyGrowthPercent: number;
+  avgMonthlyGrowth: number;
+  avgMonthlyGrowthPercent: number;
+  percentile: number; // Where this account ranks (0-100)
+} | null> {
+  const db = await getDb();
+  if (!db) return null;
+  
+  // Define follower categories
+  const categories = [
+    { name: 'Nano (1K-10K)', min: 1000, max: 10000 },
+    { name: 'Micro (10K-50K)', min: 10000, max: 50000 },
+    { name: 'Mid-Tier (50K-100K)', min: 50000, max: 100000 },
+    { name: 'Macro (100K-500K)', min: 100000, max: 500000 },
+    { name: 'Mega (500K-1M)', min: 500000, max: 1000000 },
+    { name: 'Celebrity (1M+)', min: 1000000, max: 100000000 },
+  ];
+  
+  // Find the category for this account
+  let category = categories.find(c => currentFollowers >= c.min && currentFollowers < c.max);
+  if (!category) {
+    // Default to smallest or largest
+    category = currentFollowers < 1000 
+      ? { name: 'Starter (<1K)', min: 0, max: 1000 }
+      : categories[categories.length - 1];
+  }
+  
+  try {
+    // Get all accounts in this category with at least 7 days of data
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const sevenDaysAgoStr = sevenDaysAgo.toISOString().split('T')[0];
+    
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const thirtyDaysAgoStr = thirtyDaysAgo.toISOString().split('T')[0];
+    
+    // Get unique accounts in this category
+    const accountsQuery = await db
+      .select({
+        username: followerSnapshots.username,
+        followerCount: followerSnapshots.followerCount,
+        snapshotDate: followerSnapshots.snapshotDate,
+      })
+      .from(followerSnapshots)
+      .where(
+        and(
+          eq(followerSnapshots.platform, platform),
+          eq(followerSnapshots.isRealData, 1),
+          gte(followerSnapshots.snapshotDate, thirtyDaysAgoStr)
+        )
+      )
+      .orderBy(followerSnapshots.username, desc(followerSnapshots.snapshotDate));
+    
+    // Group by username and filter by category
+    const accountMap = new Map<string, { snapshots: { date: string; followers: number }[] }>();
+    
+    for (const row of accountsQuery) {
+      // Skip excluded username
+      if (excludeUsername && row.username.toLowerCase() === excludeUsername.toLowerCase()) {
+        continue;
+      }
+      
+      // Check if account is in our category (based on most recent follower count)
+      if (!accountMap.has(row.username)) {
+        // First snapshot we see is the most recent
+        if (row.followerCount >= category.min && row.followerCount < category.max) {
+          accountMap.set(row.username, { snapshots: [] });
+        }
+      }
+      
+      if (accountMap.has(row.username)) {
+        accountMap.get(row.username)!.snapshots.push({
+          date: row.snapshotDate,
+          followers: row.followerCount
+        });
+      }
+    }
+    
+    // Calculate growth metrics for each account
+    const growthData: {
+      dailyGrowth: number;
+      dailyGrowthPercent: number;
+      weeklyGrowth: number;
+      weeklyGrowthPercent: number;
+      monthlyGrowth: number;
+      monthlyGrowthPercent: number;
+    }[] = [];
+    
+    const today = new Date().toISOString().split('T')[0];
+    
+    for (const [username, data] of Array.from(accountMap.entries())) {
+      if (data.snapshots.length < 2) continue;
+      
+      // Sort snapshots by date (oldest first)
+      data.snapshots.sort((a: { date: string; followers: number }, b: { date: string; followers: number }) => a.date.localeCompare(b.date));
+      
+      const latestSnapshot = data.snapshots[data.snapshots.length - 1];
+      const latestFollowers = latestSnapshot.followers;
+      
+      // Find snapshot from ~1 day ago
+      const dayAgoSnapshot = data.snapshots.find((s: { date: string; followers: number }) => {
+        const daysDiff = Math.abs(
+          (new Date(latestSnapshot.date).getTime() - new Date(s.date).getTime()) / (1000 * 60 * 60 * 24)
+        );
+        return daysDiff >= 1 && daysDiff <= 2;
+      }) || data.snapshots[Math.max(0, data.snapshots.length - 2)];
+      
+      // Find snapshot from ~7 days ago
+      const weekAgoSnapshot = data.snapshots.find((s: { date: string; followers: number }) => {
+        const daysDiff = Math.abs(
+          (new Date(latestSnapshot.date).getTime() - new Date(s.date).getTime()) / (1000 * 60 * 60 * 24)
+        );
+        return daysDiff >= 6 && daysDiff <= 8;
+      }) || data.snapshots[0];
+      
+      // Find snapshot from ~30 days ago
+      const monthAgoSnapshot = data.snapshots[0]; // Oldest available
+      
+      const dailyGrowth = latestFollowers - dayAgoSnapshot.followers;
+      const weeklyGrowth = latestFollowers - weekAgoSnapshot.followers;
+      const monthlyGrowth = latestFollowers - monthAgoSnapshot.followers;
+      
+      growthData.push({
+        dailyGrowth,
+        dailyGrowthPercent: dayAgoSnapshot.followers > 0 ? (dailyGrowth / dayAgoSnapshot.followers) * 100 : 0,
+        weeklyGrowth,
+        weeklyGrowthPercent: weekAgoSnapshot.followers > 0 ? (weeklyGrowth / weekAgoSnapshot.followers) * 100 : 0,
+        monthlyGrowth,
+        monthlyGrowthPercent: monthAgoSnapshot.followers > 0 ? (monthlyGrowth / monthAgoSnapshot.followers) * 100 : 0,
+      });
+    }
+    
+    if (growthData.length === 0) {
+      // Return estimated benchmarks based on category
+      return {
+        categoryName: category.name,
+        categoryRange: { min: category.min, max: category.max },
+        accountsInCategory: 0,
+        avgDailyGrowth: Math.round(currentFollowers * 0.001), // ~0.1% daily
+        avgDailyGrowthPercent: 0.1,
+        avgWeeklyGrowth: Math.round(currentFollowers * 0.007), // ~0.7% weekly
+        avgWeeklyGrowthPercent: 0.7,
+        avgMonthlyGrowth: Math.round(currentFollowers * 0.03), // ~3% monthly
+        avgMonthlyGrowthPercent: 3.0,
+        percentile: 50, // Unknown, assume average
+      };
+    }
+    
+    // Calculate averages
+    const avgDailyGrowth = growthData.reduce((sum, d) => sum + d.dailyGrowth, 0) / growthData.length;
+    const avgDailyGrowthPercent = growthData.reduce((sum, d) => sum + d.dailyGrowthPercent, 0) / growthData.length;
+    const avgWeeklyGrowth = growthData.reduce((sum, d) => sum + d.weeklyGrowth, 0) / growthData.length;
+    const avgWeeklyGrowthPercent = growthData.reduce((sum, d) => sum + d.weeklyGrowthPercent, 0) / growthData.length;
+    const avgMonthlyGrowth = growthData.reduce((sum, d) => sum + d.monthlyGrowth, 0) / growthData.length;
+    const avgMonthlyGrowthPercent = growthData.reduce((sum, d) => sum + d.monthlyGrowthPercent, 0) / growthData.length;
+    
+    return {
+      categoryName: category.name,
+      categoryRange: { min: category.min, max: category.max },
+      accountsInCategory: growthData.length,
+      avgDailyGrowth: Math.round(avgDailyGrowth),
+      avgDailyGrowthPercent: parseFloat(avgDailyGrowthPercent.toFixed(2)),
+      avgWeeklyGrowth: Math.round(avgWeeklyGrowth),
+      avgWeeklyGrowthPercent: parseFloat(avgWeeklyGrowthPercent.toFixed(2)),
+      avgMonthlyGrowth: Math.round(avgMonthlyGrowth),
+      avgMonthlyGrowthPercent: parseFloat(avgMonthlyGrowthPercent.toFixed(2)),
+      percentile: 50, // TODO: Calculate actual percentile based on user's growth
+    };
+  } catch (error) {
+    console.error(`[Benchmark] Error calculating benchmark data:`, error);
+    return null;
+  }
+}

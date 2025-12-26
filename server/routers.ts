@@ -4,7 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import { analyzeInstagramAccount, fetchInstagramProfile, fetchInstagramPosts, fetchInstagramReels, InstagramAnalysis } from "./instagram";
-import { getFollowerHistory, getTimeRanges } from "./followerHistory";
+import { getFollowerHistory, getTimeRanges, getBenchmarkData } from "./followerHistory";
 import { generatePostingTimeAnalysis } from "./postingTimeAnalysis";
 import { analyzeReel } from "./reelAnalysis";
 import { generateDeepAnalysis, DeepAnalysis } from "./deepAnalysis";
@@ -264,6 +264,22 @@ export const appRouter = router({
     timeRanges: publicProcedure.query(() => {
       return getTimeRanges();
     }),
+
+    // Get benchmark data for similar accounts
+    benchmark: publicProcedure
+      .input(z.object({
+        username: z.string().min(1),
+        currentFollowers: z.number().min(0),
+        platform: z.enum(['instagram', 'tiktok', 'youtube']).default('instagram')
+      }))
+      .query(async ({ input }) => {
+        const benchmark = await getBenchmarkData(
+          input.platform,
+          input.currentFollowers,
+          input.username
+        );
+        return benchmark;
+      }),
 
     // Posting time analysis
     postingTimeAnalysis: publicProcedure

@@ -147,6 +147,16 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
     { enabled: !!username && (timeRange !== 'custom' || (!!customStartDate && !!customEndDate)) }
   );
 
+  // Benchmark data for similar accounts
+  const { data: benchmarkData } = trpc.instagram.benchmark.useQuery(
+    {
+      username,
+      currentFollowers: historyData?.currentFollowers || 0,
+      platform: 'instagram'
+    },
+    { enabled: !!username && !!historyData?.currentFollowers }
+  );
+
   // Prepare chart data
   const chartData = useMemo(() => {
     if (!historyData?.dataPoints) return [];
@@ -523,6 +533,25 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
                         ({dayChangePercent}%)
                       </span>
                     </div>
+                    {benchmarkData && (
+                      <div className="mt-2 pt-2 border-t border-blue-500/20">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-muted-foreground">Ø {benchmarkData.categoryName}:</span>
+                          <span className={benchmarkData.avgDailyGrowth >= 0 ? 'text-blue-400' : 'text-blue-400'}>
+                            {benchmarkData.avgDailyGrowth >= 0 ? '+' : ''}{formatNumber(benchmarkData.avgDailyGrowth)}
+                          </span>
+                        </div>
+                        <div className="text-xs mt-1">
+                          {dayChange > benchmarkData.avgDailyGrowth ? (
+                            <span className="text-green-400">↑ Besser als Durchschnitt</span>
+                          ) : dayChange < benchmarkData.avgDailyGrowth ? (
+                            <span className="text-amber-400">↓ Unter Durchschnitt</span>
+                          ) : (
+                            <span className="text-blue-400">= Im Durchschnitt</span>
+                          )}
+                        </div>
+                      </div>
+                    )}
                     <p className="text-xs text-muted-foreground mt-1">vs. gestern</p>
                   </div>
                 );
@@ -558,6 +587,25 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
                             ({weekChangePercent}%)
                           </span>
                         </div>
+                        {benchmarkData && (
+                          <div className="mt-2 pt-2 border-t border-purple-500/20">
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-muted-foreground">Ø {benchmarkData.categoryName}:</span>
+                              <span className="text-purple-400">
+                                {benchmarkData.avgWeeklyGrowth >= 0 ? '+' : ''}{formatNumber(benchmarkData.avgWeeklyGrowth)}
+                              </span>
+                            </div>
+                            <div className="text-xs mt-1">
+                              {weekChange > benchmarkData.avgWeeklyGrowth ? (
+                                <span className="text-green-400">↑ Besser als Durchschnitt</span>
+                              ) : weekChange < benchmarkData.avgWeeklyGrowth ? (
+                                <span className="text-amber-400">↓ Unter Durchschnitt</span>
+                              ) : (
+                                <span className="text-purple-400">= Im Durchschnitt</span>
+                              )}
+                            </div>
+                          </div>
+                        )}
                         <p className="text-xs text-muted-foreground mt-1">vs. letzte Woche</p>
                       </>
                     ) : (
@@ -600,6 +648,25 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
                             ({monthChangePercent}%)
                           </span>
                         </div>
+                        {benchmarkData && (
+                          <div className="mt-2 pt-2 border-t border-amber-500/20">
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-muted-foreground">Ø {benchmarkData.categoryName}:</span>
+                              <span className="text-amber-400">
+                                {benchmarkData.avgMonthlyGrowth >= 0 ? '+' : ''}{formatNumber(benchmarkData.avgMonthlyGrowth)}
+                              </span>
+                            </div>
+                            <div className="text-xs mt-1">
+                              {monthChange > benchmarkData.avgMonthlyGrowth ? (
+                                <span className="text-green-400">↑ Besser als Durchschnitt</span>
+                              ) : monthChange < benchmarkData.avgMonthlyGrowth ? (
+                                <span className="text-amber-400">↓ Unter Durchschnitt</span>
+                              ) : (
+                                <span className="text-amber-400">= Im Durchschnitt</span>
+                              )}
+                            </div>
+                          </div>
+                        )}
                         <p className="text-xs text-muted-foreground mt-1">vs. letzter Monat</p>
                       </>
                     ) : (
