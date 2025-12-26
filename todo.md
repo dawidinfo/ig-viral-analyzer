@@ -1212,3 +1212,4 @@
 - [x] Prozentuale Veränderung zum Vortag neben Follower-Grafik anzeigen
 - [x] Wöchentlichen und monatlichen Follower-Vergleich hinzufügen
 - [x] Benchmark-Vergleich mit ähnlichen Accounts in Vergleichskarten
+- [x] Follower-Chart mit Trendlinie und farbigen Bereichen erweitern

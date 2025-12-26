@@ -158,17 +158,52 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
   );
 
   // Prepare chart data
+  // Calculate trend line using linear regression
+  const trendData = useMemo(() => {
+    if (!historyData?.dataPoints || historyData.dataPoints.length < 2) return { slope: 0, intercept: 0, average: 0 };
+    
+    const points = historyData.dataPoints;
+    const n = points.length;
+    
+    // Calculate average
+    const avgFollowers = points.reduce((sum, p) => sum + p.followers, 0) / n;
+    
+    // Linear regression for trend line
+    let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+    points.forEach((p, i) => {
+      sumX += i;
+      sumY += p.followers;
+      sumXY += i * p.followers;
+      sumX2 += i * i;
+    });
+    
+    const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+    const intercept = (sumY - slope * sumX) / n;
+    
+    return { slope, intercept, average: avgFollowers };
+  }, [historyData]);
+
   const chartData = useMemo(() => {
     if (!historyData?.dataPoints) return [];
     
     // Sample data points for better visualization
     const points = historyData.dataPoints;
-    if (points.length <= 30) return points;
+    const { slope, intercept, average } = trendData;
+    
+    // Add trend line and average to each point
+    const enrichedPoints = points.map((p, i) => ({
+      ...p,
+      trend: Math.round(slope * i + intercept),
+      average: Math.round(average),
+      isGrowth: i > 0 ? p.followers >= points[i - 1].followers : true
+    }));
+    
+    if (enrichedPoints.length <= 30) return enrichedPoints;
     
     // Sample every nth point for longer ranges
-    const step = Math.ceil(points.length / 30);
-    return points.filter((_, i) => i % step === 0 || i === points.length - 1);
-  }, [historyData]);
+    const step = Math.ceil(enrichedPoints.length / 30);
+    return enrichedPoints.filter((_, i) => i % step === 0 || i === enrichedPoints.length - 1);
+  }, [historyData, trendData]);
 
   // Paginated table data
   const tableData = useMemo(() => {
@@ -698,13 +733,17 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
           )}
 
           {/* Chart */}
-          <div className="h-[300px] mt-4">
+          <div className="h-[350px] mt-4">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="followerGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
                     <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                  </linearGradient>
+                  <linearGradient id="trendGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={trendData.slope >= 0 ? "#22c55e" : "#ef4444"} stopOpacity={0.1}/>
+                    <stop offset="95%" stopColor={trendData.slope >= 0 ? "#22c55e" : "#ef4444"} stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
@@ -723,15 +762,56 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
                   width={60}
                 />
                 <Tooltip content={<CustomTooltip />} />
+                {/* Durchschnittslinie */}
+                <ReferenceLine 
+                  y={trendData.average} 
+                  stroke="#f59e0b" 
+                  strokeDasharray="5 5" 
+                  strokeWidth={1.5}
+                  label={{ 
+                    value: `Ø ${formatNumber(trendData.average)}`, 
+                    fill: '#f59e0b', 
+                    fontSize: 11,
+                    position: 'right'
+                  }}
+                />
+                {/* Trendlinie */}
+                <Line
+                  type="linear"
+                  dataKey="trend"
+                  stroke={trendData.slope >= 0 ? "#22c55e" : "#ef4444"}
+                  strokeWidth={2}
+                  strokeDasharray="8 4"
+                  dot={false}
+                  name="Trend"
+                />
+                {/* Hauptlinie */}
                 <Area
                   type="monotone"
                   dataKey="followers"
                   stroke="#3b82f6"
-                  strokeWidth={2}
+                  strokeWidth={2.5}
                   fill="url(#followerGradient)"
+                  name="Follower"
                 />
               </AreaChart>
             </ResponsiveContainer>
+          </div>
+          
+          {/* Trend-Legende */}
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-4 text-sm">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-0.5 bg-blue-500 rounded"></div>
+              <span className="text-muted-foreground">Follower</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className={`w-4 h-0.5 ${trendData.slope >= 0 ? 'bg-green-500' : 'bg-red-500'} rounded`} style={{ borderStyle: 'dashed' }}></div>
+              <span className="text-muted-foreground">Trendlinie ({trendData.slope >= 0 ? '↑ Aufwärts' : '↓ Abwärts'})</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-0.5 bg-amber-500 rounded" style={{ borderStyle: 'dashed' }}></div>
+              <span className="text-muted-foreground">Durchschnitt</span>
+            </div>
           </div>
 
           {/* Best/Worst Days */}
