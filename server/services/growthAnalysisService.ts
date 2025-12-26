@@ -9,6 +9,14 @@ import { followerSnapshots, savedAnalyses } from "../../drizzle/schema";
 import { eq, and, desc, gte, lte, sql } from "drizzle-orm";
 import { getHistoricalFollowerData, isInstagramStatisticsApiConfigured } from "./instagramStatisticsApi";
 
+// Helper function to add timeout to promises
+function withTimeout<T>(promise: Promise<T>, timeoutMs: number, fallback: T): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((resolve) => setTimeout(() => resolve(fallback), timeoutMs))
+  ]);
+}
+
 export interface GrowthDay {
   date: string;
   followers: number;
@@ -163,26 +171,30 @@ async function getGrowthAnalysisFromDb(
   startDate: Date,
   endDate: Date
 ): Promise<GrowthAnalysis | null> {
-  const db = await getDb();
+  const db = await withTimeout(getDb(), 3000, null); // 3 second timeout
   if (!db) {
-    console.error('[GrowthAnalysis] Database not available');
+    console.error('[GrowthAnalysis] Database not available or timeout');
     return null;
   }
 
   try {
-    // Get follower snapshots for the period
-    const snapshots = await db
-      .select()
-      .from(followerSnapshots)
-      .where(
-        and(
-          eq(followerSnapshots.platform, platform),
-          eq(followerSnapshots.username, username),
-          gte(followerSnapshots.snapshotDate, startDate.toISOString().split('T')[0]),
-          lte(followerSnapshots.snapshotDate, endDate.toISOString().split('T')[0])
+    // Get follower snapshots for the period - with timeout
+    const snapshots = await withTimeout(
+      db
+        .select()
+        .from(followerSnapshots)
+        .where(
+          and(
+            eq(followerSnapshots.platform, platform),
+            eq(followerSnapshots.username, username),
+            gte(followerSnapshots.snapshotDate, startDate.toISOString().split('T')[0]),
+            lte(followerSnapshots.snapshotDate, endDate.toISOString().split('T')[0])
+          )
         )
-      )
-      .orderBy(followerSnapshots.snapshotDate);
+        .orderBy(followerSnapshots.snapshotDate),
+      5000, // 5 second timeout
+      []
+    );
 
     if (snapshots.length < 2) {
       console.log(`[GrowthAnalysis] Not enough DB data points for ${username}`);

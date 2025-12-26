@@ -711,11 +711,19 @@ function calculateViralScore(
   return { score: overallScore, factors };
 }
 
+// Helper to add timeout to promises
+function withTimeout<T>(promise: Promise<T>, timeoutMs: number, fallback: T): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((resolve) => setTimeout(() => resolve(fallback), timeoutMs))
+  ]);
+}
+
 export async function analyzeInstagramAccount(username: string): Promise<InstagramAnalysis> {
   try {
-    // Check historical data cache first (24h validity)
-    const cachedProfile = await getCachedInstagramProfile(username, 24);
-    const cachedPosts = await getCachedInstagramPosts(username, 12);
+    // Check historical data cache first (24h validity) - with 3 second timeout
+    const cachedProfile = await withTimeout(getCachedInstagramProfile(username, 24), 3000, null);
+    const cachedPosts = await withTimeout(getCachedInstagramPosts(username, 12), 3000, null);
     
     let profile, posts, reels;
     let fromHistoricalCache = false;

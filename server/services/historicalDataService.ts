@@ -16,6 +16,19 @@ import {
 } from "../../drizzle/schema";
 import crypto from "crypto";
 
+// Helper function to add timeout to promises
+function withTimeout<T>(promise: Promise<T>, timeoutMs: number, fallback: T): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((resolve) => setTimeout(() => resolve(fallback), timeoutMs))
+  ]);
+}
+
+// Safe DB getter with timeout
+async function getDbSafe(): Promise<ReturnType<typeof getDb> | null> {
+  return withTimeout(getDb(), 3000, null);
+}
+
 // Cache duration in hours
 const CACHE_DURATIONS = {
   profile: 24, // Profile data valid for 24 hours
@@ -79,7 +92,7 @@ export async function saveInstagramProfileSnapshot(
   },
   dataSource: "api" | "cache" | "manual" = "api"
 ): Promise<void> {
-  const db = await getDb();
+  const db = await getDbSafe();
   if (!db) return;
 
   const today = getTodayDate();
@@ -166,7 +179,7 @@ export async function getCachedInstagramProfile(
   username: string,
   maxAgeHours: number = CACHE_DURATIONS.profile
 ): Promise<any | null> {
-  const db = await getDb();
+  const db = await getDbSafe();
   if (!db) return null;
 
   const normalizedUsername = username.toLowerCase().replace("@", "").trim();
@@ -214,7 +227,7 @@ export async function getInstagramProfileHistory(
   username: string,
   days: number = 30
 ): Promise<any[]> {
-  const db = await getDb();
+  const db = await getDbSafe();
   if (!db) return [];
 
   const normalizedUsername = username.toLowerCase().replace("@", "").trim();
@@ -250,7 +263,7 @@ export async function saveInstagramPostsSnapshot(
   username: string,
   posts: any[]
 ): Promise<void> {
-  const db = await getDb();
+  const db = await getDbSafe();
   if (!db) return;
 
   const today = getTodayDate();
@@ -339,7 +352,7 @@ export async function getCachedInstagramPosts(
   username: string,
   maxAgeHours: number = CACHE_DURATIONS.posts
 ): Promise<any[] | null> {
-  const db = await getDb();
+  const db = await getDbSafe();
   if (!db) return null;
 
   const normalizedUsername = username.toLowerCase().replace("@", "").trim();
@@ -384,7 +397,7 @@ export async function getPostPerformanceHistory(
   postId: string,
   days: number = 7
 ): Promise<any[]> {
-  const db = await getDb();
+  const db = await getDbSafe();
   if (!db) return [];
 
   const fromDate = new Date();
@@ -431,7 +444,7 @@ export async function saveAiAnalysisCache(
   },
   contentHash?: string
 ): Promise<void> {
-  const db = await getDb();
+  const db = await getDbSafe();
   if (!db) return;
 
   const expiresAt = getExpirationTime(CACHE_DURATIONS.aiAnalysis);
@@ -504,7 +517,7 @@ export async function getCachedAiAnalysis(
   identifier: string,
   analysisType: "profile" | "post" | "reel" | "video" | "deep"
 ): Promise<any | null> {
-  const db = await getDb();
+  const db = await getDbSafe();
   if (!db) return null;
 
   try {
@@ -555,7 +568,7 @@ export async function saveFollowerSnapshot(
     engagementRate?: number;
   }
 ): Promise<void> {
-  const db = await getDb();
+  const db = await getDbSafe();
   if (!db) return;
 
   const today = getTodayDate();
@@ -620,7 +633,7 @@ export async function getFollowerHistory(
   username: string,
   days: number = 30
 ): Promise<any[]> {
-  const db = await getDb();
+  const db = await getDbSafe();
   if (!db) return [];
 
   const normalizedUsername = username.toLowerCase().replace("@", "").trim();
@@ -658,7 +671,7 @@ export async function addToCollectionQueue(
   identifier: string,
   frequency: "daily" | "weekly" | "monthly" = "daily"
 ): Promise<void> {
-  const db = await getDb();
+  const db = await getDbSafe();
   if (!db) return;
 
   const normalizedIdentifier = identifier.toLowerCase().replace("@", "").trim();
@@ -721,7 +734,7 @@ export async function addToCollectionQueue(
 export async function getProfilesDueForCollection(
   limit: number = 50
 ): Promise<any[]> {
-  const db = await getDb();
+  const db = await getDbSafe();
   if (!db) return [];
 
   try {
@@ -751,7 +764,7 @@ export async function markProfileCollected(
   id: number,
   apiCallsSaved: number = 0
 ): Promise<void> {
-  const db = await getDb();
+  const db = await getDbSafe();
   if (!db) return;
 
   try {
@@ -794,7 +807,7 @@ async function updateCacheStatistics(
   platform: string,
   isHit: boolean
 ): Promise<void> {
-  const db = await getDb();
+  const db = await getDbSafe();
   if (!db) return;
 
   const today = getTodayDate();
@@ -860,7 +873,7 @@ export async function getCacheStatisticsSummary(
   totalActualCost: number;
   byPlatform: Record<string, any>;
 }> {
-  const db = await getDb();
+  const db = await getDbSafe();
   if (!db) {
     return {
       totalRequests: 0,
@@ -1000,7 +1013,7 @@ export async function getCacheStatisticsHistory(
   costSaved: number[];
   actualCost: number[];
 }> {
-  const db = await getDb();
+  const db = await getDbSafe();
   if (!db) {
     return {
       dates: [],

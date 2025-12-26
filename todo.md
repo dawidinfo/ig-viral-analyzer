@@ -1244,3 +1244,9 @@
 - [ ] Analyse-Seite zeigt graues/leeres Fenster für dawidprzybylski_official
 - [ ] Server-Logs und API-Response prüfen
 - [ ] Problem identifizieren und beheben
+
+## Bug-Fix: Gespeicherte Analysen leer (26.12.2024)
+- [ ] Gespeicherte Analysen zeigen leere/graue Inhalte
+- [ ] Problem: AI Reel-Analyse und HAPSS Framework Sektionen sind leer
+- [ ] Ursache identifizieren
+- [ ] Fix implementieren

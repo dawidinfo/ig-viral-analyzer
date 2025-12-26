@@ -27,18 +27,33 @@ import { eq, and, desc, sql } from "drizzle-orm";
 // Cache duration: 15 minutes for more accurate real-time data
 const CACHE_DURATION_MS = 15 * 60 * 1000;
 
+// Helper function to add timeout to promises
+function withTimeout<T>(promise: Promise<T>, timeoutMs: number, fallback: T): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((resolve) => setTimeout(() => resolve(fallback), timeoutMs))
+  ]);
+}
+
 async function getCachedAnalysis(username: string): Promise<InstagramAnalysis | null> {
   const cleanUsername = username.replace("@", "").toLowerCase().trim();
   
   try {
-    const db = await getDb();
-    if (!db) return null;
+    const db = await withTimeout(getDb(), 3000, null); // 3 second timeout for DB connection
+    if (!db) {
+      console.log(`[Cache] DB connection timeout for @${cleanUsername}`);
+      return null;
+    }
     
-    const cached = await db
-      .select()
-      .from(instagramCache)
-      .where(eq(instagramCache.username, cleanUsername))
-      .limit(1);
+    const cached = await withTimeout(
+      db
+        .select()
+        .from(instagramCache)
+        .where(eq(instagramCache.username, cleanUsername))
+        .limit(1),
+      5000, // 5 second timeout for query
+      []
+    );
     
     if (cached.length > 0 && cached[0].expiresAt > new Date()) {
       console.log(`[Cache] Hit for @${cleanUsername}`);
@@ -58,36 +73,51 @@ async function setCachedAnalysis(username: string, analysis: InstagramAnalysis):
   const expiresAt = new Date(Date.now() + CACHE_DURATION_MS);
   
   try {
-    const db = await getDb();
-    if (!db) return;
+    const db = await withTimeout(getDb(), 3000, null); // 3 second timeout
+    if (!db) {
+      console.log(`[Cache] DB connection timeout, skipping cache write for @${cleanUsername}`);
+      return;
+    }
     
-    // Try to update existing record first
-    const existing = await db
-      .select()
-      .from(instagramCache)
-      .where(eq(instagramCache.username, cleanUsername))
-      .limit(1);
+    // Try to update existing record first - with timeout
+    const existing = await withTimeout(
+      db
+        .select()
+        .from(instagramCache)
+        .where(eq(instagramCache.username, cleanUsername))
+        .limit(1),
+      5000,
+      []
+    );
     
     if (existing.length > 0) {
-      await db
-        .update(instagramCache)
-        .set({
+      await withTimeout(
+        db
+          .update(instagramCache)
+          .set({
+            profileData: analysis.profile,
+            postsData: analysis.posts,
+            reelsData: analysis.reels,
+            analysisData: analysis,
+            expiresAt,
+          })
+          .where(eq(instagramCache.username, cleanUsername)),
+        5000,
+        undefined
+      );
+    } else {
+      await withTimeout(
+        db.insert(instagramCache).values({
+          username: cleanUsername,
           profileData: analysis.profile,
           postsData: analysis.posts,
           reelsData: analysis.reels,
           analysisData: analysis,
           expiresAt,
-        })
-        .where(eq(instagramCache.username, cleanUsername));
-    } else {
-      await db.insert(instagramCache).values({
-        username: cleanUsername,
-        profileData: analysis.profile,
-        postsData: analysis.posts,
-        reelsData: analysis.reels,
-        analysisData: analysis,
-        expiresAt,
-      });
+        }),
+        5000,
+        undefined
+      );
     }
     
     console.log(`[Cache] Stored analysis for @${cleanUsername}`);
@@ -116,22 +146,41 @@ export const appRouter = router({
         forceRefresh: z.boolean().optional().default(false)
       }))
       .query(async ({ input }) => {
+        console.log(`[Instagram] Starting analysis for @${input.username}`);
+        
         // Skip cache if forceRefresh is true
         if (!input.forceRefresh) {
           const cached = await getCachedAnalysis(input.username);
           if (cached) {
+            console.log(`[Instagram] Returning cached analysis for @${input.username}`);
             return { ...cached, fromCache: true };
           }
         } else {
           console.log(`[Cache] Force refresh requested for @${input.username}`);
         }
         
-        // Fetch fresh data
-        const analysis = await analyzeInstagramAccount(input.username);
+        // Fetch fresh data with timeout (45 seconds max)
+        console.log(`[Instagram] Fetching fresh data for @${input.username}`);
+        const analysisPromise = analyzeInstagramAccount(input.username);
+        const timeoutPromise = new Promise<null>((resolve) => 
+          setTimeout(() => {
+            console.log(`[Instagram] Analysis timeout for @${input.username}`);
+            resolve(null);
+          }, 45000)
+        );
         
-        // Store in cache
-        await setCachedAnalysis(input.username, analysis);
+        const analysis = await Promise.race([analysisPromise, timeoutPromise]);
         
+        if (!analysis) {
+          throw new Error('Analyse-Timeout: Die Instagram API antwortet nicht. Bitte versuche es erneut.');
+        }
+        
+        // Store in cache (non-blocking)
+        setCachedAnalysis(input.username, analysis).catch(err => 
+          console.error(`[Cache] Error storing cache for @${input.username}:`, err)
+        );
+        
+        console.log(`[Instagram] Completed analysis for @${input.username}`);
         return { ...analysis, fromCache: false };
       }),
 
