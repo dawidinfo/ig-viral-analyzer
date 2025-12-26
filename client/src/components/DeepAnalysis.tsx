@@ -45,7 +45,7 @@ export default function DeepAnalysis({ username }: DeepAnalysisProps) {
   const [activeTab, setActiveTab] = useState("viral-reasons");
   const [hasTimedOut, setHasTimedOut] = useState(false);
   
-  const { data: deepAnalysis, isLoading, error, refetch } = trpc.instagram.deepAnalysis.useQuery(
+  const { data: deepAnalysis, isLoading, error, refetch, isFetching } = trpc.instagram.deepAnalysis.useQuery(
     { username },
     { 
       enabled: !!username,
@@ -54,6 +54,15 @@ export default function DeepAnalysis({ username }: DeepAnalysisProps) {
       staleTime: 5 * 60 * 1000, // 5 minutes
     }
   );
+  
+  const [isRefetching, setIsRefetching] = useState(false);
+  
+  const handleRefetch = async () => {
+    setIsRefetching(true);
+    setHasTimedOut(false);
+    await refetch();
+    setIsRefetching(false);
+  };
 
   // Timeout for long-running requests
   useEffect(() => {
@@ -103,8 +112,8 @@ export default function DeepAnalysis({ username }: DeepAnalysisProps) {
                 <p className="text-xs text-amber-400/70">Dies kann einen Moment dauern</p>
               </div>
             </div>
-            <Button size="sm" variant="outline" onClick={() => refetch()} className="text-amber-400 border-amber-500/30">
-              <RefreshCw className="w-4 h-4 mr-1" /> Neu laden
+            <Button size="sm" variant="outline" onClick={handleRefetch} disabled={isRefetching || isFetching} className="text-amber-400 border-amber-500/30">
+              <RefreshCw className={`w-4 h-4 mr-1 ${(isRefetching || isFetching) ? 'animate-spin' : ''}`} /> {(isRefetching || isFetching) ? 'Lädt...' : 'Neu laden'}
             </Button>
           </div>
         </CardContent>

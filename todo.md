@@ -1341,3 +1341,9 @@
 - [x] Popup/Folie auf Analyse-Seite entfernen (ExitIntentPopup entfernt)
 - [x] Social Blade API Integration für historische Follower-Daten
 - [x] API Keys für Social Blade konfigurieren
+
+## Bug: Analyse-Seite Overlay (27.12.2025)
+- [x] Grauer Overlay blockiert Scrollen auf Analyse-Seite (AnalysisCTAPopup entfernt)
+- [ ] Seite lädt sehr lange
+- [x] Neu laden Button - Ladekreis dreht sich jetzt beim Klicken (animate-spin)
+- [x] Speichern-Button zeigt jetzt korrekten Status (prüft Dashboard-Daten)

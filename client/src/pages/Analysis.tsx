@@ -50,7 +50,6 @@ import {
 import { useState, useMemo, useEffect, useRef } from "react";
 import ReelAnalysis from "@/components/ReelAnalysis";
 import DeepAnalysis from "@/components/DeepAnalysis";
-import { AnalysisCTAPopup } from "@/components/AnalysisCTAPopup";
 import FollowerGrowthChart from "@/components/FollowerGrowthChart";
 import { GrowthAnalysis } from "@/components/GrowthAnalysis";
 import PostingTimeAnalysis from "@/components/PostingTimeAnalysis";
@@ -224,8 +223,6 @@ export default function Analysis() {
   
   // Pinned sections state
   const [pinnedSections, setPinnedSections] = useState<Set<string>>(new Set(['ai', 'stats', 'viral']));
-  const [showCTAPopup, setShowCTAPopup] = useState(false);
-  const [hasShownPopup, setHasShownPopup] = useState(false);
   const [reelSortBy, setReelSortBy] = useState<'views' | 'likes' | 'engagement'>('views');
   const [forceRefresh, setForceRefresh] = useState(false);
   
@@ -334,22 +331,30 @@ export default function Analysis() {
       setForceRefresh(false);
     }
   }, [forceRefresh, analysisData, isLoading]);
+
+  // Check if analysis is already saved when user and analysisData are available
+  const { data: dashboardData } = trpc.dashboard.getData.useQuery(
+    { userId: user?.id || 0 },
+    { 
+      enabled: !!user?.id && !!analysisData,
+      staleTime: 60 * 1000, // 1 minute
+    }
+  );
+
+  // Update isSaved based on dashboard data
+  useEffect(() => {
+    if (dashboardData?.savedAnalyses && analysisData) {
+      const isAlreadySaved = dashboardData.savedAnalyses.some(
+        (saved: any) => saved.username.toLowerCase() === analysisData.profile.username.toLowerCase()
+      );
+      setIsSaved(isAlreadySaved);
+    }
+  }, [dashboardData, analysisData]);
   
   const handleRefresh = () => {
     setForceRefresh(true);
     refetch();
   };
-
-  // Show CTA popup after analysis is loaded (with delay)
-  useEffect(() => {
-    if (analysisData && !isLoading && !hasShownPopup) {
-      const timer = setTimeout(() => {
-        setShowCTAPopup(true);
-        setHasShownPopup(true);
-      }, 3000); // Show after 3 seconds
-      return () => clearTimeout(timer);
-    }
-  }, [analysisData, isLoading, hasShownPopup]);
 
   const handleAnalyze = () => {
     if (username.trim()) {
@@ -1201,13 +1206,6 @@ export default function Analysis() {
       {/* Global Footer */}
       <GlobalFooter />
 
-      {/* CTA Popup after Analysis */}
-      <AnalysisCTAPopup
-        isOpen={showCTAPopup}
-        onClose={() => setShowCTAPopup(false)}
-        viralScore={analysisData?.viralScore}
-        username={analysisData?.profile.username}
-      />
     </div>
   );
 }
