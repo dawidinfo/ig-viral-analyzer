@@ -25,8 +25,8 @@ import { CREDIT_PACKAGES as STRIPE_PACKAGES, SUBSCRIPTION_PLANS } from "./stripe
 import { instagramCache, savedAnalyses, usageTracking, users, CREDIT_COSTS, CREDIT_PACKAGES, creditTransactions, PLAN_LIMITS } from "../drizzle/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
 
-// Cache duration: 15 minutes for more accurate real-time data
-const CACHE_DURATION_MS = 15 * 60 * 1000;
+// Cache duration: 1 hour for better performance (data doesn't change that often)
+const CACHE_DURATION_MS = 60 * 60 * 1000;
 
 // Helper function to add timeout to promises
 function withTimeout<T>(promise: Promise<T>, timeoutMs: number, fallback: T): Promise<T> {

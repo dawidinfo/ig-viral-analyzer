@@ -51,6 +51,7 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import ReelAnalysis from "@/components/ReelAnalysis";
 import DeepAnalysis from "@/components/DeepAnalysis";
 import FollowerGrowthChart from "@/components/FollowerGrowthChart";
+import DailyChannelMetrics from "@/components/DailyChannelMetrics";
 import { GrowthAnalysis } from "@/components/GrowthAnalysis";
 import PostingTimeAnalysis from "@/components/PostingTimeAnalysis";
 import { DailyGrowthChart, generateDemoGrowthData } from "@/components/DailyGrowthChart";
@@ -773,6 +774,14 @@ export default function Analysis() {
                       <p className="text-sm text-muted-foreground mt-1">Engagement Rate</p>
                     </div>
                   </div>
+
+                  {/* Daily Channel Metrics - Social Blade Style */}
+                  <DailyChannelMetrics 
+                    username={analysisData.profile.username}
+                    currentFollowers={analysisData.profile.followerCount}
+                    currentFollowing={analysisData.profile.followingCount}
+                    currentPosts={analysisData.profile.mediaCount}
+                  />
 
                   {/* Follower Growth Chart */}
                   <FollowerGrowthChart username={analysisData.profile.username} />

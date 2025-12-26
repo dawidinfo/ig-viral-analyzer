@@ -1347,3 +1347,21 @@
 - [ ] Seite lädt sehr lange
 - [x] Neu laden Button - Ladekreis dreht sich jetzt beim Klicken (animate-spin)
 - [x] Speichern-Button zeigt jetzt korrekten Status (prüft Dashboard-Daten)
+
+## Design-Überarbeitung (27.12.2025)
+- [ ] Follower-Statistiken wie Social Blade (tägliche Tabelle, Averages, Last 14/30 Days)
+- [ ] Analyse-Seite seriöser gestalten (weniger Gradienten, mehr Whitespace)
+- [ ] Dashboard Design aufräumen
+- [ ] Klarere Typografie und native Darstellung
+
+## Performance-Optimierungen (27.12.2025)
+- [ ] Cache-Dauer auf 1 Stunde erhöhen
+- [ ] Lazy Loading für KI-Analyse (DeepAnalysis, ReelAnalysis)
+- [ ] Skeleton UI für bessere UX
+
+## JoTucker Instagram API Integration (27.12.2025)
+- [x] JoTucker API Endpoints korrigiert (/user_info, /medias, /user_reels)
+- [x] Response-Format angepasst (data.user Struktur mit edge_followed_by)
+- [x] Multi-API Fallback: Social Blade + JoTucker + Demo
+- [x] Cache-Dauer auf 1 Stunde erhöht
+- [x] Alle 5 API-Tests bestanden (Instagram: 698M Follower, Cristiano: 669M Follower)

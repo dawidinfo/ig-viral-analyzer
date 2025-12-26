@@ -1,14 +1,14 @@
 /**
  * Multi-API Instagram Service
- * Fallback chain: InstaPulse → FastGram → Instagram Statistics → Demo Data
+ * Fallback chain: Social Blade → JoTucker Instagram Scraper → Demo Data
  * 
- * This service provides reliable Instagram data by trying multiple APIs
- * in order of speed and reliability.
+ * Social Blade is the primary source for profile stats and historical data.
+ * JoTucker provides posts and reels data.
  */
 
-import * as instaPulse from './instaPulseApi';
-import * as fastGram from './fastGramApi';
-import { analyzeInstagramAccount, generateDemoData } from '../instagram';
+import { socialBladeService, InstagramStatistics } from './socialBladeService';
+import * as joTuckerApi from './joTuckerInstagramApi';
+import { generateDemoData } from '../instagram';
 
 export interface InstagramAnalysisResult {
   profile: {
@@ -23,6 +23,9 @@ export interface InstagramAnalysisResult {
     profilePicUrl: string;
     externalUrl?: string;
     category?: string;
+    grade?: string;
+    gradeColor?: string;
+    engagementRate?: number;
   };
   posts: Array<{
     id: string;
@@ -48,27 +51,88 @@ export interface InstagramAnalysisResult {
     takenAt: number;
   }>;
   isDemo: boolean;
-  source: 'instapulse' | 'fastgram' | 'instagram-statistics' | 'demo';
+  source: 'socialblade' | 'jotucker' | 'demo';
   latency: number;
+  // Additional Social Blade data
+  growth?: {
+    day1: number;
+    day7: number;
+    day14: number;
+    day30: number;
+  };
+  dailyData?: Array<{
+    date: string;
+    followers: number;
+    following: number;
+    media: number;
+    avgLikes: number;
+    avgComments: number;
+  }>;
 }
 
 /**
- * Normalize InstaPulse data to common format
+ * Normalize Social Blade data to common format
  */
-function normalizeInstaPulseData(data: Awaited<ReturnType<typeof instaPulse.analyzeInstagramProfile>>): InstagramAnalysisResult {
+function normalizeSocialBladeData(stats: InstagramStatistics, username: string): InstagramAnalysisResult {
+  const growth = stats.statistics.growth.followers;
+  
   return {
     profile: {
-      username: data.profile!.username,
-      fullName: data.profile!.full_name,
-      biography: data.profile!.biography,
-      followerCount: data.profile!.followers_count,
-      followingCount: data.profile!.following_count,
-      postsCount: data.profile!.media_count,
-      isVerified: data.profile!.is_verified,
-      isPrivate: data.profile!.is_private,
-      profilePicUrl: data.profile!.profile_pic_url,
-      externalUrl: data.profile!.external_url,
-      category: data.profile!.category,
+      username: stats.id.username || username,
+      fullName: stats.id.display_name || username,
+      biography: '', // Social Blade doesn't provide bio
+      followerCount: stats.statistics.total.followers,
+      followingCount: stats.statistics.total.following,
+      postsCount: stats.statistics.total.media,
+      isVerified: stats.misc.sb_verified,
+      isPrivate: false,
+      profilePicUrl: stats.general.branding.avatar || '',
+      externalUrl: stats.general.branding.website,
+      grade: stats.misc.grade.grade,
+      gradeColor: stats.misc.grade.color,
+      engagementRate: stats.statistics.total.engagement_rate,
+    },
+    posts: [],
+    reels: [],
+    isDemo: false,
+    source: 'socialblade',
+    latency: 0,
+    growth: {
+      day1: growth["1"] || 0,
+      day7: growth["7"] || 0,
+      day14: growth["14"] || 0,
+      day30: growth["30"] || 0,
+    },
+    dailyData: stats.daily?.map(d => ({
+      date: d.date,
+      followers: d.followers,
+      following: d.following,
+      media: d.media,
+      avgLikes: d.avg_likes,
+      avgComments: d.avg_comments,
+    })) || [],
+  };
+}
+
+/**
+ * Normalize JoTucker data to common format
+ */
+function normalizeJoTuckerData(data: Awaited<ReturnType<typeof joTuckerApi.analyzeInstagramProfile>>): InstagramAnalysisResult | null {
+  if (!data.profile) return null;
+  
+  return {
+    profile: {
+      username: data.profile.username,
+      fullName: data.profile.full_name,
+      biography: data.profile.biography,
+      followerCount: data.profile.follower_count,
+      followingCount: data.profile.following_count,
+      postsCount: data.profile.media_count,
+      isVerified: data.profile.is_verified,
+      isPrivate: data.profile.is_private,
+      profilePicUrl: data.profile.profile_pic_url_hd || data.profile.profile_pic_url,
+      externalUrl: data.profile.external_url,
+      category: data.profile.category,
     },
     posts: data.posts.map(p => ({
       id: p.id,
@@ -94,142 +158,110 @@ function normalizeInstaPulseData(data: Awaited<ReturnType<typeof instaPulse.anal
       takenAt: r.taken_at,
     })),
     isDemo: false,
-    source: 'instapulse',
-    latency: 0,
-  };
-}
-
-/**
- * Normalize FastGram data to common format
- */
-function normalizeFastGramData(data: Awaited<ReturnType<typeof fastGram.analyzeInstagramProfile>>): InstagramAnalysisResult {
-  return {
-    profile: {
-      username: data.profile!.username,
-      fullName: data.profile!.full_name,
-      biography: data.profile!.biography,
-      followerCount: data.profile!.followers,
-      followingCount: data.profile!.follows,
-      postsCount: data.profile!.image_count + data.profile!.video_count,
-      isVerified: data.profile!.is_verified,
-      isPrivate: data.profile!.is_private,
-      profilePicUrl: data.profile!.profile_image,
-    },
-    posts: data.posts.map(p => ({
-      id: p.instagramId,
-      shortcode: p.shortcode,
-      caption: p.caption,
-      likeCount: p.like_count,
-      commentCount: p.comment_count,
-      isVideo: p.is_video,
-      displayUrl: p.media_url || p.thumbnail_url,
-      takenAt: p.taken_at,
-    })),
-    reels: data.reels.map(r => ({
-      id: r.instagramId,
-      shortcode: r.shortcode,
-      caption: r.caption,
-      likeCount: r.like_count,
-      commentCount: r.comment_count,
-      playCount: 0, // FastGram doesn't provide play count separately
-      displayUrl: r.thumbnail_url,
-      videoUrl: r.media_url,
-      takenAt: r.taken_at,
-    })),
-    isDemo: false,
-    source: 'fastgram',
+    source: 'jotucker',
     latency: 0,
   };
 }
 
 /**
  * Main analysis function with fallback chain
+ * Social Blade (profile + history) + JoTucker (posts/reels) → JoTucker only → Demo
  */
 export async function analyzeInstagram(username: string): Promise<InstagramAnalysisResult> {
-  const cleanUsername = username.replace('@', '').trim();
+  const cleanUsername = username.replace('@', '').trim().toLowerCase();
   const startTime = Date.now();
   
   console.log(`[MultiAPI] Starting analysis for @${cleanUsername}`);
-  console.log(`[MultiAPI] Fallback chain: InstaPulse → FastGram → Instagram Statistics → Demo`);
+  console.log(`[MultiAPI] Fallback chain: Social Blade + JoTucker → JoTucker → Demo`);
   
-  // Try InstaPulse first (fastest - 90ms)
-  try {
-    console.log(`[MultiAPI] Trying InstaPulse API...`);
-    const data = await instaPulse.analyzeInstagramProfile(cleanUsername);
-    if (data.profile) {
-      const result = normalizeInstaPulseData(data);
-      result.latency = Date.now() - startTime;
-      console.log(`[MultiAPI] ✓ InstaPulse succeeded in ${result.latency}ms`);
-      return result;
+  // Try Social Blade first for profile stats (primary source)
+  let socialBladeData: InstagramAnalysisResult | null = null;
+  
+  if (socialBladeService.isConfigured()) {
+    try {
+      console.log(`[MultiAPI] Trying Social Blade API for profile stats...`);
+      const sbStartTime = Date.now();
+      const stats = await socialBladeService.getInstagramStatistics(cleanUsername, 'default');
+      
+      if (stats) {
+        socialBladeData = normalizeSocialBladeData(stats, cleanUsername);
+        console.log(`[MultiAPI] ✓ Social Blade succeeded in ${Date.now() - sbStartTime}ms`);
+      }
+    } catch (error: any) {
+      console.log(`[MultiAPI] ✗ Social Blade failed: ${error.message}`);
     }
-  } catch (error: any) {
-    console.log(`[MultiAPI] ✗ InstaPulse failed: ${error.message}`);
+  } else {
+    console.log(`[MultiAPI] Social Blade not configured, skipping...`);
   }
   
-  // Try FastGram second (reliable - 173ms)
+  // Try JoTucker for posts and reels (and profile if Social Blade failed)
   try {
-    console.log(`[MultiAPI] Trying FastGram API...`);
-    const data = await fastGram.analyzeInstagramProfile(cleanUsername);
-    if (data.profile) {
-      const result = normalizeFastGramData(data);
-      result.latency = Date.now() - startTime;
-      console.log(`[MultiAPI] ✓ FastGram succeeded in ${result.latency}ms`);
-      return result;
-    }
-  } catch (error: any) {
-    console.log(`[MultiAPI] ✗ FastGram failed: ${error.message}`);
-  }
-  
-  // Try Instagram Statistics API (current - slow but works)
-  try {
-    console.log(`[MultiAPI] Trying Instagram Statistics API...`);
-    const data = await analyzeInstagramAccount(cleanUsername);
-    if (data && !data.isDemo) {
-      const result: InstagramAnalysisResult = {
-        profile: {
-          username: data.profile.username,
-          fullName: data.profile.fullName,
-          biography: data.profile.biography,
-          followerCount: data.profile.followerCount,
-          followingCount: data.profile.followingCount,
-          postsCount: data.profile.mediaCount,
-          isVerified: data.profile.isVerified,
-          isPrivate: false,
-          profilePicUrl: data.profile.profilePicUrl,
-          externalUrl: data.profile.externalUrl,
-        },
-        posts: data.posts?.map((p: any) => ({
+    console.log(`[MultiAPI] Trying JoTucker Instagram Scraper for posts/reels...`);
+    const jtStartTime = Date.now();
+    const joTuckerData = await joTuckerApi.analyzeInstagramProfile(cleanUsername);
+    
+    if (joTuckerData.profile || joTuckerData.posts.length > 0 || joTuckerData.reels.length > 0) {
+      console.log(`[MultiAPI] ✓ JoTucker succeeded in ${Date.now() - jtStartTime}ms`);
+      
+      // If we have Social Blade data, merge with JoTucker posts/reels
+      if (socialBladeData) {
+        socialBladeData.posts = joTuckerData.posts.map(p => ({
           id: p.id,
           shortcode: p.shortcode,
           caption: p.caption || '',
-          likeCount: p.likeCount || 0,
-          commentCount: p.commentCount || 0,
-          viewCount: p.viewCount,
-          isVideo: p.isVideo || false,
-          displayUrl: p.thumbnailUrl || '',
-          videoUrl: p.videoUrl,
-          takenAt: p.timestamp || Math.floor(Date.now() / 1000),
-        })) || [],
-        reels: data.reels?.map((r: any) => ({
+          likeCount: p.like_count,
+          commentCount: p.comment_count,
+          viewCount: p.view_count,
+          isVideo: p.is_video,
+          displayUrl: p.display_url,
+          videoUrl: p.video_url,
+          takenAt: p.taken_at,
+        }));
+        socialBladeData.reels = joTuckerData.reels.map(r => ({
           id: r.id,
           shortcode: r.shortcode,
           caption: r.caption || '',
-          likeCount: r.likeCount || 0,
-          commentCount: r.commentCount || 0,
-          playCount: r.playCount || r.viewCount || 0,
-          displayUrl: r.thumbnailUrl || '',
-          videoUrl: r.videoUrl || '',
-          takenAt: r.timestamp || Math.floor(Date.now() / 1000),
-        })) || [],
-        isDemo: false,
-        source: 'instagram-statistics',
-        latency: Date.now() - startTime,
-      };
-      console.log(`[MultiAPI] ✓ Instagram Statistics succeeded in ${result.latency}ms`);
-      return result;
+          likeCount: r.like_count,
+          commentCount: r.comment_count,
+          playCount: r.play_count,
+          displayUrl: r.display_url,
+          videoUrl: r.video_url,
+          takenAt: r.taken_at,
+        }));
+        
+        // Fill in missing profile data from JoTucker
+        if (joTuckerData.profile) {
+          if (!socialBladeData.profile.biography && joTuckerData.profile.biography) {
+            socialBladeData.profile.biography = joTuckerData.profile.biography;
+          }
+          if (!socialBladeData.profile.profilePicUrl && joTuckerData.profile.profile_pic_url) {
+            socialBladeData.profile.profilePicUrl = joTuckerData.profile.profile_pic_url_hd || joTuckerData.profile.profile_pic_url;
+          }
+          if (!socialBladeData.profile.category && joTuckerData.profile.category) {
+            socialBladeData.profile.category = joTuckerData.profile.category;
+          }
+        }
+        
+        socialBladeData.latency = Date.now() - startTime;
+        return socialBladeData;
+      }
+      
+      // Use JoTucker data only
+      const result = normalizeJoTuckerData(joTuckerData);
+      if (result) {
+        result.latency = Date.now() - startTime;
+        return result;
+      }
     }
   } catch (error: any) {
-    console.log(`[MultiAPI] ✗ Instagram Statistics failed: ${error.message}`);
+    console.log(`[MultiAPI] ✗ JoTucker failed: ${error.message}`);
+  }
+  
+  // If we have Social Blade data but no posts/reels, still return it
+  if (socialBladeData) {
+    socialBladeData.latency = Date.now() - startTime;
+    console.log(`[MultiAPI] Returning Social Blade data without posts/reels`);
+    return socialBladeData;
   }
   
   // Fallback to demo data
@@ -282,19 +314,17 @@ export async function analyzeInstagram(username: string): Promise<InstagramAnaly
  * Check health of all APIs
  */
 export async function checkAllApisHealth(): Promise<{
-  instapulse: boolean;
-  fastgram: boolean;
-  instagramStatistics: boolean;
+  socialblade: boolean;
+  jotucker: boolean;
 }> {
-  const [instapulseHealth, fastgramHealth] = await Promise.all([
-    instaPulse.checkApiHealth().catch(() => false),
-    fastGram.checkApiHealth().catch(() => false),
+  const [socialbladeHealth, jotuckerHealth] = await Promise.all([
+    Promise.resolve(socialBladeService.isConfigured()),
+    joTuckerApi.checkApiHealth().catch(() => false),
   ]);
   
   return {
-    instapulse: instapulseHealth,
-    fastgram: fastgramHealth,
-    instagramStatistics: true, // Assume available
+    socialblade: socialbladeHealth,
+    jotucker: jotuckerHealth,
   };
 }
 
