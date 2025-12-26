@@ -201,10 +201,14 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
     );
   }
 
-  const { summary, isDemo } = historyData;
+  const { summary, isDemo, realDataPoints } = historyData;
   const trendIcon = summary.trend === 'rising' ? TrendingUp : summary.trend === 'declining' ? TrendingDown : Minus;
   const trendColor = summary.trend === 'rising' ? 'text-green-400' : summary.trend === 'declining' ? 'text-red-400' : 'text-yellow-400';
   const trendBg = summary.trend === 'rising' ? 'bg-green-500/20 border-green-500/30' : summary.trend === 'declining' ? 'bg-red-500/20 border-red-500/30' : 'bg-yellow-500/20 border-yellow-500/30';
+  
+  // Check if we have enough data for meaningful display
+  const hasEnoughData = realDataPoints >= 2;
+  const isTrackingStarted = realDataPoints === 1;
 
   return (
     <div className="space-y-6">
@@ -477,6 +481,22 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
               </UITooltip>
             </div>
           </TooltipProvider>
+
+          {/* No Data Warning */}
+          {isTrackingStarted && (
+            <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mb-6">
+              <div className="flex items-start gap-3">
+                <Info className="w-5 h-5 text-amber-400 mt-0.5 shrink-0" />
+                <div>
+                  <p className="font-semibold text-amber-400 mb-1">Datensammlung gestartet</p>
+                  <p className="text-sm text-muted-foreground">
+                    Für diesen Account werden ab heute Follower-Daten gesammelt. 
+                    Nach einigen Tagen werden hier echte historische Daten angezeigt.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Chart */}
           <div className="h-[300px] mt-4">

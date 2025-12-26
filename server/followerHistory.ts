@@ -352,35 +352,77 @@ export async function getFollowerHistory(
     }
   }
   
-  // Fallback: Get stored snapshots from database
+  // Get stored snapshots from our own database (no demo data fallback)
   const storedSnapshots = await getStoredSnapshots(platform, cleanUsername, days);
   const realDataPoints = storedSnapshots.filter(s => s.isReal).length;
   
-  console.log(`[FollowerHistory] Found ${realDataPoints} stored data points for @${cleanUsername} (${platform}), using demo fallback`);
+  console.log(`[FollowerHistory] Found ${realDataPoints} stored data points for @${cleanUsername} (${platform})`);
   
-  // Generate data points (using real data where available, demo for the rest)
-  const dataPoints = generateDemoFollowerHistory(
-    cleanUsername,
-    currentFollowers,
-    days,
-    storedSnapshots
-  );
+  // If we have real data points, use them
+  if (realDataPoints >= 2) {
+    // Convert stored snapshots to data points
+    const sortedSnapshots = storedSnapshots
+      .filter(s => s.isReal)
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    
+    const dataPoints: FollowerDataPoint[] = sortedSnapshots.map((s, index) => {
+      const prevFollowers = index > 0 ? sortedSnapshots[index - 1].followers : s.followers;
+      const change = s.followers - prevFollowers;
+      const changePercent = prevFollowers > 0 ? (change / prevFollowers) * 100 : 0;
+      
+      return {
+        date: s.date,
+        followers: s.followers,
+        change: index === 0 ? 0 : change,
+        changePercent: index === 0 ? 0 : parseFloat(changePercent.toFixed(3))
+      };
+    });
+    
+    const summary = calculateSummary(dataPoints);
+    
+    return {
+      username: cleanUsername,
+      platform,
+      currentFollowers,
+      timeRange,
+      dataPoints,
+      summary,
+      isDemo: false,
+      realDataPoints
+    };
+  }
   
-  // Calculate summary
-  const summary = calculateSummary(dataPoints);
+  // No real data available - return empty data with flag
+  // Store current snapshot for future tracking
+  await storeFollowerSnapshot(platform, cleanUsername, {
+    followerCount: currentFollowers,
+  }, true);
   
-  // Determine if this is mostly demo data
-  const isDemo = realDataPoints < Math.min(3, days * 0.1); // Less than 10% real data or less than 3 points
+  console.log(`[FollowerHistory] No historical data for @${cleanUsername}, started tracking today`);
   
+  // Return minimal data indicating tracking just started
+  const today = new Date().toISOString().split('T')[0];
   return {
     username: cleanUsername,
     platform,
     currentFollowers,
     timeRange,
-    dataPoints,
-    summary,
-    isDemo,
-    realDataPoints
+    dataPoints: [{
+      date: today,
+      followers: currentFollowers,
+      change: 0,
+      changePercent: 0
+    }],
+    summary: {
+      totalGrowth: 0,
+      totalGrowthPercent: 0,
+      avgDailyGrowth: 0,
+      bestDay: { date: today, growth: 0 },
+      worstDay: { date: today, growth: 0 },
+      trend: 'stable'
+    },
+    isDemo: false, // Not demo - just no data yet
+    realDataPoints: 1 // We just stored today's snapshot
   };
 }
 

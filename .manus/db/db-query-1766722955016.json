@@ -1,0 +1,52 @@
+{
+  "query": "SELECT * FROM follower_snapshots WHERE username LIKE '%dawidprzybylski%' ORDER BY snapshotDate DESC LIMIT 20",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user N7vrAoPF61tSW8u.60537d16f0ce --database 2NevksKXohCxXvgmcBxexU --execute SELECT * FROM follower_snapshots WHERE username LIKE '%dawidprzybylski%' ORDER BY snapshotDate DESC LIMIT 20",
+  "rows": [
+    {
+      "id": "330001",
+      "platform": "instagram",
+      "username": "dawidprzybylski_official",
+      "followerCount": "71874",
+      "followingCount": "679",
+      "postCount": "222",
+      "totalLikes": "NULL",
+      "totalViews": "NULL",
+      "engagementRate": "0.55",
+      "snapshotDate": "2025-12-26",
+      "isRealData": "1",
+      "createdAt": "2025-12-26 04:18:56"
+    },
+    {
+      "id": "300001",
+      "platform": "instagram",
+      "username": "dawidprzybylski_official",
+      "followerCount": "71874",
+      "followingCount": "679",
+      "postCount": "222",
+      "totalLikes": "NULL",
+      "totalViews": "NULL",
+      "engagementRate": "0.57",
+      "snapshotDate": "2025-12-25",
+      "isRealData": "1",
+      "createdAt": "2025-12-25 16:56:53"
+    },
+    {
+      "id": "90001",
+      "platform": "instagram",
+      "username": "dawidprzybylski_official",
+      "followerCount": "71895",
+      "followingCount": "676",
+      "postCount": "222",
+      "totalLikes": "NULL",
+      "totalViews": "NULL",
+      "engagementRate": "0.57",
+      "snapshotDate": "2025-12-24",
+      "isRealData": "1",
+      "createdAt": "2025-12-24 07:22:21"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tplatform\tusername\tfollowerCount\tfollowingCount\tpostCount\ttotalLikes\ttotalViews\tengagementRate\tsnapshotDate\tisRealData\tcreatedAt\n330001\tinstagram\tdawidprzybylski_official\t71874\t679\t222\tNULL\tNULL\t0.55\t2025-12-26\t1\t2025-12-26 04:18:56\n300001\tinstagram\tdawidprzybylski_official\t71874\t679\t222\tNULL\tNULL\t0.57\t2025-12-25\t1\t2025-12-25 16:56:53\n90001\tinstagram\tdawidprzybylski_official\t71895\t676\t222\tNULL\tNULL\t0.57\t2025-12-24\t1\t2025-12-24 07:22:21\n",
+  "stderr": "",
+  "execution_time_ms": 1569
+}

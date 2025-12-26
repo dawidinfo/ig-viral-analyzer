@@ -1203,3 +1203,9 @@
 - [ ] Backup-System auf internen Server-Cron umstellen (keine Manus-Tasks)
 - [x] Exit-Popup: Schließen-Button hinzufügen und Größe anpassen
 - [x] Tour-Rahmen mit leichtem Shine-Effekt versehen
+- [ ] Follower-Wachstums-Daten prüfen und korrigieren - zeigt falsches Wachstum statt Verlust
+- [ ] Zuverlässige API für echte historische Follower-Daten finden und integrieren (wie Social Blade)
+- [x] Demo-Daten komplett entfernen - keine falschen Grafiken mehr
+- [x] Eigene Follower-Snapshots bei jeder Analyse speichern
+- [x] Ehrliche Anzeige wenn keine historischen Daten vorhanden
+- [x] Weitere Instagram APIs testen für echte historische Daten
