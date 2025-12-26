@@ -837,11 +837,11 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
                   dataKey="anomalyValue"
                   stroke="transparent"
                   dot={(props: any) => {
-                    const { cx, cy, payload } = props;
-                    if (!payload?.isAnomaly || cx === undefined || cy === undefined) return <g />;
+                    const { cx, cy, payload, index } = props;
+                    if (!payload?.isAnomaly || cx === undefined || cy === undefined) return <g key={`empty-${index}`} />;
                     const color = payload.isSpike ? '#22c55e' : '#ef4444';
                     return (
-                      <g key={`anomaly-${payload.date}`}>
+                      <g key={`anomaly-${payload.date}-${index}`}>
                         {/* Pulsierender Kreis */}
                         <circle cx={cx} cy={cy} r={8} fill={color} fillOpacity={0.3}>
                           <animate attributeName="r" values="8;12;8" dur="2s" repeatCount="indefinite" />
