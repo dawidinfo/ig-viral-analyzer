@@ -1323,3 +1323,21 @@
 - [x] Login-Button öffnet jetzt Social Login Dialog statt direkt Manus OAuth
 - [x] usePopupLogin Hook aktualisiert für Dialog-basiertes Login
 - [x] LoginButton Komponente mit Dialog für Social Login Optionen
+
+## E-Mail Magic Link Login (26.12.2025)
+- [ ] Manus OAuth komplett entfernen
+- [ ] E-Mail-Eingabefeld im Login-Dialog
+- [ ] Magic Link Token Generation (JWT)
+- [ ] Magic Link E-Mail senden (über Resend)
+- [ ] Callback-Route für Magic Link Verifizierung
+- [ ] Session-Management ohne Manus
+
+## Historische Follower-Daten APIs
+- [ ] APIs für historische Instagram Daten recherchieren
+- [ ] API-Integration für echte Follower-Historie
+- [ ] Fallback auf Demo-Daten wenn API nicht verfügbar
+
+## Bugfixes & API Integration (26.12.2025)
+- [x] Popup/Folie auf Analyse-Seite entfernen (ExitIntentPopup entfernt)
+- [x] Social Blade API Integration für historische Follower-Daten
+- [x] API Keys für Social Blade konfigurieren

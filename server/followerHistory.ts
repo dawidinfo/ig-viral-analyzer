@@ -8,6 +8,7 @@ import { getDb } from "./db";
 import { followerSnapshots } from "../drizzle/schema";
 import { eq, and, desc, gte, lte } from "drizzle-orm";
 import { getHistoricalFollowerData, isInstagramStatisticsApiConfigured } from "./services/instagramStatisticsApi";
+import { socialBladeService } from "./services/socialBladeService";
 
 export interface FollowerDataPoint {
   date: string; // ISO date string (YYYY-MM-DD)
@@ -312,7 +313,55 @@ export async function getFollowerHistory(
   }
   const cleanUsername = username.toLowerCase().replace('@', '').trim();
   
-  // Try to get real historical data from Instagram Statistics API (Instagram only)
+  // 1. Try Social Blade API first (best source for historical data)
+  if (platform === 'instagram' && socialBladeService.isConfigured()) {
+    console.log(`[FollowerHistory] Attempting to fetch real data from Social Blade API for @${cleanUsername}`);
+    
+    try {
+      // Determine history option based on time range
+      const historyOption = days <= 30 ? 'default' : days <= 365 ? 'extended' : days <= 1095 ? 'archive' : 'vault';
+      const sbData = await socialBladeService.getFollowerGrowthHistory(cleanUsername, historyOption);
+      
+      if (sbData && sbData.daily.length > 0) {
+        console.log(`[FollowerHistory] Got ${sbData.daily.length} real data points from Social Blade for @${cleanUsername}`);
+        
+        // Convert Social Blade data to our format
+        const dataPoints: FollowerDataPoint[] = sbData.daily.map((d, index) => {
+          const changePercent = d.followers > 0 ? (d.change / d.followers) * 100 : 0;
+          return {
+            date: d.date,
+            followers: d.followers,
+            change: d.change,
+            changePercent: parseFloat(changePercent.toFixed(3))
+          };
+        });
+        
+        // Store the data points in our database for caching
+        for (const point of dataPoints) {
+          await storeFollowerSnapshot(platform, cleanUsername, {
+            followerCount: point.followers,
+          }, true);
+        }
+        
+        const summary = calculateSummary(dataPoints);
+        
+        return {
+          username: cleanUsername,
+          platform,
+          currentFollowers: sbData.currentFollowers,
+          timeRange,
+          dataPoints,
+          summary,
+          isDemo: false,
+          realDataPoints: dataPoints.length,
+        };
+      }
+    } catch (error) {
+      console.error(`[FollowerHistory] Error fetching from Social Blade API:`, error);
+    }
+  }
+  
+  // 2. Try Instagram Statistics API as fallback (Instagram only)
   if (platform === 'instagram' && isInstagramStatisticsApiConfigured()) {
     console.log(`[FollowerHistory] Attempting to fetch real data from Instagram Statistics API for @${cleanUsername}`);
     
