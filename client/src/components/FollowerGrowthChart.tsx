@@ -964,7 +964,7 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
               </thead>
               <tbody>
                 {tableData.map((point, idx) => (
-                  <tr key={point.date} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                  <tr key={`${point.date}-${idx}`} className="border-b border-white/5 hover:bg-white/5 transition-colors">
                     <td className="py-3 px-4 text-sm">
                       {new Date(point.date).toLocaleDateString('de-DE', { 
                         weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' 

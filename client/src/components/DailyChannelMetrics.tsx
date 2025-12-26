@@ -223,7 +223,7 @@ export default function DailyChannelMetrics({
               <tbody>
                 {metrics.tableData.map((row, idx) => (
                   <tr 
-                    key={row.date} 
+                    key={`${row.date}-${idx}`} 
                     className="border-b border-zinc-800/50 hover:bg-zinc-800/30 transition-colors"
                   >
                     <td className="py-2.5 px-3 text-zinc-500 font-medium">

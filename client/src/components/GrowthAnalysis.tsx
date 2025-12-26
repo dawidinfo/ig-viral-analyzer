@@ -367,7 +367,7 @@ export function GrowthAnalysis({ username, platform = 'instagram' }: GrowthAnaly
           <div className="space-y-2">
             {analysis.topGrowthDays.map((day, index) => (
               <motion.div
-                key={day.date}
+                key={`top-${day.date}-${index}`}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
@@ -453,7 +453,7 @@ export function GrowthAnalysis({ username, platform = 'instagram' }: GrowthAnaly
             <div className="space-y-2">
               {analysis.worstGrowthDays.filter(d => d.growth < 0).slice(0, 3).map((day, index) => (
                 <div
-                  key={day.date}
+                  key={`worst-${day.date}-${index}`}
                   className="bg-white/5 rounded-lg p-3 border border-white/10"
                 >
                   <div className="flex items-center justify-between">

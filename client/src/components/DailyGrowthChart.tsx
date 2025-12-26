@@ -127,7 +127,7 @@ export function DailyGrowthChart({ data, username }: DailyGrowthChartProps) {
                 
                 return (
                   <motion.div
-                    key={day.date}
+                    key={`${day.date}-${index}`}
                     initial={{ scaleY: 0 }}
                     animate={{ scaleY: 1 }}
                     transition={{ delay: index * 0.02 }}
