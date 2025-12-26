@@ -1317,3 +1317,9 @@
 - [x] Redis nur als L2 Backup (nicht mehr synchron abgefragt)
 - [x] Aggressive TTLs: Profile 1h, Analysen 2h, Posts 30min
 - [x] Keine doppelten Cache-Anfragen (pendingRequests Lock)
+
+## Login-Flow Korrektur (26.12.2025)
+- [x] Social Login Buttons von Homepage entfernt (Google, Apple, Microsoft, E-Mail)
+- [x] Login-Button öffnet jetzt Social Login Dialog statt direkt Manus OAuth
+- [x] usePopupLogin Hook aktualisiert für Dialog-basiertes Login
+- [x] LoginButton Komponente mit Dialog für Social Login Optionen
