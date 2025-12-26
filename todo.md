@@ -1311,3 +1311,9 @@
 - [x] Multi-API Service mit Fallback-Kette (multiApiInstagram.ts)
 - [x] Reihenfolge: InstaPulse → FastGram → Instagram Statistics → Demo
 - [x] Automatischer Fallback bei API-Fehlern
+
+## Cache-Optimierung für blitzschnelle Daten (26.12.2025)
+- [x] In-Memory Cache als L1 (0ms Latenz) + Hot Cache für häufige Anfragen
+- [x] Redis nur als L2 Backup (nicht mehr synchron abgefragt)
+- [x] Aggressive TTLs: Profile 1h, Analysen 2h, Posts 30min
+- [x] Keine doppelten Cache-Anfragen (pendingRequests Lock)
