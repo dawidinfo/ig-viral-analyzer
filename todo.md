@@ -1216,5 +1216,13 @@
 - [x] Anomalie-Erkennung für Follower-Spitzen und Einbrüche im Chart
 - [x] Top Content mit echten Daten aus API laden (nicht Platzhalter)
 - [x] Sticky Navigation für Analyse-Sektionen implementieren
-- [ ] Analyse-Seite in 3 Blöcke strukturieren: Analyse, Erkenntnisse, Learnings & Impulse
-- [ ] Notiz-Funktion für persönliche Learnings hinzufügen
+- [x] Analyse-Seite in 3 Blöcke strukturieren: Analyse, Erkenntnisse, Learnings & Impulse
+- [x] Notiz-Funktion für persönliche Learnings hinzufügen
+
+## Analyse-Seite 3-Block-Struktur
+- [x] Notizen-Komponente erstellen (SectionNotes.tsx)
+- [x] Block 1: ANALYSE - Rohdaten, Metriken, Charts
+- [x] Block 2: ERKENNTNISSE - KI-Insights, Muster, Viral-Gründe
+- [x] Block 3: LEARNINGS & IMPULSE - Persönliche Notizen, Action Items
+- [x] Notizen-API mit Frontend verbinden
+- [x] Tests für Notizen-Funktionalität
