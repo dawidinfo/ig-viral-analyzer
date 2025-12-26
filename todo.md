@@ -1265,3 +1265,14 @@
 - [x] Analyse-Seite langsam/hängt - Frontend-Timeout hinzugefügt
 - [x] Loading-States optimieren - Slow-Loading-Nachricht nach 10s, Timeout nach 45s
 - [ ] API-Fehler auf Production beheben (RapidAPI) - externes Problem
+
+## Skalierbare Architektur für 1000+ User (26.12.2025)
+- [x] In-Memory Cache mit TTL implementieren (robustAnalysisService.ts)
+- [x] DB-Cache für persistente Daten (instagramCache Tabelle)
+- [x] Rate-Limiting pro User (IP + User-ID) - bereits vorhanden
+- [x] Job Queue für API-Requests (backgroundJobService.ts)
+- [x] Automatischer Fallback zu Demo-Daten bei API-Timeout
+- [x] Demo-Daten klar als "Demo" kennzeichnen (Betrugssicherheit)
+- [x] "Daten werden gesammelt" Status-Anzeige im Frontend
+- [x] Retry-Logik mit exponential backoff
+- [x] API-Health-Check vor Requests
