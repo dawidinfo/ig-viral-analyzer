@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { getLoginUrl } from "@/const";
-import { Loader2 } from "lucide-react";
+import { Loader2, Star } from "lucide-react";
 import { useState } from "react";
+import { trpc } from "@/lib/trpc";
 
 // Social login provider icons as SVG
 const GoogleIcon = () => (
@@ -41,15 +42,40 @@ interface SocialLoginButtonsProps {
   className?: string;
 }
 
+// Track login method usage
+const trackLoginMethod = (method: string) => {
+  try {
+    // Store in localStorage for analytics
+    const loginStats = JSON.parse(localStorage.getItem('loginMethodStats') || '{}');
+    loginStats[method] = (loginStats[method] || 0) + 1;
+    loginStats.lastUsed = method;
+    loginStats.lastAttempt = new Date().toISOString();
+    localStorage.setItem('loginMethodStats', JSON.stringify(loginStats));
+    
+    // Also send to server if available (fire and forget)
+    fetch('/api/analytics/login-method', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ method, timestamp: new Date().toISOString() })
+    }).catch(() => {}); // Ignore errors
+  } catch (e) {
+    // Ignore tracking errors
+  }
+};
+
 export function SocialLoginButtons({ 
   variant = "horizontal", 
   showLabels = true,
   className = "" 
 }: SocialLoginButtonsProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<string | null>(null);
 
-  const handleLogin = () => {
-    setIsLoading(true);
+  const handleLogin = (provider: string) => {
+    setIsLoading(provider);
+    
+    // Track which login method was clicked
+    trackLoginMethod(provider);
+    
     // Open login popup
     const loginUrl = getLoginUrl({ popup: true });
     const width = 500;
@@ -72,7 +98,7 @@ export function SocialLoginButtons({
     // Listen for success message
     const handleMessage = (event: MessageEvent) => {
       if (event.origin === window.location.origin && event.data?.type === 'oauth-success') {
-        setIsLoading(false);
+        setIsLoading(null);
         popup.close();
         window.removeEventListener('message', handleMessage);
         window.location.href = '/dashboard';
@@ -83,7 +109,7 @@ export function SocialLoginButtons({
     // Check if popup was closed
     const checkClosed = setInterval(() => {
       if (popup.closed) {
-        setIsLoading(false);
+        setIsLoading(null);
         clearInterval(checkClosed);
         window.removeEventListener('message', handleMessage);
       }
@@ -91,10 +117,10 @@ export function SocialLoginButtons({
   };
 
   const providers = [
-    { icon: GoogleIcon, label: "Google", color: "hover:bg-white/10" },
-    { icon: AppleIcon, label: "Apple", color: "hover:bg-white/10" },
-    { icon: MicrosoftIcon, label: "Microsoft", color: "hover:bg-white/10" },
-    { icon: EmailIcon, label: "E-Mail", color: "hover:bg-white/10" },
+    { id: "google", icon: GoogleIcon, label: "Google", isPrimary: true },
+    { id: "apple", icon: AppleIcon, label: "Apple", isPrimary: false },
+    { id: "microsoft", icon: MicrosoftIcon, label: "Microsoft", isPrimary: false },
+    { id: "email", icon: EmailIcon, label: "E-Mail", isPrimary: false },
   ];
 
   if (variant === "compact") {
@@ -104,13 +130,21 @@ export function SocialLoginButtons({
         <div className="flex gap-1">
           {providers.map((provider) => (
             <button
-              key={provider.label}
-              onClick={handleLogin}
-              disabled={isLoading}
-              className="p-1.5 rounded-md bg-white/5 hover:bg-white/10 transition-colors disabled:opacity-50"
-              title={`Mit ${provider.label} anmelden`}
+              key={provider.id}
+              onClick={() => handleLogin(provider.id)}
+              disabled={isLoading !== null}
+              className={`p-1.5 rounded-md transition-colors disabled:opacity-50 ${
+                provider.isPrimary 
+                  ? "bg-white/10 hover:bg-white/20 ring-1 ring-violet-500/50" 
+                  : "bg-white/5 hover:bg-white/10"
+              }`}
+              title={`Mit ${provider.label} anmelden${provider.isPrimary ? ' (Empfohlen)' : ''}`}
             >
-              <provider.icon />
+              {isLoading === provider.id ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <provider.icon />
+              )}
             </button>
           ))}
         </div>
@@ -121,38 +155,91 @@ export function SocialLoginButtons({
   if (variant === "vertical") {
     return (
       <div className={`flex flex-col gap-2 ${className}`}>
-        {providers.map((provider) => (
-          <Button
-            key={provider.label}
-            variant="outline"
-            onClick={handleLogin}
-            disabled={isLoading}
-            className={`w-full justify-start gap-3 bg-white/5 border-white/10 ${provider.color}`}
-          >
-            {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <provider.icon />}
-            {showLabels && <span>Mit {provider.label} anmelden</span>}
-          </Button>
-        ))}
+        {/* Google Button - Prominent */}
+        <Button
+          onClick={() => handleLogin("google")}
+          disabled={isLoading !== null}
+          className="w-full justify-center gap-3 bg-white text-gray-800 hover:bg-gray-100 border-0 shadow-lg hover:shadow-xl transition-all py-6 text-base font-medium"
+        >
+          {isLoading === "google" ? (
+            <Loader2 className="w-5 h-5 animate-spin" />
+          ) : (
+            <GoogleIcon />
+          )}
+          <span>Mit Google fortfahren</span>
+          <span className="ml-auto text-xs bg-violet-500 text-white px-2 py-0.5 rounded-full">Empfohlen</span>
+        </Button>
+        
+        {/* Divider */}
+        <div className="relative my-2">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-white/10"></div>
+          </div>
+          <div className="relative flex justify-center text-xs">
+            <span className="bg-card px-3 text-muted-foreground">oder</span>
+          </div>
+        </div>
+        
+        {/* Other providers - Smaller */}
+        <div className="grid grid-cols-3 gap-2">
+          {providers.filter(p => !p.isPrimary).map((provider) => (
+            <Button
+              key={provider.id}
+              variant="outline"
+              onClick={() => handleLogin(provider.id)}
+              disabled={isLoading !== null}
+              className="w-full justify-center gap-2 bg-white/5 border-white/10 hover:bg-white/10 py-5"
+            >
+              {isLoading === provider.id ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <provider.icon />
+              )}
+              {showLabels && <span className="text-xs">{provider.label}</span>}
+            </Button>
+          ))}
+        </div>
       </div>
     );
   }
 
   // Horizontal (default)
   return (
-    <div className={`flex flex-wrap items-center justify-center gap-3 ${className}`}>
-      {providers.map((provider) => (
-        <Button
-          key={provider.label}
-          variant="outline"
-          size={showLabels ? "default" : "icon"}
-          onClick={handleLogin}
-          disabled={isLoading}
-          className={`bg-white/5 border-white/10 ${provider.color}`}
-        >
-          {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <provider.icon />}
-          {showLabels && <span className="ml-2">{provider.label}</span>}
-        </Button>
-      ))}
+    <div className={`flex flex-col gap-3 ${className}`}>
+      {/* Google Button - Prominent */}
+      <Button
+        onClick={() => handleLogin("google")}
+        disabled={isLoading !== null}
+        className="w-full justify-center gap-3 bg-white text-gray-800 hover:bg-gray-100 border-0 shadow-lg hover:shadow-xl transition-all py-5"
+      >
+        {isLoading === "google" ? (
+          <Loader2 className="w-5 h-5 animate-spin" />
+        ) : (
+          <GoogleIcon />
+        )}
+        <span>Mit Google fortfahren</span>
+      </Button>
+      
+      {/* Other providers */}
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        {providers.filter(p => !p.isPrimary).map((provider) => (
+          <Button
+            key={provider.id}
+            variant="outline"
+            size="sm"
+            onClick={() => handleLogin(provider.id)}
+            disabled={isLoading !== null}
+            className="bg-white/5 border-white/10 hover:bg-white/10"
+          >
+            {isLoading === provider.id ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <provider.icon />
+            )}
+            {showLabels && <span className="ml-2 text-xs">{provider.label}</span>}
+          </Button>
+        ))}
+      </div>
     </div>
   );
 }
@@ -161,9 +248,10 @@ export function SocialLoginButtons({
 export function LoginMethodsHint({ className = "" }: { className?: string }) {
   return (
     <div className={`flex items-center justify-center gap-4 text-xs text-muted-foreground ${className}`}>
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-1.5 text-violet-400">
         <GoogleIcon />
         <span>Google</span>
+        <Star className="w-3 h-3 fill-current" />
       </div>
       <div className="flex items-center gap-1.5">
         <AppleIcon />
@@ -179,4 +267,13 @@ export function LoginMethodsHint({ className = "" }: { className?: string }) {
       </div>
     </div>
   );
+}
+
+// Get login stats for admin dashboard
+export function getLoginStats() {
+  try {
+    return JSON.parse(localStorage.getItem('loginMethodStats') || '{}');
+  } catch {
+    return {};
+  }
 }

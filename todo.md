@@ -1292,3 +1292,8 @@
 - [x] Manus-Login Button entfernen (DashboardLayout umgestellt)
 - [x] Nur Social Media Logins (Google, Apple, Microsoft) und Email anzeigen
 - [x] Manus-Referenzen aus Texten entfernt
+
+## Login-Verbesserungen (26.12.2025)
+- [x] Google-Button größer/prominenter machen (weißer Button, "Empfohlen" Badge)
+- [x] Login-Tracking implementieren (localStorage + Server-API)
+- [ ] Production-Test aller Login-Methoden (nach Publish)
