@@ -91,8 +91,13 @@ export function OnboardingTutorial({ onComplete, isOpen }: OnboardingTutorialPro
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
-          className="relative w-full max-w-lg mx-4 bg-background border border-border rounded-2xl shadow-2xl overflow-hidden"
+          className="relative w-full max-w-lg mx-4"
         >
+          {/* Animated Glow Border */}
+          <div className="absolute -inset-[1px] bg-gradient-to-r from-primary/50 via-cyan-500/50 to-primary/50 rounded-2xl opacity-60 blur-sm animate-pulse" />
+          
+          {/* Main Content Container */}
+          <div className="relative bg-background border border-primary/30 rounded-2xl shadow-2xl overflow-hidden">
           {/* Progress Bar */}
           <div className="absolute top-0 left-0 right-0 h-1 bg-muted">
             <motion.div
@@ -189,6 +194,7 @@ export function OnboardingTutorial({ onComplete, isOpen }: OnboardingTutorialPro
                 {currentStep < steps.length - 1 && <ChevronRight className="w-4 h-4" />}
               </Button>
             </div>
+          </div>
           </div>
         </motion.div>
       </motion.div>
