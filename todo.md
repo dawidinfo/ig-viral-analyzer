@@ -1209,3 +1209,4 @@
 - [x] Eigene Follower-Snapshots bei jeder Analyse speichern
 - [x] Ehrliche Anzeige wenn keine historischen Daten vorhanden
 - [x] Weitere Instagram APIs testen für echte historische Daten
+- [x] Prozentuale Veränderung zum Vortag neben Follower-Grafik anzeigen

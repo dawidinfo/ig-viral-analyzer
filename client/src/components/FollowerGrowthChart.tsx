@@ -370,6 +370,19 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
                     </div>
                     <p className="text-xs text-muted-foreground mb-1">Aktuell</p>
                     <p className="text-2xl font-bold">{formatNumber(historyData.currentFollowers)}</p>
+                    {/* Tagesveränderung */}
+                    {historyData.dataPoints.length >= 2 && (() => {
+                      const lastPoint = historyData.dataPoints[historyData.dataPoints.length - 1];
+                      const prevPoint = historyData.dataPoints[historyData.dataPoints.length - 2];
+                      const dayChange = lastPoint.followers - prevPoint.followers;
+                      const dayChangePercent = prevPoint.followers > 0 ? ((dayChange / prevPoint.followers) * 100).toFixed(2) : 0;
+                      return (
+                        <div className={`text-xs mt-1 flex items-center justify-center gap-1 ${dayChange >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                          {dayChange >= 0 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
+                          <span>{dayChange >= 0 ? '+' : ''}{formatNumber(dayChange)} ({dayChangePercent}%)</span>
+                        </div>
+                      );
+                    })()}
                   </div>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-[250px] p-3">
@@ -377,7 +390,7 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
                     <Database className="w-4 h-4 text-green-400 mt-0.5 shrink-0" />
                     <div>
                       <p className="font-semibold text-green-400 mb-1">Echte Daten</p>
-                      <p className="text-xs text-muted-foreground">Aktuelle Follower-Zahl direkt von Instagram. Wird bei jeder Analyse aktualisiert.</p>
+                      <p className="text-xs text-muted-foreground">Aktuelle Follower-Zahl direkt von Instagram. Wird bei jeder Analyse aktualisiert. Die Veränderung zeigt den Unterschied zum Vortag.</p>
                     </div>
                   </div>
                 </TooltipContent>
