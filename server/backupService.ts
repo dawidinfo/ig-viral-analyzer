@@ -4,7 +4,7 @@ import { eq, desc, sql } from "drizzle-orm";
 
 /**
  * Backup Service - Automatic and manual database backups
- * Runs every 15 minutes to create snapshots of user data
+ * Runs twice daily (8:00 and 20:00 UTC) to create snapshots of user data
  */
 
 interface BackupResult {
@@ -301,9 +301,9 @@ export async function runScheduledBackup(): Promise<BackupResult> {
     // Create backup
     const result = await createFullBackup("system", undefined);
 
-    // Cleanup old backups (keep last 96 = 24 hours of 15-min backups)
+    // Cleanup old backups (keep last 14 = 7 days of twice-daily backups)
     if (result.success) {
-      await cleanupOldBackups(96);
+      await cleanupOldBackups(14);
     }
 
     return result;

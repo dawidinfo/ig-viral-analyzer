@@ -119,7 +119,7 @@ export default function DeepAnalysis({ username }: DeepAnalysisProps) {
 
       {/* Tabs for different analysis sections */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="w-full flex flex-wrap bg-white/5 p-1 rounded-xl gap-1">
+        <TabsList className="w-full flex flex-wrap bg-zinc-900/95 backdrop-blur-md p-2 rounded-xl gap-2 sticky top-0 z-50 border border-white/10 shadow-lg">
           <TabsTrigger value="viral-reasons" className="flex-1 min-w-[120px] data-[state=active]:bg-purple-500/20">
             <Zap className="w-4 h-4 mr-2" />
             Viral-Gründe

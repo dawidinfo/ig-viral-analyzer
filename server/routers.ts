@@ -789,6 +789,94 @@ export const appRouter = router({
         const isFavorite = await toggleFavorite(input.planId, input.userId);
         return { isFavorite };
       }),
+
+    // Get analysis notes for a specific section
+    getAnalysisNotes: publicProcedure
+      .input(z.object({
+        username: z.string(),
+        section: z.enum(['analyse', 'erkenntnisse', 'learnings'])
+      }))
+      .query(async ({ input, ctx }) => {
+        const db = await getDb();
+        if (!db) return null;
+        
+        const userId = ctx.user?.id;
+        if (!userId) return null;
+        
+        const { analysisNotes } = await import("../drizzle/schema");
+        
+        const result = await db
+          .select()
+          .from(analysisNotes)
+          .where(and(
+            eq(analysisNotes.userId, userId),
+            eq(analysisNotes.username, input.username.toLowerCase()),
+            eq(analysisNotes.section, input.section)
+          ))
+          .limit(1);
+        
+        if (result.length === 0) return null;
+        
+        return {
+          notes: result[0].notes,
+          actionItems: result[0].actionItems || []
+        };
+      }),
+
+    // Save analysis notes for a specific section
+    saveAnalysisNotes: publicProcedure
+      .input(z.object({
+        username: z.string(),
+        section: z.enum(['analyse', 'erkenntnisse', 'learnings']),
+        notes: z.string(),
+        actionItems: z.array(z.object({
+          id: z.string(),
+          text: z.string(),
+          completed: z.boolean()
+        })).optional()
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        
+        const userId = ctx.user?.id;
+        if (!userId) throw new Error("Not authenticated");
+        
+        const { analysisNotes } = await import("../drizzle/schema");
+        
+        // Check if exists
+        const existing = await db
+          .select()
+          .from(analysisNotes)
+          .where(and(
+            eq(analysisNotes.userId, userId),
+            eq(analysisNotes.username, input.username.toLowerCase()),
+            eq(analysisNotes.section, input.section)
+          ))
+          .limit(1);
+        
+        if (existing.length > 0) {
+          // Update
+          await db
+            .update(analysisNotes)
+            .set({
+              notes: input.notes,
+              actionItems: input.actionItems || []
+            })
+            .where(eq(analysisNotes.id, existing[0].id));
+        } else {
+          // Insert
+          await db.insert(analysisNotes).values({
+            userId: userId,
+            username: input.username.toLowerCase(),
+            section: input.section,
+            notes: input.notes,
+            actionItems: input.actionItems || []
+          });
+        }
+        
+        return { success: true };
+      }),
   }),
 
   // Credit System Router

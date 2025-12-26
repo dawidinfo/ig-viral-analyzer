@@ -518,32 +518,56 @@ export function generateTopContent(
     'Relatable Content'
   ];
 
-  // Generate top reels
-  const topReels: TopContent[] = Array.from({ length: 10 }, (_, i) => {
-    const multiplier = 1 + (10 - i) * 0.3; // Top content has higher engagement
-    const likes = Math.round(avgLikes * multiplier * random(0.8, 1.5, 100 + i));
-    const comments = Math.round(avgComments * multiplier * random(0.7, 1.4, 110 + i));
-    const views = Math.round(avgViews * multiplier * random(1.5, 4, 120 + i));
-    const shares = Math.round(likes * random(0.05, 0.15, 130 + i));
-    const saves = Math.round(likes * random(0.08, 0.2, 140 + i));
-    const engagementRate = Number(((likes + comments) / followerCount * 100).toFixed(2));
-    const viralScore = Math.round(random(60, 98, 150 + i));
-    
-    // Pick 2-3 viral reasons
-    const reasonCount = 2 + Math.floor(random(0, 2, 160 + i));
+  // Helper to analyze viral reasons based on content
+  const analyzeViralReasons = (item: any, index: number): string[] => {
     const reasons: string[] = [];
-    for (let j = 0; j < reasonCount; j++) {
-      const idx = Math.floor(random(0, viralReasonOptions.length, 170 + i + j));
+    const caption = item.caption || '';
+    
+    // Check for hooks
+    if (caption.match(/^[❗🔥⚠️😱💥]/)) reasons.push('Starker Hook in ersten 2 Sekunden');
+    if (caption.match(/\d+\s*(tipps?|schritte?|gründe?|wege?|fehler)/i)) reasons.push('Aufzählungs-Format');
+    if (caption.match(/(ich|mein|mir|mich)/i)) reasons.push('Persönliche Geschichte');
+    if (caption.match(/(tipp|anleitung|how|wie|so)/i)) reasons.push('Praktischer Mehrwert');
+    if (caption.match(/(aber|doch|trotzdem|obwohl)/i)) reasons.push('Überraschender Twist');
+    if (caption.match(/(kennt|jeder|alle|niemand)/i)) reasons.push('Relatable Content');
+    
+    // Add random reasons if not enough
+    while (reasons.length < 2) {
+      const idx = Math.floor(random(0, viralReasonOptions.length, 170 + index + reasons.length));
       if (!reasons.includes(viralReasonOptions[idx])) {
         reasons.push(viralReasonOptions[idx]);
       }
     }
+    
+    return reasons.slice(0, 3);
+  };
+
+  // Use REAL reels data - sort by views/engagement and take top 10
+  const sortedReels = [...reels]
+    .filter(r => r.viewCount > 0 || r.likeCount > 0)
+    .sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0))
+    .slice(0, 10);
+
+  const topReels: TopContent[] = sortedReels.map((reel, i) => {
+    const likes = reel.likeCount || 0;
+    const comments = reel.commentCount || 0;
+    const views = reel.viewCount || 0;
+    const shares = Math.round(likes * random(0.05, 0.15, 130 + i));
+    const saves = Math.round(likes * random(0.08, 0.2, 140 + i));
+    const engagementRate = followerCount > 0 ? Number(((likes + comments) / followerCount * 100).toFixed(2)) : 0;
+    
+    // Calculate viral score based on actual engagement
+    const avgEngagement = avgLikes + avgComments;
+    const thisEngagement = likes + comments;
+    const viralScore = Math.min(99, Math.max(40, Math.round(
+      50 + (thisEngagement / Math.max(avgEngagement, 1) - 1) * 30 + (views / Math.max(avgViews, 1) - 1) * 20
+    )));
 
     return {
-      id: `top_reel_${i}_${seed}`,
+      id: reel.id || `reel_${i}_${seed}`,
       type: 'reel' as const,
-      thumbnailUrl: `https://picsum.photos/seed/${username}topreel${i}/400/700`,
-      caption: getTopReelCaption(i, username),
+      thumbnailUrl: reel.thumbnailUrl || reel.displayUrl || `https://picsum.photos/seed/${username}reel${i}/400/700`,
+      caption: reel.caption || '',
       likes,
       comments,
       views,
@@ -551,46 +575,96 @@ export function generateTopContent(
       saves,
       engagementRate,
       viralScore,
-      timestamp: Date.now() / 1000 - i * 86400 * random(2, 7, 180 + i),
-      duration: Math.round(random(15, 60, 190 + i)),
-      viralReasons: reasons
+      timestamp: reel.timestamp || (Date.now() / 1000 - i * 86400 * 3),
+      duration: reel.videoDuration || Math.round(random(15, 60, 190 + i)),
+      viralReasons: analyzeViralReasons(reel, i)
     };
   });
 
-  // Generate top posts
-  const topPosts: TopContent[] = Array.from({ length: 10 }, (_, i) => {
-    const multiplier = 1 + (10 - i) * 0.25;
-    const likes = Math.round(avgLikes * multiplier * random(0.7, 1.3, 200 + i));
-    const comments = Math.round(avgComments * multiplier * random(0.6, 1.3, 210 + i));
+  // Fill with generated data if not enough real reels
+  while (topReels.length < 10) {
+    const i = topReels.length;
+    const multiplier = 1 + (10 - i) * 0.3;
+    const likes = Math.round(avgLikes * multiplier * random(0.8, 1.5, 100 + i));
+    const comments = Math.round(avgComments * multiplier * random(0.7, 1.4, 110 + i));
+    const views = Math.round(avgViews * multiplier * random(1.5, 4, 120 + i));
+    
+    topReels.push({
+      id: `gen_reel_${i}_${seed}`,
+      type: 'reel' as const,
+      thumbnailUrl: `https://picsum.photos/seed/${username}topreel${i}/400/700`,
+      caption: getTopReelCaption(i, username),
+      likes,
+      comments,
+      views,
+      shares: Math.round(likes * random(0.05, 0.15, 130 + i)),
+      saves: Math.round(likes * random(0.08, 0.2, 140 + i)),
+      engagementRate: Number(((likes + comments) / followerCount * 100).toFixed(2)),
+      viralScore: Math.round(random(60, 85, 150 + i)),
+      timestamp: Date.now() / 1000 - i * 86400 * random(2, 7, 180 + i),
+      duration: Math.round(random(15, 60, 190 + i)),
+      viralReasons: [viralReasonOptions[i % viralReasonOptions.length], viralReasonOptions[(i + 3) % viralReasonOptions.length]]
+    });
+  }
+
+  // Use REAL posts data - sort by likes/engagement and take top 10
+  const sortedPosts = [...posts]
+    .filter(p => p.likeCount > 0)
+    .sort((a, b) => (b.likeCount || 0) - (a.likeCount || 0))
+    .slice(0, 10);
+
+  const topPosts: TopContent[] = sortedPosts.map((post, i) => {
+    const likes = post.likeCount || 0;
+    const comments = post.commentCount || 0;
     const shares = Math.round(likes * random(0.03, 0.1, 220 + i));
     const saves = Math.round(likes * random(0.05, 0.15, 230 + i));
-    const engagementRate = Number(((likes + comments) / followerCount * 100).toFixed(2));
-    const viralScore = Math.round(random(50, 90, 240 + i));
-
-    const reasonCount = 2 + Math.floor(random(0, 2, 250 + i));
-    const reasons: string[] = [];
-    for (let j = 0; j < reasonCount; j++) {
-      const idx = Math.floor(random(0, viralReasonOptions.length, 260 + i + j));
-      if (!reasons.includes(viralReasonOptions[idx])) {
-        reasons.push(viralReasonOptions[idx]);
-      }
-    }
+    const engagementRate = followerCount > 0 ? Number(((likes + comments) / followerCount * 100).toFixed(2)) : 0;
+    
+    // Calculate viral score
+    const avgEngagement = avgLikes + avgComments;
+    const thisEngagement = likes + comments;
+    const viralScore = Math.min(95, Math.max(35, Math.round(
+      45 + (thisEngagement / Math.max(avgEngagement, 1) - 1) * 35
+    )));
 
     return {
-      id: `top_post_${i}_${seed}`,
+      id: post.id || `post_${i}_${seed}`,
       type: 'post' as const,
-      thumbnailUrl: `https://picsum.photos/seed/${username}toppost${i}/400/500`,
-      caption: getTopPostCaption(i, username),
+      thumbnailUrl: post.thumbnailUrl || post.displayUrl || `https://picsum.photos/seed/${username}post${i}/400/500`,
+      caption: post.caption || '',
       likes,
       comments,
       shares,
       saves,
       engagementRate,
       viralScore,
-      timestamp: Date.now() / 1000 - i * 86400 * random(3, 10, 270 + i),
-      viralReasons: reasons
+      timestamp: post.timestamp || (Date.now() / 1000 - i * 86400 * 5),
+      viralReasons: analyzeViralReasons(post, i)
     };
   });
+
+  // Fill with generated data if not enough real posts
+  while (topPosts.length < 10) {
+    const i = topPosts.length;
+    const multiplier = 1 + (10 - i) * 0.25;
+    const likes = Math.round(avgLikes * multiplier * random(0.7, 1.3, 200 + i));
+    const comments = Math.round(avgComments * multiplier * random(0.6, 1.3, 210 + i));
+    
+    topPosts.push({
+      id: `gen_post_${i}_${seed}`,
+      type: 'post' as const,
+      thumbnailUrl: `https://picsum.photos/seed/${username}toppost${i}/400/500`,
+      caption: getTopPostCaption(i, username),
+      likes,
+      comments,
+      shares: Math.round(likes * random(0.03, 0.1, 220 + i)),
+      saves: Math.round(likes * random(0.05, 0.15, 230 + i)),
+      engagementRate: Number(((likes + comments) / followerCount * 100).toFixed(2)),
+      viralScore: Math.round(random(50, 80, 240 + i)),
+      timestamp: Date.now() / 1000 - i * 86400 * random(3, 10, 270 + i),
+      viralReasons: [viralReasonOptions[(i + 1) % viralReasonOptions.length], viralReasonOptions[(i + 4) % viralReasonOptions.length]]
+    });
+  }
 
   return { topReels, topPosts };
 }

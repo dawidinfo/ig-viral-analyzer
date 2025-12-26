@@ -882,3 +882,28 @@ export const databaseBackups = mysqlTable("database_backups", {
 
 export type DatabaseBackup = typeof databaseBackups.$inferSelect;
 export type InsertDatabaseBackup = typeof databaseBackups.$inferInsert;
+
+/**
+ * Analysis Notes - stores user notes for each analysis section
+ */
+export const analysisNotes = mysqlTable("analysis_notes", {
+  id: int("id").autoincrement().primaryKey(),
+  /** User who created the notes */
+  userId: int("userId").notNull(),
+  /** Username of the analyzed account */
+  username: varchar("username", { length: 128 }).notNull(),
+  /** Section: analyse, erkenntnisse, learnings */
+  section: mysqlEnum("section", ["analyse", "erkenntnisse", "learnings"]).notNull(),
+  /** Notes text content */
+  notes: text("notes"),
+  /** Action items as JSON array */
+  actionItems: json("actionItems").$type<Array<{
+    id: string;
+    text: string;
+    completed: boolean;
+  }>>(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+export type AnalysisNote = typeof analysisNotes.$inferSelect;
+export type InsertAnalysisNote = typeof analysisNotes.$inferInsert;

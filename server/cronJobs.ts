@@ -242,7 +242,7 @@ export function stopCronJobs(): void {
 }
 
 /**
- * Start automatic database backup every 15 minutes
+ * Start automatic database backup twice daily (8:00 and 20:00 UTC)
  */
 function startBackupCron(): void {
   if (backupInterval) {
@@ -250,12 +250,26 @@ function startBackupCron(): void {
     return;
   }
   
-  console.log("[CronJobs] Starting automatic backup (every 15 minutes)...");
+  console.log("[CronJobs] Starting automatic backup (twice daily at 8:00 and 20:00 UTC)...");
   
-  // Run backup every 15 minutes (15 * 60 * 1000 = 900000 ms)
+  // Check every hour if it's time for a backup
   backupInterval = setInterval(async () => {
-    await runBackupJob();
-  }, 15 * 60 * 1000);
+    const now = new Date();
+    const hour = now.getUTCHours();
+    const minute = now.getUTCMinutes();
+    
+    // Run backup at 8:00 and 20:00 UTC (within first 5 minutes of the hour)
+    if ((hour === 8 || hour === 20) && minute < 5) {
+      // Check if we already ran a backup in the last hour
+      if (lastBackupRun) {
+        const hoursSinceLastBackup = (Date.now() - lastBackupRun.getTime()) / (1000 * 60 * 60);
+        if (hoursSinceLastBackup < 1) {
+          return; // Already ran recently
+        }
+      }
+      await runBackupJob();
+    }
+  }, 60 * 60 * 1000); // Check every hour
   
   // Run first backup after 1 minute delay (to let server fully start)
   setTimeout(async () => {

@@ -1214,3 +1214,7 @@
 - [x] Benchmark-Vergleich mit ähnlichen Accounts in Vergleichskarten
 - [x] Follower-Chart mit Trendlinie und farbigen Bereichen erweitern
 - [x] Anomalie-Erkennung für Follower-Spitzen und Einbrüche im Chart
+- [x] Top Content mit echten Daten aus API laden (nicht Platzhalter)
+- [x] Sticky Navigation für Analyse-Sektionen implementieren
+- [ ] Analyse-Seite in 3 Blöcke strukturieren: Analyse, Erkenntnisse, Learnings & Impulse
+- [ ] Notiz-Funktion für persönliche Learnings hinzufügen
