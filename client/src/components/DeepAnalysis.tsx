@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
@@ -6,9 +6,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Scissors, ListOrdered, UserCheck, Zap, Repeat, Gem, Search, Heart,
   TrendingUp, Eye, MessageCircle, Share2, Bookmark, Play, Clock,
-  CheckCircle, AlertCircle, Sparkles, Target, BarChart3, FileText
+  CheckCircle, AlertCircle, Sparkles, Target, BarChart3, FileText, RefreshCw
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
+import { Button } from "@/components/ui/button";
 
 interface DeepAnalysisProps {
   username: string;
@@ -42,20 +43,46 @@ function formatDate(timestamp: number): string {
 
 export default function DeepAnalysis({ username }: DeepAnalysisProps) {
   const [activeTab, setActiveTab] = useState("viral-reasons");
+  const [hasTimedOut, setHasTimedOut] = useState(false);
   
-  const { data: deepAnalysis, isLoading, error } = trpc.instagram.deepAnalysis.useQuery(
+  const { data: deepAnalysis, isLoading, error, refetch } = trpc.instagram.deepAnalysis.useQuery(
     { username },
-    { enabled: !!username }
+    { 
+      enabled: !!username,
+      retry: 1,
+      retryDelay: 1000,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    }
   );
 
-  if (isLoading) {
+  // Timeout for long-running requests
+  useEffect(() => {
+    if (isLoading) {
+      const timeout = setTimeout(() => {
+        setHasTimedOut(true);
+      }, 10000); // 10 second timeout
+      return () => clearTimeout(timeout);
+    } else {
+      setHasTimedOut(false);
+    }
+  }, [isLoading]);
+
+  if (isLoading && !hasTimedOut) {
     return (
       <div className="space-y-6">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center">
+            <Target className="w-4 h-4 text-white animate-pulse" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-sm">Tiefenanalyse</h3>
+            <p className="text-xs text-muted-foreground">Lade HAPSS Framework...</p>
+          </div>
+        </div>
         <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-white/5 rounded w-1/3"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[1, 2, 3, 4].map(i => (
-              <div key={i} className="h-48 bg-white/5 rounded-xl"></div>
+              <div key={i} className="h-32 bg-muted/20 rounded-xl"></div>
             ))}
           </div>
         </div>
@@ -63,11 +90,41 @@ export default function DeepAnalysis({ username }: DeepAnalysisProps) {
     );
   }
 
+  // Show timeout message
+  if (hasTimedOut && isLoading) {
+    return (
+      <Card className="bg-amber-500/10 border-amber-500/30">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Clock className="w-5 h-5 text-amber-400" />
+              <div>
+                <p className="text-sm font-medium text-amber-200">Tiefenanalyse lädt...</p>
+                <p className="text-xs text-amber-400/70">Dies kann einen Moment dauern</p>
+              </div>
+            </div>
+            <Button size="sm" variant="outline" onClick={() => refetch()} className="text-amber-400 border-amber-500/30">
+              <RefreshCw className="w-4 h-4 mr-1" /> Neu laden
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   if (error || !deepAnalysis) {
     return (
       <Card className="bg-red-500/10 border-red-500/20">
-        <CardContent className="p-6">
-          <p className="text-red-400">Fehler beim Laden der tiefgehenden Analyse</p>
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="w-5 h-5 text-red-400" />
+              <p className="text-sm text-red-400">Tiefenanalyse konnte nicht geladen werden</p>
+            </div>
+            <Button size="sm" variant="outline" onClick={() => refetch()} className="text-red-400 border-red-500/30">
+              <RefreshCw className="w-4 h-4 mr-1" /> Erneut versuchen
+            </Button>
+          </div>
         </CardContent>
       </Card>
     );

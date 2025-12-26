@@ -22,8 +22,8 @@ export const RATE_LIMIT_CONFIG = {
   search: { limit: 120, windowSeconds: 60 }, // 120 searches per minute (increased from 30)
   export: { limit: 20, windowSeconds: 60 }, // 20 exports per minute (increased from 5)
   admin: { limit: 200, windowSeconds: 60 }, // 200 admin calls per minute
-  login: { limit: 10, windowSeconds: 300 }, // 10 login attempts per 5 minutes
-  signup: { limit: 5, windowSeconds: 3600 }, // 5 signups per hour per IP
+  login: { limit: 30, windowSeconds: 300 }, // 30 login attempts per 5 minutes (increased for OAuth)
+  signup: { limit: 20, windowSeconds: 3600 }, // 20 signups per hour per IP (increased for OAuth)
   api: { limit: 200, windowSeconds: 60 }, // 200 API calls per minute (increased from 100)
   webhook: { limit: 100, windowSeconds: 60 }, // 100 webhook calls per minute
   default: { limit: 120, windowSeconds: 60 }, // 120 calls per minute default (increased from 60)

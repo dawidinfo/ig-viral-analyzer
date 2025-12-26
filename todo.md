@@ -1250,3 +1250,8 @@
 - [ ] Problem: AI Reel-Analyse und HAPSS Framework Sektionen sind leer
 - [ ] Ursache identifizieren
 - [ ] Fix implementieren
+
+## Bug-Fix: Login Rate Exceeded + Leere Analysen (26.12.2024)
+- [x] OAuth Callback wird durch Rate Limiting blockiert (Login-Limits erhöht auf 30/5min)
+- [x] Unsichtbares Overlay/Modal blockiert Analyse-Seite (Timeout + Retry-Buttons hinzugefügt)
+- [x] Analysen erscheinen leer bis man klickt (Loading-States mit Timeouts verbessert)

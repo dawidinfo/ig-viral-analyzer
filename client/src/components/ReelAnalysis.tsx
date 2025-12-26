@@ -348,9 +348,22 @@ export default function ReelAnalysis({ username }: ReelAnalysisProps) {
 
   if (error || !analysis) {
     return (
-      <div className="flex items-center gap-3 text-destructive">
-        <AlertCircle className="w-5 h-5" />
-        <span>Fehler beim Laden der Analyse</span>
+      <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-red-400" />
+            <div>
+              <p className="text-sm font-medium text-red-200">AI Reel-Analyse nicht verfügbar</p>
+              <p className="text-xs text-red-400/70">Bitte versuche es später erneut</p>
+            </div>
+          </div>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-3 py-1.5 text-xs bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-lg transition-colors"
+          >
+            Neu laden
+          </button>
+        </div>
       </div>
     );
   }
