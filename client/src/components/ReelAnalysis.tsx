@@ -32,7 +32,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface ReelAnalysisProps {
   username: string;
@@ -268,10 +268,30 @@ export default function ReelAnalysis({ username }: ReelAnalysisProps) {
     new Set(['transcription', 'hook', 'aida', 'hapss', 'copywriting', 'recommendations'])
   );
   
-  const { data: analysis, isLoading, error } = trpc.instagram.analyzeReel.useQuery(
+  const { data: analysis, isLoading, error, isError } = trpc.instagram.analyzeReel.useQuery(
     { username },
-    { enabled: !!username }
+    { 
+      enabled: !!username,
+      retry: 1,
+      retryDelay: 1000,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+    }
   );
+
+  // Timeout state for long-running requests
+  const [hasTimedOut, setHasTimedOut] = useState(false);
+  
+  useEffect(() => {
+    if (isLoading) {
+      const timeout = setTimeout(() => {
+        setHasTimedOut(true);
+      }, 15000); // 15 second timeout
+      return () => clearTimeout(timeout);
+    } else {
+      setHasTimedOut(false);
+    }
+  }, [isLoading]);
 
   const toggleSection = (section: string) => {
     setExpandedSections(prev => {
@@ -285,7 +305,7 @@ export default function ReelAnalysis({ username }: ReelAnalysisProps) {
     });
   };
 
-  if (isLoading) {
+  if (isLoading && !hasTimedOut) {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-3 mb-6">
@@ -301,6 +321,26 @@ export default function ReelAnalysis({ username }: ReelAnalysisProps) {
           {[1, 2, 3].map((i) => (
             <div key={i} className="h-20 bg-muted/30 rounded-xl animate-pulse" />
           ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Show timeout message if request takes too long
+  if (hasTimedOut && isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
+            <Clock className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h3 className="font-bold">AI Reel-Analyse</h3>
+            <p className="text-sm text-amber-400">Analyse dauert länger als erwartet...</p>
+          </div>
+        </div>
+        <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
+          <p className="text-sm text-amber-200">Die KI-Analyse benötigt mehr Zeit. Bitte warte einen Moment oder lade die Seite neu.</p>
         </div>
       </div>
     );

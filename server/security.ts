@@ -7,12 +7,12 @@ const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 
 // Rate limit configurations
 const RATE_LIMITS = {
-  // API calls per minute
-  analysis: { limit: 10, window: 60000 }, // 10 analyses per minute
-  search: { limit: 30, window: 60000 }, // 30 searches per minute
-  export: { limit: 5, window: 60000 }, // 5 exports per minute
-  admin: { limit: 100, window: 60000 }, // 100 admin calls per minute
-  default: { limit: 60, window: 60000 }, // 60 calls per minute default
+  // API calls per minute - increased for better UX
+  analysis: { limit: 30, window: 60000 }, // 30 analyses per minute (increased from 10)
+  search: { limit: 60, window: 60000 }, // 60 searches per minute (increased from 30)
+  export: { limit: 10, window: 60000 }, // 10 exports per minute (increased from 5)
+  admin: { limit: 200, window: 60000 }, // 200 admin calls per minute
+  default: { limit: 120, window: 60000 }, // 120 calls per minute default (increased from 60)
 };
 
 // Forbidden content patterns

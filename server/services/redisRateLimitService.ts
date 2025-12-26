@@ -15,18 +15,18 @@ import { getDb } from "../db";
 import { rateLimits } from "../../drizzle/schema";
 import { eq, and, gte, sql } from "drizzle-orm";
 
-// Rate limit configurations
+// Rate limit configurations - increased for better UX
 export const RATE_LIMIT_CONFIG = {
-  // API calls per window
-  analysis: { limit: 10, windowSeconds: 60 }, // 10 analyses per minute
-  search: { limit: 30, windowSeconds: 60 }, // 30 searches per minute
-  export: { limit: 5, windowSeconds: 60 }, // 5 exports per minute
-  admin: { limit: 100, windowSeconds: 60 }, // 100 admin calls per minute
-  login: { limit: 5, windowSeconds: 300 }, // 5 login attempts per 5 minutes
-  signup: { limit: 3, windowSeconds: 3600 }, // 3 signups per hour per IP
-  api: { limit: 100, windowSeconds: 60 }, // 100 API calls per minute
-  webhook: { limit: 50, windowSeconds: 60 }, // 50 webhook calls per minute
-  default: { limit: 60, windowSeconds: 60 }, // 60 calls per minute default
+  // API calls per window - generous limits for smooth user experience
+  analysis: { limit: 60, windowSeconds: 60 }, // 60 analyses per minute (increased from 10)
+  search: { limit: 120, windowSeconds: 60 }, // 120 searches per minute (increased from 30)
+  export: { limit: 20, windowSeconds: 60 }, // 20 exports per minute (increased from 5)
+  admin: { limit: 200, windowSeconds: 60 }, // 200 admin calls per minute
+  login: { limit: 10, windowSeconds: 300 }, // 10 login attempts per 5 minutes
+  signup: { limit: 5, windowSeconds: 3600 }, // 5 signups per hour per IP
+  api: { limit: 200, windowSeconds: 60 }, // 200 API calls per minute (increased from 100)
+  webhook: { limit: 100, windowSeconds: 60 }, // 100 webhook calls per minute
+  default: { limit: 120, windowSeconds: 60 }, // 120 calls per minute default (increased from 60)
 };
 
 export type RateLimitAction = keyof typeof RATE_LIMIT_CONFIG;

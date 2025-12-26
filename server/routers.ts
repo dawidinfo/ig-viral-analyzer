@@ -185,8 +185,15 @@ export const appRouter = router({
         reelUrl: z.string().optional()
       }))
       .query(async ({ input }) => {
-        const analysis = await analyzeReel(input.username, input.reelUrl);
-        return analysis;
+        try {
+          console.log(`[ReelAnalysis] Starting analysis for @${input.username}`);
+          const analysis = await analyzeReel(input.username, input.reelUrl);
+          console.log(`[ReelAnalysis] Completed analysis for @${input.username}`);
+          return analysis;
+        } catch (error) {
+          console.error(`[ReelAnalysis] Error for @${input.username}:`, error);
+          throw new Error(`Reel-Analyse fehlgeschlagen: ${error}`);
+        }
       }),
 
     // Deep viral analysis with HAPSS, patterns, SEO, top content

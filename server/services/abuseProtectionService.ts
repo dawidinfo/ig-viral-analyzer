@@ -9,13 +9,13 @@ import { eq, and, gte, sql, desc } from "drizzle-orm";
 import { sendAdminNotification } from "../emailService";
 import { alertUserSuspended, alertSuspiciousActivity, alertRateLimitExceeded } from "./webhookService";
 
-// Rate limits per plan (analyses per hour / per day)
+// Rate limits per plan (analyses per hour / per day) - increased for better UX
 export const RATE_LIMITS = {
-  free: { perHour: 5, perDay: 10, warningThreshold: 8 },
-  starter: { perHour: 20, perDay: 100, warningThreshold: 80 },
-  pro: { perHour: 50, perDay: 300, warningThreshold: 250 },
-  business: { perHour: 100, perDay: 1000, warningThreshold: 800 },
-  enterprise: { perHour: 500, perDay: 5000, warningThreshold: 4000 },
+  free: { perHour: 15, perDay: 30, warningThreshold: 25 }, // Increased from 5/10
+  starter: { perHour: 50, perDay: 200, warningThreshold: 160 }, // Increased from 20/100
+  pro: { perHour: 100, perDay: 500, warningThreshold: 400 }, // Increased from 50/300
+  business: { perHour: 200, perDay: 2000, warningThreshold: 1600 }, // Increased from 100/1000
+  enterprise: { perHour: 1000, perDay: 10000, warningThreshold: 8000 }, // Increased from 500/5000
 } as const;
 
 // Suspicious activity thresholds
