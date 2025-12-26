@@ -1281,3 +1281,9 @@
 - [x] Exit-Popup kleiner machen (max-w-sm statt max-w-md)
 - [x] Scroll entfernen (overflow-hidden)
 - [x] Kompakteres Layout (kleinere Texte, Grid für Benefits)
+
+## Exit-Popup Mobile-Optimierung (26.12.2025)
+- [x] Responsive Layout für kleine Bildschirme (Bottom-Sheet auf Mobile)
+- [x] Touch-freundliche Buttons (min-h-[44px], touch-manipulation)
+- [x] Angepasste Schriftgrößen für Mobile (sm: Breakpoints)
+- [x] Optimierter Trigger für Mobile (Scroll-Up + Zeit-basiert nach 30s)
