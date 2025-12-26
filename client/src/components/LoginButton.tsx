@@ -66,7 +66,7 @@ export function LoginButton({
       {showSecurityNote && (
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <Shield className="w-3 h-3 text-emerald-500" />
-          <span>Sicherer Login über Manus-Authentifizierung</span>
+          <span>Sicherer Login mit SSL-Verschlüsselung</span>
         </div>
       )}
       
@@ -116,7 +116,7 @@ export function MobileLoginButton({ onClose, className = "" }: { onClose?: () =>
       </Button>
       <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
         <Shield className="w-3 h-3 text-emerald-500" />
-        <span>Sicherer Login über Manus</span>
+        <span>Sicherer Login</span>
       </div>
     </div>
   );

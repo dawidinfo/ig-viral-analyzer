@@ -1287,3 +1287,8 @@
 - [x] Touch-freundliche Buttons (min-h-[44px], touch-manipulation)
 - [x] Angepasste Schriftgrößen für Mobile (sm: Breakpoints)
 - [x] Optimierter Trigger für Mobile (Scroll-Up + Zeit-basiert nach 30s)
+
+## Login-Seite Anpassung (26.12.2025)
+- [x] Manus-Login Button entfernen (DashboardLayout umgestellt)
+- [x] Nur Social Media Logins (Google, Apple, Microsoft) und Email anzeigen
+- [x] Manus-Referenzen aus Texten entfernt

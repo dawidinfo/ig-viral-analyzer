@@ -59,7 +59,7 @@ export function SocialLoginButtons({
     
     const popup = window.open(
       loginUrl,
-      'manus-login',
+      'reelspy-login',
       `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`
     );
 

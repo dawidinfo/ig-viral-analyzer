@@ -1,5 +1,5 @@
 import { useAuth } from "@/_core/hooks/useAuth";
-import { LoginButton } from "@/components/LoginButton";
+import { SocialLoginButtons } from "@/components/SocialLoginButtons";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -69,14 +69,11 @@ export default function DashboardLayout({
               Für den Zugriff auf das Dashboard ist eine Anmeldung erforderlich.
             </p>
           </div>
-          <LoginButton 
-            variant="gradient" 
-            size="lg" 
-            showSecurityNote={true}
-            className="w-full shadow-lg hover:shadow-xl transition-all"
-          >
-            Jetzt anmelden
-          </LoginButton>
+          <SocialLoginButtons 
+            variant="vertical" 
+            showLabels={true}
+            className="w-full"
+          />
         </div>
       </div>
     );
