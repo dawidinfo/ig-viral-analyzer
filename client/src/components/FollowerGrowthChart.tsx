@@ -39,7 +39,10 @@ import {
   ResponsiveContainer,
   Area,
   AreaChart,
-  ReferenceLine
+  ReferenceLine,
+  Scatter,
+  ComposedChart,
+  ReferenceArea
 } from "recharts";
 
 interface FollowerGrowthChartProps {
@@ -160,13 +163,18 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
   // Prepare chart data
   // Calculate trend line using linear regression
   const trendData = useMemo(() => {
-    if (!historyData?.dataPoints || historyData.dataPoints.length < 2) return { slope: 0, intercept: 0, average: 0 };
+    if (!historyData?.dataPoints || historyData.dataPoints.length < 2) return { slope: 0, intercept: 0, average: 0, stdDev: 0 };
     
     const points = historyData.dataPoints;
     const n = points.length;
     
     // Calculate average
     const avgFollowers = points.reduce((sum, p) => sum + p.followers, 0) / n;
+    
+    // Calculate standard deviation for anomaly detection
+    const squaredDiffs = points.map(p => Math.pow(p.followers - avgFollowers, 2));
+    const avgSquaredDiff = squaredDiffs.reduce((sum, d) => sum + d, 0) / n;
+    const stdDev = Math.sqrt(avgSquaredDiff);
     
     // Linear regression for trend line
     let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
@@ -180,7 +188,7 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
     const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
     const intercept = (sumY - slope * sumX) / n;
     
-    return { slope, intercept, average: avgFollowers };
+    return { slope, intercept, average: avgFollowers, stdDev };
   }, [historyData]);
 
   const chartData = useMemo(() => {
@@ -188,21 +196,50 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
     
     // Sample data points for better visualization
     const points = historyData.dataPoints;
-    const { slope, intercept, average } = trendData;
+    const { slope, intercept, average, stdDev } = trendData;
     
-    // Add trend line and average to each point
-    const enrichedPoints = points.map((p, i) => ({
-      ...p,
-      trend: Math.round(slope * i + intercept),
-      average: Math.round(average),
-      isGrowth: i > 0 ? p.followers >= points[i - 1].followers : true
-    }));
+    // Anomaly thresholds (2 standard deviations = ~95% confidence)
+    const upperThreshold = average + (stdDev * 2);
+    const lowerThreshold = average - (stdDev * 2);
+    
+    // Calculate daily changes for anomaly detection
+    const dailyChanges = points.map((p, i) => {
+      if (i === 0) return 0;
+      return p.followers - points[i - 1].followers;
+    });
+    
+    // Calculate average and stdDev of daily changes
+    const avgChange = dailyChanges.slice(1).reduce((sum, c) => sum + c, 0) / Math.max(1, dailyChanges.length - 1);
+    const changeSquaredDiffs = dailyChanges.slice(1).map(c => Math.pow(c - avgChange, 2));
+    const changeStdDev = Math.sqrt(changeSquaredDiffs.reduce((sum, d) => sum + d, 0) / Math.max(1, changeSquaredDiffs.length));
+    
+    // Add trend line, average, and anomaly detection to each point
+    const enrichedPoints = points.map((p, i) => {
+      const dailyChange = i > 0 ? p.followers - points[i - 1].followers : 0;
+      const isSpike = dailyChange > avgChange + (changeStdDev * 2); // Unusual growth
+      const isDip = dailyChange < avgChange - (changeStdDev * 2); // Unusual drop
+      const isAnomaly = isSpike || isDip;
+      
+      return {
+        ...p,
+        trend: Math.round(slope * i + intercept),
+        average: Math.round(average),
+        isGrowth: i > 0 ? p.followers >= points[i - 1].followers : true,
+        dailyChange,
+        isAnomaly,
+        isSpike,
+        isDip,
+        anomalyValue: isAnomaly ? p.followers : null,
+        upperBand: Math.round(upperThreshold),
+        lowerBand: Math.round(lowerThreshold)
+      };
+    });
     
     if (enrichedPoints.length <= 30) return enrichedPoints;
     
-    // Sample every nth point for longer ranges
+    // Sample every nth point for longer ranges, but always include anomalies
     const step = Math.ceil(enrichedPoints.length / 30);
-    return enrichedPoints.filter((_, i) => i % step === 0 || i === enrichedPoints.length - 1);
+    return enrichedPoints.filter((p, i) => i % step === 0 || i === enrichedPoints.length - 1 || p.isAnomaly);
   }, [historyData, trendData]);
 
   // Paginated table data
@@ -735,7 +772,7 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
           {/* Chart */}
           <div className="h-[350px] mt-4">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+              <ComposedChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="followerGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
@@ -794,7 +831,36 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
                   fill="url(#followerGradient)"
                   name="Follower"
                 />
-              </AreaChart>
+                {/* Anomalie-Punkte */}
+                <Line
+                  type="monotone"
+                  dataKey="anomalyValue"
+                  stroke="transparent"
+                  dot={(props: any) => {
+                    const { cx, cy, payload } = props;
+                    if (!payload?.isAnomaly || cx === undefined || cy === undefined) return <g />;
+                    const color = payload.isSpike ? '#22c55e' : '#ef4444';
+                    return (
+                      <g key={`anomaly-${payload.date}`}>
+                        {/* Pulsierender Kreis */}
+                        <circle cx={cx} cy={cy} r={8} fill={color} fillOpacity={0.3}>
+                          <animate attributeName="r" values="8;12;8" dur="2s" repeatCount="indefinite" />
+                          <animate attributeName="fill-opacity" values="0.3;0.1;0.3" dur="2s" repeatCount="indefinite" />
+                        </circle>
+                        {/* Innerer Kreis */}
+                        <circle cx={cx} cy={cy} r={5} fill={color} stroke="white" strokeWidth={2} />
+                        {/* Icon */}
+                        {payload.isSpike ? (
+                          <text x={cx} y={cy + 3} textAnchor="middle" fill="white" fontSize={8} fontWeight="bold">↑</text>
+                        ) : (
+                          <text x={cx} y={cy + 3} textAnchor="middle" fill="white" fontSize={8} fontWeight="bold">↓</text>
+                        )}
+                      </g>
+                    );
+                  }}
+                  activeDot={false}
+                />
+              </ComposedChart>
             </ResponsiveContainer>
           </div>
           
@@ -812,7 +878,37 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
               <div className="w-4 h-0.5 bg-amber-500 rounded" style={{ borderStyle: 'dashed' }}></div>
               <span className="text-muted-foreground">Durchschnitt</span>
             </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-green-500 border-2 border-white"></div>
+              <span className="text-muted-foreground">Spike (↑)</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-red-500 border-2 border-white"></div>
+              <span className="text-muted-foreground">Einbruch (↓)</span>
+            </div>
           </div>
+          
+          {/* Anomalie-Hinweise */}
+          {chartData.some(p => p.isAnomaly) && (
+            <div className="mt-4 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+              <div className="flex items-start gap-2">
+                <Info className="w-4 h-4 text-yellow-400 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-sm font-medium text-yellow-400">Anomalien erkannt</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {chartData.filter(p => p.isSpike).length > 0 && (
+                      <span className="text-green-400">{chartData.filter(p => p.isSpike).length} ungewöhnliche Spikes</span>
+                    )}
+                    {chartData.filter(p => p.isSpike).length > 0 && chartData.filter(p => p.isDip).length > 0 && ' • '}
+                    {chartData.filter(p => p.isDip).length > 0 && (
+                      <span className="text-red-400">{chartData.filter(p => p.isDip).length} ungewöhnliche Einbrüche</span>
+                    )}
+                    {' '}— Diese Punkte weichen stark vom Durchschnitt ab (2+ Standardabweichungen).
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Best/Worst Days */}
           <div className="grid md:grid-cols-2 gap-4 mt-6">

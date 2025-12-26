@@ -1213,3 +1213,4 @@
 - [x] Wöchentlichen und monatlichen Follower-Vergleich hinzufügen
 - [x] Benchmark-Vergleich mit ähnlichen Accounts in Vergleichskarten
 - [x] Follower-Chart mit Trendlinie und farbigen Bereichen erweitern
+- [x] Anomalie-Erkennung für Follower-Spitzen und Einbrüche im Chart
