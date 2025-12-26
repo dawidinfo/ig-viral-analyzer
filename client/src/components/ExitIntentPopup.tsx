@@ -161,7 +161,7 @@ export function ExitIntentPopup() {
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
           >
-            <div className="relative w-full max-w-md bg-gradient-to-b from-card to-card/95 border-2 border-violet-500/50 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
+            <div className="relative w-full max-w-sm bg-gradient-to-b from-card to-card/95 border-2 border-violet-500/50 rounded-2xl shadow-2xl overflow-hidden">
               {/* Animated Glow Effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10" />
               <motion.div 
@@ -170,7 +170,7 @@ export function ExitIntentPopup() {
                   opacity: [0.3, 0.5, 0.3]
                 }}
                 transition={{ duration: 3, repeat: Infinity }}
-                className="absolute -top-20 -right-20 w-60 h-60 bg-violet-500/30 rounded-full blur-3xl" 
+                className="absolute -top-10 -right-10 w-32 h-32 bg-violet-500/30 rounded-full blur-2xl" 
               />
               <motion.div 
                 animate={{ 
@@ -178,7 +178,7 @@ export function ExitIntentPopup() {
                   opacity: [0.2, 0.4, 0.2]
                 }}
                 transition={{ duration: 4, repeat: Infinity, delay: 1 }}
-                className="absolute -bottom-20 -left-20 w-60 h-60 bg-purple-500/30 rounded-full blur-3xl" 
+                className="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-500/30 rounded-full blur-2xl" 
               />
 
               {/* Close Button - Larger and more visible */}
@@ -190,118 +190,95 @@ export function ExitIntentPopup() {
                 <X className="w-6 h-6 text-foreground group-hover:text-red-400 transition-colors" />
               </button>
 
-              <div className="relative p-5 sm:p-6">
+              <div className="relative p-4">
                 {/* Top Badge */}
-                <div className="flex justify-center mb-4">
+                <div className="flex justify-center mb-3">
                   <motion.div 
-                    animate={{ y: [0, -5, 0] }}
+                    animate={{ y: [0, -3, 0] }}
                     transition={{ duration: 2, repeat: Infinity }}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-violet-500/20 to-purple-500/20 border border-violet-500/40 text-violet-300 text-sm font-semibold"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-violet-500/20 to-purple-500/20 border border-violet-500/40 text-violet-300 text-xs font-semibold"
                   >
-                    <Gift className="w-4 h-4" />
-                    Exklusives Angebot - Nur für kurze Zeit!
+                    <Gift className="w-3.5 h-3.5" />
+                    Exklusives Angebot
                   </motion.div>
                 </div>
 
                 {/* Main Title */}
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-2">
-                  Warte! Sichere dir
-                  <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-purple-400 to-pink-400">
-                    {DISCOUNT_PERCENT}% Rabatt
-                  </span>
+                <h2 className="text-lg sm:text-xl font-bold text-center mb-1">
+                  Warte! <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-purple-400 to-pink-400">{DISCOUNT_PERCENT}% Rabatt</span>
                 </h2>
 
                 {/* Promo Code Box */}
-                <div className="my-6">
-                  <div 
-                    onClick={handleCopyCode}
-                    className="relative cursor-pointer group"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-violet-500 to-purple-500 rounded-xl blur opacity-50 group-hover:opacity-75 transition-opacity" />
-                    <div className="relative flex items-center justify-between bg-background/90 backdrop-blur-sm border-2 border-violet-500/50 rounded-xl p-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center">
-                          <Crown className="w-5 h-5 text-white" />
-                        </div>
-                        <div>
-                          <p className="text-xs text-muted-foreground">Dein Rabatt-Code:</p>
-                          <p className="text-xl sm:text-2xl font-mono font-bold tracking-wider text-violet-400">
-                            {PROMO_CODE}
-                          </p>
-                        </div>
+                <div 
+                  onClick={handleCopyCode}
+                  className="relative cursor-pointer group my-3"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-violet-500 to-purple-500 rounded-lg blur opacity-40 group-hover:opacity-60 transition-opacity" />
+                  <div className="relative flex items-center justify-between bg-background/90 backdrop-blur-sm border border-violet-500/50 rounded-lg p-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-md bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center">
+                        <Crown className="w-4 h-4 text-white" />
                       </div>
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        className="text-violet-400 hover:text-violet-300 hover:bg-violet-500/20"
-                      >
-                        {copied ? (
-                          <Check className="w-5 h-5" />
-                        ) : (
-                          <Copy className="w-5 h-5" />
-                        )}
-                      </Button>
+                      <div>
+                        <p className="text-[10px] text-muted-foreground">Rabatt-Code:</p>
+                        <p className="text-lg font-mono font-bold tracking-wider text-violet-400">
+                          {PROMO_CODE}
+                        </p>
+                      </div>
                     </div>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      className="text-violet-400 hover:text-violet-300 hover:bg-violet-500/20 h-8 w-8 p-0"
+                    >
+                      {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    </Button>
                   </div>
-                  <p className="text-center text-xs text-muted-foreground mt-2">
-                    Klicke zum Kopieren
-                  </p>
                 </div>
 
-                {/* Benefits */}
-                <div className="space-y-1.5 mb-4">
+                {/* Benefits - Compact Grid */}
+                <div className="grid grid-cols-2 gap-1.5 mb-3 text-xs">
                   {[
-                    { text: `${DISCOUNT_PERCENT}% auf alle Pro-Pläne`, highlight: true },
-                    { text: "Unbegrenzte KI-Analysen", highlight: false },
-                    { text: "30-Tage Content-Plan Generator", highlight: false },
-                    { text: "Prioritäts-Support", highlight: false }
+                    { text: `${DISCOUNT_PERCENT}% Rabatt`, icon: CheckCircle2 },
+                    { text: "Unbegrenzte Analysen", icon: CheckCircle2 },
+                    { text: "Content-Plan", icon: CheckCircle2 },
+                    { text: "Prioritäts-Support", icon: CheckCircle2 }
                   ].map((benefit, i) => (
-                    <motion.div
+                    <div
                       key={i}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.1 * i }}
-                      className={`flex items-center gap-3 p-2.5 rounded-lg ${
-                        benefit.highlight 
-                          ? 'bg-gradient-to-r from-violet-500/20 to-purple-500/20 border border-violet-500/30' 
-                          : 'bg-muted/30'
-                      }`}
+                      className="flex items-center gap-1.5 p-1.5 rounded bg-muted/30"
                     >
-                      <CheckCircle2 className={`w-5 h-5 ${benefit.highlight ? 'text-violet-400' : 'text-emerald-500'}`} />
-                      <span className={`text-sm ${benefit.highlight ? 'font-semibold text-violet-300' : ''}`}>
-                        {benefit.text}
-                      </span>
-                    </motion.div>
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                      <span className="truncate">{benefit.text}</span>
+                    </div>
                   ))}
                 </div>
 
                 {/* Countdown Timer */}
-                <div className="flex items-center justify-center gap-2 mb-4 p-2.5 rounded-xl bg-red-500/10 border border-red-500/20">
-                  <Clock className="w-5 h-5 text-red-400" />
-                  <span className="text-sm text-red-300">Angebot endet in:</span>
-                  <span className="font-mono font-bold text-xl text-red-400">{formatTime(countdown)}</span>
+                <div className="flex items-center justify-center gap-2 mb-3 p-2 rounded-lg bg-red-500/10 border border-red-500/20">
+                  <Clock className="w-4 h-4 text-red-400" />
+                  <span className="text-xs text-red-300">Endet in:</span>
+                  <span className="font-mono font-bold text-base text-red-400">{formatTime(countdown)}</span>
                 </div>
 
                 {/* CTA Buttons */}
                 <div className="space-y-2">
                   <Button
-                    size="lg"
                     onClick={handleClaim}
-                    className="w-full bg-gradient-to-r from-violet-500 via-purple-500 to-pink-500 hover:from-violet-600 hover:via-purple-600 hover:to-pink-600 text-white border-0 text-base py-5 shadow-lg shadow-violet-500/30"
+                    className="w-full bg-gradient-to-r from-violet-500 via-purple-500 to-pink-500 hover:from-violet-600 hover:via-purple-600 hover:to-pink-600 text-white border-0 text-sm py-2.5 shadow-lg shadow-violet-500/30"
                   >
-                    <Zap className="w-5 h-5 mr-2" />
+                    <Zap className="w-4 h-4 mr-1.5" />
                     Jetzt {DISCOUNT_PERCENT}% sparen
-                    <ArrowRight className="w-5 h-5 ml-2" />
+                    <ArrowRight className="w-4 h-4 ml-1.5" />
                   </Button>
 
                   <Button
                     variant="outline"
-                    size="lg"
+                    size="sm"
                     onClick={handleTryFree}
-                    className="w-full border-muted-foreground/30 text-muted-foreground hover:text-foreground py-4"
+                    className="w-full border-muted-foreground/30 text-muted-foreground hover:text-foreground text-xs"
                   >
-                    <Sparkles className="w-4 h-4 mr-2" />
+                    <Sparkles className="w-3.5 h-3.5 mr-1.5" />
                     Erst kostenlos testen
                   </Button>
                 </div>
@@ -309,9 +286,9 @@ export function ExitIntentPopup() {
                 {/* Dismiss Link */}
                 <button
                   onClick={handleDismiss}
-                  className="w-full mt-4 text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+                  className="w-full mt-2 text-[10px] text-muted-foreground/50 hover:text-muted-foreground transition-colors"
                 >
-                  Nein danke, ich möchte keinen Rabatt
+                  Nein danke
                 </button>
               </div>
             </div>

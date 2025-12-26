@@ -1276,3 +1276,8 @@
 - [x] "Daten werden gesammelt" Status-Anzeige im Frontend
 - [x] Retry-Logik mit exponential backoff
 - [x] API-Health-Check vor Requests
+
+## Exit-Popup Anpassung (26.12.2025)
+- [x] Exit-Popup kleiner machen (max-w-sm statt max-w-md)
+- [x] Scroll entfernen (overflow-hidden)
+- [x] Kompakteres Layout (kleinere Texte, Grid für Benefits)
