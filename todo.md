@@ -1210,3 +1210,4 @@
 - [x] Ehrliche Anzeige wenn keine historischen Daten vorhanden
 - [x] Weitere Instagram APIs testen für echte historische Daten
 - [x] Prozentuale Veränderung zum Vortag neben Follower-Grafik anzeigen
+- [x] Wöchentlichen und monatlichen Follower-Vergleich hinzufügen

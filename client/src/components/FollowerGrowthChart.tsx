@@ -495,6 +495,125 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
             </div>
           </TooltipProvider>
 
+          {/* Wochen- und Monatsvergleich */}
+          {historyData.dataPoints.length >= 2 && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              {/* Tagesvergleich */}
+              {(() => {
+                const lastPoint = historyData.dataPoints[historyData.dataPoints.length - 1];
+                const prevPoint = historyData.dataPoints[historyData.dataPoints.length - 2];
+                const dayChange = lastPoint.followers - prevPoint.followers;
+                const dayChangePercent = prevPoint.followers > 0 ? ((dayChange / prevPoint.followers) * 100).toFixed(2) : '0';
+                return (
+                  <div className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Calendar className="w-4 h-4 text-blue-400" />
+                      <span className="text-sm font-medium text-blue-400">24h Vergleich</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {dayChange >= 0 ? (
+                        <ArrowUp className="w-5 h-5 text-green-400" />
+                      ) : (
+                        <ArrowDown className="w-5 h-5 text-red-400" />
+                      )}
+                      <span className={`text-xl font-bold ${dayChange >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                        {dayChange >= 0 ? '+' : ''}{formatNumber(dayChange)}
+                      </span>
+                      <span className={`text-sm ${dayChange >= 0 ? 'text-green-400/70' : 'text-red-400/70'}`}>
+                        ({dayChangePercent}%)
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">vs. gestern</p>
+                  </div>
+                );
+              })()}
+
+              {/* Wochenvergleich */}
+              {(() => {
+                const lastPoint = historyData.dataPoints[historyData.dataPoints.length - 1];
+                // Finde Datenpunkt von vor ~7 Tagen
+                const weekAgoIndex = Math.max(0, historyData.dataPoints.length - 8);
+                const weekAgoPoint = historyData.dataPoints[weekAgoIndex];
+                const weekChange = lastPoint.followers - weekAgoPoint.followers;
+                const weekChangePercent = weekAgoPoint.followers > 0 ? ((weekChange / weekAgoPoint.followers) * 100).toFixed(2) : '0';
+                const hasWeekData = historyData.dataPoints.length >= 7;
+                return (
+                  <div className={`bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl p-4 ${!hasWeekData ? 'opacity-50' : ''}`}>
+                    <div className="flex items-center gap-2 mb-2">
+                      <CalendarRange className="w-4 h-4 text-purple-400" />
+                      <span className="text-sm font-medium text-purple-400">7 Tage Vergleich</span>
+                    </div>
+                    {hasWeekData ? (
+                      <>
+                        <div className="flex items-center gap-2">
+                          {weekChange >= 0 ? (
+                            <ArrowUp className="w-5 h-5 text-green-400" />
+                          ) : (
+                            <ArrowDown className="w-5 h-5 text-red-400" />
+                          )}
+                          <span className={`text-xl font-bold ${weekChange >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                            {weekChange >= 0 ? '+' : ''}{formatNumber(weekChange)}
+                          </span>
+                          <span className={`text-sm ${weekChange >= 0 ? 'text-green-400/70' : 'text-red-400/70'}`}>
+                            ({weekChangePercent}%)
+                          </span>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">vs. letzte Woche</p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-sm text-muted-foreground">Noch nicht genug Daten</p>
+                        <p className="text-xs text-muted-foreground mt-1">Verfügbar nach 7 Tagen</p>
+                      </>
+                    )}
+                  </div>
+                );
+              })()}
+
+              {/* Monatsvergleich */}
+              {(() => {
+                const lastPoint = historyData.dataPoints[historyData.dataPoints.length - 1];
+                // Finde Datenpunkt von vor ~30 Tagen
+                const monthAgoIndex = Math.max(0, historyData.dataPoints.length - 31);
+                const monthAgoPoint = historyData.dataPoints[monthAgoIndex];
+                const monthChange = lastPoint.followers - monthAgoPoint.followers;
+                const monthChangePercent = monthAgoPoint.followers > 0 ? ((monthChange / monthAgoPoint.followers) * 100).toFixed(2) : '0';
+                const hasMonthData = historyData.dataPoints.length >= 30;
+                return (
+                  <div className={`bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-xl p-4 ${!hasMonthData ? 'opacity-50' : ''}`}>
+                    <div className="flex items-center gap-2 mb-2">
+                      <Calendar className="w-4 h-4 text-amber-400" />
+                      <span className="text-sm font-medium text-amber-400">30 Tage Vergleich</span>
+                    </div>
+                    {hasMonthData ? (
+                      <>
+                        <div className="flex items-center gap-2">
+                          {monthChange >= 0 ? (
+                            <ArrowUp className="w-5 h-5 text-green-400" />
+                          ) : (
+                            <ArrowDown className="w-5 h-5 text-red-400" />
+                          )}
+                          <span className={`text-xl font-bold ${monthChange >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                            {monthChange >= 0 ? '+' : ''}{formatNumber(monthChange)}
+                          </span>
+                          <span className={`text-sm ${monthChange >= 0 ? 'text-green-400/70' : 'text-red-400/70'}`}>
+                            ({monthChangePercent}%)
+                          </span>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">vs. letzter Monat</p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-sm text-muted-foreground">Noch nicht genug Daten</p>
+                        <p className="text-xs text-muted-foreground mt-1">Verfügbar nach 30 Tagen</p>
+                      </>
+                    )}
+                  </div>
+                );
+              })()}
+            </div>
+          )}
+
           {/* No Data Warning */}
           {isTrackingStarted && (
             <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mb-6">
