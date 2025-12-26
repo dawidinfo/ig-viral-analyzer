@@ -1365,3 +1365,22 @@
 - [x] Multi-API Fallback: Social Blade + JoTucker + Demo
 - [x] Cache-Dauer auf 1 Stunde erhöht
 - [x] Alle 5 API-Tests bestanden (Instagram: 698M Follower, Cristiano: 669M Follower)
+
+## E-Mail Magic Link Login (27.12.2025)
+- [ ] Datenbank-Schema für Magic Link Tokens (magic_link_tokens Tabelle)
+- [ ] Backend: /api/auth/magic-link/send Route
+- [ ] Backend: /api/auth/magic-link/verify Route
+- [ ] E-Mail-Template für Magic Link (über Resend)
+- [ ] Frontend: E-Mail-Eingabe im Login-Dialog
+- [ ] Frontend: "Link gesendet" Bestätigung
+- [ ] Frontend: Verifizierungs-Seite (/auth/verify)
+- [ ] Manus OAuth aus Login-Dialog entfernen
+
+## E-Mail Magic Link Login (27.12.2025)
+- [x] Datenbank-Schema für Magic Link Tokens
+- [x] Backend API-Routen (send, verify, cleanup)
+- [x] E-Mail-Template für Magic Link
+- [x] Frontend Login-Dialog mit E-Mail-Eingabe
+- [x] Verifizierungs-Seite /auth/verify
+- [x] Vitest Tests (10 Tests bestanden)
+- [x] Manus OAuth entfernt - nur noch E-Mail Login

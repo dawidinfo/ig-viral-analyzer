@@ -907,3 +907,27 @@ export const analysisNotes = mysqlTable("analysis_notes", {
 });
 export type AnalysisNote = typeof analysisNotes.$inferSelect;
 export type InsertAnalysisNote = typeof analysisNotes.$inferInsert;
+
+
+/**
+ * Magic Link Tokens for passwordless email authentication
+ */
+export const magicLinkTokens = mysqlTable("magic_link_tokens", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Email address the link was sent to */
+  email: varchar("email", { length: 320 }).notNull(),
+  /** Unique token for verification */
+  token: varchar("token", { length: 64 }).notNull().unique(),
+  /** Token expiration (15 minutes) */
+  expiresAt: timestamp("expiresAt").notNull(),
+  /** Whether the token has been used */
+  used: int("used").default(0).notNull(),
+  /** IP address of requester */
+  ipAddress: varchar("ipAddress", { length: 45 }),
+  /** User agent of requester */
+  userAgent: text("userAgent"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type MagicLinkToken = typeof magicLinkTokens.$inferSelect;
+export type InsertMagicLinkToken = typeof magicLinkTokens.$inferInsert;

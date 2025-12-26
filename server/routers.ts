@@ -21,6 +21,7 @@ import { generateContentPlan, generateProfileBasedContentPlan, ProfileAnalysisDa
 import { getDb } from "./db";
 import { getUserCredits, useCredits, addCredits, getCreditHistory, getCreditStats, canPerformAction, getActionCost } from "./creditService";
 import { createCheckoutSession, getPaymentHistory, getOrCreateCustomer } from "./stripe/checkout";
+import { sendMagicLink, verifyMagicLink, cleanupExpiredTokens } from "./services/magicLinkService";
 import { CREDIT_PACKAGES as STRIPE_PACKAGES, SUBSCRIPTION_PLANS } from "./stripe/products";
 import { instagramCache, savedAnalyses, usageTracking, users, CREDIT_COSTS, CREDIT_PACKAGES, creditTransactions, PLAN_LIMITS } from "../drizzle/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
@@ -1713,6 +1714,49 @@ export const appRouter = router({
         );
         
         return { success: true };
+      }),
+  }),
+  
+  // Magic Link Authentication
+  magicLink: router({
+    send: publicProcedure
+      .input(z.object({
+        email: z.string().email(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const ipAddress = ctx.req?.headers?.['x-forwarded-for'] as string || ctx.req?.ip;
+        const userAgent = ctx.req?.headers?.['user-agent'] as string;
+        const baseUrl = ctx.req?.headers?.origin as string || 'https://reelspy.ai';
+        
+        return await sendMagicLink(input.email, ipAddress, userAgent, baseUrl);
+      }),
+    
+    verify: publicProcedure
+      .input(z.object({
+        token: z.string().min(1),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const result = await verifyMagicLink(input.token);
+        
+        if (result.success && result.user) {
+          // Set session cookie
+          const sessionToken = Buffer.from(JSON.stringify({
+            openId: result.user.openId,
+            email: result.user.email,
+            name: result.user.name,
+            loginMethod: 'email',
+          })).toString('base64');
+          
+          ctx.res?.cookie('session', sessionToken, getSessionCookieOptions(ctx.req!));
+        }
+        
+        return result;
+      }),
+    
+    cleanup: publicProcedure
+      .mutation(async () => {
+        const deleted = await cleanupExpiredTokens();
+        return { deleted };
       }),
   }),
 });

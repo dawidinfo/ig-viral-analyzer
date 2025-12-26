@@ -17,6 +17,7 @@ import Contact from "./pages/Contact";
 import Disclaimer from "./pages/Disclaimer";
 import DesignCompare from "./pages/DesignCompare";
 import Unsubscribe from "./pages/Unsubscribe";
+import AuthVerify from "./pages/AuthVerify";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -35,6 +36,7 @@ function Router() {
       <Route path={"/disclaimer"} component={Disclaimer} />
       <Route path={"/design-compare"} component={DesignCompare} />
       <Route path={"/unsubscribe"} component={Unsubscribe} />
+      <Route path={"/auth/verify"} component={AuthVerify} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
