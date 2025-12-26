@@ -1,0 +1,8 @@
+{
+  "query": "CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);\nCREATE INDEX IF NOT EXISTS idx_users_plan ON users(plan);\nCREATE INDEX IF NOT EXISTS idx_users_status ON users(status);\nCREATE INDEX IF NOT EXISTS idx_users_created_at ON users(createdAt);\nCREATE INDEX IF NOT EXISTS idx_users_last_activity ON users(lastActivity);\nCREATE INDEX IF NOT EXISTS idx_users_stripe_customer ON users(stripeCustomerId);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user N7vrAoPF61tSW8u.60537d16f0ce --database 2NevksKXohCxXvgmcBxexU --execute CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);\nCREATE INDEX IF NOT EXISTS idx_users_plan ON users(plan);\nCREATE INDEX IF NOT EXISTS idx_users_status ON users(status);\nCREATE INDEX IF NOT EXISTS idx_users_created_at ON users(createdAt);\nCREATE INDEX IF NOT EXISTS idx_users_last_activity ON users(lastActivity);\nCREATE INDEX IF NOT EXISTS idx_users_stripe_customer ON users(stripeCustomerId);",
+  "returncode": 1,
+  "logs": [
+    "ERROR 2013 (HY000): Lost connection to MySQL server at 'reading initial communication packet', system error: 0"
+  ]
+}

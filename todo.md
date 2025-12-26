@@ -1226,3 +1226,16 @@
 - [x] Block 3: LEARNINGS & IMPULSE - Persönliche Notizen, Action Items
 - [x] Notizen-API mit Frontend verbinden
 - [x] Tests für Notizen-Funktionalität
+
+## Bolt AI Code Review Fixes (26.12.2024)
+- [x] Database Connection Pooling konfigurieren (mysql2 Pool mit optimierten Einstellungen)
+- [x] Database-Indizes für users, usageTracking, instagramCache, followerSnapshots
+- [x] Session-Timeout von 1 Jahr auf 24 Stunden reduzieren
+- [x] Refresh-Token-Mechanismus implementieren (30 Tage Refresh Token)
+- [x] Redis-basiertes Rate Limiting implementieren (mit In-Memory Fallback)
+- [x] Background Job Queue für schwere Analysen (backgroundJobService.ts)
+- [x] Stripe Webhook-Verifizierung prüfen (bereits korrekt mit constructEvent)
+- [x] GDPR Datenlöschung implementieren (gdprService.ts mit Export/Delete/Anonymize)
+- [x] N+1 Query im Admin-Dashboard beheben (optimizedQueries.ts)
+- [x] Caching Layer hinzufügen (cachingService.ts mit TTL)
+- [x] Email-Versand in Background Jobs auslagern (send_email Job Handler)

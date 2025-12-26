@@ -1,4 +1,4 @@
-import { AXIOS_TIMEOUT_MS, COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
+import { AXIOS_TIMEOUT_MS, COOKIE_NAME, ONE_YEAR_MS, REFRESH_TOKEN_TIMEOUT_MS } from "@shared/const";
 import { ForbiddenError } from "@shared/_core/errors";
 import axios, { type AxiosInstance } from "axios";
 import { parse as parseCookieHeader } from "cookie";
@@ -235,6 +235,70 @@ class SDKServer {
       };
     } catch (error) {
       console.warn("[Auth] Session verification failed", String(error));
+      return null;
+    }
+  }
+
+  /**
+   * Create a refresh token for session renewal
+   * Refresh tokens have longer expiry (30 days) and are used to get new session tokens
+   */
+  async createRefreshToken(
+    openId: string,
+    options: { expiresInMs?: number } = {}
+  ): Promise<string> {
+    const issuedAt = Date.now();
+    const expiresInMs = options.expiresInMs ?? REFRESH_TOKEN_TIMEOUT_MS;
+    const expirationSeconds = Math.floor((issuedAt + expiresInMs) / 1000);
+    const secretKey = this.getSessionSecret();
+
+    return new SignJWT({
+      openId,
+      appId: ENV.appId,
+      type: 'refresh', // Mark as refresh token
+    })
+      .setProtectedHeader({ alg: "HS256", typ: "JWT" })
+      .setExpirationTime(expirationSeconds)
+      .sign(secretKey);
+  }
+
+  /**
+   * Verify a refresh token and return the user info
+   */
+  async verifyRefreshToken(
+    tokenValue: string | undefined | null
+  ): Promise<{ openId: string; name: string } | null> {
+    if (!tokenValue) {
+      return null;
+    }
+
+    try {
+      const secretKey = this.getSessionSecret();
+      const { payload } = await jwtVerify(tokenValue, secretKey, {
+        algorithms: ["HS256"],
+      });
+      const { openId, type } = payload as Record<string, unknown>;
+
+      // Verify this is actually a refresh token
+      if (type !== 'refresh') {
+        console.warn("[Auth] Token is not a refresh token");
+        return null;
+      }
+
+      if (!isNonEmptyString(openId)) {
+        console.warn("[Auth] Refresh token missing openId");
+        return null;
+      }
+
+      // Get user name from database
+      const user = await db.getUserByOpenId(openId);
+      
+      return {
+        openId,
+        name: user?.name || "",
+      };
+    } catch (error) {
+      console.warn("[Auth] Refresh token verification failed", String(error));
       return null;
     }
   }

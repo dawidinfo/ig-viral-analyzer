@@ -1,4 +1,4 @@
-import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
+import { COOKIE_NAME, REFRESH_COOKIE_NAME, SESSION_TIMEOUT_MS, REFRESH_TOKEN_TIMEOUT_MS } from "@shared/const";
 import type { Express, Request, Response } from "express";
 import * as db from "../db";
 import { getSessionCookieOptions } from "./cookies";
@@ -36,13 +36,31 @@ export function registerOAuthRoutes(app: Express) {
         lastSignedIn: new Date(),
       });
 
+      // Create session token with 24-hour expiry (security improvement)
       const sessionToken = await sdk.createSessionToken(userInfo.openId, {
         name: userInfo.name || "",
-        expiresInMs: ONE_YEAR_MS,
+        expiresInMs: SESSION_TIMEOUT_MS,
+      });
+
+      // Create refresh token with 30-day expiry
+      const refreshToken = await sdk.createRefreshToken(userInfo.openId, {
+        expiresInMs: REFRESH_TOKEN_TIMEOUT_MS,
       });
 
       const cookieOptions = getSessionCookieOptions(req);
-      res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+      
+      // Set session cookie (24 hours)
+      res.cookie(COOKIE_NAME, sessionToken, { 
+        ...cookieOptions, 
+        maxAge: SESSION_TIMEOUT_MS 
+      });
+      
+      // Set refresh token cookie (30 days, httpOnly for security)
+      res.cookie(REFRESH_COOKIE_NAME, refreshToken, { 
+        ...cookieOptions, 
+        maxAge: REFRESH_TOKEN_TIMEOUT_MS,
+        httpOnly: true // Extra security - not accessible via JavaScript
+      });
 
       // Check if this is a popup login (decode state to check popup flag)
       let isPopup = false;
@@ -113,6 +131,43 @@ export function registerOAuthRoutes(app: Express) {
     } catch (error) {
       console.error("[OAuth] Callback failed", error);
       res.status(500).json({ error: "OAuth callback failed" });
+    }
+  });
+
+  // Refresh token endpoint - allows extending session without re-login
+  app.post("/api/auth/refresh", async (req: Request, res: Response) => {
+    try {
+      const cookieOptions = getSessionCookieOptions(req);
+      const refreshToken = req.cookies?.[REFRESH_COOKIE_NAME];
+
+      if (!refreshToken) {
+        res.status(401).json({ error: "No refresh token" });
+        return;
+      }
+
+      // Verify refresh token and get user info
+      const tokenData = await sdk.verifyRefreshToken(refreshToken);
+      if (!tokenData) {
+        res.status(401).json({ error: "Invalid refresh token" });
+        return;
+      }
+
+      // Create new session token
+      const newSessionToken = await sdk.createSessionToken(tokenData.openId, {
+        name: tokenData.name || "",
+        expiresInMs: SESSION_TIMEOUT_MS,
+      });
+
+      // Set new session cookie
+      res.cookie(COOKIE_NAME, newSessionToken, { 
+        ...cookieOptions, 
+        maxAge: SESSION_TIMEOUT_MS 
+      });
+
+      res.json({ success: true, expiresIn: SESSION_TIMEOUT_MS });
+    } catch (error) {
+      console.error("[Auth] Refresh failed", error);
+      res.status(401).json({ error: "Refresh failed" });
     }
   });
 }
