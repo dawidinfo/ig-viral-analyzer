@@ -114,7 +114,7 @@ function getApiKey(): string {
 }
 
 // Demo data generator based on username
-function generateDemoData(username: string): InstagramAnalysis {
+export function generateDemoData(username: string): InstagramAnalysis {
   const cleanUsername = username.replace("@", "").trim().toLowerCase();
   
   // Generate consistent "random" numbers based on username
