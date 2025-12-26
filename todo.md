@@ -1200,3 +1200,5 @@
 - [x] Dashboard-Navigation neu designen - modern und clean
 - [x] Hover-Effekte und aktive Button-Hervorhebung zur Dashboard-Navigation hinzufügen
 - [x] Cache-Reset-Funktion korrigieren - gespeicherte Analysen beim Leeren des Caches erhalten
+- [ ] Backup-System auf internen Server-Cron umstellen (keine Manus-Tasks)
+- [x] Exit-Popup: Schließen-Button hinzufügen und Größe anpassen

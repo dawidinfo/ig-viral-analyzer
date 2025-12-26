@@ -843,3 +843,42 @@ export const cacheStatistics = mysqlTable("cache_statistics", {
 
 export type CacheStatistics = typeof cacheStatistics.$inferSelect;
 export type InsertCacheStatistics = typeof cacheStatistics.$inferInsert;
+
+
+/**
+ * Database Backups - stores automatic and manual backups of user data
+ */
+export const databaseBackups = mysqlTable("database_backups", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Backup type: full, incremental, manual */
+  backupType: mysqlEnum("backupType", ["full", "incremental", "manual"]).default("full").notNull(),
+  /** Status: pending, completed, failed, restored */
+  status: mysqlEnum("status", ["pending", "completed", "failed", "restored"]).default("pending").notNull(),
+  /** JSON data containing all backed up records */
+  backupData: json("backupData").$type<{
+    users?: any[];
+    savedAnalyses?: any[];
+    notes?: any[];
+    contentPlans?: any[];
+  }>(),
+  /** Number of saved analyses in backup */
+  savedAnalysesCount: int("savedAnalysesCount").default(0).notNull(),
+  /** Number of notes in backup */
+  notesCount: int("notesCount").default(0).notNull(),
+  /** Number of content plans in backup */
+  contentPlansCount: int("contentPlansCount").default(0).notNull(),
+  /** Size of backup in bytes */
+  sizeBytes: int("sizeBytes").default(0).notNull(),
+  /** Description (for manual backups) */
+  description: text("description"),
+  /** Who created the backup (system, admin, userId) */
+  createdBy: varchar("createdBy", { length: 64 }).default("system").notNull(),
+  /** When the backup was restored (if applicable) */
+  restoredAt: timestamp("restoredAt"),
+  /** Who restored the backup */
+  restoredBy: varchar("restoredBy", { length: 64 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type DatabaseBackup = typeof databaseBackups.$inferSelect;
+export type InsertDatabaseBackup = typeof databaseBackups.$inferInsert;

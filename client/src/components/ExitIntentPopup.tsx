@@ -161,7 +161,7 @@ export function ExitIntentPopup() {
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
           >
-            <div className="relative w-full max-w-lg bg-gradient-to-b from-card to-card/95 border-2 border-violet-500/50 rounded-3xl shadow-2xl overflow-hidden">
+            <div className="relative w-full max-w-md bg-gradient-to-b from-card to-card/95 border-2 border-violet-500/50 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
               {/* Animated Glow Effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10" />
               <motion.div 
@@ -181,15 +181,16 @@ export function ExitIntentPopup() {
                 className="absolute -bottom-20 -left-20 w-60 h-60 bg-purple-500/30 rounded-full blur-3xl" 
               />
 
-              {/* Close Button */}
+              {/* Close Button - Larger and more visible */}
               <button
                 onClick={handleDismiss}
-                className="absolute top-4 right-4 p-2 rounded-full hover:bg-muted/50 transition-colors z-10"
+                className="absolute top-3 right-3 p-2.5 rounded-full bg-muted/80 hover:bg-muted transition-colors z-20 group"
+                aria-label="Schließen"
               >
-                <X className="w-5 h-5 text-muted-foreground" />
+                <X className="w-6 h-6 text-foreground group-hover:text-red-400 transition-colors" />
               </button>
 
-              <div className="relative p-6 sm:p-8">
+              <div className="relative p-5 sm:p-6">
                 {/* Top Badge */}
                 <div className="flex justify-center mb-4">
                   <motion.div 
@@ -203,7 +204,7 @@ export function ExitIntentPopup() {
                 </div>
 
                 {/* Main Title */}
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-2">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-2">
                   Warte! Sichere dir
                   <br />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-purple-400 to-pink-400">
@@ -249,7 +250,7 @@ export function ExitIntentPopup() {
                 </div>
 
                 {/* Benefits */}
-                <div className="space-y-2 mb-6">
+                <div className="space-y-1.5 mb-4">
                   {[
                     { text: `${DISCOUNT_PERCENT}% auf alle Pro-Pläne`, highlight: true },
                     { text: "Unbegrenzte KI-Analysen", highlight: false },
@@ -276,18 +277,18 @@ export function ExitIntentPopup() {
                 </div>
 
                 {/* Countdown Timer */}
-                <div className="flex items-center justify-center gap-3 mb-6 p-3 rounded-xl bg-red-500/10 border border-red-500/20">
+                <div className="flex items-center justify-center gap-2 mb-4 p-2.5 rounded-xl bg-red-500/10 border border-red-500/20">
                   <Clock className="w-5 h-5 text-red-400" />
                   <span className="text-sm text-red-300">Angebot endet in:</span>
                   <span className="font-mono font-bold text-xl text-red-400">{formatTime(countdown)}</span>
                 </div>
 
                 {/* CTA Buttons */}
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <Button
                     size="lg"
                     onClick={handleClaim}
-                    className="w-full bg-gradient-to-r from-violet-500 via-purple-500 to-pink-500 hover:from-violet-600 hover:via-purple-600 hover:to-pink-600 text-white border-0 text-lg py-6 shadow-lg shadow-violet-500/30"
+                    className="w-full bg-gradient-to-r from-violet-500 via-purple-500 to-pink-500 hover:from-violet-600 hover:via-purple-600 hover:to-pink-600 text-white border-0 text-base py-5 shadow-lg shadow-violet-500/30"
                   >
                     <Zap className="w-5 h-5 mr-2" />
                     Jetzt {DISCOUNT_PERCENT}% sparen
@@ -298,7 +299,7 @@ export function ExitIntentPopup() {
                     variant="outline"
                     size="lg"
                     onClick={handleTryFree}
-                    className="w-full border-muted-foreground/30 text-muted-foreground hover:text-foreground py-5"
+                    className="w-full border-muted-foreground/30 text-muted-foreground hover:text-foreground py-4"
                   >
                     <Sparkles className="w-4 h-4 mr-2" />
                     Erst kostenlos testen
