@@ -1255,3 +1255,13 @@
 - [x] OAuth Callback wird durch Rate Limiting blockiert (Login-Limits erhöht auf 30/5min)
 - [x] Unsichtbares Overlay/Modal blockiert Analyse-Seite (Timeout + Retry-Buttons hinzugefügt)
 - [x] Analysen erscheinen leer bis man klickt (Loading-States mit Timeouts verbessert)
+
+## Bug-Fix: Analyse-Seite hängt/sehr langsam (26.12.2024)
+- [ ] Unsichtbares Overlay/iframe blockiert Interaktion
+- [ ] Seite reagiert nicht auf Klicks
+- [ ] Performance-Problem identifizieren und beheben
+
+## Bug-Fix: Analyse-Seite Performance (26.12.2025)
+- [x] Analyse-Seite langsam/hängt - Frontend-Timeout hinzugefügt
+- [x] Loading-States optimieren - Slow-Loading-Nachricht nach 10s, Timeout nach 45s
+- [ ] API-Fehler auf Production beheben (RapidAPI) - externes Problem

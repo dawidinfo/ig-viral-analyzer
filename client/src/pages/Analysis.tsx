@@ -228,6 +228,11 @@ export default function Analysis() {
   const [hasShownPopup, setHasShownPopup] = useState(false);
   const [reelSortBy, setReelSortBy] = useState<'views' | 'likes' | 'engagement'>('views');
   const [forceRefresh, setForceRefresh] = useState(false);
+  
+  // Loading timeout states
+  const [loadingStartTime, setLoadingStartTime] = useState<number | null>(null);
+  const [showSlowLoadingMessage, setShowSlowLoadingMessage] = useState(false);
+  const [hasTimedOut, setHasTimedOut] = useState(false);
 
   const togglePin = (section: string) => {
     setPinnedSections(prev => {
@@ -291,6 +296,37 @@ export default function Analysis() {
       staleTime: forceRefresh ? 0 : 5 * 60 * 1000,
     }
   );
+  
+  // Track loading time and show timeout messages
+  useEffect(() => {
+    if (isLoading && !loadingStartTime) {
+      setLoadingStartTime(Date.now());
+      setShowSlowLoadingMessage(false);
+      setHasTimedOut(false);
+    } else if (!isLoading) {
+      setLoadingStartTime(null);
+      setShowSlowLoadingMessage(false);
+      setHasTimedOut(false);
+    }
+  }, [isLoading, loadingStartTime]);
+  
+  // Show slow loading message after 10 seconds, timeout after 45 seconds
+  useEffect(() => {
+    if (!loadingStartTime || !isLoading) return;
+    
+    const slowTimer = setTimeout(() => {
+      setShowSlowLoadingMessage(true);
+    }, 10000); // 10 seconds
+    
+    const timeoutTimer = setTimeout(() => {
+      setHasTimedOut(true);
+    }, 45000); // 45 seconds
+    
+    return () => {
+      clearTimeout(slowTimer);
+      clearTimeout(timeoutTimer);
+    };
+  }, [loadingStartTime, isLoading]);
   
   // Reset forceRefresh after data is loaded
   useEffect(() => {
@@ -477,18 +513,55 @@ export default function Analysis() {
       {/* Main Content */}
       <main className="container pt-32 sm:pt-36 pb-12 relative z-10">
         {/* Loading State */}
-        {isLoading && (
+        {isLoading && !hasTimedOut && (
           <div className="flex flex-col items-center justify-center py-20">
             <div className="relative">
               <div className="w-20 h-20 border-4 border-primary/30 rounded-full animate-pulse" />
               <div className="absolute inset-0 w-20 h-20 border-4 border-primary border-t-transparent rounded-full animate-spin" />
             </div>
             <p className="mt-6 text-muted-foreground">Analysiere @{usernameParam}...</p>
+            
+            {/* Slow loading message */}
+            {showSlowLoadingMessage && (
+              <div className="mt-4 p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/30 max-w-md text-center">
+                <p className="text-yellow-400 text-sm">
+                  <Clock className="w-4 h-4 inline mr-2" />
+                  Die Analyse dauert länger als erwartet. Bitte warte noch einen Moment...
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+        
+        {/* Timeout State */}
+        {hasTimedOut && (
+          <div className="glass-card rounded-2xl p-8 text-center">
+            <Clock className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
+            <h2 className="text-xl font-bold mb-2">Analyse-Timeout</h2>
+            <p className="text-muted-foreground mb-4">
+              Die Instagram API antwortet nicht rechtzeitig. Dies kann an hoher Auslastung liegen.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button onClick={() => {
+                setHasTimedOut(false);
+                setLoadingStartTime(null);
+                refetch();
+              }} className="btn-gradient text-white border-0">
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Erneut versuchen
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => setLocation('/')}
+              >
+                Zurück zur Startseite
+              </Button>
+            </div>
           </div>
         )}
 
         {/* Error State */}
-        {error && (
+        {error && !hasTimedOut && (
           <div className="glass-card rounded-2xl p-8 text-center">
             <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
             <h2 className="text-xl font-bold mb-2">Analyse fehlgeschlagen</h2>
