@@ -570,20 +570,32 @@ export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }:
       </Card>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-8 p-1 bg-muted/50 rounded-xl border border-border">
-          <TabsTrigger value="profile" className="flex items-center gap-2">
+        {/* Tab Navigation mit klarem aktivem Indikator */}
+        <div className="mb-8">
+          <TabsList className="grid w-full grid-cols-3 p-2 bg-zinc-900/80 rounded-2xl border-2 border-zinc-700 gap-2">
+          <TabsTrigger 
+            value="profile" 
+            className="flex items-center gap-2 py-3 px-4 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-500/30 data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-zinc-800 transition-all font-medium"
+          >
             <Target className="w-4 h-4" />
             Zielgruppen-Profil
           </TabsTrigger>
-          <TabsTrigger value="settings" className="flex items-center gap-2">
+          <TabsTrigger 
+            value="settings" 
+            className="flex items-center gap-2 py-3 px-4 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-500/30 data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-zinc-800 transition-all font-medium"
+          >
             <Sparkles className="w-4 h-4" />
             Plan-Einstellungen
           </TabsTrigger>
-          <TabsTrigger value="plan" className="flex items-center gap-2">
+          <TabsTrigger 
+            value="plan" 
+            className="flex items-center gap-2 py-3 px-4 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-500/30 data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-zinc-800 transition-all font-medium"
+          >
             <FileText className="w-4 h-4" />
             Content-Plan
           </TabsTrigger>
         </TabsList>
+        </div>
 
         {/* Zielgruppen-Profil Tab */}
         <TabsContent value="profile" className="space-y-6">

@@ -1412,3 +1412,13 @@
 - [x] Reel-Analyse als erste Sektion im Analyse-Block (vor Follower-Wachstum)
 - [x] Posting-Zeit-Analyse: Hover durch Klick ersetzen
 - [x] Beste Zeit permanent anzeigen (nicht flackern)
+
+## Export-Funktionen
+- [ ] Reel-Transkripte als Textdatei exportieren
+
+## UI-Vereinfachung Dezember 2025
+- [ ] Transkript-Export Button sichtbar machen (nicht nur Hover)
+- [ ] Dashboard Design vereinfachen und kinderfreundlich
+- [ ] Einheitliches Login-Design auf allen Seiten
+- [x] Aktiver Tab-Indikator im Dashboard
+- [x] Klarere Abschnitts-Trennung im Content-Plan

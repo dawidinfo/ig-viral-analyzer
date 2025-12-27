@@ -23,7 +23,9 @@ import {
   Star,
   Award,
   Database,
-  ShieldCheck
+  ShieldCheck,
+  Download,
+  FileText
 } from "lucide-react";
 import {
   Tooltip,
@@ -492,11 +494,11 @@ export default function ReelAnalysis({ username }: ReelAnalysisProps) {
 
       {/* ==================== HOT-TRANSKRIPTION ==================== */}
       <div className="glass-card rounded-2xl p-6 border-2 border-orange-500/30 bg-gradient-to-br from-orange-500/5 to-red-500/5">
-        <div 
-          className="flex items-center justify-between cursor-pointer"
-          onClick={() => toggleSection('transcription')}
-        >
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between">
+          <div 
+            className="flex items-center gap-3 cursor-pointer flex-1"
+            onClick={() => toggleSection('transcription')}
+          >
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center animate-pulse">
               <Flame className="w-5 h-5 text-white" />
             </div>
@@ -510,7 +512,32 @@ export default function ReelAnalysis({ username }: ReelAnalysisProps) {
               <p className="text-sm text-muted-foreground">Schau genau hin - so baut der Creator seinen Hook!</p>
             </div>
           </div>
-          {expandedSections.has('transcription') ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+          <div className="flex items-center gap-2">
+            {/* Export Button - immer sichtbar */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                // Export Transkript als Textdatei
+                const content = `REEL-TRANSKRIPT\n@${username}\n${'='.repeat(40)}\n\n${analysis.transcription.segments.map(s => `[${s.timestamp}] ${s.text}`).join('\n\n')}\n\n${'='.repeat(40)}\nVolltext:\n${analysis.transcription.fullText}\n\nHook-Score: ${analysis.hookAnalysis.score}%\nExportiert von ReelSpy.ai`;
+                const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `transkript-${username}-${new Date().toISOString().split('T')[0]}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+              }}
+              className="flex items-center gap-2 px-3 py-2 bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 rounded-lg border border-orange-500/30 transition-all text-sm font-medium"
+            >
+              <Download className="w-4 h-4" />
+              <span className="hidden sm:inline">Export .txt</span>
+            </button>
+            <div className="cursor-pointer" onClick={() => toggleSection('transcription')}>
+              {expandedSections.has('transcription') ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+            </div>
+          </div>
         </div>
         
         <AnimatePresence>

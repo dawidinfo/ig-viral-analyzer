@@ -469,8 +469,23 @@ export default function Dashboard() {
 
           {/* Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            {/* Sticky Navigation Bar */}
+            {/* Sticky Navigation Bar with Active Indicator */}
             <div className="sticky top-16 z-40 py-4 bg-background/80 backdrop-blur-md">
+              {/* Active Tab Title Banner */}
+              <div className="flex justify-center mb-3">
+                <div className="px-6 py-2 bg-gradient-to-r from-primary/20 via-purple-500/20 to-pink-500/20 rounded-full border border-primary/30">
+                  <span className="text-sm font-semibold text-primary">
+                    {activeTab === 'overview' && '📊 Übersicht'}
+                    {activeTab === 'content-plan' && '📅 Content-Plan Generator'}
+                    {activeTab === 'analyses' && '🔖 Gespeicherte Analysen'}
+                    {activeTab === 'invoices' && '🧾 Rechnungen'}
+                    {activeTab === 'notes' && '📝 Notizen'}
+                    {activeTab === 'affiliate' && '🔗 Affiliate Programm'}
+                    {activeTab === 'leaderboard' && '🏆 Leaderboard'}
+                    {activeTab === 'settings' && '⚙️ Einstellungen'}
+                  </span>
+                </div>
+              </div>
               <TooltipProvider delayDuration={100}>
                 <TabsList className="flex justify-center gap-2 p-1.5 overflow-x-auto flex-nowrap w-fit mx-auto bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-full" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
                   <Tooltip>
@@ -1009,7 +1024,7 @@ export default function Dashboard() {
                       )}
                     </div>
                   ) : (
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       <AnimatePresence>
                         {filteredAnalyses.map((analysis: any) => (
                           <motion.div
@@ -1017,7 +1032,8 @@ export default function Dashboard() {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, x: -100 }}
-                            className="flex items-center gap-4 p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group"
+                            className="flex items-center gap-4 p-5 rounded-xl bg-zinc-900/50 border-2 border-zinc-800 hover:border-primary/50 transition-all group cursor-pointer"
+                            onClick={() => setLocation(`/analysis?username=${analysis.username}`)}
                           >
                             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-cyan-500/20 flex items-center justify-center overflow-hidden shrink-0">
                               {analysis.profilePicUrl ? (
