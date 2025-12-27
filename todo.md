@@ -1422,3 +1422,9 @@
 - [ ] Einheitliches Login-Design auf allen Seiten
 - [x] Aktiver Tab-Indikator im Dashboard
 - [x] Klarere Abschnitts-Trennung im Content-Plan
+
+## Design-Überarbeitung Dezember 27
+- [x] Follower-Wachstum ganz oben positionieren
+- [x] 3 Monate als Standard-Zeitraum
+- [x] Sticky Navigation mit aktivem Bereich beim Scrollen
+- [ ] Clean Minimal Design implementieren

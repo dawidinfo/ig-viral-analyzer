@@ -123,7 +123,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 export default function FollowerGrowthChart({ username }: FollowerGrowthChartProps) {
-  const [timeRange, setTimeRange] = useState<TimeRange>('1m');
+  const [timeRange, setTimeRange] = useState<TimeRange>('3m');
   const [currentPage, setCurrentPage] = useState(0);
   const [customDateRange, setCustomDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
     from: undefined,
