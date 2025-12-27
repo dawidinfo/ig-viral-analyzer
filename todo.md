@@ -1449,3 +1449,4 @@
 - [x] Cache-Löschfunktion im Admin entfernen
 - [x] Content-Pläne vollständige Detail-Ansicht (alle Tage mit Hook, Script, Hashtags etc.)
 - [x] PDF-Export Funktion für Content-Pläne
+- [x] Content-Pläne direkt auf der Seite anzeigen statt im Popup

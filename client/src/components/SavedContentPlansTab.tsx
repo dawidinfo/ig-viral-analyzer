@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -20,8 +20,7 @@ import {
   Scissors,
   Music,
   Lightbulb,
-  Eye,
-  X,
+  ArrowLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -37,13 +36,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface SavedContentPlansTabProps {
   userId?: number;
@@ -64,9 +56,7 @@ interface PlanItem {
 }
 
 export function SavedContentPlansTab({ userId, isPro }: SavedContentPlansTabProps) {
-  const [expandedPlanId, setExpandedPlanId] = useState<number | null>(null);
-  const [detailViewPlan, setDetailViewPlan] = useState<any | null>(null);
-  const printRef = useRef<HTMLDivElement>(null);
+  const [selectedPlan, setSelectedPlan] = useState<any | null>(null);
   
   // Fetch saved content plans
   const { data: savedPlans, isLoading, refetch } = trpc.dashboard.getAll.useQuery(
@@ -78,6 +68,7 @@ export function SavedContentPlansTab({ userId, isPro }: SavedContentPlansTabProp
   const deleteMutation = trpc.dashboard.delete.useMutation({
     onSuccess: () => {
       toast.success("Content-Plan gelöscht");
+      setSelectedPlan(null);
       refetch();
     },
     onError: (error) => {
@@ -119,7 +110,6 @@ export function SavedContentPlansTab({ userId, isPro }: SavedContentPlansTabProp
     toast.loading("PDF wird erstellt...", { id: "pdf-export" });
     
     try {
-      // Create printable content
       const printWindow = window.open('', '_blank');
       if (!printWindow) {
         toast.error("Popup blockiert. Bitte erlaube Popups für diese Seite.", { id: "pdf-export" });
@@ -130,7 +120,6 @@ export function SavedContentPlansTab({ userId, isPro }: SavedContentPlansTabProp
       printWindow.document.write(htmlContent);
       printWindow.document.close();
       
-      // Wait for content to load then print
       printWindow.onload = () => {
         setTimeout(() => {
           printWindow.print();
@@ -246,9 +235,6 @@ export function SavedContentPlansTab({ userId, isPro }: SavedContentPlansTabProp
             color: #8b5cf6;
             text-transform: uppercase;
             margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
           }
           .section-content {
             font-size: 14px;
@@ -329,8 +315,6 @@ export function SavedContentPlansTab({ userId, isPro }: SavedContentPlansTabProp
           <div class="profile-grid">
             <div class="profile-item"><span>Nische:</span> ${plan.profile.niche || '-'}</div>
             <div class="profile-item"><span>Tonalität:</span> ${plan.profile.tonality || '-'}</div>
-            ${plan.profile.painPoints?.length ? `<div class="profile-item"><span>Pain Points:</span> ${plan.profile.painPoints.join(', ')}</div>` : ''}
-            ${plan.profile.usps?.length ? `<div class="profile-item"><span>USPs:</span> ${plan.profile.usps.join(', ')}</div>` : ''}
           </div>
         </div>
         ` : ''}
@@ -447,423 +431,346 @@ export function SavedContentPlansTab({ userId, isPro }: SavedContentPlansTabProp
     );
   }
 
-  return (
-    <>
-      <Card className="border-2 border-zinc-700 bg-zinc-900/50">
-        <CardHeader className="border-b border-zinc-700/50">
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-3 text-lg">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-                <FileText className="w-5 h-5 text-white" />
-              </div>
-              <span>Gespeicherte Content-Pläne</span>
-            </CardTitle>
-            <Badge variant="outline" className="border-violet-500/50 text-violet-400">
-              {savedPlans.length} Pläne
-            </Badge>
-          </div>
-          <CardDescription className="mt-2">
-            Alle deine generierten Content-Pläne an einem Ort
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="pt-6">
-          <div className="space-y-4">
-            <AnimatePresence>
-              {savedPlans.map((plan: any) => (
-                <motion.div
-                  key={plan.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="border-2 border-zinc-700 rounded-xl bg-zinc-800/50 overflow-hidden hover:border-zinc-600 transition-colors"
-                >
-                  {/* Plan Header */}
-                  <div 
-                    className="p-4 cursor-pointer"
-                    onClick={() => setExpandedPlanId(expandedPlanId === plan.id ? null : plan.id)}
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-2">
-                          <h3 className="font-semibold text-white truncate">{plan.name}</h3>
-                          {plan.isFavorite === 1 && (
-                            <Star className="w-4 h-4 text-yellow-500 fill-yellow-500 shrink-0" />
-                          )}
-                        </div>
-                        <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <Calendar className="w-3.5 h-3.5" />
-                            {plan.duration} Tage
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Clock className="w-3.5 h-3.5" />
-                            {formatDate(plan.createdAt)}
-                          </span>
-                          {plan.profile?.niche && (
-                            <span className="flex items-center gap-1">
-                              <Target className="w-3.5 h-3.5" />
-                              {plan.profile.niche}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <Badge 
-                          variant="outline" 
-                          className={`${
-                            plan.framework === "HAPSS" 
-                              ? "border-emerald-500/50 text-emerald-400" 
-                              : plan.framework === "AIDA"
-                              ? "border-blue-500/50 text-blue-400"
-                              : "border-violet-500/50 text-violet-400"
-                          }`}
-                        >
-                          {plan.framework}
-                        </Badge>
-                        {expandedPlanId === plan.id ? (
-                          <ChevronUp className="w-5 h-5 text-muted-foreground" />
-                        ) : (
-                          <ChevronDown className="w-5 h-5 text-muted-foreground" />
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Expanded Content */}
-                  <AnimatePresence>
-                    {expandedPlanId === plan.id && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="border-t border-zinc-700"
-                      >
-                        <div className="p-4 space-y-4">
-                          {/* Profile Info */}
-                          {plan.profile && (
-                            <div className="p-3 bg-zinc-900/50 rounded-lg border border-zinc-700/50">
-                              <h4 className="text-sm font-semibold text-zinc-300 mb-2 flex items-center gap-2">
-                                <Users className="w-4 h-4 text-violet-400" />
-                                Zielgruppen-Profil
-                              </h4>
-                              <div className="grid grid-cols-2 gap-2 text-sm">
-                                <div>
-                                  <span className="text-muted-foreground">Nische:</span>{" "}
-                                  <span className="text-white">{plan.profile.niche || "-"}</span>
-                                </div>
-                                <div>
-                                  <span className="text-muted-foreground">Tonalität:</span>{" "}
-                                  <span className="text-white">{plan.profile.tonality || "-"}</span>
-                                </div>
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Plan Items Preview */}
-                          {plan.planItems && plan.planItems.length > 0 && (
-                            <div className="space-y-2">
-                              <h4 className="text-sm font-semibold text-zinc-300 flex items-center gap-2">
-                                <Sparkles className="w-4 h-4 text-violet-400" />
-                                Content-Übersicht ({plan.planItems.length} Tage)
-                              </h4>
-                              <div className="max-h-64 overflow-y-auto space-y-2 pr-2">
-                                {plan.planItems.slice(0, 3).map((item: PlanItem, index: number) => (
-                                  <div 
-                                    key={index}
-                                    className="p-3 bg-zinc-900/50 rounded-lg border border-zinc-700/50"
-                                  >
-                                    <div className="flex items-start justify-between gap-2 mb-1">
-                                      <span className="text-xs font-semibold text-violet-400">Tag {item.day}</span>
-                                      <Badge variant="outline" className="text-xs border-zinc-600">
-                                        {item.framework}
-                                      </Badge>
-                                    </div>
-                                    <p className="text-sm font-medium text-white mb-1">{item.topic}</p>
-                                    <p className="text-xs text-muted-foreground italic">"{item.hook}"</p>
-                                  </div>
-                                ))}
-                                {plan.planItems.length > 3 && (
-                                  <p className="text-xs text-muted-foreground text-center py-2">
-                                    + {plan.planItems.length - 3} weitere Tage
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Actions */}
-                          <div className="flex items-center justify-between gap-2 pt-2 border-t border-zinc-700/50">
-                            <div className="flex items-center gap-2">
-                              <Button
-                                variant="default"
-                                size="sm"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setDetailViewPlan(plan);
-                                }}
-                                className="bg-violet-600 hover:bg-violet-700"
-                              >
-                                <Eye className="w-4 h-4 mr-1" />
-                                Vollständig anzeigen
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleExportPDF(plan);
-                                }}
-                                className="border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10"
-                              >
-                                <Download className="w-4 h-4 mr-1" />
-                                PDF Export
-                              </Button>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleToggleFavorite(plan.id);
-                                }}
-                                className="border-zinc-600 hover:border-yellow-500/50"
-                              >
-                                {plan.isFavorite === 1 ? (
-                                  <>
-                                    <StarOff className="w-4 h-4 mr-1" />
-                                    Entfernen
-                                  </>
-                                ) : (
-                                  <>
-                                    <Star className="w-4 h-4 mr-1" />
-                                    Favorit
-                                  </>
-                                )}
-                              </Button>
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="border-red-500/50 text-red-400 hover:bg-red-500/10"
-                                    onClick={(e) => e.stopPropagation()}
-                                  >
-                                    <Trash2 className="w-4 h-4 mr-1" />
-                                    Löschen
-                                  </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle>Content-Plan löschen?</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                      Möchtest du "{plan.name}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-                                    <AlertDialogAction
-                                      onClick={() => handleDelete(plan.id)}
-                                      className="bg-red-500 hover:bg-red-600"
-                                    >
-                                      Löschen
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                            </div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Full Detail View Dialog */}
-      <Dialog open={!!detailViewPlan} onOpenChange={() => setDetailViewPlan(null)}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden bg-zinc-900 border-zinc-700">
-          <DialogHeader className="border-b border-zinc-700 pb-4">
-            <div className="flex items-center justify-between">
-              <DialogTitle className="text-xl flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-                  <Calendar className="w-5 h-5 text-white" />
-                </div>
-                {detailViewPlan?.name}
-              </DialogTitle>
-              <div className="flex items-center gap-2">
+  // Detail View - direkt auf der Seite
+  if (selectedPlan) {
+    return (
+      <div className="space-y-6">
+        {/* Header mit Zurück-Button */}
+        <div className="flex items-center justify-between">
+          <Button
+            variant="outline"
+            onClick={() => setSelectedPlan(null)}
+            className="border-zinc-600 hover:border-zinc-500"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Zurück zur Übersicht
+          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleToggleFavorite(selectedPlan.id)}
+              className="border-zinc-600 hover:border-yellow-500/50"
+            >
+              {selectedPlan.isFavorite === 1 ? (
+                <>
+                  <StarOff className="w-4 h-4 mr-1" />
+                  Favorit entfernen
+                </>
+              ) : (
+                <>
+                  <Star className="w-4 h-4 mr-1" />
+                  Als Favorit
+                </>
+              )}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleExportPDF(selectedPlan)}
+              className="border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10"
+            >
+              <Download className="w-4 h-4 mr-1" />
+              PDF Export
+            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => detailViewPlan && handleExportPDF(detailViewPlan)}
-                  className="border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10"
+                  className="border-red-500/50 text-red-400 hover:bg-red-500/10"
                 >
-                  <Download className="w-4 h-4 mr-1" />
-                  PDF Export
+                  <Trash2 className="w-4 h-4 mr-1" />
+                  Löschen
                 </Button>
-              </div>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Content-Plan löschen?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Möchtest du "{selectedPlan.name}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => handleDelete(selectedPlan.id)}
+                    className="bg-red-500 hover:bg-red-600"
+                  >
+                    Löschen
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        </div>
+
+        {/* Plan Header Card */}
+        <Card className="border-2 border-zinc-700 bg-zinc-900/50">
+          <CardHeader className="border-b border-zinc-700/50">
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-3 text-xl">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+                  <Calendar className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <span className="flex items-center gap-2">
+                    {selectedPlan.name}
+                    {selectedPlan.isFavorite === 1 && (
+                      <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
+                    )}
+                  </span>
+                  <div className="flex items-center gap-3 text-sm text-muted-foreground font-normal mt-1">
+                    <span className="flex items-center gap-1">
+                      <Calendar className="w-3.5 h-3.5" />
+                      {selectedPlan.duration} Tage
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5" />
+                      {formatDate(selectedPlan.createdAt)}
+                    </span>
+                  </div>
+                </div>
+              </CardTitle>
+              <Badge variant="outline" className="border-violet-500/50 text-violet-400 text-sm px-3 py-1">
+                {selectedPlan.framework}
+              </Badge>
             </div>
-            {detailViewPlan && (
-              <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mt-2">
-                <span className="flex items-center gap-1">
-                  <Calendar className="w-3.5 h-3.5" />
-                  {detailViewPlan.duration} Tage
-                </span>
-                <span className="flex items-center gap-1">
-                  <Clock className="w-3.5 h-3.5" />
-                  {formatDate(detailViewPlan.createdAt)}
-                </span>
-                <Badge variant="outline" className="border-violet-500/50 text-violet-400">
-                  {detailViewPlan.framework}
+          </CardHeader>
+          
+          {/* Profile Info */}
+          {selectedPlan.profile && (
+            <CardContent className="pt-4">
+              <div className="p-4 bg-zinc-800/50 rounded-xl border border-zinc-700">
+                <h3 className="text-sm font-semibold text-violet-400 mb-3 flex items-center gap-2">
+                  <Users className="w-4 h-4" />
+                  Zielgruppen-Profil
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div>
+                    <span className="text-muted-foreground block text-xs">Nische</span>
+                    <span className="text-white">{selectedPlan.profile.niche || "-"}</span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground block text-xs">Tonalität</span>
+                    <span className="text-white">{selectedPlan.profile.tonality || "-"}</span>
+                  </div>
+                  {selectedPlan.profile.painPoints?.length > 0 && (
+                    <div className="col-span-2">
+                      <span className="text-muted-foreground block text-xs">Pain Points</span>
+                      <span className="text-white">{selectedPlan.profile.painPoints.join(", ")}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          )}
+        </Card>
+
+        {/* All Plan Items - direkt auf der Seite */}
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-violet-400" />
+            Content-Plan ({selectedPlan.planItems?.length || 0} Tage)
+          </h2>
+          
+          {selectedPlan.planItems?.map((item: PlanItem, index: number) => (
+            <motion.div 
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+              className="border-2 border-zinc-700 rounded-xl overflow-hidden bg-zinc-900/50"
+            >
+              {/* Day Header */}
+              <div className="bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-4 flex items-center justify-between">
+                <span className="font-bold text-white text-lg">Tag {item.day}</span>
+                <Badge className="bg-white/20 text-white border-0 text-sm">
+                  {item.framework}
                 </Badge>
               </div>
-            )}
-          </DialogHeader>
-          
-          <ScrollArea className="h-[calc(90vh-180px)] pr-4">
-            {detailViewPlan && (
-              <div className="space-y-4 py-4">
-                {/* Profile Section */}
-                {detailViewPlan.profile && (
-                  <div className="p-4 bg-zinc-800/50 rounded-xl border border-zinc-700">
-                    <h3 className="text-sm font-semibold text-violet-400 mb-3 flex items-center gap-2">
-                      <Users className="w-4 h-4" />
-                      Zielgruppen-Profil
-                    </h3>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                      <div>
-                        <span className="text-muted-foreground block text-xs">Nische</span>
-                        <span className="text-white">{detailViewPlan.profile.niche || "-"}</span>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground block text-xs">Tonalität</span>
-                        <span className="text-white">{detailViewPlan.profile.tonality || "-"}</span>
-                      </div>
-                      {detailViewPlan.profile.painPoints?.length > 0 && (
-                        <div className="col-span-2">
-                          <span className="text-muted-foreground block text-xs">Pain Points</span>
-                          <span className="text-white">{detailViewPlan.profile.painPoints.join(", ")}</span>
+              
+              <div className="p-5 space-y-5">
+                {/* Topic & Hook */}
+                <div>
+                  <h4 className="text-xl font-semibold text-white mb-3">{item.topic}</h4>
+                  <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4">
+                    <p className="text-amber-200 italic text-lg">"{item.hook}"</p>
+                  </div>
+                </div>
+
+                {/* Script Structure */}
+                {item.scriptStructure?.length > 0 && (
+                  <div>
+                    <h5 className="text-sm font-semibold text-violet-400 mb-3 flex items-center gap-2">
+                      <MessageSquare className="w-4 h-4" />
+                      Script-Struktur
+                    </h5>
+                    <div className="space-y-2">
+                      {item.scriptStructure.map((line: string, i: number) => (
+                        <div key={i} className="bg-zinc-800/70 rounded-lg p-4 text-zinc-300 border border-zinc-700/50">
+                          {line}
                         </div>
-                      )}
+                      ))}
                     </div>
                   </div>
                 )}
 
-                {/* All Plan Items */}
-                {detailViewPlan.planItems?.map((item: PlanItem, index: number) => (
-                  <div 
-                    key={index}
-                    className="border-2 border-zinc-700 rounded-xl overflow-hidden bg-zinc-800/30"
-                  >
-                    {/* Day Header */}
-                    <div className="bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-3 flex items-center justify-between">
-                      <span className="font-bold text-white">Tag {item.day}</span>
-                      <Badge className="bg-white/20 text-white border-0">
-                        {item.framework}
-                      </Badge>
-                    </div>
-                    
-                    <div className="p-4 space-y-4">
-                      {/* Topic */}
-                      <div>
-                        <h4 className="text-lg font-semibold text-white mb-2">{item.topic}</h4>
-                        <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-3">
-                          <p className="text-amber-200 italic">"{item.hook}"</p>
-                        </div>
-                      </div>
+                {/* Cut Recommendation */}
+                {item.cutRecommendation && (
+                  <div>
+                    <h5 className="text-sm font-semibold text-violet-400 mb-3 flex items-center gap-2">
+                      <Scissors className="w-4 h-4" />
+                      Schnitt-Empfehlung
+                    </h5>
+                    <p className="text-zinc-300 bg-zinc-800/70 rounded-lg p-4 border border-zinc-700/50">
+                      {item.cutRecommendation}
+                    </p>
+                  </div>
+                )}
 
-                      {/* Script Structure */}
-                      {item.scriptStructure?.length > 0 && (
-                        <div>
-                          <h5 className="text-sm font-semibold text-violet-400 mb-2 flex items-center gap-2">
-                            <MessageSquare className="w-4 h-4" />
-                            Script-Struktur
-                          </h5>
-                          <div className="space-y-2">
-                            {item.scriptStructure.map((line: string, i: number) => (
-                              <div key={i} className="bg-zinc-900/50 rounded-lg p-3 text-sm text-zinc-300">
-                                {line}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Cut Recommendation */}
-                      {item.cutRecommendation && (
-                        <div>
-                          <h5 className="text-sm font-semibold text-violet-400 mb-2 flex items-center gap-2">
-                            <Scissors className="w-4 h-4" />
-                            Schnitt-Empfehlung
-                          </h5>
-                          <p className="text-sm text-zinc-300 bg-zinc-900/50 rounded-lg p-3">
-                            {item.cutRecommendation}
-                          </p>
-                        </div>
-                      )}
-
-                      {/* Hashtags */}
-                      {item.hashtags?.length > 0 && (
-                        <div>
-                          <h5 className="text-sm font-semibold text-violet-400 mb-2 flex items-center gap-2">
-                            <Hash className="w-4 h-4" />
-                            Hashtags
-                          </h5>
-                          <div className="flex flex-wrap gap-2">
-                            {item.hashtags.map((tag: string, i: number) => (
-                              <Badge key={i} variant="outline" className="border-blue-500/50 text-blue-400">
-                                {tag}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Meta Info */}
-                      <div className="grid grid-cols-2 gap-4 pt-3 border-t border-zinc-700">
-                        {item.bestTime && (
-                          <div>
-                            <span className="text-xs text-muted-foreground flex items-center gap-1 mb-1">
-                              <Clock className="w-3 h-3" />
-                              Beste Posting-Zeit
-                            </span>
-                            <span className="text-sm text-white">{item.bestTime}</span>
-                          </div>
-                        )}
-                        {item.trendingAudio && (
-                          <div>
-                            <span className="text-xs text-muted-foreground flex items-center gap-1 mb-1">
-                              <Music className="w-3 h-3" />
-                              Trending Audio
-                            </span>
-                            <span className="text-sm text-white">{item.trendingAudio}</span>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Copywriting Tip */}
-                      {item.copywritingTip && (
-                        <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-3">
-                          <h5 className="text-xs font-semibold text-emerald-400 mb-1 flex items-center gap-1">
-                            <Lightbulb className="w-3 h-3" />
-                            Copywriting-Tipp
-                          </h5>
-                          <p className="text-sm text-emerald-200">{item.copywritingTip}</p>
-                        </div>
-                      )}
+                {/* Hashtags */}
+                {item.hashtags?.length > 0 && (
+                  <div>
+                    <h5 className="text-sm font-semibold text-violet-400 mb-3 flex items-center gap-2">
+                      <Hash className="w-4 h-4" />
+                      Hashtags
+                    </h5>
+                    <div className="flex flex-wrap gap-2">
+                      {item.hashtags.map((tag: string, i: number) => (
+                        <Badge key={i} variant="outline" className="border-blue-500/50 text-blue-400 px-3 py-1">
+                          {tag}
+                        </Badge>
+                      ))}
                     </div>
                   </div>
-                ))}
+                )}
+
+                {/* Meta Info */}
+                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-zinc-700">
+                  {item.bestTime && (
+                    <div className="bg-zinc-800/50 rounded-lg p-3 border border-zinc-700/50">
+                      <span className="text-xs text-muted-foreground flex items-center gap-1 mb-1">
+                        <Clock className="w-3 h-3" />
+                        Beste Posting-Zeit
+                      </span>
+                      <span className="text-white font-medium">{item.bestTime}</span>
+                    </div>
+                  )}
+                  {item.trendingAudio && (
+                    <div className="bg-zinc-800/50 rounded-lg p-3 border border-zinc-700/50">
+                      <span className="text-xs text-muted-foreground flex items-center gap-1 mb-1">
+                        <Music className="w-3 h-3" />
+                        Trending Audio
+                      </span>
+                      <span className="text-white font-medium">{item.trendingAudio}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Copywriting Tip */}
+                {item.copywritingTip && (
+                  <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-4">
+                    <h5 className="text-xs font-semibold text-emerald-400 mb-2 flex items-center gap-1">
+                      <Lightbulb className="w-3 h-3" />
+                      Copywriting-Tipp
+                    </h5>
+                    <p className="text-emerald-200">{item.copywritingTip}</p>
+                  </div>
+                )}
               </div>
-            )}
-          </ScrollArea>
-        </DialogContent>
-      </Dialog>
-    </>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Übersicht aller Pläne
+  return (
+    <Card className="border-2 border-zinc-700 bg-zinc-900/50">
+      <CardHeader className="border-b border-zinc-700/50">
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-3 text-lg">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+              <FileText className="w-5 h-5 text-white" />
+            </div>
+            <span>Gespeicherte Content-Pläne</span>
+          </CardTitle>
+          <Badge variant="outline" className="border-violet-500/50 text-violet-400">
+            {savedPlans.length} Pläne
+          </Badge>
+        </div>
+        <CardDescription className="mt-2">
+          Alle deine generierten Content-Pläne an einem Ort
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="pt-6">
+        <div className="space-y-4">
+          <AnimatePresence>
+            {savedPlans.map((plan: any) => (
+              <motion.div
+                key={plan.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="border-2 border-zinc-700 rounded-xl bg-zinc-800/50 overflow-hidden hover:border-violet-500/50 transition-colors cursor-pointer"
+                onClick={() => setSelectedPlan(plan)}
+              >
+                <div className="p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h3 className="font-semibold text-white truncate">{plan.name}</h3>
+                        {plan.isFavorite === 1 && (
+                          <Star className="w-4 h-4 text-yellow-500 fill-yellow-500 shrink-0" />
+                        )}
+                      </div>
+                      <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          <Calendar className="w-3.5 h-3.5" />
+                          {plan.duration} Tage
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-3.5 h-3.5" />
+                          {formatDate(plan.createdAt)}
+                        </span>
+                        {plan.profile?.niche && (
+                          <span className="flex items-center gap-1">
+                            <Target className="w-3.5 h-3.5" />
+                            {plan.profile.niche}
+                          </span>
+                        )}
+                        {plan.planItems?.length > 0 && (
+                          <span className="flex items-center gap-1">
+                            <Sparkles className="w-3.5 h-3.5" />
+                            {plan.planItems.length} Tage Content
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <Badge 
+                        variant="outline" 
+                        className={`${
+                          plan.framework === "HAPSS" 
+                            ? "border-emerald-500/50 text-emerald-400" 
+                            : plan.framework === "AIDA"
+                            ? "border-blue-500/50 text-blue-400"
+                            : "border-violet-500/50 text-violet-400"
+                        }`}
+                      >
+                        {plan.framework}
+                      </Badge>
+                      <ChevronDown className="w-5 h-5 text-muted-foreground" />
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
