@@ -1428,3 +1428,13 @@
 - [x] 3 Monate als Standard-Zeitraum
 - [x] Sticky Navigation mit aktivem Bereich beim Scrollen
 - [ ] Clean Minimal Design implementieren
+
+## Clean Minimal Design
+- [x] Dashboard Clean Minimal Design
+- [x] Analyse-Seite Clean Minimal Design
+- [ ] Klarere Trennlinien und Abstände
+- [ ] Bessere Lesbarkeit und Kontrast
+
+## Datenschutz & Features
+- [x] Leaderboard aus Dashboard entfernen (Datenschutz)
+- [x] Content-Plan Speicher-Button hinzufügen

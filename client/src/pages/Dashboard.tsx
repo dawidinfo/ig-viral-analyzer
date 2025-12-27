@@ -60,8 +60,9 @@ import { NotificationSettings } from "@/components/NotificationSettings";
 import { ContentPlanGenerator } from "@/components/ContentPlanGenerator";
 import { DashboardRecommendations } from "@/components/DashboardRecommendations";
 import { UserBadges } from "@/components/UserBadges";
-import { Leaderboard } from "@/components/Leaderboard";
-import { Trophy } from "lucide-react";
+// Leaderboard removed for privacy reasons
+// import { Leaderboard } from "@/components/Leaderboard";
+// import { Trophy } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
@@ -122,7 +123,7 @@ export default function Dashboard() {
     
     // Handle tab parameter
     const tabParam = urlParams.get('tab');
-    if (tabParam && ['overview', 'content-plan', 'analyses', 'invoices', 'notes', 'affiliate', 'leaderboard', 'settings'].includes(tabParam)) {
+    if (tabParam && ['overview', 'content-plan', 'analyses', 'invoices', 'notes', 'affiliate', 'settings'].includes(tabParam)) {
       setActiveTab(tabParam);
       // Clean up URL after setting tab
       window.history.replaceState({}, '', '/dashboard');
@@ -469,28 +470,28 @@ export default function Dashboard() {
 
           {/* Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            {/* Sticky Navigation Bar with Active Indicator */}
-            <div className="sticky top-16 z-40 py-4 bg-background/80 backdrop-blur-md">
-              {/* Active Tab Title Banner */}
-              <div className="flex justify-center mb-3">
-                <div className="px-6 py-2 bg-gradient-to-r from-primary/20 via-purple-500/20 to-pink-500/20 rounded-full border border-primary/30">
-                  <span className="text-sm font-semibold text-primary">
+            {/* Clean Minimal Navigation Bar */}
+            <div className="sticky top-16 z-40 py-4 bg-background/95 backdrop-blur-xl border-b border-zinc-800">
+              {/* Active Tab Title - Clean Design */}
+              <div className="flex justify-center mb-4">
+                <div className="px-8 py-3 bg-zinc-900 rounded-2xl border-2 border-zinc-700 shadow-xl">
+                  <span className="text-lg font-bold text-white">
                     {activeTab === 'overview' && '📊 Übersicht'}
                     {activeTab === 'content-plan' && '📅 Content-Plan Generator'}
                     {activeTab === 'analyses' && '🔖 Gespeicherte Analysen'}
                     {activeTab === 'invoices' && '🧾 Rechnungen'}
                     {activeTab === 'notes' && '📝 Notizen'}
                     {activeTab === 'affiliate' && '🔗 Affiliate Programm'}
-                    {activeTab === 'leaderboard' && '🏆 Leaderboard'}
+
                     {activeTab === 'settings' && '⚙️ Einstellungen'}
                   </span>
                 </div>
               </div>
               <TooltipProvider delayDuration={100}>
-                <TabsList className="flex justify-center gap-2 p-1.5 overflow-x-auto flex-nowrap w-fit mx-auto bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-full" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
+                <TabsList className="flex justify-center gap-3 p-2 overflow-x-auto flex-nowrap w-fit mx-auto bg-zinc-950 border-2 border-zinc-800 rounded-2xl shadow-2xl" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="overview" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-lg data-[state=active]:scale-105 text-zinc-400 hover:text-white hover:bg-zinc-800/60 hover:scale-102 whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
+                      <TabsTrigger value="overview" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-primary/30 data-[state=active]:scale-105 data-[state=active]:border-2 data-[state=active]:border-primary/50 text-zinc-400 hover:text-white hover:bg-zinc-800 whitespace-nowrap text-sm font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2">
                         <LayoutDashboard className="w-4 h-4" />
                         <span className="hidden md:inline">Übersicht</span>
                       </TabsTrigger>
@@ -499,7 +500,7 @@ export default function Dashboard() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="content-plan" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-lg data-[state=active]:scale-105 text-zinc-400 hover:text-white hover:bg-zinc-800/60 hover:scale-102 whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 relative flex items-center gap-2">
+                      <TabsTrigger value="content-plan" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-primary/30 data-[state=active]:scale-105 data-[state=active]:border-2 data-[state=active]:border-primary/50 text-zinc-400 hover:text-white hover:bg-zinc-800 whitespace-nowrap text-sm font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 relative flex items-center gap-2">
                         <Calendar className="w-4 h-4" />
                         <span className="hidden md:inline">Content-Plan</span>
                         <span className="absolute -top-1 -right-1 w-2 h-2 bg-pink-500 rounded-full animate-pulse" />
@@ -509,7 +510,7 @@ export default function Dashboard() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="analyses" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-lg data-[state=active]:scale-105 text-zinc-400 hover:text-white hover:bg-zinc-800/60 hover:scale-102 whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
+                      <TabsTrigger value="analyses" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-primary/30 data-[state=active]:scale-105 data-[state=active]:border-2 data-[state=active]:border-primary/50 text-zinc-400 hover:text-white hover:bg-zinc-800 whitespace-nowrap text-sm font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2">
                         <Bookmark className="w-4 h-4" />
                         <span className="hidden md:inline">Analysen</span>
                       </TabsTrigger>
@@ -518,7 +519,7 @@ export default function Dashboard() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="invoices" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-lg data-[state=active]:scale-105 text-zinc-400 hover:text-white hover:bg-zinc-800/60 hover:scale-102 whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
+                      <TabsTrigger value="invoices" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-primary/30 data-[state=active]:scale-105 data-[state=active]:border-2 data-[state=active]:border-primary/50 text-zinc-400 hover:text-white hover:bg-zinc-800 whitespace-nowrap text-sm font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2">
                         <Receipt className="w-4 h-4" />
                         <span className="hidden md:inline">Rechnungen</span>
                       </TabsTrigger>
@@ -527,7 +528,7 @@ export default function Dashboard() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="notes" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-lg data-[state=active]:scale-105 text-zinc-400 hover:text-white hover:bg-zinc-800/60 hover:scale-102 whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
+                      <TabsTrigger value="notes" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-primary/30 data-[state=active]:scale-105 data-[state=active]:border-2 data-[state=active]:border-primary/50 text-zinc-400 hover:text-white hover:bg-zinc-800 whitespace-nowrap text-sm font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2">
                         <StickyNote className="w-4 h-4" />
                         <span className="hidden md:inline">Notizen</span>
                       </TabsTrigger>
@@ -536,26 +537,17 @@ export default function Dashboard() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="affiliate" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-lg data-[state=active]:scale-105 text-zinc-400 hover:text-white hover:bg-zinc-800/60 hover:scale-102 whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
+                      <TabsTrigger value="affiliate" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-primary/30 data-[state=active]:scale-105 data-[state=active]:border-2 data-[state=active]:border-primary/50 text-zinc-400 hover:text-white hover:bg-zinc-800 whitespace-nowrap text-sm font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2">
                         <Share2 className="w-4 h-4" />
                         <span className="hidden md:inline">Affiliate</span>
                       </TabsTrigger>
                     </TooltipTrigger>
                     <TooltipContent side="bottom" className="md:hidden">Affiliate</TooltipContent>
                   </Tooltip>
+                  {/* Leaderboard Tab removed for privacy reasons */}
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="leaderboard" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-lg data-[state=active]:scale-105 text-zinc-400 hover:text-white hover:bg-zinc-800/60 hover:scale-102 whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 relative flex items-center gap-2">
-                        <Trophy className="w-4 h-4" />
-                        <span className="hidden md:inline">Leaderboard</span>
-                        <span className="absolute -top-1 -right-1 w-2 h-2 bg-amber-500 rounded-full" />
-                      </TabsTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" className="md:hidden">Leaderboard</TooltipContent>
-                  </Tooltip>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <TabsTrigger value="settings" className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-lg data-[state=active]:scale-105 text-zinc-400 hover:text-white hover:bg-zinc-800/60 hover:scale-102 whitespace-nowrap text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-2">
+                      <TabsTrigger value="settings" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-primary/30 data-[state=active]:scale-105 data-[state=active]:border-2 data-[state=active]:border-primary/50 text-zinc-400 hover:text-white hover:bg-zinc-800 whitespace-nowrap text-sm font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2">
                         <Settings className="w-4 h-4" />
                         <span className="hidden md:inline">Einstellungen</span>
                       </TabsTrigger>
@@ -1032,7 +1024,7 @@ export default function Dashboard() {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, x: -100 }}
-                            className="flex items-center gap-4 p-5 rounded-xl bg-zinc-900/50 border-2 border-zinc-800 hover:border-primary/50 transition-all group cursor-pointer"
+                            className="flex items-center gap-4 p-6 rounded-2xl bg-zinc-900 border-2 border-zinc-700 hover:border-primary/50 hover:bg-zinc-800/50 transition-all group cursor-pointer shadow-lg"
                             onClick={() => setLocation(`/analysis?username=${analysis.username}`)}
                           >
                             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-cyan-500/20 flex items-center justify-center overflow-hidden shrink-0">
@@ -1140,10 +1132,7 @@ export default function Dashboard() {
               <AffiliateDashboard />
             </TabsContent>
 
-            {/* Leaderboard Tab */}
-            <TabsContent value="leaderboard" className="space-y-6">
-              <Leaderboard currentUserId={user?.id} />
-            </TabsContent>
+            {/* Leaderboard Tab removed for privacy reasons */}
 
             {/* Settings Tab */}
             <TabsContent value="settings" className="space-y-6">

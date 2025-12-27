@@ -840,7 +840,7 @@ export const appRouter = router({
       }),
 
     // Save a generated content plan
-    save: publicProcedure
+    saveContentPlan: publicProcedure
       .input(z.object({
         userId: z.number(),
         name: z.string().min(1).max(128),

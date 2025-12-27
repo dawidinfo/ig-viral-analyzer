@@ -94,6 +94,8 @@ export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }:
   const [selectedAnalysis, setSelectedAnalysis] = useState<any>(null);
   const [editingItemIndex, setEditingItemIndex] = useState<number | null>(null);
   const [editedItem, setEditedItem] = useState<ContentPlanItem | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [planName, setPlanName] = useState("");
 
   // Fetch saved analyses for profile-based generation
   const dashboardData = trpc.dashboard.getData.useQuery(
@@ -189,6 +191,61 @@ export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }:
       toast.error(error.message || "Fehler beim Generieren des Content-Plans");
     }
   });
+
+  // Save content plan mutation
+  const saveContentPlanMutation = trpc.dashboard.saveContentPlan.useMutation({
+    onSuccess: () => {
+      setIsSaving(false);
+      toast.success("Content-Plan erfolgreich gespeichert!");
+    },
+    onError: (error: any) => {
+      setIsSaving(false);
+      toast.error(error.message || "Fehler beim Speichern des Content-Plans");
+    }
+  });
+
+  // Save content plan to database
+  const saveContentPlanToDb = async () => {
+    if (!userId || !generatedPlan) return;
+    
+    setIsSaving(true);
+    const name = generationMode === "profile" && selectedAnalysis 
+      ? `Content-Plan für @${selectedAnalysis.username} (${planDays} Tage)`
+      : `${planDays}-Tage Content-Plan - ${profile.niche || "Allgemein"}`;
+    
+    saveContentPlanMutation.mutate({
+      userId,
+      name,
+      profile: {
+        niche: generationMode === "profile" ? (selectedAnalysis?.niche || "Instagram") : profile.niche,
+        painPoints: generationMode === "profile" ? [] : profile.painPoints.split(",").map(s => s.trim()).filter(Boolean),
+        usps: generationMode === "profile" ? [] : profile.usps.split(",").map(s => s.trim()).filter(Boolean),
+        benefits: generationMode === "profile" ? [] : profile.benefits.split(",").map(s => s.trim()).filter(Boolean),
+        tonality: profile.tonality
+      },
+      duration: planDays,
+      framework: "mixed" as const,
+      planItems: generatedPlan.map(item => ({
+        day: item.day,
+        topic: item.topic,
+        hook: item.hook,
+        framework: item.framework,
+        scriptStructure: {
+          hook: item.scriptStructure[0] || "",
+          hookDuration: "0-3s",
+          body: item.scriptStructure[1] || "",
+          bodyDuration: "3-25s",
+          cta: item.scriptStructure[2] || "",
+          ctaDuration: "25-35s"
+        },
+        cutRecommendation: item.cutRecommendation,
+        hashtags: item.hashtags,
+        bestPostingTime: item.bestTime,
+        trendingAudio: { name: item.trendingAudio, url: "" },
+        copywritingTip: { author: "Expert", tip: item.copywritingTip }
+      }))
+    });
+  };
 
   // New: Profile-based content plan mutation
   const generateFromProfileMutation = trpc.dashboard.generateFromProfile.useMutation({
@@ -886,10 +943,31 @@ export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }:
             <div className="space-y-4">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold">Dein {planDays}-Tage Content-Plan</h3>
-                <Button variant="outline" size="sm" onClick={exportToPDF}>
-                  <Download className="w-4 h-4 mr-2" />
-                  Als PDF exportieren
-                </Button>
+                <div className="flex gap-2">
+                  <Button 
+                    variant="default" 
+                    size="sm" 
+                    onClick={saveContentPlanToDb}
+                    disabled={isSaving}
+                    className="bg-gradient-to-r from-emerald-500 to-green-600"
+                  >
+                    {isSaving ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
+                        Speichern...
+                      </>
+                    ) : (
+                      <>
+                        <Check className="w-4 h-4 mr-2" />
+                        Plan speichern
+                      </>
+                    )}
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={exportToPDF}>
+                    <Download className="w-4 h-4 mr-2" />
+                    Als PDF exportieren
+                  </Button>
+                </div>
               </div>
               
               {generatedPlan.map((item, index) => (
