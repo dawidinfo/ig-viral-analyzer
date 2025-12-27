@@ -1403,3 +1403,7 @@
 - [x] Follower-Wachstum Chart als erste/Standard-Ansicht
 - [x] Bessere Fehlerbehandlung mit automatischem Retry statt "nicht verfügbar"
 - [x] API-Timeout-Handling verbessern
+
+## Content-Plan Bugfix
+- [x] avgEngagement Typ-Fehler beheben (string/number)
+- [x] followerCount Typ-Fehler beheben (string/number)

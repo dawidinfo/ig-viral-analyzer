@@ -140,14 +140,20 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
   const customStartDate = customDateRange.from ? format(customDateRange.from, 'yyyy-MM-dd') : undefined;
   const customEndDate = customDateRange.to ? format(customDateRange.to, 'yyyy-MM-dd') : undefined;
 
-  const { data: historyData, isLoading, error } = trpc.instagram.followerHistory.useQuery(
+  const { data: historyData, isLoading, error, refetch, isFetching } = trpc.instagram.followerHistory.useQuery(
     { 
       username, 
       timeRange,
       customStartDate: timeRange === 'custom' ? customStartDate : undefined,
       customEndDate: timeRange === 'custom' ? customEndDate : undefined
     },
-    { enabled: !!username && (timeRange !== 'custom' || (!!customStartDate && !!customEndDate)) }
+    { 
+      enabled: !!username && (timeRange !== 'custom' || (!!customStartDate && !!customEndDate)),
+      retry: 2,
+      retryDelay: 2000,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
+    }
   );
 
   // Benchmark data for similar accounts

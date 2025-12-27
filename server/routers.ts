@@ -804,8 +804,8 @@ export const appRouter = router({
             bestHours: z.array(z.number()).optional()
           }).optional(),
           commonHashtags: z.array(z.string()).optional(),
-          avgEngagement: z.number().optional(),
-          followerCount: z.number().optional(),
+          avgEngagement: z.union([z.number(), z.string()]).optional().transform(val => typeof val === 'string' ? parseFloat(val) || 0 : val),
+          followerCount: z.union([z.number(), z.string()]).optional().transform(val => typeof val === 'string' ? parseInt(val) || 0 : val),
           niche: z.string().optional(),
           contentStyle: z.string().optional()
         }),
