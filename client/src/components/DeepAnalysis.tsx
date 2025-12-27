@@ -211,24 +211,39 @@ export default function DeepAnalysis({ username }: DeepAnalysisProps) {
 
       {/* Tabs for different analysis sections */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="w-full flex flex-wrap bg-zinc-900/95 backdrop-blur-md p-2 rounded-xl gap-2 sticky top-0 z-50 border border-white/10 shadow-lg">
-          <TabsTrigger value="viral-reasons" className="flex-1 min-w-[120px] data-[state=active]:bg-purple-500/20">
+        <TabsList className="w-full flex flex-wrap bg-zinc-900/80 backdrop-blur-md p-1.5 rounded-2xl gap-1.5 sticky top-0 z-50 border-2 border-zinc-700/50 shadow-xl">
+          <TabsTrigger 
+            value="viral-reasons" 
+            className="flex-1 min-w-[130px] py-3 px-4 rounded-xl font-medium transition-all duration-300 data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-zinc-800/50 data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-500/25"
+          >
             <Zap className="w-4 h-4 mr-2" />
             Viral-Gründe
           </TabsTrigger>
-          <TabsTrigger value="hapss" className="flex-1 min-w-[120px] data-[state=active]:bg-purple-500/20">
+          <TabsTrigger 
+            value="hapss" 
+            className="flex-1 min-w-[130px] py-3 px-4 rounded-xl font-medium transition-all duration-300 data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-zinc-800/50 data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-500/25"
+          >
             <Target className="w-4 h-4 mr-2" />
             HAPSS
           </TabsTrigger>
-          <TabsTrigger value="patterns" className="flex-1 min-w-[120px] data-[state=active]:bg-purple-500/20">
+          <TabsTrigger 
+            value="patterns" 
+            className="flex-1 min-w-[130px] py-3 px-4 rounded-xl font-medium transition-all duration-300 data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-zinc-800/50 data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-500/25"
+          >
             <BarChart3 className="w-4 h-4 mr-2" />
             Muster
           </TabsTrigger>
-          <TabsTrigger value="seo" className="flex-1 min-w-[120px] data-[state=active]:bg-purple-500/20">
+          <TabsTrigger 
+            value="seo" 
+            className="flex-1 min-w-[130px] py-3 px-4 rounded-xl font-medium transition-all duration-300 data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-zinc-800/50 data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-500/25"
+          >
             <Search className="w-4 h-4 mr-2" />
             SEO
           </TabsTrigger>
-          <TabsTrigger value="top-content" className="flex-1 min-w-[120px] data-[state=active]:bg-purple-500/20">
+          <TabsTrigger 
+            value="top-content" 
+            className="flex-1 min-w-[130px] py-3 px-4 rounded-xl font-medium transition-all duration-300 data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-zinc-800/50 data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-500/25"
+          >
             <TrendingUp className="w-4 h-4 mr-2" />
             Top Content
           </TabsTrigger>
