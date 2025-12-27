@@ -634,33 +634,33 @@ export default function Admin() {
         </div>
 
         {/* Main Tabs */}
-        <Tabs defaultValue="users" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="users" className="gap-2">
+        <Tabs defaultValue="users" className="space-y-6">
+          <TabsList className="h-14 p-1.5 bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl gap-1">
+            <TabsTrigger value="users" className="gap-2 h-10 px-4 rounded-lg transition-all duration-200 data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500/20 data-[state=active]:to-purple-500/20 data-[state=active]:text-violet-300 data-[state=active]:shadow-[0_0_20px_rgba(139,92,246,0.3)] data-[state=active]:border data-[state=active]:border-violet-500/30 hover:bg-muted/50 hover:text-foreground">
               <Users className="h-4 w-4" />
               Benutzer
             </TabsTrigger>
-            <TabsTrigger value="top" className="gap-2">
+            <TabsTrigger value="top" className="gap-2 h-10 px-4 rounded-lg transition-all duration-200 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/20 data-[state=active]:to-yellow-500/20 data-[state=active]:text-amber-300 data-[state=active]:shadow-[0_0_20px_rgba(245,158,11,0.3)] data-[state=active]:border data-[state=active]:border-amber-500/30 hover:bg-muted/50 hover:text-foreground">
               <Crown className="h-4 w-4" />
               Top Benutzer
             </TabsTrigger>
-            <TabsTrigger value="revenue" className="gap-2">
+            <TabsTrigger value="revenue" className="gap-2 h-10 px-4 rounded-lg transition-all duration-200 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500/20 data-[state=active]:to-green-500/20 data-[state=active]:text-emerald-300 data-[state=active]:shadow-[0_0_20px_rgba(16,185,129,0.3)] data-[state=active]:border data-[state=active]:border-emerald-500/30 hover:bg-muted/50 hover:text-foreground">
               <CreditCard className="h-4 w-4" />
               Umsatz
             </TabsTrigger>
-            <TabsTrigger value="tracking" className="gap-2">
+            <TabsTrigger value="tracking" className="gap-2 h-10 px-4 rounded-lg transition-all duration-200 data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500/20 data-[state=active]:to-blue-500/20 data-[state=active]:text-cyan-300 data-[state=active]:shadow-[0_0_20px_rgba(6,182,212,0.3)] data-[state=active]:border data-[state=active]:border-cyan-500/30 hover:bg-muted/50 hover:text-foreground">
               <Activity className="h-4 w-4" />
               Tracking
             </TabsTrigger>
-            <TabsTrigger value="abtest" className="gap-2">
+            <TabsTrigger value="abtest" className="gap-2 h-10 px-4 rounded-lg transition-all duration-200 data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500/20 data-[state=active]:to-rose-500/20 data-[state=active]:text-pink-300 data-[state=active]:shadow-[0_0_20px_rgba(236,72,153,0.3)] data-[state=active]:border data-[state=active]:border-pink-500/30 hover:bg-muted/50 hover:text-foreground">
               <BarChart3 className="h-4 w-4" />
               A/B-Tests
             </TabsTrigger>
-            <TabsTrigger value="suspended" className="gap-2">
+            <TabsTrigger value="suspended" className="gap-2 h-10 px-4 rounded-lg transition-all duration-200 data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500/20 data-[state=active]:to-orange-500/20 data-[state=active]:text-red-300 data-[state=active]:shadow-[0_0_20px_rgba(239,68,68,0.3)] data-[state=active]:border data-[state=active]:border-red-500/30 hover:bg-muted/50 hover:text-foreground">
               <Ban className="h-4 w-4" />
               Gesperrte User
             </TabsTrigger>
-            <TabsTrigger value="backup" className="gap-2">
+            <TabsTrigger value="backup" className="gap-2 h-10 px-4 rounded-lg transition-all duration-200 data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-500/20 data-[state=active]:to-violet-500/20 data-[state=active]:text-indigo-300 data-[state=active]:shadow-[0_0_20px_rgba(99,102,241,0.3)] data-[state=active]:border data-[state=active]:border-indigo-500/30 hover:bg-muted/50 hover:text-foreground">
               <HardDrive className="h-4 w-4" />
               Backups
             </TabsTrigger>

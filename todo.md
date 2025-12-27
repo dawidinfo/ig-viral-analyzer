@@ -1477,3 +1477,8 @@
 - [x] Backend: Backup-Service mit S3-Export erstellen
 - [x] Backend: API-Routen für Backup erstellen/auflisten/herunterladen
 - [x] Frontend: Backup-Tab im Admin-Panel einbauen
+
+## Admin-Navigation Styling
+- [x] Aktive Tabs hervorheben (leuchten) - farbige Gradients mit Glow-Effekt
+- [x] Hover-Effekte hinzufügen - sanfter Hintergrund-Wechsel
+- [x] Mehr Höhe für bessere Lesbarkeit - h-14 TabsList, h-10 Tabs
