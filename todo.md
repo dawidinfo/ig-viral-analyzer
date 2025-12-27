@@ -1443,3 +1443,4 @@
 - [x] Gespeicherte Content-Pläne im Dashboard anzeigen
 - [x] Clean Minimal Design weiter ausbauen
 - [x] Content-Plan Generator Design verbessern - sichtbare Eingabefelder mit Rahmen
+- [x] Automatische Datenbank-Backups deaktivieren

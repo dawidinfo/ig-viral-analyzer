@@ -228,8 +228,8 @@ export function startCronJobs(): void {
     console.log("[CronJobs] Next scheduled report: " + nextReport.reportType + " at " + nextReport.scheduledTime.toISOString());
   }
   
-  // Start automatic database backup every 15 minutes
-  startBackupCron();
+  // Automatic database backup disabled per user request
+  // startBackupCron();
 }
 
 export function stopCronJobs(): void {
