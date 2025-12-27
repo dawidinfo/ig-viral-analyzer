@@ -268,16 +268,25 @@ export default function ReelAnalysis({ username }: ReelAnalysisProps) {
     new Set(['transcription', 'hook', 'aida', 'hapss', 'copywriting', 'recommendations'])
   );
   
-  const { data: analysis, isLoading, error, isError } = trpc.instagram.analyzeReel.useQuery(
+  const { data: analysis, isLoading, error, isError, refetch, isFetching } = trpc.instagram.analyzeReel.useQuery(
     { username },
     { 
       enabled: !!username,
-      retry: 1,
-      retryDelay: 1000,
+      retry: 3,
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
       staleTime: 5 * 60 * 1000, // 5 minutes
       gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
     }
   );
+  
+  const [isRetrying, setIsRetrying] = useState(false);
+  
+  const handleRetry = async () => {
+    setIsRetrying(true);
+    setHasTimedOut(false);
+    await refetch();
+    setIsRetrying(false);
+  };
 
   // Timeout state for long-running requests
   const [hasTimedOut, setHasTimedOut] = useState(false);
@@ -355,22 +364,47 @@ export default function ReelAnalysis({ username }: ReelAnalysisProps) {
 
   if (error || !analysis) {
     return (
-      <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 text-red-400" />
-            <div>
-              <p className="text-sm font-medium text-red-200">AI Reel-Analyse nicht verfügbar</p>
-              <p className="text-xs text-red-400/70">Bitte versuche es später erneut</p>
+      <div className="space-y-4">
+        <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <AlertCircle className="w-5 h-5 text-amber-400" />
+                {(isRetrying || isFetching) && (
+                  <div className="absolute inset-0 w-5 h-5 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+                )}
+              </div>
+              <div>
+                <p className="text-sm font-medium text-amber-200">KI-Analyse wird geladen...</p>
+                <p className="text-xs text-amber-400/70">
+                  {(isRetrying || isFetching) ? 'Daten werden abgerufen...' : 'Klicke auf "Nochmal", um es erneut zu versuchen'}
+                </p>
+              </div>
             </div>
+            <button 
+              onClick={handleRetry}
+              disabled={isRetrying || isFetching}
+              className="px-3 py-1.5 text-xs bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 rounded-lg transition-colors disabled:opacity-50 flex items-center gap-1"
+            >
+              {(isRetrying || isFetching) ? (
+                <>
+                  <div className="w-3 h-3 border-2 border-amber-300 border-t-transparent rounded-full animate-spin" />
+                  Lädt...
+                </>
+              ) : (
+                'Nochmal'
+              )}
+            </button>
           </div>
-          <button 
-            onClick={() => window.location.reload()}
-            className="px-3 py-1.5 text-xs bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-lg transition-colors"
-          >
-            Neu laden
-          </button>
         </div>
+        {/* Skeleton while retrying */}
+        {(isRetrying || isFetching) && (
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-16 bg-muted/20 rounded-xl animate-pulse" style={{ animationDelay: `${i * 100}ms` }} />
+            ))}
+          </div>
+        )}
       </div>
     );
   }

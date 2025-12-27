@@ -1397,3 +1397,9 @@
 - [x] ReelAnalysis Loading State verbessert
 - [x] DeepAnalysis Loading State verbessert
 - [x] FollowerGrowthChart Loading State verbessert
+
+## Bugfixes und UI-Verbesserungen (Dezember 2024 - Teil 2)
+- [x] Refresh-Button Animation in Suchleiste (dreht sich beim Laden)
+- [x] Follower-Wachstum Chart als erste/Standard-Ansicht
+- [x] Bessere Fehlerbehandlung mit automatischem Retry statt "nicht verfügbar"
+- [x] API-Timeout-Handling verbessern

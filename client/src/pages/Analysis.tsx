@@ -528,7 +528,10 @@ export default function Analysis() {
             </div>
             <div className="mt-8 text-center">
               <p className="text-lg font-medium text-foreground mb-2">KI holt frische Daten für dich...</p>
-              <p className="text-sm text-muted-foreground">Analysiere @{usernameParam}</p>
+              <p className="text-sm text-muted-foreground mb-3">Analysiere @{usernameParam}</p>
+              <p className="text-xs text-muted-foreground/70 max-w-sm">
+                Es kann etwas dauern, da wir mit über <span className="text-primary font-semibold">3.100 Analysedaten</span> und KI auswerten.
+              </p>
             </div>
             
             {/* Slow loading message */}
@@ -708,6 +711,20 @@ export default function Analysis() {
               </div>
 
               <div className="space-y-8 pl-0 sm:pl-4 border-l-0 sm:border-l-2 border-blue-500/30">
+                {/* Follower-Wachstum Chart - ERSTE SEKTION */}
+                <section className="space-y-6">
+                  <SectionHeader
+                    title="Follower-Wachstum"
+                    icon={<TrendingUp className="w-6 h-6 text-blue-400" />}
+                    isPinned={pinnedSections.has('growth')}
+                    onTogglePin={() => togglePin('growth')}
+                    badge="Live-Tracking"
+                    badgeColor="bg-blue-500/20 text-blue-400 border border-blue-500/30"
+                  />
+                  <FollowerGrowthChart username={analysisData.profile.username} />
+                  <GrowthAnalysis username={analysisData.profile.username} platform="instagram" />
+                </section>
+
                 {/* AI Reel-Analyse */}
                 <section className="space-y-6">
                   <SectionHeader
@@ -793,12 +810,6 @@ export default function Analysis() {
                     currentFollowing={analysisData.profile.followingCount}
                     currentPosts={analysisData.profile.mediaCount}
                   />
-
-                  {/* Follower Growth Chart */}
-                  <FollowerGrowthChart username={analysisData.profile.username} />
-
-                  {/* Growth Analysis */}
-                  <GrowthAnalysis username={analysisData.profile.username} platform="instagram" />
                 </section>
 
                 {/* Posting-Zeit-Analyse */}

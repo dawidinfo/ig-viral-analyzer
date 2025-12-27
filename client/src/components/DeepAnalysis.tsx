@@ -49,8 +49,8 @@ export default function DeepAnalysis({ username }: DeepAnalysisProps) {
     { username },
     { 
       enabled: !!username,
-      retry: 1,
-      retryDelay: 1000,
+      retry: 3,
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
       staleTime: 5 * 60 * 1000, // 5 minutes
     }
   );
@@ -127,17 +127,39 @@ export default function DeepAnalysis({ username }: DeepAnalysisProps) {
 
   if (error || !deepAnalysis) {
     return (
-      <Card className="bg-red-500/10 border-red-500/20">
+      <Card className="bg-amber-500/10 border-amber-500/20">
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <AlertCircle className="w-5 h-5 text-red-400" />
-              <p className="text-sm text-red-400">Tiefenanalyse konnte nicht geladen werden</p>
+              <div className="relative">
+                <AlertCircle className="w-5 h-5 text-amber-400" />
+                {(isRefetching || isFetching) && (
+                  <div className="absolute inset-0 w-5 h-5 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+                )}
+              </div>
+              <div>
+                <p className="text-sm font-medium text-amber-200">KI-Tiefenanalyse wird geladen...</p>
+                <p className="text-xs text-amber-400/70">
+                  {(isRefetching || isFetching) ? 'Daten werden abgerufen...' : 'Klicke auf "Nochmal", um es erneut zu versuchen'}
+                </p>
+              </div>
             </div>
-            <Button size="sm" variant="outline" onClick={() => refetch()} className="text-red-400 border-red-500/30">
-              <RefreshCw className="w-4 h-4 mr-1" /> Erneut versuchen
+            <Button size="sm" variant="outline" onClick={handleRefetch} disabled={isRefetching || isFetching} className="text-amber-400 border-amber-500/30">
+              {(isRefetching || isFetching) ? (
+                <><RefreshCw className="w-4 h-4 mr-1 animate-spin" /> Lädt...</>
+              ) : (
+                <><RefreshCw className="w-4 h-4 mr-1" /> Nochmal</>
+              )}
             </Button>
           </div>
+          {/* Skeleton while retrying */}
+          {(isRefetching || isFetching) && (
+            <div className="mt-4 space-y-3">
+              {[1, 2].map((i) => (
+                <div key={i} className="h-12 bg-muted/20 rounded-lg animate-pulse" style={{ animationDelay: `${i * 100}ms` }} />
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     );
