@@ -45,7 +45,8 @@ import {
   PenTool,
   Video,
   BookOpen,
-  GraduationCap
+  GraduationCap,
+  LayoutDashboard
 } from "lucide-react";
 import { useState, useMemo, useEffect, useRef } from "react";
 import ReelAnalysis from "@/components/ReelAnalysis";
@@ -441,7 +442,7 @@ export default function Analysis() {
               <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
             <div className="hidden sm:flex items-center gap-3 cursor-pointer" onClick={() => setLocation("/")}>
-              <img src="/logo.svg" alt="ReelSpy.ai" className="h-6 sm:h-8 w-auto" />
+              <img src="/logo.svg" alt="ReelSpy.ai" className="h-8 lg:h-10 w-auto" />
             </div>
           </div>
           
@@ -497,10 +498,21 @@ export default function Analysis() {
                   className="h-8 px-2 sm:px-3 text-xs sm:text-sm"
                 >
                   <Download className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="hidden sm:inline ml-2">PDF</span>
+              <span className="hidden sm:inline ml-2">PDF</span>
                 </Button>
               </>
             )}
+            
+            {/* Dashboard Link */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setLocation("/dashboard")}
+              className="h-8 px-3 text-xs sm:text-sm border-purple-500/50 text-purple-400 hover:bg-purple-500/10"
+            >
+              <LayoutDashboard className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="ml-2 hidden sm:inline">Dashboard</span>
+            </Button>
           </div>
         </div>
       </nav>

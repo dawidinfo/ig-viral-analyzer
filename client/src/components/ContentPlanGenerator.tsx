@@ -656,31 +656,34 @@ export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }:
 
         {/* Zielgruppen-Profil Tab */}
         <TabsContent value="profile" className="space-y-6">
-          <Card className="border-2 border-border bg-card shadow-sm">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-violet-500" />
-                Definiere deine Zielgruppe
+          <Card className="border-2 border-zinc-700 bg-zinc-900/50 shadow-xl">
+            <CardHeader className="border-b border-zinc-700/50 pb-4">
+              <CardTitle className="flex items-center gap-3 text-lg">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+                  <Users className="w-5 h-5 text-white" />
+                </div>
+                <span>Definiere deine Zielgruppe</span>
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 pt-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="niche">Nische / Branche</Label>
+                  <Label htmlFor="niche" className="text-sm font-semibold text-zinc-300">Nische / Branche</Label>
                   <Input
                     id="niche"
                     placeholder="z.B. Fitness, Business, Lifestyle..."
                     value={profile.niche}
                     onChange={(e) => setProfile({ ...profile, niche: e.target.value })}
+                    className="h-12 bg-zinc-800/50 border-2 border-zinc-600 focus:border-violet-500 rounded-xl text-white placeholder:text-zinc-500"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="tonality">Tonalität</Label>
+                  <Label htmlFor="tonality" className="text-sm font-semibold text-zinc-300">Tonalität</Label>
                   <Select 
                     value={profile.tonality} 
                     onValueChange={(value) => setProfile({ ...profile, tonality: value })}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="h-12 bg-zinc-800/50 border-2 border-zinc-600 focus:border-violet-500 rounded-xl">
                       <SelectValue placeholder="Wähle einen Stil" />
                     </SelectTrigger>
                     <SelectContent>
@@ -695,45 +698,48 @@ export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }:
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="painPoints">Pain Points deiner Zielgruppe</Label>
+                <Label htmlFor="painPoints" className="text-sm font-semibold text-zinc-300">Pain Points deiner Zielgruppe</Label>
                 <Textarea
                   id="painPoints"
                   placeholder="Welche Probleme hat deine Zielgruppe? Was frustriert sie? Was hält sie nachts wach?"
                   value={profile.painPoints}
                   onChange={(e) => setProfile({ ...profile, painPoints: e.target.value })}
                   rows={3}
+                  className="bg-zinc-800/50 border-2 border-zinc-600 focus:border-violet-500 rounded-xl text-white placeholder:text-zinc-500 resize-none"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="usps">Deine USPs (Unique Selling Points)</Label>
+                <Label htmlFor="usps" className="text-sm font-semibold text-zinc-300">Deine USPs (Unique Selling Points)</Label>
                 <Textarea
                   id="usps"
                   placeholder="Was macht dich einzigartig? Warum sollten Leute dir folgen?"
                   value={profile.usps}
                   onChange={(e) => setProfile({ ...profile, usps: e.target.value })}
                   rows={3}
+                  className="bg-zinc-800/50 border-2 border-zinc-600 focus:border-violet-500 rounded-xl text-white placeholder:text-zinc-500 resize-none"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="benefits">Benefits für deine Follower</Label>
+                <Label htmlFor="benefits" className="text-sm font-semibold text-zinc-300">Benefits für deine Follower</Label>
                 <Textarea
                   id="benefits"
                   placeholder="Was bekommen deine Follower von dir? Welchen Mehrwert bietest du?"
                   value={profile.benefits}
                   onChange={(e) => setProfile({ ...profile, benefits: e.target.value })}
                   rows={3}
+                  className="bg-zinc-800/50 border-2 border-zinc-600 focus:border-violet-500 rounded-xl text-white placeholder:text-zinc-500 resize-none"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="contentStyle">Content-Stil</Label>
+                <Label htmlFor="contentStyle" className="text-sm font-semibold text-zinc-300">Content-Stil</Label>
                 <Select 
                   value={profile.contentStyle} 
                   onValueChange={(value) => setProfile({ ...profile, contentStyle: value })}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="h-12 bg-zinc-800/50 border-2 border-zinc-600 focus:border-violet-500 rounded-xl">
                     <SelectValue placeholder="Wähle deinen Stil" />
                   </SelectTrigger>
                   <SelectContent>
@@ -759,16 +765,18 @@ export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }:
 
         {/* Plan-Einstellungen Tab */}
         <TabsContent value="settings" className="space-y-6">
-          <Card className="border-2 border-border bg-card shadow-sm">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-violet-500" />
-                Plan-Einstellungen
+          <Card className="border-2 border-zinc-700 bg-zinc-900/50 shadow-xl">
+            <CardHeader className="border-b border-zinc-700/50 pb-4">
+              <CardTitle className="flex items-center gap-3 text-lg">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+                  <Sparkles className="w-5 h-5 text-white" />
+                </div>
+                <span>Plan-Einstellungen</span>
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 pt-6">
               <div className="space-y-4">
-                <Label>Zeitraum wählen</Label>
+                <Label className="text-sm font-semibold text-zinc-300">Zeitraum wählen</Label>
                 <div className="grid grid-cols-3 gap-4">
                   {[10, 20, 30].map((days) => (
                     <button
@@ -776,8 +784,8 @@ export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }:
                       onClick={() => setPlanDays(days as 10 | 20 | 30)}
                       className={`p-6 rounded-xl border-2 transition-all duration-300 ${
                         planDays === days
-                          ? "border-violet-500 bg-violet-500/10"
-                          : "border-border hover:border-violet-500/50"
+                          ? "border-violet-500 bg-violet-500/20 shadow-lg shadow-violet-500/20"
+                          : "border-zinc-600 bg-zinc-800/50 hover:border-violet-500/50 hover:bg-zinc-800"
                       }`}
                     >
                       <div className="text-3xl font-bold text-center">{days}</div>

@@ -58,6 +58,7 @@ import { NotesTab } from "@/components/NotesTab";
 import { OnboardingTutorial, useOnboarding } from "@/components/OnboardingTutorial";
 import { NotificationSettings } from "@/components/NotificationSettings";
 import { ContentPlanGenerator } from "@/components/ContentPlanGenerator";
+import { SavedContentPlansTab } from "@/components/SavedContentPlansTab";
 import { DashboardRecommendations } from "@/components/DashboardRecommendations";
 import { UserBadges } from "@/components/UserBadges";
 // Leaderboard removed for privacy reasons
@@ -478,6 +479,7 @@ export default function Dashboard() {
                   <span className="text-lg font-bold text-white">
                     {activeTab === 'overview' && '📊 Übersicht'}
                     {activeTab === 'content-plan' && '📅 Content-Plan Generator'}
+                    {activeTab === 'saved-plans' && '📚 Gespeicherte Pläne'}
                     {activeTab === 'analyses' && '🔖 Gespeicherte Analysen'}
                     {activeTab === 'invoices' && '🧾 Rechnungen'}
                     {activeTab === 'notes' && '📝 Notizen'}
@@ -507,6 +509,15 @@ export default function Dashboard() {
                       </TabsTrigger>
                     </TooltipTrigger>
                     <TooltipContent side="bottom" className="md:hidden">Content-Plan</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <TabsTrigger value="saved-plans" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-primary/30 data-[state=active]:scale-105 data-[state=active]:border-2 data-[state=active]:border-primary/50 text-zinc-400 hover:text-white hover:bg-zinc-800 whitespace-nowrap text-sm font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2">
+                        <FileText className="w-4 h-4" />
+                        <span className="hidden md:inline">Pläne</span>
+                      </TabsTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="md:hidden">Gespeicherte Pläne</TooltipContent>
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -971,6 +982,11 @@ export default function Dashboard() {
                 }}
                 onUpgrade={handleUpgrade}
               />
+            </TabsContent>
+
+            {/* Saved Content Plans Tab */}
+            <TabsContent value="saved-plans" className="space-y-6">
+              <SavedContentPlansTab userId={user?.id} isPro={plan === 'pro' || plan === 'business'} />
             </TabsContent>
 
             {/* Saved Analyses Tab */}

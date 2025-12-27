@@ -1438,3 +1438,8 @@
 ## Datenschutz & Features
 - [x] Leaderboard aus Dashboard entfernen (Datenschutz)
 - [x] Content-Plan Speicher-Button hinzufügen
+- [x] Dashboard-Link zur Analyse-Navigation hinzufügen
+- [x] Logo-Größe auf Analyse-Seite anpassen (wie auf anderen Seiten)
+- [x] Gespeicherte Content-Pläne im Dashboard anzeigen
+- [x] Clean Minimal Design weiter ausbauen
+- [x] Content-Plan Generator Design verbessern - sichtbare Eingabefelder mit Rahmen
