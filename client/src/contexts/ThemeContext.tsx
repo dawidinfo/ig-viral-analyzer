@@ -1,7 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 type Theme = "light" | "dark";
-type DesignStyle = "modern" | "clean-pro";
+type DesignStyle = "modern" | "soft-dark" | "clean-pro";
+
+// Modern = Original schwarz mit Neon-Gradients
+// Soft Dark = Leichtes Dunkelgrau, gedämpfte Farben, besser lesbar
+// Clean Pro = Helles Design wie Stripe/Apple
 
 interface ThemeContextType {
   theme: Theme;
@@ -55,11 +59,19 @@ export function ThemeProvider({
   useEffect(() => {
     const root = document.documentElement;
     // Remove all design style classes
-    root.classList.remove("design-modern", "design-clean-pro");
+    root.classList.remove("design-modern", "design-soft-dark", "design-clean-pro");
     // Add current design style class
     root.classList.add(`design-${designStyle}`);
     localStorage.setItem("designStyle", designStyle);
-  }, [designStyle]);
+    
+    // Clean Pro Theme erzwingt Light Mode für sauberes, helles Design
+    if (designStyle === "clean-pro") {
+      root.classList.remove("dark");
+    } else {
+      // Modern und Soft Dark sind beide Dark Mode
+      root.classList.add("dark");
+    }
+  }, [designStyle, theme]);
 
   const toggleTheme = switchable
     ? () => {

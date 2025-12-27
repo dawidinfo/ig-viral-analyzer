@@ -880,324 +880,918 @@ html, body {
 }
 
 
-/* ==================== */
-/* CLEAN PRO DESIGN THEME */
-/* ==================== */
+/* ============================================== */
+/* CLEAN PRO THEME - Stripe/Apple/NotJustAnalytics */
+/* Minimalistisch, Hell, Professionell            */
+/* ============================================== */
 
-/* Clean Pro Theme - Seriös, Minimalistisch, Anfängerfreundlich */
 .design-clean-pro {
-  /* Überschreibe Farben für cleanes Design */
-  --background: oklch(0.98 0 0);
+  /* Basis - Rein weißer Hintergrund */
+  --background: oklch(1 0 0);
   --foreground: oklch(0.15 0.01 260);
+  
+  /* Cards - Weiß mit sehr subtilen Schatten */
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.15 0.01 260);
+  
+  /* Popover */
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.15 0.01 260);
-  --primary: oklch(0.45 0.15 260);
+  
+  /* Primary - Elegantes Blau (wie Stripe) */
+  --primary: oklch(0.55 0.18 260);
   --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.96 0.01 260);
-  --secondary-foreground: oklch(0.15 0.01 260);
-  --muted: oklch(0.96 0.005 260);
+  
+  /* Secondary - Sehr helles Grau */
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.35 0.01 260);
+  
+  /* Muted */
+  --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.45 0.01 260);
-  --accent: oklch(0.96 0.01 260);
-  --accent-foreground: oklch(0.15 0.01 260);
-  --destructive: oklch(0.55 0.18 25);
+  
+  /* Accent - Sanftes Blau */
+  --accent: oklch(0.97 0.01 260);
+  --accent-foreground: oklch(0.55 0.18 260);
+  
+  /* Destructive */
+  --destructive: oklch(0.55 0.20 25);
   --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.90 0.005 260);
-  --input: oklch(0.96 0.005 260);
-  --ring: oklch(0.45 0.15 260);
+  
+  /* Border - Fast unsichtbar */
+  --border: oklch(0.94 0 0);
+  --input: oklch(1 0 0);
+  --ring: oklch(0.55 0.18 260);
+  
+  /* Chart Farben - Stripe-inspiriert */
+  --chart-1: oklch(0.55 0.18 260);
+  --chart-2: oklch(0.60 0.15 145);
+  --chart-3: oklch(0.55 0.15 320);
+  --chart-4: oklch(0.65 0.15 85);
+  --chart-5: oklch(0.55 0.15 30);
+  
+  /* Sidebar */
+  --sidebar: oklch(0.99 0 0);
+  --sidebar-foreground: oklch(0.25 0.01 260);
+  --sidebar-primary: oklch(0.55 0.18 260);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.97 0.01 260);
+  --sidebar-accent-foreground: oklch(0.55 0.18 260);
+  --sidebar-border: oklch(0.94 0 0);
+  --sidebar-ring: oklch(0.55 0.18 260);
 }
 
-/* Clean Pro - Dark Mode Override */
-.design-clean-pro.dark,
-.dark .design-clean-pro,
-.design-clean-pro:is(.dark *) {
-  --background: oklch(0.12 0.005 260);
-  --foreground: oklch(0.95 0 0);
-  --card: oklch(0.15 0.005 260);
-  --card-foreground: oklch(0.95 0 0);
-  --popover: oklch(0.15 0.005 260);
-  --popover-foreground: oklch(0.95 0 0);
-  --primary: oklch(0.65 0.12 260);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.20 0.005 260);
-  --secondary-foreground: oklch(0.95 0 0);
-  --muted: oklch(0.20 0.005 260);
-  --muted-foreground: oklch(0.60 0.005 260);
-  --accent: oklch(0.22 0.005 260);
-  --accent-foreground: oklch(0.95 0 0);
-  --border: oklch(0.25 0.005 260);
-  --input: oklch(0.18 0.005 260);
-  --ring: oklch(0.65 0.12 260);
+/* ===== GLOBAL OVERRIDES ===== */
+
+.design-clean-pro,
+.design-clean-pro body,
+.design-clean-pro #root {
+  background: oklch(1 0 0) !important;
+  color: oklch(0.15 0.01 260) !important;
 }
 
-/* Clean Pro - Simplified Glass Card */
-.design-clean-pro .glass-card {
-  background: var(--card);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  border: 1px solid var(--border);
-  box-shadow: 0 1px 3px oklch(0 0 0 / 0.05), 0 1px 2px oklch(0 0 0 / 0.03);
+.design-clean-pro header,
+.design-clean-pro nav {
+  background: oklch(1 0 0 / 0.98) !important;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid oklch(0.94 0 0) !important;
+}
+
+/* ===== CARDS ===== */
+
+.design-clean-pro .glass-card,
+.design-clean-pro [class*="Card"],
+.design-clean-pro .card {
+  background: oklch(1 0 0) !important;
+  border: 1px solid oklch(0.94 0 0) !important;
+  box-shadow: 0 1px 3px oklch(0 0 0 / 0.04), 0 1px 2px oklch(0 0 0 / 0.02) !important;
+}
+
+.design-clean-pro .glass-card:hover,
+.design-clean-pro [class*="Card"]:hover,
+.design-clean-pro .card:hover {
+  box-shadow: 0 4px 12px oklch(0 0 0 / 0.08), 0 2px 4px oklch(0 0 0 / 0.04) !important;
 }
 
 .design-clean-pro .glass-card::before {
-  display: none;
+  display: none !important;
 }
 
-/* Clean Pro - Simplified Buttons */
-.design-clean-pro .btn-gradient {
-  background: var(--primary);
-  box-shadow: none;
+.design-clean-pro .stat-card {
+  background: oklch(1 0 0) !important;
+  border: 1px solid oklch(0.94 0 0) !important;
 }
 
-.design-clean-pro .btn-gradient:hover {
-  transform: none;
-  box-shadow: 0 2px 8px oklch(0.45 0.15 260 / 0.2);
-  filter: brightness(1.05);
+/* ===== BUTTONS ===== */
+
+.design-clean-pro .btn-gradient,
+.design-clean-pro button[class*="bg-gradient"],
+.design-clean-pro button[class*="bg-violet"],
+.design-clean-pro button[class*="bg-purple"] {
+  background: oklch(0.55 0.18 260) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 1px 2px oklch(0 0 0 / 0.05) !important;
+}
+
+.design-clean-pro .btn-gradient:hover,
+.design-clean-pro button[class*="bg-gradient"]:hover {
+  background: oklch(0.50 0.20 260) !important;
+  box-shadow: 0 4px 12px oklch(0.55 0.18 260 / 0.25) !important;
 }
 
 .design-clean-pro .btn-gradient::before {
-  display: none;
+  display: none !important;
 }
 
-/* Clean Pro - No Glow Effects */
-.design-clean-pro .glow-purple,
-.design-clean-pro .glow-cyan,
-.design-clean-pro .glow-viral {
-  box-shadow: none;
-}
+/* ===== INPUTS ===== */
 
-/* Clean Pro - Simplified Text Gradients */
-.design-clean-pro .text-gradient,
-.design-clean-pro .text-gradient-viral {
-  background: none;
-  -webkit-background-clip: unset;
-  background-clip: unset;
-  -webkit-text-fill-color: var(--primary);
-  color: var(--primary);
-}
-
-/* Clean Pro - Cleaner Cards */
-.design-clean-pro .stat-card {
-  border: 1px solid var(--border);
-  box-shadow: 0 1px 3px oklch(0 0 0 / 0.04);
-}
-
-.design-clean-pro .stat-card:hover {
-  transform: none;
-  box-shadow: 0 4px 12px oklch(0 0 0 / 0.08);
-  border-color: var(--primary);
-}
-
-/* Clean Pro - Simplified Animations */
-.design-clean-pro .animate-float {
-  animation: none;
-}
-
-.design-clean-pro .animate-pulse-glow {
-  animation: none;
-  box-shadow: none;
-  border-color: var(--primary);
-}
-
-.design-clean-pro .animate-shimmer {
-  animation: none;
-  background: var(--muted);
-}
-
-/* Clean Pro - Clean Input Fields */
 .design-clean-pro input,
 .design-clean-pro textarea,
 .design-clean-pro select {
-  border: 1.5px solid var(--border);
-  background: var(--input);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  background: oklch(1 0 0) !important;
+  border: 1px solid oklch(0.90 0 0) !important;
+  color: oklch(0.15 0.01 260) !important;
 }
 
 .design-clean-pro input:focus,
 .design-clean-pro textarea:focus,
 .design-clean-pro select:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px oklch(0.45 0.15 260 / 0.1);
+  border-color: oklch(0.55 0.18 260) !important;
+  box-shadow: 0 0 0 3px oklch(0.55 0.18 260 / 0.1) !important;
 }
 
-/* Clean Pro - Simplified Badges */
-.design-clean-pro .badge-neon {
-  background: var(--secondary);
-  color: var(--primary);
-  border: 1px solid var(--border);
+.design-clean-pro input::placeholder,
+.design-clean-pro textarea::placeholder {
+  color: oklch(0.60 0 0) !important;
 }
 
-/* Clean Pro - Clean Navigation Tabs */
-.design-clean-pro [data-state="active"] {
-  background: var(--primary) !important;
-  color: var(--primary-foreground) !important;
-  box-shadow: none !important;
-  transform: none !important;
+/* ===== TABS ===== */
+
+.design-clean-pro [role="tablist"] {
+  background: oklch(0.97 0 0) !important;
+  border: 1px solid oklch(0.94 0 0) !important;
 }
 
-/* Clean Pro - Simplified Gradient Border */
-.design-clean-pro .gradient-border::before {
-  background: var(--primary);
+.design-clean-pro [role="tab"] {
+  color: oklch(0.45 0.01 260) !important;
 }
 
-/* Clean Pro - Clean Scrollbar */
-.design-clean-pro ::-webkit-scrollbar-track {
-  background: var(--muted);
+.design-clean-pro [role="tab"][data-state="active"] {
+  background: oklch(1 0 0) !important;
+  color: oklch(0.15 0.01 260) !important;
+  box-shadow: 0 1px 3px oklch(0 0 0 / 0.08) !important;
 }
 
-.design-clean-pro ::-webkit-scrollbar-thumb {
-  background: oklch(0.70 0.01 260);
-  border-radius: 4px;
-}
+/* ===== TEXT ===== */
 
-.design-clean-pro ::-webkit-scrollbar-thumb:hover {
-  background: oklch(0.55 0.01 260);
-}
-
-/* Clean Pro - Cleaner Typography */
 .design-clean-pro h1,
 .design-clean-pro h2,
 .design-clean-pro h3,
 .design-clean-pro h4,
 .design-clean-pro h5,
 .design-clean-pro h6 {
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  color: oklch(0.12 0.01 260) !important;
 }
 
-.design-clean-pro p {
-  line-height: 1.7;
-  color: var(--muted-foreground);
+.design-clean-pro .text-muted-foreground {
+  color: oklch(0.50 0.01 260) !important;
 }
 
-/* Clean Pro - Simplified Hero Section */
-.design-clean-pro .bg-gradient-radial {
-  background: none;
+.design-clean-pro .text-white {
+  color: oklch(0.15 0.01 260) !important;
 }
 
-.design-clean-pro .bg-grid {
-  background-image: none;
+.design-clean-pro .text-zinc-100,
+.design-clean-pro .text-zinc-200,
+.design-clean-pro .text-zinc-300 {
+  color: oklch(0.30 0.01 260) !important;
 }
 
-/* Clean Pro - Clean Cards with subtle hover */
-.design-clean-pro [class*="Card"],
-.design-clean-pro .card {
-  border: 1px solid var(--border);
-  box-shadow: 0 1px 2px oklch(0 0 0 / 0.03);
-  transition: box-shadow 0.2s, border-color 0.2s;
+.design-clean-pro .text-zinc-400,
+.design-clean-pro .text-zinc-500 {
+  color: oklch(0.50 0.01 260) !important;
 }
 
-.design-clean-pro [class*="Card"]:hover,
-.design-clean-pro .card:hover {
-  box-shadow: 0 4px 12px oklch(0 0 0 / 0.06);
+.design-clean-pro .text-gradient,
+.design-clean-pro .text-gradient-viral,
+.design-clean-pro [class*="bg-clip-text"] {
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  -webkit-text-fill-color: oklch(0.55 0.18 260) !important;
+  color: oklch(0.55 0.18 260) !important;
 }
 
-/* Clean Pro - Accent Colors (Simplified) */
-.design-clean-pro .text-green-400,
-.design-clean-pro .text-green-500 {
-  color: oklch(0.55 0.15 145) !important;
+/* ===== BACKGROUNDS ===== */
+
+.design-clean-pro .bg-zinc-900,
+.design-clean-pro .bg-zinc-800,
+.design-clean-pro .bg-zinc-950,
+.design-clean-pro .bg-black,
+.design-clean-pro .bg-slate-900,
+.design-clean-pro .bg-slate-800 {
+  background: oklch(1 0 0) !important;
 }
 
-.design-clean-pro .text-red-400,
-.design-clean-pro .text-red-500 {
-  color: oklch(0.55 0.18 25) !important;
+.design-clean-pro .bg-zinc-900\/50,
+.design-clean-pro .bg-zinc-800\/50,
+.design-clean-pro .bg-black\/50 {
+  background: oklch(0.99 0 0) !important;
 }
 
-.design-clean-pro .text-purple-400,
-.design-clean-pro .text-purple-500,
-.design-clean-pro .text-violet-400,
-.design-clean-pro .text-violet-500 {
-  color: var(--primary) !important;
+/* ===== BORDERS ===== */
+
+.design-clean-pro .border-zinc-700,
+.design-clean-pro .border-zinc-800,
+.design-clean-pro .border-zinc-600 {
+  border-color: oklch(0.94 0 0) !important;
 }
 
-/* Clean Pro - Simplified Backgrounds */
-.design-clean-pro .bg-gradient-to-r,
-.design-clean-pro .bg-gradient-to-br,
-.design-clean-pro .bg-gradient-to-b {
-  background: var(--primary) !important;
+/* ===== BADGES ===== */
+
+.design-clean-pro .badge,
+.design-clean-pro [class*="Badge"],
+.design-clean-pro .badge-neon {
+  background: oklch(0.97 0.01 260) !important;
+  color: oklch(0.45 0.10 260) !important;
+  border: 1px solid oklch(0.94 0 0) !important;
+  box-shadow: none !important;
 }
 
-/* Clean Pro - Clean Table Styles */
-.design-clean-pro table {
-  border: 1px solid var(--border);
+/* ===== DIALOGS ===== */
+
+.design-clean-pro [role="dialog"] {
+  background: oklch(1 0 0) !important;
+  border: 1px solid oklch(0.94 0 0) !important;
+  box-shadow: 0 25px 50px oklch(0 0 0 / 0.15) !important;
 }
 
-.design-clean-pro th {
-  background: var(--muted);
-  font-weight: 600;
+.design-clean-pro [data-state="open"][class*="Overlay"],
+.design-clean-pro .backdrop {
+  background: oklch(0.15 0.01 260 / 0.5) !important;
 }
 
-.design-clean-pro td {
-  border-top: 1px solid var(--border);
+/* ===== DROPDOWNS ===== */
+
+.design-clean-pro [role="listbox"],
+.design-clean-pro [role="menu"] {
+  background: oklch(1 0 0) !important;
+  border: 1px solid oklch(0.94 0 0) !important;
+  box-shadow: 0 10px 40px oklch(0 0 0 / 0.12) !important;
 }
 
-.design-clean-pro tr:hover td {
-  background: var(--accent);
+.design-clean-pro [role="option"]:hover,
+.design-clean-pro [role="menuitem"]:hover {
+  background: oklch(0.97 0 0) !important;
 }
 
-/* Clean Pro - Simplified Progress Bars */
+/* ===== PROGRESS BARS ===== */
+
 .design-clean-pro [role="progressbar"] {
-  background: var(--muted);
+  background: oklch(0.95 0 0) !important;
 }
 
 .design-clean-pro [role="progressbar"] > div {
-  background: var(--primary);
+  background: oklch(0.55 0.18 260) !important;
 }
 
-/* Clean Pro - Clean Dialog/Modal */
-.design-clean-pro [role="dialog"] {
-  border: 1px solid var(--border);
-  box-shadow: 0 20px 40px oklch(0 0 0 / 0.15);
+/* ===== SCROLLBAR ===== */
+
+.design-clean-pro ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-/* Clean Pro - Simplified Tooltips */
+.design-clean-pro ::-webkit-scrollbar-track {
+  background: oklch(0.98 0 0);
+}
+
+.design-clean-pro ::-webkit-scrollbar-thumb {
+  background: oklch(0.85 0 0);
+  border-radius: 100px;
+}
+
+.design-clean-pro ::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.75 0 0);
+}
+
+/* ===== LINKS ===== */
+
+.design-clean-pro a {
+  color: oklch(0.55 0.18 260);
+}
+
+.design-clean-pro a:hover {
+  color: oklch(0.45 0.20 260);
+}
+
+/* ===== DIVIDERS ===== */
+
+.design-clean-pro hr,
+.design-clean-pro [class*="Separator"] {
+  background: oklch(0.94 0 0) !important;
+  border-color: oklch(0.94 0 0) !important;
+}
+
+/* ===== TOOLTIPS ===== */
+
 .design-clean-pro [role="tooltip"] {
-  background: var(--foreground);
-  color: var(--background);
-  border: none;
-  box-shadow: 0 4px 12px oklch(0 0 0 / 0.15);
+  background: oklch(0.15 0.01 260) !important;
+  color: oklch(1 0 0) !important;
+  box-shadow: 0 4px 12px oklch(0 0 0 / 0.15) !important;
 }
 
-/* Clean Pro - Focus States */
-.design-clean-pro *:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
+/* ===== REMOVE EFFECTS ===== */
+
+.design-clean-pro .glow-purple,
+.design-clean-pro .glow-cyan,
+.design-clean-pro .glow-viral {
+  box-shadow: none !important;
 }
 
-/* Clean Pro - Disabled States */
-.design-clean-pro *:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.design-clean-pro .animate-float,
+.design-clean-pro .animate-shimmer,
+.design-clean-pro .animate-pulse-glow {
+  animation: none !important;
 }
 
-/* Clean Pro - Loading States */
-.design-clean-pro .animate-spin {
-  border-color: var(--muted);
-  border-top-color: var(--primary);
+.design-clean-pro .gradient-border::before {
+  display: none !important;
 }
 
-/* Clean Pro - Success/Error/Warning States */
+/* ===== ACCENT COLORS ===== */
+
+.design-clean-pro .bg-violet-500\/10,
+.design-clean-pro .bg-purple-500\/10 {
+  background: oklch(0.55 0.18 260 / 0.08) !important;
+}
+
 .design-clean-pro .bg-green-500\/10,
 .design-clean-pro .bg-emerald-500\/10 {
-  background: oklch(0.55 0.15 145 / 0.1) !important;
+  background: oklch(0.60 0.15 145 / 0.08) !important;
 }
 
-.design-clean-pro .bg-red-500\/10 {
-  background: oklch(0.55 0.18 25 / 0.1) !important;
+.design-clean-pro .bg-red-500\/10,
+.design-clean-pro .bg-rose-500\/10 {
+  background: oklch(0.55 0.20 25 / 0.08) !important;
 }
 
-.design-clean-pro .bg-yellow-500\/10,
 .design-clean-pro .bg-amber-500\/10 {
-  background: oklch(0.70 0.15 85 / 0.1) !important;
+  background: oklch(0.65 0.15 85 / 0.08) !important;
 }
 
-/* Clean Pro - Notification Badges */
-.design-clean-pro .animate-pulse {
-  animation: clean-pulse 2s ease-in-out infinite;
+
+/* ===== CLEAN PRO - ADDITIONAL OVERRIDES ===== */
+
+/* Remove all colored backgrounds from feature cards */
+.design-clean-pro .bg-yellow-500\/10,
+.design-clean-pro .bg-yellow-400\/10,
+.design-clean-pro .bg-green-500\/10,
+.design-clean-pro .bg-green-400\/10,
+.design-clean-pro .bg-emerald-500\/10,
+.design-clean-pro .bg-emerald-400\/10,
+.design-clean-pro .bg-teal-500\/10,
+.design-clean-pro .bg-teal-400\/10,
+.design-clean-pro .bg-cyan-500\/10,
+.design-clean-pro .bg-cyan-400\/10,
+.design-clean-pro .bg-blue-500\/10,
+.design-clean-pro .bg-blue-400\/10,
+.design-clean-pro .bg-indigo-500\/10,
+.design-clean-pro .bg-indigo-400\/10,
+.design-clean-pro .bg-violet-500\/10,
+.design-clean-pro .bg-violet-400\/10,
+.design-clean-pro .bg-purple-500\/10,
+.design-clean-pro .bg-purple-400\/10,
+.design-clean-pro .bg-pink-500\/10,
+.design-clean-pro .bg-pink-400\/10,
+.design-clean-pro .bg-rose-500\/10,
+.design-clean-pro .bg-rose-400\/10,
+.design-clean-pro .bg-orange-500\/10,
+.design-clean-pro .bg-orange-400\/10,
+.design-clean-pro .bg-amber-500\/10,
+.design-clean-pro .bg-amber-400\/10,
+.design-clean-pro .bg-red-500\/10,
+.design-clean-pro .bg-red-400\/10 {
+  background: oklch(1 0 0) !important;
 }
 
-@keyframes clean-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
+/* Feature cards - all white with subtle border */
+.design-clean-pro [class*="bg-gradient"],
+.design-clean-pro .bg-gradient-to-br,
+.design-clean-pro .bg-gradient-to-r,
+.design-clean-pro .bg-gradient-to-b {
+  background: oklch(1 0 0) !important;
+}
+
+/* Stat cards - white background */
+.design-clean-pro .stat-card,
+.design-clean-pro [class*="stat-"] {
+  background: oklch(1 0 0) !important;
+  border: 1px solid oklch(0.94 0 0) !important;
+}
+
+/* Dashboard recommendation cards */
+.design-clean-pro .recommendation-card,
+.design-clean-pro .feature-card {
+  background: oklch(1 0 0) !important;
+  border: 1px solid oklch(0.94 0 0) !important;
+}
+
+/* All colored icon backgrounds - make them subtle gray */
+.design-clean-pro .bg-yellow-500,
+.design-clean-pro .bg-green-500,
+.design-clean-pro .bg-emerald-500,
+.design-clean-pro .bg-teal-500,
+.design-clean-pro .bg-cyan-500,
+.design-clean-pro .bg-blue-500,
+.design-clean-pro .bg-indigo-500,
+.design-clean-pro .bg-violet-500,
+.design-clean-pro .bg-purple-500,
+.design-clean-pro .bg-pink-500,
+.design-clean-pro .bg-rose-500 {
+  background: oklch(0.55 0.18 260) !important;
+}
+
+/* Tabs - cleaner look */
+.design-clean-pro [role="tablist"] {
+  background: oklch(0.98 0 0) !important;
+  border: 1px solid oklch(0.94 0 0) !important;
+  border-radius: 12px !important;
+  padding: 4px !important;
+}
+
+.design-clean-pro [role="tab"] {
+  background: transparent !important;
+  color: oklch(0.50 0.01 260) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+}
+
+.design-clean-pro [role="tab"]:hover {
+  background: oklch(0.96 0 0) !important;
+  color: oklch(0.30 0.01 260) !important;
+}
+
+.design-clean-pro [role="tab"][data-state="active"] {
+  background: oklch(1 0 0) !important;
+  color: oklch(0.15 0.01 260) !important;
+  box-shadow: 0 1px 3px oklch(0 0 0 / 0.1) !important;
+}
+
+/* Remove gradient from active tabs */
+.design-clean-pro [role="tab"][data-state="active"]::before,
+.design-clean-pro [role="tab"][data-state="active"]::after {
+  display: none !important;
+}
+
+/* Achievement cards */
+.design-clean-pro .achievement-card,
+.design-clean-pro [class*="achievement"] {
+  background: oklch(1 0 0) !important;
+  border: 1px solid oklch(0.94 0 0) !important;
+}
+
+/* Quick stats cards with colored backgrounds */
+.design-clean-pro .quick-stat,
+.design-clean-pro [class*="quick-stat"] {
+  background: oklch(1 0 0) !important;
+}
+
+/* Winner list items */
+.design-clean-pro .winner-item,
+.design-clean-pro [class*="winner"] {
+  background: oklch(1 0 0) !important;
+  border: 1px solid oklch(0.94 0 0) !important;
+}
+
+/* All div backgrounds that might be colored */
+.design-clean-pro div[class*="bg-yellow"],
+.design-clean-pro div[class*="bg-green"],
+.design-clean-pro div[class*="bg-emerald"],
+.design-clean-pro div[class*="bg-teal"],
+.design-clean-pro div[class*="bg-cyan"],
+.design-clean-pro div[class*="bg-pink"],
+.design-clean-pro div[class*="bg-rose"],
+.design-clean-pro div[class*="bg-orange"],
+.design-clean-pro div[class*="bg-amber"] {
+  background: oklch(1 0 0) !important;
+}
+
+/* Keep icon backgrounds colored but subtle */
+.design-clean-pro .icon-bg,
+.design-clean-pro [class*="icon-wrapper"] {
+  background: oklch(0.97 0.01 260) !important;
+}
+
+/* Header/Nav specific */
+.design-clean-pro .nav-header,
+.design-clean-pro .main-header {
+  background: oklch(1 0 0) !important;
+  border-bottom: 1px solid oklch(0.94 0 0) !important;
+}
+
+/* Footer */
+.design-clean-pro footer {
+  background: oklch(0.99 0 0) !important;
+  border-top: 1px solid oklch(0.94 0 0) !important;
+}
+
+/* Remove all box shadows except subtle ones */
+.design-clean-pro [class*="shadow-lg"],
+.design-clean-pro [class*="shadow-xl"],
+.design-clean-pro [class*="shadow-2xl"] {
+  box-shadow: 0 1px 3px oklch(0 0 0 / 0.05), 0 1px 2px oklch(0 0 0 / 0.03) !important;
+}
+
+/* Ensure all text is readable */
+.design-clean-pro p,
+.design-clean-pro span,
+.design-clean-pro div {
+  color: inherit;
+}
+
+.design-clean-pro .text-white {
+  color: oklch(0.15 0.01 260) !important;
+}
+
+/* Button text should stay white on primary buttons */
+.design-clean-pro button[class*="bg-violet"] span,
+.design-clean-pro button[class*="bg-purple"] span,
+.design-clean-pro button[class*="bg-gradient"] span,
+.design-clean-pro .btn-gradient span {
+  color: white !important;
+}
+
+
+/* ===== CLEAN PRO - FORCE TAB COLORS ===== */
+
+/* Override ALL tab background colors */
+.design-clean-pro button[role="tab"],
+.design-clean-pro [role="tab"] {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+.design-clean-pro button[role="tab"][data-state="active"],
+.design-clean-pro [role="tab"][data-state="active"] {
+  background: oklch(1 0 0) !important;
+  background-color: oklch(1 0 0) !important;
+  background-image: none !important;
+  box-shadow: 0 1px 3px oklch(0 0 0 / 0.1) !important;
+}
+
+/* Remove any gradient backgrounds on tabs */
+.design-clean-pro button[role="tab"][class*="bg-gradient"],
+.design-clean-pro button[role="tab"][class*="bg-yellow"],
+.design-clean-pro button[role="tab"][class*="bg-green"],
+.design-clean-pro button[role="tab"][class*="bg-violet"],
+.design-clean-pro button[role="tab"][class*="bg-purple"] {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+.design-clean-pro button[role="tab"][data-state="active"][class*="bg-gradient"],
+.design-clean-pro button[role="tab"][data-state="active"][class*="bg-yellow"],
+.design-clean-pro button[role="tab"][data-state="active"][class*="bg-green"],
+.design-clean-pro button[role="tab"][data-state="active"][class*="bg-violet"],
+.design-clean-pro button[role="tab"][data-state="active"][class*="bg-purple"] {
+  background: oklch(1 0 0) !important;
+  background-color: oklch(1 0 0) !important;
+  background-image: none !important;
+}
+
+/* Icon backgrounds in cards - make them all the same subtle blue */
+.design-clean-pro .icon-container,
+.design-clean-pro [class*="rounded-xl"][class*="p-3"],
+.design-clean-pro [class*="rounded-lg"][class*="p-3"],
+.design-clean-pro [class*="rounded-2xl"][class*="p-4"] {
+  background: oklch(0.97 0.01 260) !important;
+}
+
+/* Specific icon wrapper overrides */
+.design-clean-pro div[class*="bg-yellow"][class*="rounded"],
+.design-clean-pro div[class*="bg-green"][class*="rounded"],
+.design-clean-pro div[class*="bg-emerald"][class*="rounded"],
+.design-clean-pro div[class*="bg-teal"][class*="rounded"],
+.design-clean-pro div[class*="bg-cyan"][class*="rounded"],
+.design-clean-pro div[class*="bg-pink"][class*="rounded"],
+.design-clean-pro div[class*="bg-rose"][class*="rounded"],
+.design-clean-pro div[class*="bg-violet"][class*="rounded"],
+.design-clean-pro div[class*="bg-purple"][class*="rounded"] {
+  background: oklch(0.55 0.18 260) !important;
+}
+
+/* Keep icons visible with white color on blue background */
+.design-clean-pro div[class*="bg-yellow"][class*="rounded"] svg,
+.design-clean-pro div[class*="bg-green"][class*="rounded"] svg,
+.design-clean-pro div[class*="bg-emerald"][class*="rounded"] svg,
+.design-clean-pro div[class*="bg-teal"][class*="rounded"] svg,
+.design-clean-pro div[class*="bg-cyan"][class*="rounded"] svg,
+.design-clean-pro div[class*="bg-pink"][class*="rounded"] svg,
+.design-clean-pro div[class*="bg-rose"][class*="rounded"] svg,
+.design-clean-pro div[class*="bg-violet"][class*="rounded"] svg,
+.design-clean-pro div[class*="bg-purple"][class*="rounded"] svg {
+  color: white !important;
+}
+
+
+/* ===== CLEAN PRO - ULTRA FORCE TAB OVERRIDES ===== */
+
+/* Force remove ALL gradient backgrounds on tabs */
+.design-clean-pro [role="tablist"] button,
+.design-clean-pro [role="tablist"] [role="tab"],
+.design-clean-pro button[role="tab"] {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  color: oklch(0.45 0.01 260) !important;
+  transform: none !important;
+}
+
+.design-clean-pro [role="tablist"] button:hover,
+.design-clean-pro [role="tablist"] [role="tab"]:hover,
+.design-clean-pro button[role="tab"]:hover {
+  background: oklch(0.96 0 0) !important;
+  background-color: oklch(0.96 0 0) !important;
+  color: oklch(0.25 0.01 260) !important;
+}
+
+.design-clean-pro [role="tablist"] button[data-state="active"],
+.design-clean-pro [role="tablist"] [role="tab"][data-state="active"],
+.design-clean-pro button[role="tab"][data-state="active"] {
+  background: oklch(1 0 0) !important;
+  background-color: oklch(1 0 0) !important;
+  background-image: none !important;
+  color: oklch(0.15 0.01 260) !important;
+  box-shadow: 0 1px 3px oklch(0 0 0 / 0.08) !important;
+  transform: none !important;
+}
+
+/* TabsList container */
+.design-clean-pro [role="tablist"] {
+  background: oklch(0.98 0 0) !important;
+  background-color: oklch(0.98 0 0) !important;
+  border: 1px solid oklch(0.92 0 0) !important;
+  box-shadow: none !important;
+}
+
+
+/* ===================================================================
+   SOFT DARK THEME - Leichter, besser lesbar, weniger drückend
+   Inspiriert von Linear.app, Vercel, GitHub Dark
+   =================================================================== */
+
+.design-soft-dark {
+  /* Dunkelgrau statt Tiefschwarz */
+  --background: oklch(0.16 0.01 260);
+  --foreground: oklch(0.88 0.01 260);
+  
+  /* Karten mit subtiler Erhöhung */
+  --card: oklch(0.19 0.01 260);
+  --card-foreground: oklch(0.88 0.01 260);
+  
+  /* Sanfte Popover */
+  --popover: oklch(0.19 0.01 260);
+  --popover-foreground: oklch(0.88 0.01 260);
+  
+  /* Gedämpftes Violett als Akzent - nicht grell */
+  --primary: oklch(0.65 0.15 280);
+  --primary-foreground: oklch(1 0 0);
+  
+  /* Sekundär - sehr subtil */
+  --secondary: oklch(0.22 0.01 260);
+  --secondary-foreground: oklch(0.8 0.01 260);
+  
+  /* Muted - für weniger wichtige Elemente */
+  --muted: oklch(0.22 0.01 260);
+  --muted-foreground: oklch(0.6 0.01 260);
+  
+  /* Accent - sanft */
+  --accent: oklch(0.24 0.02 260);
+  --accent-foreground: oklch(0.88 0.01 260);
+  
+  /* Destructive - gedämpftes Rot */
+  --destructive: oklch(0.55 0.18 25);
+  --destructive-foreground: oklch(1 0 0);
+  
+  /* Borders - sehr subtil */
+  --border: oklch(0.28 0.01 260);
+  --input: oklch(0.22 0.01 260);
+  --ring: oklch(0.65 0.12 280);
+  
+  /* Chart-Farben - gedämpft */
+  --chart-1: oklch(0.65 0.15 280);
+  --chart-2: oklch(0.6 0.12 200);
+  --chart-3: oklch(0.55 0.1 150);
+  --chart-4: oklch(0.6 0.12 50);
+  --chart-5: oklch(0.55 0.15 340);
+  
+  /* Radius - sanft gerundet */
+  --radius: 0.625rem;
+}
+
+/* Soft Dark - Globale Anpassungen */
+.design-soft-dark body {
+  background: oklch(0.14 0.01 260) !important;
+  color: oklch(0.85 0.01 260) !important;
+  font-size: 15px;
+  line-height: 1.65;
+  letter-spacing: 0.01em;
+}
+
+/* Soft Dark - Keine Neon-Glows */
+.design-soft-dark * {
+  text-shadow: none !important;
+}
+
+.design-soft-dark .shadow-glow,
+.design-soft-dark [class*="shadow-violet"],
+.design-soft-dark [class*="shadow-purple"],
+.design-soft-dark [class*="shadow-pink"],
+.design-soft-dark [class*="shadow-primary"] {
+  box-shadow: 0 1px 3px oklch(0 0 0 / 0.2), 0 1px 2px oklch(0 0 0 / 0.1) !important;
+}
+
+/* Soft Dark - Sanfte Karten */
+.design-soft-dark .bg-card,
+.design-soft-dark .bg-zinc-900,
+.design-soft-dark .bg-zinc-900\/80,
+.design-soft-dark .bg-zinc-900\/50,
+.design-soft-dark [class*="bg-zinc-900"] {
+  background: oklch(0.18 0.01 260) !important;
+  border: 1px solid oklch(0.26 0.01 260) !important;
+}
+
+/* Soft Dark - Keine grellen Gradients */
+.design-soft-dark [class*="bg-gradient"],
+.design-soft-dark .bg-gradient-to-r,
+.design-soft-dark .bg-gradient-to-br,
+.design-soft-dark .bg-gradient-to-b {
+  background: oklch(0.18 0.01 260) !important;
+}
+
+/* Soft Dark - Buttons mit sanftem Violett */
+.design-soft-dark button[class*="bg-gradient"],
+.design-soft-dark button[class*="from-violet"],
+.design-soft-dark button[class*="from-purple"],
+.design-soft-dark button[class*="from-primary"],
+.design-soft-dark .bg-primary {
+  background: oklch(0.55 0.15 280) !important;
+  box-shadow: 0 1px 2px oklch(0 0 0 / 0.15) !important;
+}
+
+.design-soft-dark button[class*="bg-gradient"]:hover,
+.design-soft-dark button[class*="from-violet"]:hover,
+.design-soft-dark button[class*="from-purple"]:hover,
+.design-soft-dark button[class*="from-primary"]:hover,
+.design-soft-dark .bg-primary:hover {
+  background: oklch(0.6 0.15 280) !important;
+}
+
+/* Soft Dark - Tabs ohne grelle Farben */
+.design-soft-dark [role="tablist"] {
+  background: oklch(0.16 0.01 260) !important;
+  border: 1px solid oklch(0.26 0.01 260) !important;
+}
+
+.design-soft-dark [role="tab"] {
+  background: transparent !important;
+  color: oklch(0.6 0.01 260) !important;
+  border: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.design-soft-dark [role="tab"]:hover {
+  background: oklch(0.2 0.01 260) !important;
+  color: oklch(0.85 0.01 260) !important;
+}
+
+.design-soft-dark [role="tab"][data-state="active"] {
+  background: oklch(0.22 0.02 280) !important;
+  color: oklch(0.9 0.01 260) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* Soft Dark - Text-Hierarchie */
+.design-soft-dark h1,
+.design-soft-dark h2,
+.design-soft-dark h3,
+.design-soft-dark h4 {
+  color: oklch(0.92 0.01 260) !important;
+  font-weight: 600;
+}
+
+.design-soft-dark p,
+.design-soft-dark span,
+.design-soft-dark div {
+  color: inherit;
+}
+
+.design-soft-dark .text-muted-foreground,
+.design-soft-dark .text-zinc-400,
+.design-soft-dark .text-zinc-500 {
+  color: oklch(0.55 0.01 260) !important;
+}
+
+/* Soft Dark - Inputs */
+.design-soft-dark input,
+.design-soft-dark textarea,
+.design-soft-dark select {
+  background: oklch(0.14 0.01 260) !important;
+  border: 1px solid oklch(0.28 0.01 260) !important;
+  color: oklch(0.88 0.01 260) !important;
+}
+
+.design-soft-dark input:focus,
+.design-soft-dark textarea:focus,
+.design-soft-dark select:focus {
+  border-color: oklch(0.55 0.12 280) !important;
+  box-shadow: 0 0 0 2px oklch(0.55 0.12 280 / 0.2) !important;
+}
+
+/* Soft Dark - Header/Navigation */
+.design-soft-dark header,
+.design-soft-dark nav {
+  background: oklch(0.14 0.01 260 / 0.95) !important;
+  border-bottom: 1px solid oklch(0.24 0.01 260) !important;
+  backdrop-filter: blur(8px);
+}
+
+/* Soft Dark - Footer */
+.design-soft-dark footer {
+  background: oklch(0.12 0.01 260) !important;
+  border-top: 1px solid oklch(0.22 0.01 260) !important;
+}
+
+/* Soft Dark - Links */
+.design-soft-dark a {
+  color: oklch(0.7 0.12 280);
+}
+
+.design-soft-dark a:hover {
+  color: oklch(0.75 0.15 280);
+}
+
+/* Soft Dark - Badges ohne grelle Farben */
+.design-soft-dark .badge,
+.design-soft-dark [class*="bg-green"],
+.design-soft-dark [class*="bg-emerald"] {
+  background: oklch(0.45 0.1 150 / 0.2) !important;
+  color: oklch(0.7 0.12 150) !important;
+}
+
+.design-soft-dark [class*="bg-red"],
+.design-soft-dark [class*="bg-rose"] {
+  background: oklch(0.45 0.1 25 / 0.2) !important;
+  color: oklch(0.7 0.15 25) !important;
+}
+
+.design-soft-dark [class*="bg-yellow"],
+.design-soft-dark [class*="bg-amber"] {
+  background: oklch(0.5 0.1 85 / 0.2) !important;
+  color: oklch(0.75 0.12 85) !important;
+}
+
+.design-soft-dark [class*="bg-blue"],
+.design-soft-dark [class*="bg-sky"] {
+  background: oklch(0.45 0.1 230 / 0.2) !important;
+  color: oklch(0.7 0.12 230) !important;
+}
+
+/* Soft Dark - Scrollbar */
+.design-soft-dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.design-soft-dark ::-webkit-scrollbar-track {
+  background: oklch(0.14 0.01 260);
+}
+
+.design-soft-dark ::-webkit-scrollbar-thumb {
+  background: oklch(0.3 0.01 260);
+  border-radius: 4px;
+}
+
+.design-soft-dark ::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.35 0.01 260);
+}
+
+/* Soft Dark - Feature Cards ohne bunte Hintergründe */
+.design-soft-dark .feature-card,
+.design-soft-dark [class*="from-yellow"],
+.design-soft-dark [class*="from-green"],
+.design-soft-dark [class*="from-blue"],
+.design-soft-dark [class*="from-pink"],
+.design-soft-dark [class*="from-cyan"],
+.design-soft-dark [class*="from-orange"] {
+  background: oklch(0.18 0.01 260) !important;
 }

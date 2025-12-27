@@ -1458,3 +1458,9 @@
 - [x] Clean Pro Theme CSS-Variablen definieren
 - [x] Theme-Switcher UI in Settings einbauen
 - [x] Komponenten für Clean Pro Theme anpassen
+- [x] Alle Backup-Funktionen komplett löschen (nicht nur auskommentieren)
+- [x] Clean Pro Theme fixen - sieht furchtbar aus
+- [x] Neues leichtes Design wie NotJustAnalytics - hell, sauber, seriös
+- [ ] Backup-Anzeige aus Admin-Seitenleiste komplett entfernen
+- [ ] Clean Pro Theme überarbeiten - Stripe + Apple + NotJustAnalytics Stil
+- [x] Soft Dark Theme erstellen - leichter, besser lesbar, weniger drückend

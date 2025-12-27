@@ -45,6 +45,7 @@ import {
   Palette,
   Monitor,
   Sparkle,
+  Moon,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -1195,6 +1196,35 @@ export default function Dashboard() {
                         </div>
                       </div>
                       {designStyle === 'modern' && (
+                        <div className="absolute top-2 right-2">
+                          <Check className="w-5 h-5 text-primary" />
+                        </div>
+                      )}
+                    </button>
+                    
+                    {/* Soft Dark Design Option */}
+                    <button
+                      onClick={() => setDesignStyle('soft-dark')}
+                      className={`relative p-4 rounded-xl border-2 transition-all duration-300 text-left ${
+                        designStyle === 'soft-dark'
+                          ? 'border-primary bg-primary/10 shadow-lg shadow-primary/20'
+                          : 'border-border hover:border-primary/50 hover:bg-muted/50'
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className={`p-2 rounded-lg ${
+                          designStyle === 'soft-dark' ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                        }`}>
+                          <Moon className="w-5 h-5" />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-semibold mb-1">Soft Dark</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Leichtes Dunkelgrau, gedämpfte Farben - besser lesbar, weniger drückend
+                          </p>
+                        </div>
+                      </div>
+                      {designStyle === 'soft-dark' && (
                         <div className="absolute top-2 right-2">
                           <Check className="w-5 h-5 text-primary" />
                         </div>

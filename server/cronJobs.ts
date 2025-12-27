@@ -2,8 +2,6 @@ import { sendWeeklyReport, ReportType } from "./weeklyReportService";
 import { runDripCampaign } from "./services/dripCampaignService";
 import { runScheduledTracking } from "./scheduledTracking";
 import { runDailyDataCollection, getCacheStatisticsSummary } from "./services/historicalDataService";
-// Backup functionality removed per user request
-// import { runScheduledBackup } from "./backupService";
 import { getDb } from "./db";
 import { users, savedAnalyses } from "../drizzle/schema";
 import { eq, isNull, or, desc } from "drizzle-orm";
@@ -77,7 +75,6 @@ async function getEligibleUsers() {
     
     for (const user of allUsers) {
       if (!user.email) continue;
-      // Note: emailOptOut field doesn't exist yet, so we send to all users with email
       
       // Get user's saved analyses
       const analyses = await db
@@ -111,8 +108,6 @@ async function getEligibleUsers() {
  * Get trending accounts from recent data
  */
 async function getTrendingAccounts() {
-  // For now, return demo trending accounts
-  // In production, this would query the followerSnapshots table
   return [
     { username: "garyvee", growth: 15, viralScore: 92 },
     { username: "tonyrobbins", growth: 12, viralScore: 88 },
@@ -154,7 +149,6 @@ async function sendReportsToAllUsers(reportType: ReportType): Promise<{ sent: nu
 
 /**
  * Check and run scheduled reports
- * Call this function every minute from the main server
  */
 export async function checkAndRunScheduledReports(): Promise<void> {
   for (const schedule of SCHEDULES) {
@@ -184,7 +178,6 @@ export function getNextScheduledReport(): { reportType: ReportType; scheduledTim
     const scheduledDate = new Date(now);
     scheduledDate.setUTCHours(schedule.hour, schedule.minute, 0, 0);
     
-    // Adjust to the correct day of week
     const daysUntil = (schedule.dayOfWeek - now.getUTCDay() + 7) % 7;
     if (daysUntil === 0 && scheduledDate <= now) {
       scheduledDate.setDate(scheduledDate.getDate() + 7);
@@ -228,9 +221,6 @@ export function startCronJobs(): void {
   if (nextReport) {
     console.log("[CronJobs] Next scheduled report: " + nextReport.reportType + " at " + nextReport.scheduledTime.toISOString());
   }
-  
-  // Automatic database backup disabled per user request
-  // startBackupCron();
 }
 
 export function stopCronJobs(): void {
@@ -239,70 +229,15 @@ export function stopCronJobs(): void {
     cronInterval = null;
     console.log("[CronJobs] Stopped cron job scheduler");
   }
-  // stopBackupCron(); // Backup functionality removed
 }
-
-// Backup functionality removed per user request
-// function startBackupCron(): void {
-//   if (backupInterval) {
-//     console.log("[CronJobs] Backup cron already running");
-//     return;
-//   }
-//   console.log("[CronJobs] Starting automatic backup (twice daily at 8:00 and 20:00 UTC)...");
-//   backupInterval = setInterval(async () => {
-//     const now = new Date();
-//     const hour = now.getUTCHours();
-//     const minute = now.getUTCMinutes();
-//     if ((hour === 8 || hour === 20) && minute < 5) {
-//       if (lastBackupRun) {
-//         const hoursSinceLastBackup = (Date.now() - lastBackupRun.getTime()) / (1000 * 60 * 60);
-//         if (hoursSinceLastBackup < 1) {
-//           return;
-//         }
-//       }
-//       await runBackupJob();
-//     }
-//   }, 60 * 60 * 1000);
-//   setTimeout(async () => {
-//     await runBackupJob();
-//   }, 60 * 1000);
-// }
-
-// function stopBackupCron(): void {
-//   if (backupInterval) {
-//     clearInterval(backupInterval);
-//     backupInterval = null;
-//     console.log("[CronJobs] Stopped backup cron");
-//   }
-// }
-
-// Backup functionality removed per user request
-// async function runBackupJob(): Promise<void> {
-//   try {
-//     console.log("[CronJobs] Running scheduled backup...");
-//     const result = await runScheduledBackup();
-//     lastBackupRun = new Date();
-//     
-//     if (result.success) {
-//       console.log(`[CronJobs] Backup completed: ID ${result.backupId}`);
-//     } else {
-//       console.error(`[CronJobs] Backup failed: ${result.error}`);
-//     }
-//   } catch (error) {
-//     console.error("[CronJobs] Backup error:", error);
-//   }
-// }
 
 // Track last drip campaign run
 let lastDripCampaignRun: Date | null = null;
 let lastFollowerTrackingRun: Date | null = null;
 let lastDataCollectionRun: Date | null = null;
-// let lastBackupRun: Date | null = null;
-// let backupInterval: NodeJS.Timeout | null = null;
 
 /**
  * Run daily drip campaign
- * Should be called once per day
  */
 export async function runDailyDripCampaign(): Promise<{
   success: boolean;
@@ -326,27 +261,27 @@ export async function runDailyDripCampaign(): Promise<{
 
     return {
       success: true,
-      message: `Drip campaign completed: ${stats.sent} emails sent, ${stats.errors} errors`,
+      message: `Drip campaign completed: ${stats.sent} emails sent`,
       stats,
     };
   } catch (error) {
     console.error("[CronJobs] Drip campaign error:", error);
     return {
       success: false,
-      message: `Drip campaign failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      message: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }
 
 /**
- * Run daily follower tracking
+ * Run follower tracking for all tracked accounts
  */
-export async function runDailyFollowerTracking(): Promise<{
+export async function runFollowerTracking(): Promise<{
   success: boolean;
   message: string;
-  stats?: { processed: number; updated: number; errors: number };
+  stats?: { tracked: number; errors: number };
 }> {
-  const minInterval = 12 * 60 * 60 * 1000; // 12 hours minimum between runs
+  const minInterval = 6 * 60 * 60 * 1000; // 6 hours minimum between runs
 
   if (lastFollowerTrackingRun && Date.now() - lastFollowerTrackingRun.getTime() < minInterval) {
     const nextRun = new Date(lastFollowerTrackingRun.getTime() + minInterval);
@@ -357,36 +292,31 @@ export async function runDailyFollowerTracking(): Promise<{
   }
 
   try {
-    console.log("[CronJobs] Starting daily follower tracking...");
+    console.log("[CronJobs] Starting follower tracking...");
     const result = await runScheduledTracking();
     lastFollowerTrackingRun = new Date();
 
     return {
       success: true,
-      message: `Follower tracking completed: ${result.successful} accounts updated, ${result.failed} errors`,
-      stats: {
-        processed: result.totalAccounts,
-        updated: result.successful,
-        errors: result.failed,
-      },
+      message: `Follower tracking completed: ${result.successful} accounts tracked`,
+      stats: { tracked: result.successful, errors: result.failed },
     };
   } catch (error) {
     console.error("[CronJobs] Follower tracking error:", error);
     return {
       success: false,
-      message: `Follower tracking failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      message: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }
 
 /**
- * Run daily historical data collection
- * Collects data for profiles in the collection queue
+ * Run daily data collection for historical metrics
  */
-export async function runDailyDataCollectionJob(): Promise<{
+export async function runDataCollection(): Promise<{
   success: boolean;
   message: string;
-  stats?: { collected: number; errors: number; apiCallsSaved: number };
+  stats?: { collected: number; errors: number };
 }> {
   const minInterval = 12 * 60 * 60 * 1000; // 12 hours minimum between runs
 
@@ -399,86 +329,81 @@ export async function runDailyDataCollectionJob(): Promise<{
   }
 
   try {
-    console.log("[CronJobs] Starting daily historical data collection...");
-    const result = await runDailyDataCollection();
+    console.log("[CronJobs] Starting daily data collection...");
+    const stats = await runDailyDataCollection();
     lastDataCollectionRun = new Date();
 
     return {
       success: true,
-      message: `Data collection completed: ${result.collected} profiles collected, ${result.apiCallsSaved} API calls saved`,
-      stats: result,
+      message: `Data collection completed: ${stats.collected} accounts processed`,
+      stats,
     };
   } catch (error) {
     console.error("[CronJobs] Data collection error:", error);
     return {
       success: false,
-      message: `Data collection failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      message: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }
 
 /**
- * Run all daily jobs
+ * Get cache statistics
+ */
+export async function getCacheStats(): Promise<{
+  success: boolean;
+  stats?: any;
+  error?: string;
+}> {
+  try {
+    const stats = getCacheStatisticsSummary();
+    return { success: true, stats };
+  } catch (error) {
+    console.error("[CronJobs] Error getting cache stats:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+}
+
+/**
+ * Get status of all cron jobs
+ */
+export function getCronJobStatus(): {
+  isRunning: boolean;
+  lastDripCampaign: Date | null;
+  lastFollowerTracking: Date | null;
+  lastDataCollection: Date | null;
+  nextScheduledReport: { reportType: ReportType; scheduledTime: Date } | null;
+} {
+  return {
+    isRunning: cronInterval !== null,
+    lastDripCampaign: lastDripCampaignRun,
+    lastFollowerTracking: lastFollowerTrackingRun,
+    lastDataCollection: lastDataCollectionRun,
+    nextScheduledReport: getNextScheduledReport(),
+  };
+}
+
+
+/**
+ * Run all daily jobs at once
  */
 export async function runAllDailyJobs(): Promise<{
   dripCampaign: { success: boolean; message: string };
   followerTracking: { success: boolean; message: string };
   dataCollection: { success: boolean; message: string };
 }> {
-  const [dripResult, trackingResult, dataCollectionResult] = await Promise.all([
+  const [dripCampaign, followerTracking, dataCollection] = await Promise.all([
     runDailyDripCampaign(),
-    runDailyFollowerTracking(),
-    runDailyDataCollectionJob(),
+    runFollowerTracking(),
+    runDataCollection(),
   ]);
 
   return {
-    dripCampaign: dripResult,
-    followerTracking: trackingResult,
-    dataCollection: dataCollectionResult,
+    dripCampaign: { success: dripCampaign.success, message: dripCampaign.message },
+    followerTracking: { success: followerTracking.success, message: followerTracking.message },
+    dataCollection: { success: dataCollection.success, message: dataCollection.message },
   };
-}
-
-/**
- * Get cron job status
- */
-export function getCronJobStatus(): {
-  dripCampaign: { lastRun: Date | null; nextAvailable: Date | null };
-  followerTracking: { lastRun: Date | null; nextAvailable: Date | null };
-  dataCollection: { lastRun: Date | null; nextAvailable: Date | null };
-  weeklyReports: { nextScheduled: { reportType: ReportType; scheduledTime: Date } | null };
-} {
-  const minInterval = 12 * 60 * 60 * 1000;
-  
-  return {
-    dripCampaign: {
-      lastRun: lastDripCampaignRun,
-      nextAvailable: lastDripCampaignRun ? new Date(lastDripCampaignRun.getTime() + minInterval) : null,
-    },
-    followerTracking: {
-      lastRun: lastFollowerTrackingRun,
-      nextAvailable: lastFollowerTrackingRun ? new Date(lastFollowerTrackingRun.getTime() + minInterval) : null,
-    },
-    dataCollection: {
-      lastRun: lastDataCollectionRun,
-      nextAvailable: lastDataCollectionRun ? new Date(lastDataCollectionRun.getTime() + minInterval) : null,
-    },
-    weeklyReports: {
-      nextScheduled: getNextScheduledReport(),
-    },
-  };
-}
-
-/**
- * Get cache statistics for admin dashboard
- */
-export async function getCacheStats(): Promise<{
-  totalRequests: number;
-  cacheHits: number;
-  cacheMisses: number;
-  hitRate: number;
-  totalCostSaved: number;
-  totalActualCost: number;
-  byPlatform: Record<string, any>;
-}> {
-  return getCacheStatisticsSummary(30);
 }
