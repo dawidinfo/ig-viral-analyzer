@@ -1490,3 +1490,10 @@
 - [x] Icons und Buttons dämpfen (Gradients auf /70-/80 reduziert)
 - [x] Mehr Weißraum im Dashboard (space-y-8)
 - [x] Mehr Weißraum in der Analyse (space-y-16, space-y-10)
+
+## Analyse-Caching für schnellere Ladezeiten
+- [x] Backend: Analyse-Ergebnisse in Redis/DB cachen (bereits vorhanden - 1h Cache)
+- [x] Backend: Cache-Invalidierung nach X Stunden (1h TTL)
+- [x] Frontend: Cached-Analyse sofort anzeigen (⚡ Aus Cache Badge)
+- [x] Frontend: "Neu laden" Button für frische Analyse (forceRefresh)
+- [x] Anzeige ob Daten aus Cache oder frisch geladen (grüner Badge + Hinweis)

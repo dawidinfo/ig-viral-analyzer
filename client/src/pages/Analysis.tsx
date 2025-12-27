@@ -380,6 +380,13 @@ export default function Analysis() {
     setForceRefresh(true);
     refetch();
   };
+  
+  // Check if data is from cache
+  const isFromCache = analysisData?.fromCache === true;
+  const cacheInfo = isFromCache ? {
+    fromCache: true,
+    message: 'Aus Cache geladen (schneller)'
+  } : null;
 
   const handleAnalyze = () => {
     if (username.trim()) {
@@ -461,7 +468,11 @@ export default function Analysis() {
                     className="pl-7 sm:pl-10 h-8 sm:h-10 text-sm bg-transparent border-0 focus-visible:ring-0 input-glow"
                   />
                 </div>
-                <Button onClick={handleAnalyze} className="btn-gradient text-white border-0 h-6 sm:h-8 px-2 sm:px-3 mr-1">
+                <Button 
+                  onClick={handleRefresh} 
+                  className="btn-gradient text-white border-0 h-6 sm:h-8 px-2 sm:px-3 mr-1"
+                  title={isFromCache ? "Neu laden (frische Daten)" : "Analyse starten"}
+                >
                   <RefreshCw className={`w-3 h-3 sm:w-4 sm:h-4 ${isLoading ? 'animate-spin' : ''}`} />
                 </Button>
               </div>
@@ -672,6 +683,11 @@ export default function Analysis() {
                         Demo-Daten
                       </Badge>
                     )}
+                    {isFromCache && !analysisData.isDemo && (
+                      <Badge variant="outline" className="bg-green-500/20 border-green-500/30 text-green-400">
+                        ⚡ Aus Cache
+                      </Badge>
+                    )}
                   </div>
                   {analysisData.profile.fullName && (
                     <p className="text-muted-foreground mb-4">{analysisData.profile.fullName}</p>
@@ -706,20 +722,21 @@ export default function Analysis() {
                   </div>
                   
                   {/* Refresh Button & Cache Indicator */}
-                  <div className="flex items-center gap-2 mt-4">
+                  <div className="flex items-center gap-3 mt-4">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={handleRefresh}
                       disabled={isLoading || forceRefresh}
-                      className="text-xs"
+                      className="text-xs border-primary/50 hover:bg-primary/10"
                     >
-                      <RefreshCw className={`w-3 h-3 mr-1 ${(isLoading || forceRefresh) ? 'animate-spin' : ''}`} />
-                      Aktualisieren
+                      <RefreshCw className={`w-3 h-3 mr-1.5 ${(isLoading || forceRefresh) ? 'animate-spin' : ''}`} />
+                      {isFromCache ? 'Neu laden' : 'Aktualisieren'}
                     </Button>
-                    {analysisData.fromCache && (
-                      <span className="text-xs text-muted-foreground">
-                        Gecached • Klicke zum Aktualisieren
+                    {isFromCache && (
+                      <span className="text-xs text-green-400/80 flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+                        Blitzschnell aus Cache geladen
                       </span>
                     )}
                   </div>
