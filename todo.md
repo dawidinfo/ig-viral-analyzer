@@ -1447,3 +1447,5 @@
 - [x] Content-Plan Ergebnisse vollständig speichern (planItems fehlen)
 - [x] Automatische Updates/Backups komplett aus Code entfernen
 - [x] Cache-Löschfunktion im Admin entfernen
+- [x] Content-Pläne vollständige Detail-Ansicht (alle Tage mit Hook, Script, Hashtags etc.)
+- [x] PDF-Export Funktion für Content-Pläne
