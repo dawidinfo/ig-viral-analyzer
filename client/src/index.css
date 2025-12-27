@@ -1543,69 +1543,71 @@ html, body {
 
 
 /* ===================================================================
-   SOFT DARK THEME - Leichter, besser lesbar, weniger drückend
-   Inspiriert von Linear.app, Vercel, GitHub Dark
+   SOFT DARK THEME - Ultra-leicht, seriös, luftig
+   Inspiriert von Stripe, Apple, Linear - Premium & Clean
    =================================================================== */
 
 .design-soft-dark {
-  /* Dunkelgrau statt Tiefschwarz */
-  --background: oklch(0.16 0.01 260);
-  --foreground: oklch(0.88 0.01 260);
+  /* ULTRA LEICHT - Slate Gray wie Linear/Notion */
+  --background: #1e2028;
+  --foreground: #d4d4dc;
   
-  /* Karten mit subtiler Erhöhung */
-  --card: oklch(0.19 0.01 260);
-  --card-foreground: oklch(0.88 0.01 260);
+  /* Karten - sanft erhöht */
+  --card: #262830;
+  --card-foreground: #d4d4dc;
   
   /* Sanfte Popover */
-  --popover: oklch(0.19 0.01 260);
-  --popover-foreground: oklch(0.88 0.01 260);
+  --popover: #262830;
+  --popover-foreground: #d4d4dc;
   
-  /* Gedämpftes Violett als Akzent - nicht grell */
-  --primary: oklch(0.65 0.15 280);
-  --primary-foreground: oklch(1 0 0);
+  /* Sehr sanftes Violett - dezent */
+  --primary: #9b8ac4;
+  --primary-foreground: #ffffff;
   
-  /* Sekundär - sehr subtil */
-  --secondary: oklch(0.22 0.01 260);
-  --secondary-foreground: oklch(0.8 0.01 260);
+  /* Sekundär - minimal */
+  --secondary: #2e3038;
+  --secondary-foreground: #c4c4cc;
   
   /* Muted - für weniger wichtige Elemente */
-  --muted: oklch(0.22 0.01 260);
-  --muted-foreground: oklch(0.6 0.01 260);
+  --muted: #2e3038;
+  --muted-foreground: #8888a0;
   
-  /* Accent - sanft */
-  --accent: oklch(0.24 0.02 260);
-  --accent-foreground: oklch(0.88 0.01 260);
+  /* Accent - sehr dezent */
+  --accent: #363840;
+  --accent-foreground: #d4d4dc;
   
   /* Destructive - gedämpftes Rot */
-  --destructive: oklch(0.55 0.18 25);
-  --destructive-foreground: oklch(1 0 0);
+  --destructive: #c45858;
+  --destructive-foreground: #ffffff;
   
   /* Borders - sehr subtil */
-  --border: oklch(0.28 0.01 260);
-  --input: oklch(0.22 0.01 260);
-  --ring: oklch(0.65 0.12 280);
+  --border: #3a3c48;
+  --input: #2e3038;
+  --ring: #9b8ac4;
   
-  /* Chart-Farben - gedämpft */
-  --chart-1: oklch(0.65 0.15 280);
-  --chart-2: oklch(0.6 0.12 200);
-  --chart-3: oklch(0.55 0.1 150);
-  --chart-4: oklch(0.6 0.12 50);
-  --chart-5: oklch(0.55 0.15 340);
+  /* Chart-Farben - sehr gedämpft, pastellig */
+  --chart-1: #9b8ac4;
+  --chart-2: #7a9ec4;
+  --chart-3: #6aaa8c;
+  --chart-4: #c4a86a;
+  --chart-5: #c47a8c;
   
   /* Radius - sanft gerundet */
-  --radius: 0.625rem;
+  --radius: 0.75rem;
 }
 
 /* Soft Dark - Globale Anpassungen */
-.design-soft-dark body {
-  background: oklch(0.14 0.01 260) !important;
-  color: oklch(0.85 0.01 260) !important;
+.design-soft-dark,
+.design-soft-dark body,
+.design-soft-dark #root {
+  background: #1a1c22 !important;
+  color: #d0d0d8 !important;
   font-size: 15px;
-  line-height: 1.65;
+  line-height: 1.7;
   letter-spacing: 0.01em;
 }
 
-/* Soft Dark - Keine Neon-Glows */
+/* Soft Dark - Keine Neon-Glows, keine harten Schatten */
 .design-soft-dark * {
   text-shadow: none !important;
 }
@@ -1614,26 +1616,36 @@ html, body {
 .design-soft-dark [class*="shadow-violet"],
 .design-soft-dark [class*="shadow-purple"],
 .design-soft-dark [class*="shadow-pink"],
-.design-soft-dark [class*="shadow-primary"] {
-  box-shadow: 0 1px 3px oklch(0 0 0 / 0.2), 0 1px 2px oklch(0 0 0 / 0.1) !important;
+.design-soft-dark [class*="shadow-primary"],
+.design-soft-dark .glow-purple,
+.design-soft-dark .glow-cyan,
+.design-soft-dark .glow-viral {
+  box-shadow: 0 1px 2px oklch(0 0 0 / 0.08) !important;
 }
 
-/* Soft Dark - Sanfte Karten */
+/* Soft Dark - Sehr sanfte Karten */
+.design-soft-dark .glass-card,
 .design-soft-dark .bg-card,
 .design-soft-dark .bg-zinc-900,
 .design-soft-dark .bg-zinc-900\/80,
 .design-soft-dark .bg-zinc-900\/50,
-.design-soft-dark [class*="bg-zinc-900"] {
-  background: oklch(0.18 0.01 260) !important;
-  border: 1px solid oklch(0.26 0.01 260) !important;
+.design-soft-dark [class*="bg-zinc-900"],
+.design-soft-dark [class*="bg-zinc-800"] {
+  background: #242630 !important;
+  border: 1px solid #3a3c48 !important;
+  box-shadow: none !important;
 }
 
-/* Soft Dark - Keine grellen Gradients */
-.design-soft-dark [class*="bg-gradient"],
-.design-soft-dark .bg-gradient-to-r,
-.design-soft-dark .bg-gradient-to-br,
-.design-soft-dark .bg-gradient-to-b {
-  background: oklch(0.18 0.01 260) !important;
+.design-soft-dark .glass-card::before {
+  display: none !important;
+}
+
+/* Soft Dark - Keine Gradients auf Karten */
+.design-soft-dark [class*="bg-gradient"]:not(button),
+.design-soft-dark .bg-gradient-to-r:not(button),
+.design-soft-dark .bg-gradient-to-br:not(button),
+.design-soft-dark .bg-gradient-to-b:not(button) {
+  background: #242630 !important;
 }
 
 /* Soft Dark - Buttons mit sanftem Violett */
@@ -1641,51 +1653,62 @@ html, body {
 .design-soft-dark button[class*="from-violet"],
 .design-soft-dark button[class*="from-purple"],
 .design-soft-dark button[class*="from-primary"],
+.design-soft-dark .btn-gradient,
 .design-soft-dark .bg-primary {
-  background: oklch(0.55 0.15 280) !important;
-  box-shadow: 0 1px 2px oklch(0 0 0 / 0.15) !important;
+  background: #8878b8 !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 
 .design-soft-dark button[class*="bg-gradient"]:hover,
 .design-soft-dark button[class*="from-violet"]:hover,
 .design-soft-dark button[class*="from-purple"]:hover,
 .design-soft-dark button[class*="from-primary"]:hover,
+.design-soft-dark .btn-gradient:hover,
 .design-soft-dark .bg-primary:hover {
-  background: oklch(0.6 0.15 280) !important;
+  background: #9888c8 !important;
+}
+
+.design-soft-dark .btn-gradient::before {
+  display: none !important;
 }
 
 /* Soft Dark - Tabs ohne grelle Farben */
 .design-soft-dark [role="tablist"] {
-  background: oklch(0.16 0.01 260) !important;
-  border: 1px solid oklch(0.26 0.01 260) !important;
+  background: #1e2028 !important;
+  border: 1px solid #32343c !important;
+  box-shadow: none !important;
 }
 
-.design-soft-dark [role="tab"] {
+.design-soft-dark [role="tab"],
+.design-soft-dark button[role="tab"] {
   background: transparent !important;
-  color: oklch(0.6 0.01 260) !important;
+  color: #8888a0 !important;
   border: none !important;
   box-shadow: none !important;
   transform: none !important;
 }
 
-.design-soft-dark [role="tab"]:hover {
-  background: oklch(0.2 0.01 260) !important;
-  color: oklch(0.85 0.01 260) !important;
+.design-soft-dark [role="tab"]:hover,
+.design-soft-dark button[role="tab"]:hover {
+  background: #2a2c34 !important;
+  color: #c4c4cc !important;
 }
 
-.design-soft-dark [role="tab"][data-state="active"] {
-  background: oklch(0.22 0.02 280) !important;
-  color: oklch(0.9 0.01 260) !important;
+.design-soft-dark [role="tab"][data-state="active"],
+.design-soft-dark button[role="tab"][data-state="active"] {
+  background: #363848 !important;
+  color: #e0e0e8 !important;
   box-shadow: none !important;
   transform: none !important;
 }
 
-/* Soft Dark - Text-Hierarchie */
+/* Soft Dark - Text-Hierarchie - weniger Kontrast */
 .design-soft-dark h1,
 .design-soft-dark h2,
 .design-soft-dark h3,
 .design-soft-dark h4 {
-  color: oklch(0.92 0.01 260) !important;
+  color: #d8d8e0 !important;
   font-weight: 600;
 }
 
@@ -1698,72 +1721,109 @@ html, body {
 .design-soft-dark .text-muted-foreground,
 .design-soft-dark .text-zinc-400,
 .design-soft-dark .text-zinc-500 {
-  color: oklch(0.55 0.01 260) !important;
+  color: #8888a0 !important;
+}
+
+.design-soft-dark .text-white {
+  color: #d8d8e0 !important;
+}
+
+.design-soft-dark .text-zinc-100,
+.design-soft-dark .text-zinc-200,
+.design-soft-dark .text-zinc-300 {
+  color: #c8c8d0 !important;
+}
+
+/* Soft Dark - Text Gradient entfernen */
+.design-soft-dark .text-gradient,
+.design-soft-dark .text-gradient-viral {
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  -webkit-text-fill-color: #a898d0 !important;
+  color: #a898d0 !important;
 }
 
 /* Soft Dark - Inputs */
 .design-soft-dark input,
 .design-soft-dark textarea,
 .design-soft-dark select {
-  background: oklch(0.14 0.01 260) !important;
-  border: 1px solid oklch(0.28 0.01 260) !important;
-  color: oklch(0.88 0.01 260) !important;
+  background: #181a20 !important;
+  border: 1px solid #3a3c48 !important;
+  color: #d0d0d8 !important;
+}
+
+.design-soft-dark input::placeholder,
+.design-soft-dark textarea::placeholder {
+  color: #6868a0 !important;
 }
 
 .design-soft-dark input:focus,
 .design-soft-dark textarea:focus,
 .design-soft-dark select:focus {
-  border-color: oklch(0.55 0.12 280) !important;
-  box-shadow: 0 0 0 2px oklch(0.55 0.12 280 / 0.2) !important;
+  border-color: #8878b8 !important;
+  box-shadow: 0 0 0 2px rgba(136, 120, 184, 0.15) !important;
 }
 
 /* Soft Dark - Header/Navigation */
 .design-soft-dark header,
 .design-soft-dark nav {
-  background: oklch(0.14 0.01 260 / 0.95) !important;
-  border-bottom: 1px solid oklch(0.24 0.01 260) !important;
-  backdrop-filter: blur(8px);
+  background: rgba(24, 26, 32, 0.95) !important;
+  border-bottom: 1px solid #2e3038 !important;
+  backdrop-filter: blur(12px);
 }
 
 /* Soft Dark - Footer */
 .design-soft-dark footer {
-  background: oklch(0.12 0.01 260) !important;
-  border-top: 1px solid oklch(0.22 0.01 260) !important;
+  background: #161820 !important;
+  border-top: 1px solid #2a2c34 !important;
 }
 
-/* Soft Dark - Links */
+/* Soft Dark - Links - sehr dezent */
 .design-soft-dark a {
-  color: oklch(0.7 0.12 280);
+  color: #9888c0;
 }
 
 .design-soft-dark a:hover {
-  color: oklch(0.75 0.15 280);
+  color: #b0a0d0;
 }
 
-/* Soft Dark - Badges ohne grelle Farben */
+/* Soft Dark - Badges - sehr dezent */
 .design-soft-dark .badge,
+.design-soft-dark .badge-neon {
+  background: #2a2c34 !important;
+  color: #a8a8b8 !important;
+  border: 1px solid #3a3c48 !important;
+}
+
 .design-soft-dark [class*="bg-green"],
 .design-soft-dark [class*="bg-emerald"] {
-  background: oklch(0.45 0.1 150 / 0.2) !important;
-  color: oklch(0.7 0.12 150) !important;
+  background: oklch(0.35 0.05 150 / 0.25) !important;
+  color: oklch(0.72 0.08 150) !important;
 }
 
 .design-soft-dark [class*="bg-red"],
 .design-soft-dark [class*="bg-rose"] {
-  background: oklch(0.45 0.1 25 / 0.2) !important;
-  color: oklch(0.7 0.15 25) !important;
+  background: oklch(0.35 0.05 25 / 0.25) !important;
+  color: oklch(0.72 0.10 25) !important;
 }
 
 .design-soft-dark [class*="bg-yellow"],
 .design-soft-dark [class*="bg-amber"] {
-  background: oklch(0.5 0.1 85 / 0.2) !important;
-  color: oklch(0.75 0.12 85) !important;
+  background: oklch(0.40 0.05 85 / 0.25) !important;
+  color: oklch(0.75 0.08 85) !important;
 }
 
 .design-soft-dark [class*="bg-blue"],
 .design-soft-dark [class*="bg-sky"] {
-  background: oklch(0.45 0.1 230 / 0.2) !important;
-  color: oklch(0.7 0.12 230) !important;
+  background: oklch(0.35 0.05 230 / 0.25) !important;
+  color: oklch(0.72 0.08 230) !important;
+}
+
+.design-soft-dark [class*="bg-violet"],
+.design-soft-dark [class*="bg-purple"] {
+  background: oklch(0.35 0.05 280 / 0.25) !important;
+  color: oklch(0.72 0.10 280) !important;
 }
 
 /* Soft Dark - Scrollbar */
@@ -1773,25 +1833,109 @@ html, body {
 }
 
 .design-soft-dark ::-webkit-scrollbar-track {
-  background: oklch(0.14 0.01 260);
+  background: #1a1c22;
 }
 
 .design-soft-dark ::-webkit-scrollbar-thumb {
-  background: oklch(0.3 0.01 260);
-  border-radius: 4px;
+  background: #3a3c48;
+  border-radius: 100px;
 }
 
 .design-soft-dark ::-webkit-scrollbar-thumb:hover {
-  background: oklch(0.35 0.01 260);
+  background: #4a4c58;
 }
 
 /* Soft Dark - Feature Cards ohne bunte Hintergründe */
 .design-soft-dark .feature-card,
+.design-soft-dark .stat-card,
 .design-soft-dark [class*="from-yellow"],
 .design-soft-dark [class*="from-green"],
 .design-soft-dark [class*="from-blue"],
 .design-soft-dark [class*="from-pink"],
 .design-soft-dark [class*="from-cyan"],
 .design-soft-dark [class*="from-orange"] {
-  background: oklch(0.18 0.01 260) !important;
+  background: #242630 !important;
+  border: 1px solid #3a3c48 !important;
+}
+
+/* Soft Dark - Dialogs */
+.design-soft-dark [role="dialog"] {
+  background: #242630 !important;
+  border: 1px solid #3a3c48 !important;
+}
+
+/* Soft Dark - Dropdowns */
+.design-soft-dark [role="listbox"],
+.design-soft-dark [role="menu"] {
+  background: #242630 !important;
+  border: 1px solid #3a3c48 !important;
+}
+
+.design-soft-dark [role="option"]:hover,
+.design-soft-dark [role="menuitem"]:hover {
+  background: #2e3038 !important;
+}
+
+/* Soft Dark - Tooltips */
+.design-soft-dark [role="tooltip"] {
+  background: #2e3038 !important;
+  color: #d0d0d8 !important;
+  border: 1px solid #3a3c48 !important;
+}
+
+/* Soft Dark - Progress Bars */
+.design-soft-dark [role="progressbar"] {
+  background: #2e3038 !important;
+}
+
+.design-soft-dark [role="progressbar"] > div {
+  background: #8878b8 !important;
+}
+
+/* Soft Dark - Borders allgemein */
+.design-soft-dark .border-zinc-700,
+.design-soft-dark .border-zinc-800,
+.design-soft-dark .border-zinc-600,
+.design-soft-dark .border-border {
+  border-color: #3a3c48 !important;
+}
+
+/* Soft Dark - Background Grid entfernen */
+.design-soft-dark .bg-grid {
+  background-image: none !important;
+}
+
+.design-soft-dark .bg-gradient-radial {
+  background: none !important;
+}
+
+/* Soft Dark - Gradient Border entfernen */
+.design-soft-dark .gradient-border::before {
+  display: none !important;
+}
+
+.design-soft-dark .gradient-border {
+  background: #242630 !important;
+  border: 1px solid #3a3c48 !important;
+}
+
+/* Soft Dark - Icon Backgrounds - dezent */
+.design-soft-dark div[class*="bg-violet"][class*="rounded"],
+.design-soft-dark div[class*="bg-purple"][class*="rounded"],
+.design-soft-dark div[class*="bg-green"][class*="rounded"],
+.design-soft-dark div[class*="bg-blue"][class*="rounded"],
+.design-soft-dark div[class*="bg-yellow"][class*="rounded"],
+.design-soft-dark div[class*="bg-pink"][class*="rounded"],
+.design-soft-dark div[class*="bg-cyan"][class*="rounded"] {
+  background: #363848 !important;
+}
+
+.design-soft-dark div[class*="bg-violet"][class*="rounded"] svg,
+.design-soft-dark div[class*="bg-purple"][class*="rounded"] svg,
+.design-soft-dark div[class*="bg-green"][class*="rounded"] svg,
+.design-soft-dark div[class*="bg-blue"][class*="rounded"] svg,
+.design-soft-dark div[class*="bg-yellow"][class*="rounded"] svg,
+.design-soft-dark div[class*="bg-pink"][class*="rounded"] svg,
+.design-soft-dark div[class*="bg-cyan"][class*="rounded"] svg {
+  color: #c8c8d0 !important;
 }

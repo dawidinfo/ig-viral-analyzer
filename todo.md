@@ -1464,3 +1464,11 @@
 - [ ] Backup-Anzeige aus Admin-Seitenleiste komplett entfernen
 - [ ] Clean Pro Theme überarbeiten - Stripe + Apple + NotJustAnalytics Stil
 - [x] Soft Dark Theme erstellen - leichter, besser lesbar, weniger drückend
+
+- [ ] Soft Dark Theme noch leichter machen - helleres Grau, weniger Kontrast
+- [ ] Mehr Weißraum und Luftigkeit wie Stripe/Apple
+- [ ] Gradient-Effekte reduzieren für seriöseren Look
+- [ ] Cards und Buttons dezenter gestalten
+
+## Soft Dark Theme Optimierung
+- [x] Soft Dark Theme leichter und seriöser gemacht (hex-basierte Farben: #1a1c22 bis #242630)
