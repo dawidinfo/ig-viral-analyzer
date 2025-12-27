@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { getLoginUrl } from "@/const";
 import { Loader2, Star } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 
 // Social login provider icons as SVG
@@ -17,15 +17,6 @@ const GoogleIcon = () => (
 const AppleIcon = () => (
   <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
     <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-  </svg>
-);
-
-const MicrosoftIcon = () => (
-  <svg viewBox="0 0 24 24" className="w-5 h-5">
-    <rect x="1" y="1" width="10" height="10" fill="#F25022"/>
-    <rect x="13" y="1" width="10" height="10" fill="#7FBA00"/>
-    <rect x="1" y="13" width="10" height="10" fill="#00A4EF"/>
-    <rect x="13" y="13" width="10" height="10" fill="#FFB900"/>
   </svg>
 );
 
@@ -45,22 +36,42 @@ interface SocialLoginButtonsProps {
 // Track login method usage
 const trackLoginMethod = (method: string) => {
   try {
-    // Store in localStorage for analytics
     const loginStats = JSON.parse(localStorage.getItem('loginMethodStats') || '{}');
     loginStats[method] = (loginStats[method] || 0) + 1;
     loginStats.lastUsed = method;
     loginStats.lastAttempt = new Date().toISOString();
     localStorage.setItem('loginMethodStats', JSON.stringify(loginStats));
     
-    // Also send to server if available (fire and forget)
     fetch('/api/analytics/login-method', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ method, timestamp: new Date().toISOString() })
-    }).catch(() => {}); // Ignore errors
+    }).catch(() => {});
   } catch (e) {
     // Ignore tracking errors
   }
+};
+
+// Google OAuth Client ID from environment
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+// Load Google Identity Services script
+const loadGoogleScript = (): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    if (document.getElementById('google-identity-services')) {
+      resolve();
+      return;
+    }
+    
+    const script = document.createElement('script');
+    script.id = 'google-identity-services';
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error('Failed to load Google Identity Services'));
+    document.head.appendChild(script);
+  });
 };
 
 export function SocialLoginButtons({ 
@@ -69,14 +80,84 @@ export function SocialLoginButtons({
   className = "" 
 }: SocialLoginButtonsProps) {
   const [isLoading, setIsLoading] = useState<string | null>(null);
+  const [googleLoaded, setGoogleLoaded] = useState(false);
+  
+  // tRPC mutations for OAuth
+  const googleAuthMutation = trpc.googleAuth.authenticateWithToken.useMutation();
+  
+  // Load Google Identity Services
+  useEffect(() => {
+    if (GOOGLE_CLIENT_ID) {
+      loadGoogleScript()
+        .then(() => setGoogleLoaded(true))
+        .catch(console.error);
+    }
+  }, []);
 
-  const handleLogin = (provider: string) => {
-    setIsLoading(provider);
+  const handleGoogleLogin = async () => {
+    if (!GOOGLE_CLIENT_ID || !googleLoaded) {
+      // Fallback to Manus OAuth
+      handleMagicLinkLogin();
+      return;
+    }
     
-    // Track which login method was clicked
-    trackLoginMethod(provider);
+    setIsLoading("google");
+    trackLoginMethod("google");
     
-    // Open login popup
+    try {
+      const google = (window as any).google;
+      if (!google?.accounts?.id) {
+        throw new Error("Google Identity Services not loaded");
+      }
+      
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: async (response: any) => {
+          try {
+            const result = await googleAuthMutation.mutateAsync({
+              idToken: response.credential,
+            });
+            
+            if (result.success) {
+              window.location.href = '/dashboard';
+            } else {
+              console.error("Google auth failed:", result.error);
+              setIsLoading(null);
+            }
+          } catch (error) {
+            console.error("Google auth error:", error);
+            setIsLoading(null);
+          }
+        },
+        auto_select: false,
+        cancel_on_tap_outside: true,
+      });
+      
+      google.accounts.id.prompt((notification: any) => {
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          // Fallback to Manus OAuth if Google One Tap not available
+          handleMagicLinkLogin();
+        }
+      });
+    } catch (error) {
+      console.error("Google login error:", error);
+      handleMagicLinkLogin();
+    }
+  };
+
+  const handleAppleLogin = async () => {
+    setIsLoading("apple");
+    trackLoginMethod("apple");
+    
+    // Apple Sign In requires server-side setup with Apple Developer account
+    // For now, redirect to Manus OAuth with email option
+    handleMagicLinkLogin();
+  };
+
+  const handleMagicLinkLogin = () => {
+    setIsLoading("email");
+    trackLoginMethod("email");
+    
     const loginUrl = getLoginUrl({ popup: true });
     const width = 500;
     const height = 600;
@@ -90,12 +171,10 @@ export function SocialLoginButtons({
     );
 
     if (!popup) {
-      // Popup blocked - redirect instead
       window.location.href = loginUrl;
       return;
     }
 
-    // Listen for success message
     const handleMessage = (event: MessageEvent) => {
       if (event.origin === window.location.origin && event.data?.type === 'oauth-success') {
         setIsLoading(null);
@@ -106,7 +185,6 @@ export function SocialLoginButtons({
     };
     window.addEventListener('message', handleMessage);
 
-    // Check if popup was closed
     const checkClosed = setInterval(() => {
       if (popup.closed) {
         setIsLoading(null);
@@ -117,10 +195,9 @@ export function SocialLoginButtons({
   };
 
   const providers = [
-    { id: "google", icon: GoogleIcon, label: "Google", isPrimary: true },
-    { id: "apple", icon: AppleIcon, label: "Apple", isPrimary: false },
-    { id: "microsoft", icon: MicrosoftIcon, label: "Microsoft", isPrimary: false },
-    { id: "email", icon: EmailIcon, label: "E-Mail", isPrimary: false },
+    { id: "google", icon: GoogleIcon, label: "Google", isPrimary: true, handler: handleGoogleLogin },
+    { id: "apple", icon: AppleIcon, label: "Apple", isPrimary: false, handler: handleAppleLogin },
+    { id: "email", icon: EmailIcon, label: "E-Mail", isPrimary: false, handler: handleMagicLinkLogin },
   ];
 
   if (variant === "compact") {
@@ -131,7 +208,7 @@ export function SocialLoginButtons({
           {providers.map((provider) => (
             <button
               key={provider.id}
-              onClick={() => handleLogin(provider.id)}
+              onClick={provider.handler}
               disabled={isLoading !== null}
               className={`p-1.5 rounded-md transition-colors disabled:opacity-50 ${
                 provider.isPrimary 
@@ -157,7 +234,7 @@ export function SocialLoginButtons({
       <div className={`flex flex-col gap-2 ${className}`}>
         {/* Google Button - Prominent */}
         <Button
-          onClick={() => handleLogin("google")}
+          onClick={handleGoogleLogin}
           disabled={isLoading !== null}
           className="w-full justify-center gap-3 bg-white text-gray-800 hover:bg-gray-100 border-0 shadow-lg hover:shadow-xl transition-all py-6 text-base font-medium"
         >
@@ -181,12 +258,12 @@ export function SocialLoginButtons({
         </div>
         
         {/* Other providers - Smaller */}
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 gap-2">
           {providers.filter(p => !p.isPrimary).map((provider) => (
             <Button
               key={provider.id}
               variant="outline"
-              onClick={() => handleLogin(provider.id)}
+              onClick={provider.handler}
               disabled={isLoading !== null}
               className="w-full justify-center gap-2 bg-white/5 border-white/10 hover:bg-white/10 py-5"
             >
@@ -208,7 +285,7 @@ export function SocialLoginButtons({
     <div className={`flex flex-col gap-3 ${className}`}>
       {/* Google Button - Prominent */}
       <Button
-        onClick={() => handleLogin("google")}
+        onClick={handleGoogleLogin}
         disabled={isLoading !== null}
         className="w-full justify-center gap-3 bg-white text-gray-800 hover:bg-gray-100 border-0 shadow-lg hover:shadow-xl transition-all py-5"
       >
@@ -227,7 +304,7 @@ export function SocialLoginButtons({
             key={provider.id}
             variant="outline"
             size="sm"
-            onClick={() => handleLogin(provider.id)}
+            onClick={provider.handler}
             disabled={isLoading !== null}
             className="bg-white/5 border-white/10 hover:bg-white/10"
           >
@@ -256,10 +333,6 @@ export function LoginMethodsHint({ className = "" }: { className?: string }) {
       <div className="flex items-center gap-1.5">
         <AppleIcon />
         <span>Apple</span>
-      </div>
-      <div className="flex items-center gap-1.5">
-        <MicrosoftIcon />
-        <span>Microsoft</span>
       </div>
       <div className="flex items-center gap-1.5">
         <EmailIcon />

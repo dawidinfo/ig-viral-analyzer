@@ -80,18 +80,19 @@ export default function DeepAnalysis({ username }: DeepAnalysisProps) {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center">
-            <Target className="w-4 h-4 text-white animate-pulse" />
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center relative">
+            <Target className="w-4 h-4 text-white" />
+            <div className="absolute inset-0 rounded-lg border-2 border-emerald-400 border-t-transparent animate-spin" />
           </div>
           <div>
-            <h3 className="font-semibold text-sm">Tiefenanalyse</h3>
-            <p className="text-xs text-muted-foreground">Lade HAPSS Framework...</p>
+            <h3 className="font-semibold text-sm">KI holt frische Daten für dich...</h3>
+            <p className="text-xs text-muted-foreground">Analysiere HAPSS Framework & Viral-Muster</p>
           </div>
         </div>
         <div className="animate-pulse space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[1, 2, 3, 4].map(i => (
-              <div key={i} className="h-32 bg-muted/20 rounded-xl"></div>
+              <div key={i} className="h-32 bg-muted/20 rounded-xl" style={{ animationDelay: `${i * 100}ms` }}></div>
             ))}
           </div>
         </div>
@@ -106,14 +107,17 @@ export default function DeepAnalysis({ username }: DeepAnalysisProps) {
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Clock className="w-5 h-5 text-amber-400" />
+              <div className="relative">
+                <Clock className="w-5 h-5 text-amber-400" />
+                <div className="absolute inset-0 w-5 h-5 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+              </div>
               <div>
-                <p className="text-sm font-medium text-amber-200">Tiefenanalyse lädt...</p>
-                <p className="text-xs text-amber-400/70">Dies kann einen Moment dauern</p>
+                <p className="text-sm font-medium text-amber-200">Die KI analysiert gerade viele Daten...</p>
+                <p className="text-xs text-amber-400/70">Einen Moment noch - fast fertig!</p>
               </div>
             </div>
             <Button size="sm" variant="outline" onClick={handleRefetch} disabled={isRefetching || isFetching} className="text-amber-400 border-amber-500/30">
-              <RefreshCw className={`w-4 h-4 mr-1 ${(isRefetching || isFetching) ? 'animate-spin' : ''}`} /> {(isRefetching || isFetching) ? 'Lädt...' : 'Neu laden'}
+              <RefreshCw className={`w-4 h-4 mr-1 ${(isRefetching || isFetching) ? 'animate-spin' : ''}`} /> {(isRefetching || isFetching) ? 'Lädt...' : 'Nochmal'}
             </Button>
           </div>
         </CardContent>

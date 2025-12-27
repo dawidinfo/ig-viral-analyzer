@@ -522,17 +522,25 @@ export default function Analysis() {
         {isLoading && !hasTimedOut && (
           <div className="flex flex-col items-center justify-center py-20">
             <div className="relative">
-              <div className="w-20 h-20 border-4 border-primary/30 rounded-full animate-pulse" />
-              <div className="absolute inset-0 w-20 h-20 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+              <div className="w-24 h-24 border-4 border-primary/20 rounded-full" />
+              <div className="absolute inset-0 w-24 h-24 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+              <div className="absolute inset-2 w-20 h-20 border-4 border-secondary/30 border-b-transparent rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }} />
             </div>
-            <p className="mt-6 text-muted-foreground">Analysiere @{usernameParam}...</p>
+            <div className="mt-8 text-center">
+              <p className="text-lg font-medium text-foreground mb-2">KI holt frische Daten für dich...</p>
+              <p className="text-sm text-muted-foreground">Analysiere @{usernameParam}</p>
+            </div>
             
             {/* Slow loading message */}
             {showSlowLoadingMessage && (
-              <div className="mt-4 p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/30 max-w-md text-center">
-                <p className="text-yellow-400 text-sm">
-                  <Clock className="w-4 h-4 inline mr-2" />
-                  Die Analyse dauert länger als erwartet. Bitte warte noch einen Moment...
+              <div className="mt-6 p-4 rounded-xl bg-primary/5 border border-primary/20 max-w-md text-center">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                </div>
+                <p className="text-primary text-sm">
+                  Die KI analysiert gerade viele Daten. Einen Moment noch...
                 </p>
               </div>
             )}
@@ -542,10 +550,13 @@ export default function Analysis() {
         {/* Timeout State */}
         {hasTimedOut && (
           <div className="glass-card rounded-2xl p-8 text-center">
-            <Clock className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
-            <h2 className="text-xl font-bold mb-2">Analyse-Timeout</h2>
+            <div className="relative w-16 h-16 mx-auto mb-4">
+              <Clock className="w-16 h-16 text-yellow-500" />
+              <div className="absolute inset-0 w-16 h-16 border-4 border-yellow-500/30 border-t-yellow-500 rounded-full animate-spin" />
+            </div>
+            <h2 className="text-xl font-bold mb-2">Die KI braucht noch einen Moment</h2>
             <p className="text-muted-foreground mb-4">
-              Die Instagram API antwortet nicht rechtzeitig. Dies kann an hoher Auslastung liegen.
+              Die Daten werden gerade von Instagram geladen. Das kann bei großen Accounts etwas dauern.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button onClick={() => {
@@ -553,8 +564,8 @@ export default function Analysis() {
                 setLoadingStartTime(null);
                 refetch();
               }} className="btn-gradient text-white border-0">
-                <RefreshCw className="w-4 h-4 mr-2" />
-                Erneut versuchen
+                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                Nochmal versuchen
               </Button>
               <Button 
                 variant="outline" 

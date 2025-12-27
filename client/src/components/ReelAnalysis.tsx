@@ -309,17 +309,18 @@ export default function ReelAnalysis({ username }: ReelAnalysisProps) {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-white animate-pulse" />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center relative">
+            <Sparkles className="w-5 h-5 text-white" />
+            <div className="absolute inset-0 rounded-xl border-2 border-violet-400 border-t-transparent animate-spin" />
           </div>
           <div>
-            <h3 className="font-bold">AI Reel-Analyse</h3>
-            <p className="text-sm text-muted-foreground">Analysiere Content-Struktur...</p>
+            <h3 className="font-bold">KI holt frische Daten für dich...</h3>
+            <p className="text-sm text-muted-foreground">Analysiere Content-Struktur & Viral-Potenzial</p>
           </div>
         </div>
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-20 bg-muted/30 rounded-xl animate-pulse" />
+            <div key={i} className="h-20 bg-muted/30 rounded-xl animate-pulse" style={{ animationDelay: `${i * 150}ms` }} />
           ))}
         </div>
       </div>
@@ -331,16 +332,22 @@ export default function ReelAnalysis({ username }: ReelAnalysisProps) {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center relative">
             <Clock className="w-5 h-5 text-white" />
+            <div className="absolute inset-0 rounded-xl border-2 border-amber-400 border-t-transparent animate-spin" />
           </div>
           <div>
-            <h3 className="font-bold">AI Reel-Analyse</h3>
-            <p className="text-sm text-amber-400">Analyse dauert länger als erwartet...</p>
+            <h3 className="font-bold">Die KI analysiert gerade viele Daten...</h3>
+            <p className="text-sm text-amber-400">Einen Moment noch - fast fertig!</p>
           </div>
         </div>
         <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
-          <p className="text-sm text-amber-200">Die KI-Analyse benötigt mehr Zeit. Bitte warte einen Moment oder lade die Seite neu.</p>
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-2 h-2 bg-amber-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+            <div className="w-2 h-2 bg-amber-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+            <div className="w-2 h-2 bg-amber-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+          </div>
+          <p className="text-sm text-amber-200">Die KI verarbeitet gerade deine Reel-Daten. Das kann bei vielen Reels etwas dauern.</p>
         </div>
       </div>
     );

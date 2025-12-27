@@ -1384,3 +1384,16 @@
 - [x] Verifizierungs-Seite /auth/verify
 - [x] Vitest Tests (10 Tests bestanden)
 - [x] Manus OAuth entfernt - nur noch E-Mail Login
+
+## Ladeeffekte und Social Login (Dezember 2024)
+- [x] Ladeeffekte mit freundlichen Texten ("KI holt frische Daten für dich...")
+- [x] Drehende Animationen bei Ladebalken
+- [x] E-Mail-Templates mit SVG-Logo aktualisiert
+- [x] Google OAuth Service erstellt
+- [x] Apple OAuth Service erstellt
+- [x] OAuth-Router zu routers.ts hinzugefügt
+- [x] SocialLoginButtons mit Google/Apple OAuth aktualisiert
+- [x] Analysis.tsx Loading State verbessert
+- [x] ReelAnalysis Loading State verbessert
+- [x] DeepAnalysis Loading State verbessert
+- [x] FollowerGrowthChart Loading State verbessert

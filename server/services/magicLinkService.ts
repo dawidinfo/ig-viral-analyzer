@@ -303,7 +303,20 @@ function getMagicLinkEmailTemplate(magicLinkUrl: string): string {
           <!-- Header -->
           <tr>
             <td style="padding: 32px 32px 24px; text-align: center;">
-              <img src="https://reelspy.ai/logo.png" alt="ReelSpy.ai" width="48" height="48" style="display: inline-block; margin-bottom: 16px;">
+              <div style="display: inline-block; margin-bottom: 16px; width: 48px; height: 48px;">
+                <svg viewBox="0 0 100 100" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                    </linearGradient>
+                  </defs>
+                  <circle cx="50" cy="50" r="45" fill="url(#grad1)"/>
+                  <circle cx="50" cy="50" r="25" fill="none" stroke="white" stroke-width="3"/>
+                  <circle cx="50" cy="50" r="8" fill="white"/>
+                  <circle cx="70" cy="30" r="5" fill="white"/>
+                </svg>
+              </div>
               <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #ffffff;">Login bei ReelSpy.ai</h1>
             </td>
           </tr>
@@ -371,7 +384,20 @@ function getWelcomeEmailTemplate(name: string): string {
           <!-- Header -->
           <tr>
             <td style="padding: 32px 32px 24px; text-align: center;">
-              <img src="https://reelspy.ai/logo.png" alt="ReelSpy.ai" width="48" height="48" style="display: inline-block; margin-bottom: 16px;">
+              <div style="display: inline-block; margin-bottom: 16px; width: 48px; height: 48px;">
+                <svg viewBox="0 0 100 100" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                    </linearGradient>
+                  </defs>
+                  <circle cx="50" cy="50" r="45" fill="url(#grad1)"/>
+                  <circle cx="50" cy="50" r="25" fill="none" stroke="white" stroke-width="3"/>
+                  <circle cx="50" cy="50" r="8" fill="white"/>
+                  <circle cx="70" cy="30" r="5" fill="white"/>
+                </svg>
+              </div>
               <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #ffffff;">Willkommen, ${name}! 🎉</h1>
             </td>
           </tr>

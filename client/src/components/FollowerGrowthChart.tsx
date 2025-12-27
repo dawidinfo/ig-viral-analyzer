@@ -257,15 +257,24 @@ export default function FollowerGrowthChart({ username }: FollowerGrowthChartPro
       <Card className="bg-gradient-to-br from-blue-500/5 to-cyan-500/5 border-blue-500/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Users className="w-5 h-5 text-blue-400" />
+            <div className="relative">
+              <Users className="w-5 h-5 text-blue-400" />
+              <div className="absolute inset-0 w-5 h-5 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
+            </div>
             Follower-Wachstum
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-[300px] flex items-center justify-center">
-            <div className="animate-pulse flex flex-col items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-blue-500/20 animate-spin" />
-              <span className="text-sm text-muted-foreground">Lade Verlaufsdaten...</span>
+            <div className="flex flex-col items-center gap-3">
+              <div className="relative w-12 h-12">
+                <div className="absolute inset-0 w-12 h-12 border-4 border-blue-500/20 rounded-full" />
+                <div className="absolute inset-0 w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+              </div>
+              <div className="text-center">
+                <p className="text-sm font-medium text-foreground">KI holt frische Daten für dich...</p>
+                <p className="text-xs text-muted-foreground">Lade Follower-Verlauf</p>
+              </div>
             </div>
           </div>
         </CardContent>

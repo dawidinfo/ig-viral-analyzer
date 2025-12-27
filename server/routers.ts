@@ -1759,6 +1759,196 @@ export const appRouter = router({
         return { deleted };
       }),
   }),
+  
+  // Google OAuth
+  googleAuth: router({
+    getAuthUrl: publicProcedure
+      .input(z.object({
+        redirectUri: z.string().url(),
+        state: z.string().optional(),
+      }))
+      .query(async ({ input }) => {
+        const { getGoogleAuthUrl } = await import("./services/googleOAuthService");
+        try {
+          const url = getGoogleAuthUrl(input.redirectUri, input.state);
+          return { success: true, url };
+        } catch (error) {
+          return { success: false, error: "Google OAuth not configured" };
+        }
+      }),
+    
+    authenticateWithToken: publicProcedure
+      .input(z.object({
+        idToken: z.string(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const { verifyGoogleToken, authenticateWithGoogle } = await import("./services/googleOAuthService");
+        
+        const googleUser = await verifyGoogleToken(input.idToken);
+        if (!googleUser) {
+          return { success: false, error: "Invalid Google token" };
+        }
+        
+        const result = await authenticateWithGoogle(googleUser);
+        
+        if (result.success && result.user) {
+          const sessionToken = Buffer.from(JSON.stringify({
+            openId: result.user.openId,
+            email: result.user.email,
+            name: result.user.name,
+            loginMethod: 'google',
+          })).toString('base64');
+          
+          ctx.res?.cookie('session', sessionToken, getSessionCookieOptions(ctx.req!));
+        }
+        
+        return result;
+      }),
+    
+    authenticateWithAccessToken: publicProcedure
+      .input(z.object({
+        accessToken: z.string(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const { getGoogleUserInfo, authenticateWithGoogle } = await import("./services/googleOAuthService");
+        
+        const googleUser = await getGoogleUserInfo(input.accessToken);
+        if (!googleUser) {
+          return { success: false, error: "Invalid Google access token" };
+        }
+        
+        const result = await authenticateWithGoogle(googleUser);
+        
+        if (result.success && result.user) {
+          const sessionToken = Buffer.from(JSON.stringify({
+            openId: result.user.openId,
+            email: result.user.email,
+            name: result.user.name,
+            loginMethod: 'google',
+          })).toString('base64');
+          
+          ctx.res?.cookie('session', sessionToken, getSessionCookieOptions(ctx.req!));
+        }
+        
+        return result;
+      }),
+    
+    exchangeCode: publicProcedure
+      .input(z.object({
+        code: z.string(),
+        redirectUri: z.string().url(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const { exchangeGoogleCode, getGoogleUserInfo, authenticateWithGoogle } = await import("./services/googleOAuthService");
+        
+        const tokens = await exchangeGoogleCode(input.code, input.redirectUri);
+        if (!tokens) {
+          return { success: false, error: "Failed to exchange code" };
+        }
+        
+        const googleUser = await getGoogleUserInfo(tokens.accessToken);
+        if (!googleUser) {
+          return { success: false, error: "Failed to get user info" };
+        }
+        
+        const result = await authenticateWithGoogle(googleUser);
+        
+        if (result.success && result.user) {
+          const sessionToken = Buffer.from(JSON.stringify({
+            openId: result.user.openId,
+            email: result.user.email,
+            name: result.user.name,
+            loginMethod: 'google',
+          })).toString('base64');
+          
+          ctx.res?.cookie('session', sessionToken, getSessionCookieOptions(ctx.req!));
+        }
+        
+        return result;
+      }),
+  }),
+  
+  // Apple OAuth
+  appleAuth: router({
+    getAuthUrl: publicProcedure
+      .input(z.object({
+        redirectUri: z.string().url(),
+        state: z.string().optional(),
+      }))
+      .query(async ({ input }) => {
+        const { getAppleAuthUrl } = await import("./services/appleOAuthService");
+        try {
+          const url = getAppleAuthUrl(input.redirectUri, input.state);
+          return { success: true, url };
+        } catch (error) {
+          return { success: false, error: "Apple OAuth not configured" };
+        }
+      }),
+    
+    authenticateWithToken: publicProcedure
+      .input(z.object({
+        idToken: z.string(),
+        name: z.string().optional(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const { verifyAppleToken, authenticateWithApple } = await import("./services/appleOAuthService");
+        
+        const appleUser = await verifyAppleToken(input.idToken);
+        if (!appleUser) {
+          return { success: false, error: "Invalid Apple token" };
+        }
+        
+        const result = await authenticateWithApple(appleUser, input.name);
+        
+        if (result.success && result.user) {
+          const sessionToken = Buffer.from(JSON.stringify({
+            openId: result.user.openId,
+            email: result.user.email,
+            name: result.user.name,
+            loginMethod: 'apple',
+          })).toString('base64');
+          
+          ctx.res?.cookie('session', sessionToken, getSessionCookieOptions(ctx.req!));
+        }
+        
+        return result;
+      }),
+    
+    exchangeCode: publicProcedure
+      .input(z.object({
+        code: z.string(),
+        redirectUri: z.string().url(),
+        name: z.string().optional(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const { exchangeAppleCode, verifyAppleToken, authenticateWithApple } = await import("./services/appleOAuthService");
+        
+        const tokens = await exchangeAppleCode(input.code, input.redirectUri);
+        if (!tokens || !tokens.idToken) {
+          return { success: false, error: "Failed to exchange code" };
+        }
+        
+        const appleUser = await verifyAppleToken(tokens.idToken);
+        if (!appleUser) {
+          return { success: false, error: "Failed to verify token" };
+        }
+        
+        const result = await authenticateWithApple(appleUser, input.name);
+        
+        if (result.success && result.user) {
+          const sessionToken = Buffer.from(JSON.stringify({
+            openId: result.user.openId,
+            email: result.user.email,
+            name: result.user.name,
+            loginMethod: 'apple',
+          })).toString('base64');
+          
+          ctx.res?.cookie('session', sessionToken, getSessionCookieOptions(ctx.req!));
+        }
+        
+        return result;
+      }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;
