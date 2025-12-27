@@ -1444,3 +1444,4 @@
 - [x] Clean Minimal Design weiter ausbauen
 - [x] Content-Plan Generator Design verbessern - sichtbare Eingabefelder mit Rahmen
 - [x] Automatische Datenbank-Backups deaktivieren
+- [x] Content-Plan Ergebnisse vollständig speichern (planItems fehlen)

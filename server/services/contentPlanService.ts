@@ -340,39 +340,75 @@ export async function saveContentPlan(
   profile: TargetAudienceProfile,
   duration: number,
   framework: "HAPSS" | "AIDA" | "mixed",
-  planItems: ContentPlanItem[]
+  planItems: any[]
 ) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
+  
+  // Transform planItems to match database schema
+  // Handle both frontend format (with nested objects) and backend format
+  const transformedItems = planItems.map(item => {
+    // Handle scriptStructure - can be array of strings or object
+    let scriptStructureArray: string[];
+    if (Array.isArray(item.scriptStructure)) {
+      scriptStructureArray = item.scriptStructure;
+    } else if (item.scriptStructure && typeof item.scriptStructure === 'object') {
+      scriptStructureArray = [
+        `Hook (${item.scriptStructure.hookDuration || '0-3s'}): ${item.scriptStructure.hook || ''}`,
+        `Body (${item.scriptStructure.bodyDuration || '3-25s'}): ${item.scriptStructure.body || ''}`,
+        `CTA (${item.scriptStructure.ctaDuration || '25-35s'}): ${item.scriptStructure.cta || ''}`
+      ];
+    } else {
+      scriptStructureArray = [];
+    }
+
+    // Handle trendingAudio - can be string or object
+    let trendingAudioStr: string;
+    if (typeof item.trendingAudio === 'string') {
+      trendingAudioStr = item.trendingAudio;
+    } else if (item.trendingAudio && typeof item.trendingAudio === 'object') {
+      trendingAudioStr = item.trendingAudio.name || 'Trending Sound';
+    } else {
+      trendingAudioStr = 'Trending Sound';
+    }
+
+    // Handle copywritingTip - can be string or object
+    let copywritingTipStr: string;
+    if (typeof item.copywritingTip === 'string') {
+      copywritingTipStr = item.copywritingTip;
+    } else if (item.copywritingTip && typeof item.copywritingTip === 'object') {
+      copywritingTipStr = `${item.copywritingTip.author || 'Expert'}: ${item.copywritingTip.tip || ''}`;
+    } else {
+      copywritingTipStr = '';
+    }
+
+    return {
+      day: item.day,
+      topic: item.topic,
+      hook: item.hook,
+      framework: item.framework,
+      scriptStructure: scriptStructureArray,
+      cutRecommendation: item.cutRecommendation,
+      hashtags: item.hashtags || [],
+      bestTime: item.bestPostingTime || item.bestTime || '',
+      trendingAudio: trendingAudioStr,
+      copywritingTip: copywritingTipStr
+    };
+  });
   
   const result = await db.insert(savedContentPlans).values({
     userId,
     name,
     profile: {
       niche: profile.niche,
-      painPoints: profile.painPoints,
-      usps: profile.usps,
-      benefits: profile.benefits,
+      painPoints: profile.painPoints || [],
+      usps: profile.usps || [],
+      benefits: profile.benefits || [],
       tonality: profile.tonality
     },
     duration,
     framework,
-    planItems: planItems.map(item => ({
-      day: item.day,
-      topic: item.topic,
-      hook: item.hook,
-      framework: item.framework,
-      scriptStructure: [
-        `Hook (${item.scriptStructure.hookDuration}): ${item.scriptStructure.hook}`,
-        `Body (${item.scriptStructure.bodyDuration}): ${item.scriptStructure.body}`,
-        `CTA (${item.scriptStructure.ctaDuration}): ${item.scriptStructure.cta}`
-      ],
-      cutRecommendation: item.cutRecommendation,
-      hashtags: item.hashtags,
-      bestTime: item.bestPostingTime,
-      trendingAudio: "Trending Sound",
-      copywritingTip: `${item.copywritingTip.author}: ${item.copywritingTip.tip}`
-    }))
+    planItems: transformedItems
   });
 
   return result;

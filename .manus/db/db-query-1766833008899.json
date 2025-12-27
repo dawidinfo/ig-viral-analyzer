@@ -1,0 +1,18 @@
+{
+  "query": "SELECT id, name, duration, framework, JSON_LENGTH(planItems) as items_count, LEFT(JSON_EXTRACT(planItems, '$[0]'), 200) as first_item FROM saved_content_plans ORDER BY id DESC LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user N7vrAoPF61tSW8u.60537d16f0ce --database 2NevksKXohCxXvgmcBxexU --execute SELECT id, name, duration, framework, JSON_LENGTH(planItems) as items_count, LEFT(JSON_EXTRACT(planItems, '$[0]'), 200) as first_item FROM saved_content_plans ORDER BY id DESC LIMIT 5;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Content-Plan für @dawidprzybylski_official (10 Tage)",
+      "duration": "10",
+      "framework": "mixed",
+      "items_count": "10",
+      "first_item": "{\"bestTime\": \"19:00\", \"copywritingTip\": \"Expert: Schwartz: Verstärken Sie die Dringlichkeit, indem Sie den Leser direkt ansprechen und ihm zeigen, was er verliert, wenn er nicht handelt.\", \"cutRecomme"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tduration\tframework\titems_count\tfirst_item\n1\tContent-Plan für @dawidprzybylski_official (10 Tage)\t10\tmixed\t10\t{\"bestTime\": \"19:00\", \"copywritingTip\": \"Expert: Schwartz: Verstärken Sie die Dringlichkeit, indem Sie den Leser direkt ansprechen und ihm zeigen, was er verliert, wenn er nicht handelt.\", \"cutRecomme\n",
+  "stderr": "",
+  "execution_time_ms": 1775
+}
