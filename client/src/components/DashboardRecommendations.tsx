@@ -124,7 +124,7 @@ export function DashboardRecommendations({
       action: "Plan erstellen",
       actionUrl: "/dashboard?tab=content-plan",
       icon: <Calendar className="w-6 h-6" />,
-      gradient: "from-violet-500 to-purple-600",
+      gradient: "from-violet-500/80 to-purple-600/80",
       bgGradient: "from-violet-500/20 via-purple-500/10 to-transparent",
       badge: "NEU",
       isPro: true
@@ -137,7 +137,7 @@ export function DashboardRecommendations({
       action: "Jetzt analysieren",
       actionUrl: "/",
       icon: <BarChart3 className="w-6 h-6" />,
-      gradient: "from-cyan-500 to-blue-600",
+      gradient: "from-cyan-500/70 to-blue-600/70",
       bgGradient: "from-cyan-500/20 via-blue-500/10 to-transparent"
     },
     {
@@ -148,7 +148,7 @@ export function DashboardRecommendations({
       action: "Vergleichen",
       actionUrl: "/compare",
       icon: <Users className="w-6 h-6" />,
-      gradient: "from-emerald-500 to-teal-600",
+      gradient: "from-emerald-500/70 to-teal-600/70",
       bgGradient: "from-emerald-500/20 via-teal-500/10 to-transparent"
     },
     ...(!isPro ? [{
@@ -169,7 +169,7 @@ export function DashboardRecommendations({
       action: "Mehr Tipps",
       actionUrl: "/guides",
       icon: <Lightbulb className="w-6 h-6" />,
-      gradient: "from-pink-500 to-rose-600",
+      gradient: "from-pink-500/70 to-rose-600/70",
       bgGradient: "from-pink-500/20 via-rose-500/10 to-transparent"
     }])
   ];
@@ -178,8 +178,8 @@ export function DashboardRecommendations({
   const visibleRecommendations = recommendations.slice(0, 4);
 
   return (
-    <div className="mb-8 p-4 sm:p-6 rounded-2xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 backdrop-blur-sm shadow-xl">
-      <div className="flex items-center justify-between mb-4 sm:mb-6">
+    <div className="mb-10 p-5 sm:p-8 rounded-2xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 backdrop-blur-sm shadow-xl">
+      <div className="flex items-center justify-between mb-6 sm:mb-8">
         <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2">
           <div className="p-1.5 sm:p-2 rounded-lg bg-gradient-to-br from-violet-500/20 to-purple-500/20">
             <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-violet-500" />
@@ -217,7 +217,7 @@ export function DashboardRecommendations({
                   </Badge>
                 )}
                 
-                <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br ${rec.gradient} flex items-center justify-center text-white mb-3 sm:mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg`}>
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br ${rec.gradient} flex items-center justify-center text-white/90 mb-3 sm:mb-4 group-hover:scale-105 transition-all duration-300 shadow-md`}>
                   {rec.id === 'upgrade' && isUpgrading ? (
                     <Loader2 className="w-6 h-6 animate-spin" />
                   ) : (

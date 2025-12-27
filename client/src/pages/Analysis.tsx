@@ -635,7 +635,7 @@ export default function Analysis() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="space-y-12"
+            className="space-y-16"
           >
             {/* Profile Header */}
             <div className="glass-card rounded-2xl p-8">
@@ -746,7 +746,7 @@ export default function Analysis() {
                 </div>
               </div>
 
-              <div className="space-y-8 pl-0 sm:pl-6 border-l-0 sm:border-l-4 border-blue-500/50">
+              <div className="space-y-10 pl-0 sm:pl-6 border-l-0 sm:border-l-4 border-blue-500/50">
                 {/* Follower-Wachstum Chart - ERSTE SEKTION (ganz oben) */}
                 <section className="space-y-6">
                   <SectionHeader
@@ -1002,7 +1002,7 @@ export default function Analysis() {
                 </div>
               </div>
 
-              <div className="space-y-8 pl-0 sm:pl-6 border-l-0 sm:border-l-4 border-amber-500/50">
+              <div className="space-y-10 pl-0 sm:pl-6 border-l-0 sm:border-l-4 border-amber-500/50">
                 {/* Haupterkenntnisse */}
                 <div className="glass-card rounded-2xl p-6 sm:p-8 space-y-8">
                   <div>
@@ -1169,7 +1169,7 @@ export default function Analysis() {
                 </div>
               </div>
 
-              <div className="space-y-8 pl-0 sm:pl-6 border-l-0 sm:border-l-4 border-green-500/50">
+              <div className="space-y-10 pl-0 sm:pl-6 border-l-0 sm:border-l-4 border-green-500/50">
                 {/* Dein nächster Schritt */}
                 <div className="glass-card rounded-2xl p-6 sm:p-8">
                   <div className="p-6 bg-gradient-to-r from-primary/20 via-cyan-500/10 to-amber-500/10 rounded-2xl border border-primary/30">

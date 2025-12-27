@@ -1482,3 +1482,11 @@
 - [x] Aktive Tabs hervorheben (leuchten) - farbige Gradients mit Glow-Effekt
 - [x] Hover-Effekte hinzufügen - sanfter Hintergrund-Wechsel
 - [x] Mehr Höhe für bessere Lesbarkeit - h-14 TabsList, h-10 Tabs
+
+## Dashboard-Navigation Fixes
+- [x] Wackeln beheben (scale entfernt)
+- [x] Navigation zentrieren (w-fit mx-auto)
+- [x] Glow-Effekte wie im Admin-Panel hinzufügen (gedämpfte Farben pro Tab)
+- [x] Icons und Buttons dämpfen (Gradients auf /70-/80 reduziert)
+- [x] Mehr Weißraum im Dashboard (space-y-8)
+- [x] Mehr Weißraum in der Analyse (space-y-16, space-y-10)
