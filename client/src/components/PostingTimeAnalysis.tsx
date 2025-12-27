@@ -49,7 +49,7 @@ function getScoreColor(score: number): string {
 }
 
 export default function PostingTimeAnalysis({ username }: PostingTimeAnalysisProps) {
-  const [hoveredSlot, setHoveredSlot] = useState<{ day: number; hour: number } | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<{ day: number; hour: number } | null>(null);
 
   const { data: analysisData, isLoading, error } = trpc.instagram.postingTimeAnalysis.useQuery(
     { username },
@@ -92,9 +92,9 @@ export default function PostingTimeAnalysis({ username }: PostingTimeAnalysisPro
 
   const { heatmapData, bestTimes, worstTimes, insights, peakHours, peakDays, isDemo } = analysisData;
 
-  // Get hovered slot data
-  const hoveredData = hoveredSlot 
-    ? heatmapData[hoveredSlot.day]?.[hoveredSlot.hour] 
+  // Get selected slot data (click to select, not hover)
+  const selectedData = selectedSlot 
+    ? heatmapData[selectedSlot.day]?.[selectedSlot.hour] 
     : null;
 
   return (
@@ -152,7 +152,7 @@ export default function PostingTimeAnalysis({ username }: PostingTimeAnalysisPro
                     {HOURS.map(hour => {
                       const slot = heatmapData[dayIndex]?.[hour];
                       const score = slot?.engagementScore || 0;
-                      const isHovered = hoveredSlot?.day === dayIndex && hoveredSlot?.hour === hour;
+                      const isSelected = selectedSlot?.day === dayIndex && selectedSlot?.hour === hour;
                       
                       return (
                         <motion.div
@@ -160,12 +160,11 @@ export default function PostingTimeAnalysis({ username }: PostingTimeAnalysisPro
                           className={`
                             flex-1 h-8 rounded-sm cursor-pointer transition-all duration-200
                             ${getHeatmapColor(score)}
-                            ${isHovered ? 'ring-2 ring-white scale-110 z-10' : ''}
+                            ${isSelected ? 'ring-2 ring-white scale-110 z-10' : ''}
                           `}
                           style={{ minWidth: '12px' }}
-                          onMouseEnter={() => setHoveredSlot({ day: dayIndex, hour })}
-                          onMouseLeave={() => setHoveredSlot(null)}
-                          whileHover={{ scale: 1.1 }}
+                          onClick={() => setSelectedSlot(isSelected ? null : { day: dayIndex, hour })}
+                          whileHover={{ scale: 1.05 }}
                         />
                       );
                     })}
@@ -188,34 +187,42 @@ export default function PostingTimeAnalysis({ username }: PostingTimeAnalysisPro
             </div>
           </div>
 
-          {/* Hovered Slot Details */}
-          {hoveredData && (
+          {/* Selected Slot Details - Click to show, stays visible */}
+          {selectedData && (
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className="bg-white/5 rounded-xl p-4 border border-white/10"
             >
-              <div className="flex items-center gap-3 mb-3">
-                {getTimeIcon(hoveredData.hour)}
-                <span className="font-semibold">
-                  {DAYS_SHORT[hoveredData.day]}, {hoveredData.hour.toString().padStart(2, '0')}:00 - {(hoveredData.hour + 1).toString().padStart(2, '0')}:00
-                </span>
-                <Badge className={`${getScoreColor(hoveredData.engagementScore)} bg-transparent`}>
-                  {hoveredData.engagementScore}% Engagement
-                </Badge>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  {getTimeIcon(selectedData.hour)}
+                  <span className="font-semibold">
+                    {DAYS_SHORT[selectedData.day]}, {selectedData.hour.toString().padStart(2, '0')}:00 - {(selectedData.hour + 1).toString().padStart(2, '0')}:00
+                  </span>
+                  <Badge className={`${getScoreColor(selectedData.engagementScore)} bg-transparent`}>
+                    {selectedData.engagementScore}% Engagement
+                  </Badge>
+                </div>
+                <button 
+                  onClick={() => setSelectedSlot(null)}
+                  className="text-muted-foreground hover:text-white transition-colors"
+                >
+                  ✕
+                </button>
               </div>
               <div className="grid grid-cols-3 gap-4 text-sm">
                 <div>
                   <span className="text-muted-foreground">Ø Likes:</span>
-                  <span className="ml-2 font-semibold">{hoveredData.avgLikes.toLocaleString('de-DE')}</span>
+                  <span className="ml-2 font-semibold">{selectedData.avgLikes.toLocaleString('de-DE')}</span>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Ø Kommentare:</span>
-                  <span className="ml-2 font-semibold">{hoveredData.avgComments.toLocaleString('de-DE')}</span>
+                  <span className="ml-2 font-semibold">{selectedData.avgComments.toLocaleString('de-DE')}</span>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Ø Views:</span>
-                  <span className="ml-2 font-semibold">{hoveredData.avgViews.toLocaleString('de-DE')}</span>
+                  <span className="ml-2 font-semibold">{selectedData.avgViews.toLocaleString('de-DE')}</span>
                 </div>
               </div>
             </motion.div>

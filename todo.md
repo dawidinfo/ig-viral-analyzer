@@ -1407,3 +1407,8 @@
 ## Content-Plan Bugfix
 - [x] avgEngagement Typ-Fehler beheben (string/number)
 - [x] followerCount Typ-Fehler beheben (string/number)
+
+## UI-Verbesserungen Dezember 2025
+- [x] Reel-Analyse als erste Sektion im Analyse-Block (vor Follower-Wachstum)
+- [x] Posting-Zeit-Analyse: Hover durch Klick ersetzen
+- [x] Beste Zeit permanent anzeigen (nicht flackern)

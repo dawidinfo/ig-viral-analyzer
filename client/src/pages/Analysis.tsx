@@ -711,21 +711,7 @@ export default function Analysis() {
               </div>
 
               <div className="space-y-8 pl-0 sm:pl-4 border-l-0 sm:border-l-2 border-blue-500/30">
-                {/* Follower-Wachstum Chart - ERSTE SEKTION */}
-                <section className="space-y-6">
-                  <SectionHeader
-                    title="Follower-Wachstum"
-                    icon={<TrendingUp className="w-6 h-6 text-blue-400" />}
-                    isPinned={pinnedSections.has('growth')}
-                    onTogglePin={() => togglePin('growth')}
-                    badge="Live-Tracking"
-                    badgeColor="bg-blue-500/20 text-blue-400 border border-blue-500/30"
-                  />
-                  <FollowerGrowthChart username={analysisData.profile.username} />
-                  <GrowthAnalysis username={analysisData.profile.username} platform="instagram" />
-                </section>
-
-                {/* AI Reel-Analyse */}
+                {/* AI Reel-Analyse - ERSTE SEKTION (Transkripte für geniale Daten) */}
                 <section className="space-y-6">
                   <SectionHeader
                     title="🔥 HOT-Transkription & AI Reel-Analyse"
@@ -738,6 +724,20 @@ export default function Analysis() {
                   <div className="glass-card rounded-2xl p-8 border-2 border-primary/20">
                     <ReelAnalysis username={analysisData.profile.username} />
                   </div>
+                </section>
+
+                {/* Follower-Wachstum Chart */}
+                <section className="space-y-6">
+                  <SectionHeader
+                    title="Follower-Wachstum"
+                    icon={<TrendingUp className="w-6 h-6 text-blue-400" />}
+                    isPinned={pinnedSections.has('growth')}
+                    onTogglePin={() => togglePin('growth')}
+                    badge="Live-Tracking"
+                    badgeColor="bg-blue-500/20 text-blue-400 border border-blue-500/30"
+                  />
+                  <FollowerGrowthChart username={analysisData.profile.username} />
+                  <GrowthAnalysis username={analysisData.profile.username} platform="instagram" />
                 </section>
 
                 {/* Tiefenanalyse */}

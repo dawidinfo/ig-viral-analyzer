@@ -458,12 +458,12 @@ export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }:
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-            <Calendar className="w-6 h-6 text-white" />
+      <div className="flex items-center justify-between p-6 bg-gradient-to-r from-violet-500/10 to-purple-600/10 rounded-2xl border border-violet-500/20">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg">
+            <Calendar className="w-7 h-7 text-white" />
           </div>
           <div>
             <h2 className="text-2xl font-bold">KI Content-Plan Generator</h2>
@@ -471,15 +471,15 @@ export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }:
           </div>
         </div>
         {!isPro && (
-          <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
-            <Crown className="w-3 h-3 mr-1" />
+          <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 px-4 py-2">
+            <Crown className="w-4 h-4 mr-2" />
             Pro Feature
           </Badge>
         )}
       </div>
 
       {/* Mode Selection */}
-      <Card className="border-border/50 bg-card/50 backdrop-blur-sm mb-6">
+      <Card className="border-2 border-border bg-card shadow-sm">
         <CardContent className="pt-6">
           <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
             <div>
@@ -570,7 +570,7 @@ export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }:
       </Card>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-6">
+        <TabsList className="grid w-full grid-cols-3 mb-8 p-1 bg-muted/50 rounded-xl border border-border">
           <TabsTrigger value="profile" className="flex items-center gap-2">
             <Target className="w-4 h-4" />
             Zielgruppen-Profil
@@ -587,7 +587,7 @@ export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }:
 
         {/* Zielgruppen-Profil Tab */}
         <TabsContent value="profile" className="space-y-6">
-          <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+          <Card className="border-2 border-border bg-card shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="w-5 h-5 text-violet-500" />
@@ -690,7 +690,7 @@ export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }:
 
         {/* Plan-Einstellungen Tab */}
         <TabsContent value="settings" className="space-y-6">
-          <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+          <Card className="border-2 border-border bg-card shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-violet-500" />
@@ -785,7 +785,7 @@ export function ContentPlanGenerator({ isPro, userId, analysisData, onUpgrade }:
               <div className="filter blur-sm pointer-events-none select-none">
                 <div className="grid gap-4">
                   {demoContentPlan.map((item, index) => (
-                    <Card key={index} className="border-border/50 bg-card/50">
+                    <Card key={index} className="border-2 border-border bg-card shadow-sm">
                       <CardContent className="p-6">
                         <div className="flex items-start justify-between mb-4">
                           <div className="flex items-center gap-3">
