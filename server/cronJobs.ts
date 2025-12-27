@@ -2,7 +2,8 @@ import { sendWeeklyReport, ReportType } from "./weeklyReportService";
 import { runDripCampaign } from "./services/dripCampaignService";
 import { runScheduledTracking } from "./scheduledTracking";
 import { runDailyDataCollection, getCacheStatisticsSummary } from "./services/historicalDataService";
-import { runScheduledBackup } from "./backupService";
+// Backup functionality removed per user request
+// import { runScheduledBackup } from "./backupService";
 import { getDb } from "./db";
 import { users, savedAnalyses } from "../drizzle/schema";
 import { eq, isNull, or, desc } from "drizzle-orm";
@@ -238,75 +239,66 @@ export function stopCronJobs(): void {
     cronInterval = null;
     console.log("[CronJobs] Stopped cron job scheduler");
   }
-  stopBackupCron();
+  // stopBackupCron(); // Backup functionality removed
 }
 
-/**
- * Start automatic database backup twice daily (8:00 and 20:00 UTC)
- */
-function startBackupCron(): void {
-  if (backupInterval) {
-    console.log("[CronJobs] Backup cron already running");
-    return;
-  }
-  
-  console.log("[CronJobs] Starting automatic backup (twice daily at 8:00 and 20:00 UTC)...");
-  
-  // Check every hour if it's time for a backup
-  backupInterval = setInterval(async () => {
-    const now = new Date();
-    const hour = now.getUTCHours();
-    const minute = now.getUTCMinutes();
-    
-    // Run backup at 8:00 and 20:00 UTC (within first 5 minutes of the hour)
-    if ((hour === 8 || hour === 20) && minute < 5) {
-      // Check if we already ran a backup in the last hour
-      if (lastBackupRun) {
-        const hoursSinceLastBackup = (Date.now() - lastBackupRun.getTime()) / (1000 * 60 * 60);
-        if (hoursSinceLastBackup < 1) {
-          return; // Already ran recently
-        }
-      }
-      await runBackupJob();
-    }
-  }, 60 * 60 * 1000); // Check every hour
-  
-  // Run first backup after 1 minute delay (to let server fully start)
-  setTimeout(async () => {
-    await runBackupJob();
-  }, 60 * 1000);
-}
+// Backup functionality removed per user request
+// function startBackupCron(): void {
+//   if (backupInterval) {
+//     console.log("[CronJobs] Backup cron already running");
+//     return;
+//   }
+//   console.log("[CronJobs] Starting automatic backup (twice daily at 8:00 and 20:00 UTC)...");
+//   backupInterval = setInterval(async () => {
+//     const now = new Date();
+//     const hour = now.getUTCHours();
+//     const minute = now.getUTCMinutes();
+//     if ((hour === 8 || hour === 20) && minute < 5) {
+//       if (lastBackupRun) {
+//         const hoursSinceLastBackup = (Date.now() - lastBackupRun.getTime()) / (1000 * 60 * 60);
+//         if (hoursSinceLastBackup < 1) {
+//           return;
+//         }
+//       }
+//       await runBackupJob();
+//     }
+//   }, 60 * 60 * 1000);
+//   setTimeout(async () => {
+//     await runBackupJob();
+//   }, 60 * 1000);
+// }
 
-function stopBackupCron(): void {
-  if (backupInterval) {
-    clearInterval(backupInterval);
-    backupInterval = null;
-    console.log("[CronJobs] Stopped backup cron");
-  }
-}
+// function stopBackupCron(): void {
+//   if (backupInterval) {
+//     clearInterval(backupInterval);
+//     backupInterval = null;
+//     console.log("[CronJobs] Stopped backup cron");
+//   }
+// }
 
-async function runBackupJob(): Promise<void> {
-  try {
-    console.log("[CronJobs] Running scheduled backup...");
-    const result = await runScheduledBackup();
-    lastBackupRun = new Date();
-    
-    if (result.success) {
-      console.log(`[CronJobs] Backup completed: ID ${result.backupId}`);
-    } else {
-      console.error(`[CronJobs] Backup failed: ${result.error}`);
-    }
-  } catch (error) {
-    console.error("[CronJobs] Backup error:", error);
-  }
-}
+// Backup functionality removed per user request
+// async function runBackupJob(): Promise<void> {
+//   try {
+//     console.log("[CronJobs] Running scheduled backup...");
+//     const result = await runScheduledBackup();
+//     lastBackupRun = new Date();
+//     
+//     if (result.success) {
+//       console.log(`[CronJobs] Backup completed: ID ${result.backupId}`);
+//     } else {
+//       console.error(`[CronJobs] Backup failed: ${result.error}`);
+//     }
+//   } catch (error) {
+//     console.error("[CronJobs] Backup error:", error);
+//   }
+// }
 
 // Track last drip campaign run
 let lastDripCampaignRun: Date | null = null;
 let lastFollowerTrackingRun: Date | null = null;
 let lastDataCollectionRun: Date | null = null;
-let lastBackupRun: Date | null = null;
-let backupInterval: NodeJS.Timeout | null = null;
+// let lastBackupRun: Date | null = null;
+// let backupInterval: NodeJS.Timeout | null = null;
 
 /**
  * Run daily drip campaign

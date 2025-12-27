@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { ABTestDashboard } from "@/components/ABTestDashboard";
 import { SuspendedUsersPanel } from "@/components/SuspendedUsersPanel";
-import { CacheDashboard } from "@/components/CacheDashboard";
+// import { CacheDashboard } from "@/components/CacheDashboard"; // Entfernt per User-Request
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -225,46 +225,9 @@ export default function Admin() {
     },
   });
 
-  // Clear all caches mutation
-  const [cacheStatus, setCacheStatus] = useState<string | null>(null);
-  const clearCachesMutation = trpc.admin.clearAllCaches.useMutation({
-    onMutate: () => {
-      setCacheStatus("Starte Cache-Bereinigung...");
-      toast.loading("Lösche Instagram-Cache...", { id: "cache-clear" });
-    },
-    onSuccess: (data) => {
-      if (data.success && data.steps) {
-        // Show detailed success messages
-        let totalCleared = 0;
-        data.steps.forEach((step: { name: string; status: string; count?: number }) => {
-          if (step.count && step.count > 0) {
-            totalCleared += step.count;
-          }
-        });
-        
-        toast.success(
-          <div className="space-y-1">
-            <p className="font-semibold">Cache erfolgreich geleert!</p>
-            {data.steps.map((step: { name: string; status: string; count?: number }, i: number) => (
-              <p key={i} className="text-sm text-muted-foreground">
-                ✓ {step.name}: {step.count || 0} Einträge gelöscht
-              </p>
-            ))}
-          </div>,
-          { id: "cache-clear", duration: 5000 }
-        );
-        setCacheStatus(null);
-        refetchStats();
-      } else {
-        toast.error(data.error || "Fehler beim Leeren der Caches", { id: "cache-clear" });
-        setCacheStatus(null);
-      }
-    },
-    onError: (error) => {
-      toast.error("Fehler: " + error.message, { id: "cache-clear" });
-      setCacheStatus(null);
-    },
-  });
+  // Clear all caches mutation - ENTFERNT per User-Request
+  // const [cacheStatus, setCacheStatus] = useState<string | null>(null);
+  // const clearCachesMutation = trpc.admin.clearAllCaches.useMutation({...});
 
   // Add credits mutation
   const addCreditsMutation = trpc.admin.addCredits.useMutation({
@@ -345,20 +308,7 @@ export default function Admin() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => clearCachesMutation.mutate()}
-                disabled={clearCachesMutation.isPending}
-                className="border-red-500/50 text-red-400 hover:bg-red-500/10"
-              >
-                {clearCachesMutation.isPending ? (
-                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                ) : (
-                  <Database className="h-4 w-4 mr-2" />
-                )}
-                Cache leeren
-              </Button>
+              {/* Cache-Button entfernt per User-Request */}
               <Button variant="outline" size="sm" onClick={() => {
                 refetchStats();
                 refetchUsers();
@@ -706,10 +656,7 @@ export default function Admin() {
               <Ban className="h-4 w-4" />
               Gesperrte User
             </TabsTrigger>
-            <TabsTrigger value="cache" className="gap-2">
-              <Database className="h-4 w-4" />
-              Cache
-            </TabsTrigger>
+            {/* Cache-Tab entfernt per User-Request */}
           </TabsList>
 
           {/* Users Tab */}
@@ -1337,10 +1284,7 @@ export default function Admin() {
             <SuspendedUsersPanel adminId={user?.id || 0} />
           </TabsContent>
 
-          {/* Cache Dashboard Tab */}
-          <TabsContent value="cache">
-            <CacheDashboard />
-          </TabsContent>
+          {/* Cache Dashboard Tab entfernt per User-Request */}
         </Tabs>
       </main>
 

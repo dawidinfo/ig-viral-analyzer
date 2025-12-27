@@ -1445,3 +1445,5 @@
 - [x] Content-Plan Generator Design verbessern - sichtbare Eingabefelder mit Rahmen
 - [x] Automatische Datenbank-Backups deaktivieren
 - [x] Content-Plan Ergebnisse vollständig speichern (planItems fehlen)
+- [x] Automatische Updates/Backups komplett aus Code entfernen
+- [x] Cache-Löschfunktion im Admin entfernen
