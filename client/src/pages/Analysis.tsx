@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { GlobalFooter } from "@/components/GlobalFooter";
+import { AnalysisPageSkeleton } from "@/components/ui/skeleton-loader";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
@@ -156,23 +157,23 @@ interface SectionHeaderProps {
   badgeColor?: string;
 }
 
-const SectionHeader = ({ title, icon, isPinned, onTogglePin, badge, badgeColor = "bg-primary/20 text-primary" }: SectionHeaderProps) => (
-  <div className="flex items-center justify-between mb-6">
+const SectionHeader = ({ title, icon, isPinned, onTogglePin, badge, badgeColor = "bg-muted text-muted-foreground" }: SectionHeaderProps) => (
+  <div className="flex items-center justify-between mb-8 pb-4 border-b border-border/20">
     <div className="flex items-center gap-3">
-      {icon}
-      <h2 className="text-xl font-bold">{title}</h2>
+      <div className="text-muted-foreground">{icon}</div>
+      <h3 className="text-lg font-medium">{title}</h3>
       {badge && (
-        <Badge className={badgeColor}>{badge}</Badge>
+        <span className={`text-xs px-2 py-0.5 rounded-full ${badgeColor}`}>{badge}</span>
       )}
     </div>
     <Button
       variant="ghost"
       size="sm"
       onClick={onTogglePin}
-      className={`${isPinned ? 'text-primary' : 'text-muted-foreground'} hover:text-primary`}
+      className={`${isPinned ? 'text-primary' : 'text-muted-foreground/50'} hover:text-primary text-xs`}
     >
-      {isPinned ? <Pin className="w-4 h-4" /> : <PinOff className="w-4 h-4" />}
-      <span className="ml-2 text-xs">{isPinned ? 'Angepinnt' : 'Anpinnen'}</span>
+      {isPinned ? <Pin className="w-3.5 h-3.5" /> : <PinOff className="w-3.5 h-3.5" />}
+      <span className="ml-1.5">{isPinned ? 'Angepinnt' : 'Anpinnen'}</span>
     </Button>
   </div>
 );
@@ -632,30 +633,27 @@ export default function Analysis() {
 
       {/* Main Content */}
       <main className="container pt-36 sm:pt-40 pb-16 relative z-10 space-y-12">
-        {/* Loading State */}
+        {/* Loading State - Skeleton Loader */}
         {isLoading && !hasTimedOut && (
-          <div className="flex flex-col items-center justify-center py-20">
-            <div className="relative">
-              <div className="w-24 h-24 border-4 border-primary/20 rounded-full" />
-              <div className="absolute inset-0 w-24 h-24 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-              <div className="absolute inset-2 w-20 h-20 border-4 border-secondary/30 border-b-transparent rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }} />
-            </div>
-            <div className="mt-8 text-center">
-              <p className="text-lg font-medium text-foreground mb-2">KI holt frische Daten für dich...</p>
-              <p className="text-sm text-muted-foreground mb-3">Analysiere @{usernameParam}</p>
-              <p className="text-xs text-muted-foreground/70 max-w-sm">
-                Es kann etwas dauern, da wir mit über <span className="text-primary font-semibold">3.100 Analysedaten</span> und KI auswerten.
+          <div className="space-y-6">
+            {/* Loading Header */}
+            <div className="flex items-center justify-center gap-3 py-4">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Analysiere @{usernameParam}...
               </p>
             </div>
             
+            {/* Skeleton Content */}
+            <AnalysisPageSkeleton />
+            
             {/* Slow loading message */}
             {showSlowLoadingMessage && (
-              <div className="mt-6 p-4 rounded-xl bg-primary/5 border border-primary/20 max-w-md text-center">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                </div>
+              <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 max-w-md mx-auto text-center">
                 <p className="text-primary text-sm">
                   Die KI analysiert gerade viele Daten. Einen Moment noch...
                 </p>
@@ -819,19 +817,19 @@ export default function Analysis() {
             </div>
 
             {/* ==================== BLOCK 1: ANALYSE ==================== */}
-            <div ref={blockRefs.analyse} className="scroll-mt-36">
-              {/* Clean Minimal Block Header */}
-              <div className="flex items-center gap-4 mb-8 p-6 bg-zinc-900 rounded-2xl border-2 border-zinc-700 shadow-xl">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
-                  <BarChart3 className="w-7 h-7 text-white" />
+            <div ref={blockRefs.analyse} className="scroll-mt-40">
+              {/* Minimal Block Header */}
+              <div className="flex items-center gap-4 mb-10 pb-4 border-b border-border/30">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <BarChart3 className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-white">ANALYSE</h2>
-                  <p className="text-zinc-400">Rohdaten, Metriken & Charts</p>
+                  <h2 className="text-xl font-semibold">Analyse</h2>
+                  <p className="text-sm text-muted-foreground">Rohdaten, Metriken & Charts</p>
                 </div>
               </div>
 
-              <div className="space-y-10 pl-0 sm:pl-6 border-l-0 sm:border-l-4 border-blue-500/50">
+              <div className="space-y-12">
                 {/* Follower-Wachstum Chart - ERSTE SEKTION (ganz oben) */}
                 <section className="space-y-6">
                   <SectionHeader
@@ -1075,21 +1073,21 @@ export default function Analysis() {
             </div>
 
             {/* ==================== BLOCK 2: ERKENNTNISSE ==================== */}
-            <div ref={blockRefs.erkenntnisse} className="scroll-mt-36">
-              {/* Clean Minimal Block Header */}
-              <div className="flex items-center gap-4 mb-8 p-6 bg-zinc-900 rounded-2xl border-2 border-zinc-700 shadow-xl">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/30">
-                  <Lightbulb className="w-7 h-7 text-white" />
+            <div ref={blockRefs.erkenntnisse} className="scroll-mt-40">
+              {/* Minimal Block Header */}
+              <div className="flex items-center gap-4 mb-10 pb-4 border-b border-border/30">
+                <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center">
+                  <Lightbulb className="w-6 h-6 text-amber-500" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-white">ERKENNTNISSE</h2>
-                  <p className="text-zinc-400">KI-Insights, Muster & Viral-Gründe</p>
+                  <h2 className="text-xl font-semibold">Erkenntnisse</h2>
+                  <p className="text-sm text-muted-foreground">KI-Insights, Muster & Viral-Gründe</p>
                 </div>
               </div>
 
-              <div className="space-y-10 pl-0 sm:pl-6 border-l-0 sm:border-l-4 border-amber-500/50">
+              <div className="space-y-12">
                 {/* Haupterkenntnisse */}
-                <div className="glass-card rounded-2xl p-6 sm:p-8 space-y-8">
+                <div className="rounded-xl p-6 sm:p-8 space-y-8 bg-card/30 border border-border/20">
                   <div>
                     <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                       <Brain className="w-5 h-5 text-primary" />
@@ -1242,21 +1240,21 @@ export default function Analysis() {
             </div>
 
             {/* ==================== BLOCK 3: LEARNINGS & IMPULSE ==================== */}
-            <div ref={blockRefs.learnings} className="scroll-mt-36">
-              {/* Clean Minimal Block Header */}
-              <div className="flex items-center gap-4 mb-8 p-6 bg-zinc-900 rounded-2xl border-2 border-zinc-700 shadow-xl">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center shadow-lg shadow-green-500/30">
-                  <GraduationCap className="w-7 h-7 text-white" />
+            <div ref={blockRefs.learnings} className="scroll-mt-40">
+              {/* Minimal Block Header */}
+              <div className="flex items-center gap-4 mb-10 pb-4 border-b border-border/30">
+                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                  <GraduationCap className="w-6 h-6 text-emerald-500" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-white">LEARNINGS & IMPULSE</h2>
-                  <p className="text-zinc-400">Persönliche Notizen & Action Items</p>
+                  <h2 className="text-xl font-semibold">Learnings & Impulse</h2>
+                  <p className="text-sm text-muted-foreground">Persönliche Notizen & Action Items</p>
                 </div>
               </div>
 
-              <div className="space-y-10 pl-0 sm:pl-6 border-l-0 sm:border-l-4 border-green-500/50">
+              <div className="space-y-12">
                 {/* Dein nächster Schritt */}
-                <div className="glass-card rounded-2xl p-6 sm:p-8">
+                <div className="rounded-xl p-6 sm:p-8 bg-card/30 border border-border/20">
                   <div className="p-6 bg-gradient-to-r from-primary/20 via-cyan-500/10 to-amber-500/10 rounded-2xl border border-primary/30">
                     <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
                       <Target className="w-5 h-5 text-primary" />

@@ -1512,3 +1512,7 @@
 - [ ] Analyse-Seite: Klarere Trennung
 - [ ] Content-Plan-Seite: Mehr Luft
 - [x] Login-Dialog: Klarer mit Rand, Shine und Social Buttons (Google, Facebook, Apple)
+
+## UI-Verbesserungen Phase 2
+- [x] Analyse-Karten aufräumen (mehr Abstand, weniger visuelle Überladung)
+- [x] Skeleton-Loader statt Spinner für Loading-States
