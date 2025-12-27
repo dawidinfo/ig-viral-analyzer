@@ -1,5 +1,13 @@
-import { describe, it, expect } from "vitest";
-import { testEmailConnection } from "./emailService";
+import { describe, it, expect, vi } from "vitest";
+
+// Mock the email sending to prevent actual emails during tests
+vi.mock("resend", () => ({
+  Resend: vi.fn().mockImplementation(() => ({
+    emails: {
+      send: vi.fn().mockResolvedValue({ data: { id: "mock-email-id" }, error: null }),
+    },
+  })),
+}));
 
 describe("Email Service - Resend Integration", () => {
   it("should have RESEND_API_KEY configured", () => {
@@ -7,7 +15,9 @@ describe("Email Service - Resend Integration", () => {
     expect(process.env.RESEND_API_KEY).toMatch(/^re_/);
   });
 
-  it("should successfully send a test email", async () => {
+  // DISABLED: This test sends actual emails - use only for manual testing
+  it.skip("should successfully send a test email", async () => {
+    const { testEmailConnection } = await import("./emailService");
     const result = await testEmailConnection();
     
     // Log result for debugging
@@ -17,7 +27,7 @@ describe("Email Service - Resend Integration", () => {
     if (!result.success) {
       console.error("Email test failed:", result.error);
     }
-  }, 30000); // 30 second timeout for email sending
+  }, 30000);
 });
 
 describe("Welcome Email", () => {
@@ -32,11 +42,10 @@ describe("Welcome Email", () => {
     expect(result).toBe(false);
   });
 
-  it("should attempt to send welcome email with valid email", async () => {
+  // DISABLED: This test sends actual emails - use only for manual testing
+  it.skip("should attempt to send welcome email with valid email", async () => {
     const { sendWelcomeEmail } = await import("./emailService");
-    // This will actually send an email if RESEND_API_KEY is configured
     const result = await sendWelcomeEmail("test-welcome@example.com", "Test User");
-    // Result depends on whether the email was sent successfully
     expect(typeof result).toBe("boolean");
   }, 30000);
 });

@@ -1497,3 +1497,9 @@
 - [x] Frontend: Cached-Analyse sofort anzeigen (⚡ Aus Cache Badge)
 - [x] Frontend: "Neu laden" Button für frische Analyse (forceRefresh)
 - [x] Anzeige ob Daten aus Cache oder frisch geladen (grüner Badge + Hinweis)
+
+## Erweitertes Caching-System
+- [x] Cache-Dauer von 1h auf 24h erhöhen
+- [x] Gespeicherte Analysen aus DB sofort laden (ohne API-Call)
+- [x] Offline-Modus: Letzte 5 Analysen im localStorage speichern
+- [x] Test-E-Mails deaktivieren

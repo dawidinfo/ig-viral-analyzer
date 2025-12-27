@@ -26,8 +26,8 @@ import { CREDIT_PACKAGES as STRIPE_PACKAGES, SUBSCRIPTION_PLANS } from "./stripe
 import { instagramCache, savedAnalyses, usageTracking, users, CREDIT_COSTS, CREDIT_PACKAGES, creditTransactions, PLAN_LIMITS } from "../drizzle/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
 
-// Cache duration: 1 hour for better performance (data doesn't change that often)
-const CACHE_DURATION_MS = 60 * 60 * 1000;
+// Cache duration: 24 hours for better performance (data doesn't change that often)
+const CACHE_DURATION_MS = 24 * 60 * 60 * 1000;
 
 // Helper function to add timeout to promises
 function withTimeout<T>(promise: Promise<T>, timeoutMs: number, fallback: T): Promise<T> {
@@ -564,6 +564,44 @@ export const appRouter = router({
         });
 
         return { success: true, id: result[0].insertId, updated: false };
+      }),
+
+    // Get saved analysis by username - returns full analysis data if saved
+    getSavedAnalysisByUsername: publicProcedure
+      .input(z.object({
+        userId: z.number(),
+        username: z.string(),
+      }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return null;
+
+        const cleanUsername = input.username.replace("@", "").toLowerCase().trim();
+        
+        const saved = await db
+          .select()
+          .from(savedAnalyses)
+          .where(and(
+            eq(savedAnalyses.userId, input.userId),
+            eq(savedAnalyses.username, cleanUsername)
+          ))
+          .limit(1);
+
+        if (saved.length === 0) return null;
+
+        return {
+          id: saved[0].id,
+          username: saved[0].username,
+          profilePicUrl: saved[0].profilePicUrl,
+          fullName: saved[0].fullName,
+          followerCount: saved[0].followerCount,
+          viralScore: saved[0].viralScore,
+          engagementRate: saved[0].engagementRate,
+          analysisData: saved[0].analysisData,
+          notes: saved[0].notes,
+          isFavorite: saved[0].isFavorite === 1,
+          createdAt: saved[0].createdAt,
+        };
       }),
 
     // Delete a saved analysis

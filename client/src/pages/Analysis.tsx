@@ -49,6 +49,7 @@ import {
   LayoutDashboard
 } from "lucide-react";
 import { useState, useMemo, useEffect, useRef } from "react";
+import { useOfflineCache, saveToOfflineCache, getOfflineAnalysis } from "@/hooks/useOfflineCache";
 import ReelAnalysis from "@/components/ReelAnalysis";
 import DeepAnalysis from "@/components/DeepAnalysis";
 import FollowerGrowthChart from "@/components/FollowerGrowthChart";
@@ -309,15 +310,70 @@ export default function Analysis() {
     });
   };
 
-  // Fetch Instagram analysis data
-  const { data: analysisData, isLoading, error, refetch } = trpc.instagram.analyze.useQuery(
-    { username: usernameParam, forceRefresh },
+  // Offline cache for instant loading
+  const { offlineData, isOffline } = useOfflineCache(usernameParam);
+  
+  // Try to get saved analysis from DB first (for logged-in users)
+  const { data: savedAnalysis } = trpc.dashboard.getSavedAnalysisByUsername.useQuery(
+    { userId: user?.id || 0, username: usernameParam },
     { 
-      enabled: !!usernameParam,
-      retry: 1,
-      staleTime: forceRefresh ? 0 : 5 * 60 * 1000,
+      enabled: !!user?.id && !!usernameParam && !forceRefresh,
+      staleTime: 24 * 60 * 60 * 1000, // 24 hours
     }
   );
+  
+  // Fetch Instagram analysis data from API
+  const { data: apiAnalysisData, isLoading: isApiLoading, error, refetch } = trpc.instagram.analyze.useQuery(
+    { username: usernameParam, forceRefresh },
+    { 
+      enabled: !!usernameParam && !savedAnalysis?.analysisData && !offlineData,
+      retry: 1,
+      staleTime: forceRefresh ? 0 : 24 * 60 * 60 * 1000, // 24 hours
+    }
+  );
+  
+  // Use saved analysis, offline cache, or API data (in priority order)
+  const analysisData = useMemo(() => {
+    // 1. If we have saved analysis with full data, use it
+    if (savedAnalysis?.analysisData && !forceRefresh) {
+      console.log('[Analysis] Using saved analysis from DB');
+      const savedData = savedAnalysis.analysisData as any;
+      return {
+        profile: savedData?.profile || {
+          username: savedAnalysis.username,
+          fullName: savedAnalysis.fullName,
+          profilePicUrl: savedAnalysis.profilePicUrl,
+          followerCount: savedAnalysis.followerCount,
+        },
+        metrics: savedData?.metrics || {},
+        viralFactors: savedData?.viralFactors || {},
+        viralScore: savedAnalysis.viralScore || 0,
+        posts: savedData?.posts || [],
+        reels: savedData?.reels || [],
+        fromCache: true,
+        fromSaved: true,
+      };
+    }
+    
+    // 2. If offline and we have cached data, use it
+    if (isOffline && offlineData) {
+      console.log('[Analysis] Using offline cache');
+      return { ...offlineData, fromCache: true, fromOffline: true };
+    }
+    
+    // 3. Use API data
+    return apiAnalysisData;
+  }, [savedAnalysis, offlineData, apiAnalysisData, forceRefresh, isOffline]);
+  
+  // Save to offline cache when we get new data
+  useEffect(() => {
+    if (apiAnalysisData && usernameParam && !apiAnalysisData.fromCache) {
+      saveToOfflineCache(usernameParam, apiAnalysisData);
+    }
+  }, [apiAnalysisData, usernameParam]);
+  
+  // Determine loading state
+  const isLoading = isApiLoading && !savedAnalysis?.analysisData && !offlineData;
   
   // Track loading time and show timeout messages
   useEffect(() => {
@@ -381,11 +437,18 @@ export default function Analysis() {
     refetch();
   };
   
-  // Check if data is from cache
+  // Check if data is from cache/saved/offline
   const isFromCache = analysisData?.fromCache === true;
+  const isFromSaved = (analysisData as any)?.fromSaved === true;
+  const isFromOffline = (analysisData as any)?.fromOffline === true;
+  
   const cacheInfo = isFromCache ? {
     fromCache: true,
-    message: 'Aus Cache geladen (schneller)'
+    message: isFromSaved 
+      ? 'Aus gespeicherter Analyse geladen (sofort)' 
+      : isFromOffline 
+        ? 'Aus Offline-Cache geladen' 
+        : 'Aus Cache geladen (schneller)'
   } : null;
 
   const handleAnalyze = () => {
@@ -927,8 +990,8 @@ export default function Analysis() {
                       
                       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                         {(() => {
-                          const avgViews = analysisData.reels.reduce((sum, r) => sum + r.viewCount, 0) / analysisData.reels.length;
-                          const avgEngagement = analysisData.reels.reduce((sum, r) => sum + (r.viewCount > 0 ? (r.likeCount / r.viewCount) * 100 : 0), 0) / analysisData.reels.length;
+                          const avgViews = analysisData.reels.reduce((sum: number, r: any) => sum + r.viewCount, 0) / analysisData.reels.length;
+                          const avgEngagement = analysisData.reels.reduce((sum: number, r: any) => sum + (r.viewCount > 0 ? (r.likeCount / r.viewCount) * 100 : 0), 0) / analysisData.reels.length;
                           
                           const sortedReels = [...analysisData.reels].sort((a, b) => {
                             if (reelSortBy === 'views') return b.viewCount - a.viewCount;

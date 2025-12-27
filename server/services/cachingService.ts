@@ -55,13 +55,13 @@ export const CACHE_TTL = {
   WEEK: 7 * 24 * 60 * 60 * 1000, // 7 Tage für sehr stabile Daten
 };
 
-// Instagram-spezifische TTLs - Profile ändern sich nicht oft
+// Instagram-spezifische TTLs - 24 Stunden für schnellere Antworten
 export const INSTAGRAM_CACHE_TTL = {
-  PROFILE: 60 * 60 * 1000, // 1 Stunde für Profile
-  POSTS: 30 * 60 * 1000, // 30 Minuten für Posts
-  REELS: 30 * 60 * 1000, // 30 Minuten für Reels
-  ANALYSIS: 2 * 60 * 60 * 1000, // 2 Stunden für vollständige Analysen
-  FOLLOWER_HISTORY: 4 * 60 * 60 * 1000, // 4 Stunden für Follower-Historie
+  PROFILE: 24 * 60 * 60 * 1000, // 24 Stunden für Profile
+  POSTS: 24 * 60 * 60 * 1000, // 24 Stunden für Posts
+  REELS: 24 * 60 * 60 * 1000, // 24 Stunden für Reels
+  ANALYSIS: 24 * 60 * 60 * 1000, // 24 Stunden für vollständige Analysen
+  FOLLOWER_HISTORY: 24 * 60 * 60 * 1000, // 24 Stunden für Follower-Historie
 };
 
 // Maximum cache size (in entries)

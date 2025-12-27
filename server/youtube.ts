@@ -10,8 +10,8 @@ import { eq } from "drizzle-orm";
  * Uses Manus Data API for real data with demo fallback
  */
 
-// Cache duration: 1 hour
-const CACHE_DURATION_MS = 60 * 60 * 1000;
+// Cache duration: 24 hours
+const CACHE_DURATION_MS = 24 * 60 * 60 * 1000;
 
 // Retry configuration
 const MAX_RETRIES = 2;
