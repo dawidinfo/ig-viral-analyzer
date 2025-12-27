@@ -478,30 +478,29 @@ export default function Dashboard() {
           })()}
 
           {/* Tabs */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-12">
             {/* Clean Minimal Navigation Bar */}
-            <div className="sticky top-16 z-40 py-4 bg-background/95 backdrop-blur-xl border-b border-zinc-800">
-              {/* Active Tab Title - Clean Design */}
-              <div className="flex justify-center mb-4">
-                <div className="px-8 py-3 bg-zinc-900 rounded-2xl border-2 border-zinc-700 shadow-xl">
-                  <span className="text-lg font-bold text-white">
-                    {activeTab === 'overview' && '📊 Übersicht'}
-                    {activeTab === 'content-plan' && '📅 Content-Plan Generator'}
-                    {activeTab === 'saved-plans' && '📚 Gespeicherte Pläne'}
-                    {activeTab === 'analyses' && '🔖 Gespeicherte Analysen'}
-                    {activeTab === 'invoices' && '🧾 Rechnungen'}
-                    {activeTab === 'notes' && '📝 Notizen'}
-                    {activeTab === 'affiliate' && '🔗 Affiliate Programm'}
-
-                    {activeTab === 'settings' && '⚙️ Einstellungen'}
+            <div className="sticky top-16 z-40 py-6 bg-background/90 backdrop-blur-md">
+              {/* Active Tab Title - Minimal Design */}
+              <div className="flex justify-center mb-6">
+                <div className="px-6 py-2.5 bg-muted/50 rounded-xl border border-border/30">
+                  <span className="text-base font-medium text-foreground/90">
+                    {activeTab === 'overview' && 'Übersicht'}
+                    {activeTab === 'content-plan' && 'Content-Plan Generator'}
+                    {activeTab === 'saved-plans' && 'Gespeicherte Pläne'}
+                    {activeTab === 'analyses' && 'Gespeicherte Analysen'}
+                    {activeTab === 'invoices' && 'Rechnungen'}
+                    {activeTab === 'notes' && 'Notizen'}
+                    {activeTab === 'affiliate' && 'Affiliate Programm'}
+                    {activeTab === 'settings' && 'Einstellungen'}
                   </span>
                 </div>
               </div>
               <TooltipProvider delayDuration={100}>
-                <TabsList className="inline-flex justify-center gap-0.5 h-12 p-1 overflow-x-auto flex-nowrap bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl shadow-lg" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
+                <TabsList className="inline-flex justify-center gap-1 h-11 p-1.5 overflow-x-auto flex-nowrap bg-muted/30 border border-border/20 rounded-xl" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="overview" className="h-9 px-3 rounded-lg transition-all duration-200 data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500/20 data-[state=active]:to-purple-500/20 data-[state=active]:text-violet-300 data-[state=active]:shadow-[0_0_12px_rgba(139,92,246,0.2)] data-[state=active]:border data-[state=active]:border-violet-500/30 data-[state=inactive]:text-muted-foreground hover:bg-muted/50 hover:text-foreground whitespace-nowrap text-xs font-medium flex items-center gap-1.5">
+                      <TabsTrigger value="overview" className="h-8 px-4 rounded-lg transition-all duration-200 data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=inactive]:text-muted-foreground hover:bg-muted/50 hover:text-foreground whitespace-nowrap text-sm font-medium flex items-center gap-2">
                         <LayoutDashboard className="w-4 h-4" />
                         <span className="hidden md:inline">Übersicht</span>
                       </TabsTrigger>
@@ -510,17 +509,16 @@ export default function Dashboard() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="content-plan" className="h-9 px-3 rounded-lg transition-all duration-200 data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500/20 data-[state=active]:to-rose-500/20 data-[state=active]:text-pink-300 data-[state=active]:shadow-[0_0_12px_rgba(236,72,153,0.2)] data-[state=active]:border data-[state=active]:border-pink-500/30 data-[state=inactive]:text-muted-foreground hover:bg-muted/50 hover:text-foreground whitespace-nowrap text-xs font-medium relative flex items-center gap-1.5">
+                      <TabsTrigger value="content-plan" className="h-8 px-4 rounded-lg transition-all duration-200 data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=inactive]:text-muted-foreground hover:bg-muted/50 hover:text-foreground whitespace-nowrap text-sm font-medium relative flex items-center gap-2">
                         <Calendar className="w-4 h-4" />
                         <span className="hidden md:inline">Content-Plan</span>
-                        <span className="absolute -top-1 -right-1 w-2 h-2 bg-pink-500 rounded-full animate-pulse" />
                       </TabsTrigger>
                     </TooltipTrigger>
                     <TooltipContent side="bottom" className="md:hidden">Content-Plan</TooltipContent>
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="saved-plans" className="h-9 px-3 rounded-lg transition-all duration-200 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/20 data-[state=active]:to-yellow-500/20 data-[state=active]:text-amber-300 data-[state=active]:shadow-[0_0_12px_rgba(245,158,11,0.2)] data-[state=active]:border data-[state=active]:border-amber-500/30 data-[state=inactive]:text-muted-foreground hover:bg-muted/50 hover:text-foreground whitespace-nowrap text-xs font-medium flex items-center gap-1.5">
+                      <TabsTrigger value="saved-plans" className="h-8 px-4 rounded-lg transition-all duration-200 data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=inactive]:text-muted-foreground hover:bg-muted/50 hover:text-foreground whitespace-nowrap text-sm font-medium flex items-center gap-2">
                         <FileText className="w-4 h-4" />
                         <span className="hidden md:inline">Pläne</span>
                       </TabsTrigger>
@@ -529,7 +527,7 @@ export default function Dashboard() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="analyses" className="h-9 px-3 rounded-lg transition-all duration-200 data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500/20 data-[state=active]:to-blue-500/20 data-[state=active]:text-cyan-300 data-[state=active]:shadow-[0_0_12px_rgba(6,182,212,0.2)] data-[state=active]:border data-[state=active]:border-cyan-500/30 data-[state=inactive]:text-muted-foreground hover:bg-muted/50 hover:text-foreground whitespace-nowrap text-xs font-medium flex items-center gap-1.5">
+                      <TabsTrigger value="analyses" className="h-8 px-4 rounded-lg transition-all duration-200 data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=inactive]:text-muted-foreground hover:bg-muted/50 hover:text-foreground whitespace-nowrap text-sm font-medium flex items-center gap-2">
                         <Bookmark className="w-4 h-4" />
                         <span className="hidden md:inline">Analysen</span>
                       </TabsTrigger>
@@ -538,7 +536,7 @@ export default function Dashboard() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="invoices" className="h-9 px-3 rounded-lg transition-all duration-200 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500/20 data-[state=active]:to-green-500/20 data-[state=active]:text-emerald-300 data-[state=active]:shadow-[0_0_12px_rgba(16,185,129,0.2)] data-[state=active]:border data-[state=active]:border-emerald-500/30 data-[state=inactive]:text-muted-foreground hover:bg-muted/50 hover:text-foreground whitespace-nowrap text-xs font-medium flex items-center gap-1.5">
+                      <TabsTrigger value="invoices" className="h-8 px-4 rounded-lg transition-all duration-200 data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=inactive]:text-muted-foreground hover:bg-muted/50 hover:text-foreground whitespace-nowrap text-sm font-medium flex items-center gap-2">
                         <Receipt className="w-4 h-4" />
                         <span className="hidden md:inline">Rechnungen</span>
                       </TabsTrigger>
@@ -547,7 +545,7 @@ export default function Dashboard() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="notes" className="h-9 px-3 rounded-lg transition-all duration-200 data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500/20 data-[state=active]:to-amber-500/20 data-[state=active]:text-orange-300 data-[state=active]:shadow-[0_0_12px_rgba(249,115,22,0.2)] data-[state=active]:border data-[state=active]:border-orange-500/30 data-[state=inactive]:text-muted-foreground hover:bg-muted/50 hover:text-foreground whitespace-nowrap text-xs font-medium flex items-center gap-1.5">
+                      <TabsTrigger value="notes" className="h-8 px-4 rounded-lg transition-all duration-200 data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=inactive]:text-muted-foreground hover:bg-muted/50 hover:text-foreground whitespace-nowrap text-sm font-medium flex items-center gap-2">
                         <StickyNote className="w-4 h-4" />
                         <span className="hidden md:inline">Notizen</span>
                       </TabsTrigger>
@@ -556,17 +554,16 @@ export default function Dashboard() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="affiliate" className="h-9 px-3 rounded-lg transition-all duration-200 data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-500/20 data-[state=active]:to-violet-500/20 data-[state=active]:text-indigo-300 data-[state=active]:shadow-[0_0_12px_rgba(99,102,241,0.2)] data-[state=active]:border data-[state=active]:border-indigo-500/30 data-[state=inactive]:text-muted-foreground hover:bg-muted/50 hover:text-foreground whitespace-nowrap text-xs font-medium flex items-center gap-1.5">
+                      <TabsTrigger value="affiliate" className="h-8 px-4 rounded-lg transition-all duration-200 data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=inactive]:text-muted-foreground hover:bg-muted/50 hover:text-foreground whitespace-nowrap text-sm font-medium flex items-center gap-2">
                         <Share2 className="w-4 h-4" />
                         <span className="hidden md:inline">Affiliate</span>
                       </TabsTrigger>
                     </TooltipTrigger>
                     <TooltipContent side="bottom" className="md:hidden">Affiliate</TooltipContent>
                   </Tooltip>
-                  {/* Leaderboard Tab removed for privacy reasons */}
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="settings" className="h-9 px-3 rounded-lg transition-all duration-200 data-[state=active]:bg-gradient-to-r data-[state=active]:from-slate-500/20 data-[state=active]:to-gray-500/20 data-[state=active]:text-slate-300 data-[state=active]:shadow-[0_0_12px_rgba(100,116,139,0.2)] data-[state=active]:border data-[state=active]:border-slate-500/30 data-[state=inactive]:text-muted-foreground hover:bg-muted/50 hover:text-foreground whitespace-nowrap text-xs font-medium flex items-center gap-1.5">
+                      <TabsTrigger value="settings" className="h-8 px-4 rounded-lg transition-all duration-200 data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=inactive]:text-muted-foreground hover:bg-muted/50 hover:text-foreground whitespace-nowrap text-sm font-medium flex items-center gap-2">
                         <Settings className="w-4 h-4" />
                         <span className="hidden md:inline">Einstellungen</span>
                       </TabsTrigger>
@@ -578,7 +575,7 @@ export default function Dashboard() {
             </div>
 
             {/* Overview Tab */}
-            <TabsContent value="overview" className="space-y-8">
+            <TabsContent value="overview" className="space-y-10">
               {/* Recommendations Section */}
               <DashboardRecommendations 
                 isPro={plan === 'pro' || plan === 'business'}

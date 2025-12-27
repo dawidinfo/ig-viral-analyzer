@@ -1503,3 +1503,12 @@
 - [x] Gespeicherte Analysen aus DB sofort laden (ohne API-Call)
 - [x] Offline-Modus: Letzte 5 Analysen im localStorage speichern
 - [x] Test-E-Mails deaktivieren
+
+## Design-Überarbeitung: Mehr Luft & Struktur
+- [ ] Globale CSS-Variablen: Gedämpftere Farben
+- [ ] Mehr Weißraum/Spacing zwischen Sektionen
+- [ ] Aufgeräumtere Struktur auf allen Seiten
+- [ ] Dashboard-Seite: Weniger überladen
+- [ ] Analyse-Seite: Klarere Trennung
+- [ ] Content-Plan-Seite: Mehr Luft
+- [x] Login-Dialog: Klarer mit Rand, Shine und Social Buttons (Google, Facebook, Apple)

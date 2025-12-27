@@ -190,10 +190,10 @@ interface BlockTabProps {
 const BlockTab = ({ id, label, icon, isActive, onClick, color }: BlockTabProps) => (
   <button
     onClick={onClick}
-    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all ${
+    className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all ${
       isActive 
-        ? `${color} text-white shadow-lg scale-105` 
-        : 'bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground'
+        ? 'bg-primary/10 text-primary border border-primary/20' 
+        : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
     }`}
   >
     {icon}
@@ -596,18 +596,18 @@ export default function Analysis() {
         </div>
       </nav>
 
-      {/* Sticky Block Navigation - appears after profile header */}
+      {/* Sticky Block Navigation - Minimal Design */}
       {analysisData && (
-        <div className="fixed top-14 sm:top-16 left-0 right-0 z-40 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg shadow-black/20">
-          <div className="container py-3">
-            <div className="flex items-center justify-center gap-2 sm:gap-4">
+        <div className="fixed top-14 sm:top-16 left-0 right-0 z-40 bg-background/90 backdrop-blur-md border-b border-border/30">
+          <div className="container py-4">
+            <div className="flex items-center justify-center gap-3 sm:gap-6">
               <BlockTab
                 id="analyse"
                 label="ANALYSE"
                 icon={<BarChart3 className="w-4 h-4" />}
                 isActive={activeBlock === 'analyse'}
                 onClick={() => scrollToBlock('analyse')}
-                color="bg-gradient-to-r from-blue-500 to-cyan-500"
+                color="bg-primary/10"
               />
               <BlockTab
                 id="erkenntnisse"
@@ -615,7 +615,7 @@ export default function Analysis() {
                 icon={<Lightbulb className="w-4 h-4" />}
                 isActive={activeBlock === 'erkenntnisse'}
                 onClick={() => scrollToBlock('erkenntnisse')}
-                color="bg-gradient-to-r from-amber-500 to-orange-500"
+                color="bg-primary/10"
               />
               <BlockTab
                 id="learnings"
@@ -623,7 +623,7 @@ export default function Analysis() {
                 icon={<GraduationCap className="w-4 h-4" />}
                 isActive={activeBlock === 'learnings'}
                 onClick={() => scrollToBlock('learnings')}
-                color="bg-gradient-to-r from-green-500 to-emerald-500"
+                color="bg-primary/10"
               />
             </div>
           </div>
@@ -631,7 +631,7 @@ export default function Analysis() {
       )}
 
       {/* Main Content */}
-      <main className="container pt-32 sm:pt-36 pb-12 relative z-10">
+      <main className="container pt-36 sm:pt-40 pb-16 relative z-10 space-y-12">
         {/* Loading State */}
         {isLoading && !hasTimedOut && (
           <div className="flex flex-col items-center justify-center py-20">
