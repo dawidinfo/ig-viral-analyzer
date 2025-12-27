@@ -314,7 +314,7 @@ export default function Analysis() {
   const { offlineData, isOffline } = useOfflineCache(usernameParam);
   
   // Try to get saved analysis from DB first (for logged-in users)
-  const { data: savedAnalysis } = trpc.dashboard.getSavedAnalysisByUsername.useQuery(
+  const { data: savedAnalysis, isLoading: isSavedLoading } = trpc.dashboard.getSavedAnalysisByUsername.useQuery(
     { userId: user?.id || 0, username: usernameParam },
     { 
       enabled: !!user?.id && !!usernameParam && !forceRefresh,
@@ -322,11 +322,16 @@ export default function Analysis() {
     }
   );
   
+  // Determine if we should fetch from API
+  // Only skip API if we have valid saved data OR valid offline data
+  const hasCachedData = !!(savedAnalysis?.analysisData) || !!(offlineData && isOffline);
+  
   // Fetch Instagram analysis data from API
   const { data: apiAnalysisData, isLoading: isApiLoading, error, refetch } = trpc.instagram.analyze.useQuery(
     { username: usernameParam, forceRefresh },
     { 
-      enabled: !!usernameParam && !savedAnalysis?.analysisData && !offlineData,
+      // Always fetch from API unless we have cached data or force refresh is false and saved is loading
+      enabled: !!usernameParam && (!hasCachedData || forceRefresh),
       retry: 1,
       staleTime: forceRefresh ? 0 : 24 * 60 * 60 * 1000, // 24 hours
     }
@@ -372,8 +377,8 @@ export default function Analysis() {
     }
   }, [apiAnalysisData, usernameParam]);
   
-  // Determine loading state
-  const isLoading = isApiLoading && !savedAnalysis?.analysisData && !offlineData;
+  // Determine loading state - loading if API is loading AND we don't have any cached data
+  const isLoading = (isApiLoading || isSavedLoading) && !analysisData;
   
   // Track loading time and show timeout messages
   useEffect(() => {
