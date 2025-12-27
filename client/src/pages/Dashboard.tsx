@@ -42,6 +42,9 @@ import {
   Shield,
   Bell,
   BellOff,
+  Palette,
+  Monitor,
+  Sparkle,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -52,6 +55,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { AffiliateDashboard } from "@/components/AffiliateDashboard";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
+import { useTheme } from "@/contexts/ThemeContext";
 import { GlobalFooter } from "@/components/GlobalFooter";
 import { InvoicesTab } from "@/components/InvoicesTab";
 import { NotesTab } from "@/components/NotesTab";
@@ -117,6 +121,9 @@ export default function Dashboard() {
   
   // Push-Benachrichtigungen
   const { permission: notificationPermission, isSupported: notificationsSupported, requestPermission: requestNotificationPermission, isEnabled: notificationsEnabled } = usePushNotifications();
+  
+  // Design Style Theme
+  const { designStyle, setDesignStyle } = useTheme();
   
   // Check for upgrade success and tab parameter from URL
   useEffect(() => {
@@ -490,10 +497,10 @@ export default function Dashboard() {
                 </div>
               </div>
               <TooltipProvider delayDuration={100}>
-                <TabsList className="flex justify-center gap-3 p-2 overflow-x-auto flex-nowrap w-fit mx-auto bg-zinc-950 border-2 border-zinc-800 rounded-2xl shadow-2xl" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
+                <TabsList className="flex justify-center gap-2 p-2 overflow-x-auto flex-nowrap w-fit mx-auto bg-zinc-900/80 backdrop-blur-md border-2 border-zinc-700/50 rounded-2xl shadow-2xl" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="overview" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-primary/30 data-[state=active]:scale-105 data-[state=active]:border-2 data-[state=active]:border-primary/50 text-zinc-400 hover:text-white hover:bg-zinc-800 whitespace-nowrap text-sm font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2">
+                      <TabsTrigger value="overview" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-500/30 data-[state=active]:scale-105 data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-zinc-800/60 whitespace-nowrap text-sm font-semibold px-5 py-3 rounded-xl transition-all duration-300 flex items-center gap-2">
                         <LayoutDashboard className="w-4 h-4" />
                         <span className="hidden md:inline">Übersicht</span>
                       </TabsTrigger>
@@ -512,7 +519,7 @@ export default function Dashboard() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="saved-plans" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-primary/30 data-[state=active]:scale-105 data-[state=active]:border-2 data-[state=active]:border-primary/50 text-zinc-400 hover:text-white hover:bg-zinc-800 whitespace-nowrap text-sm font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2">
+                      <TabsTrigger value="saved-plans" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-500/30 data-[state=active]:scale-105 data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-zinc-800/60 whitespace-nowrap text-sm font-semibold px-5 py-3 rounded-xl transition-all duration-300 flex items-center gap-2">
                         <FileText className="w-4 h-4" />
                         <span className="hidden md:inline">Pläne</span>
                       </TabsTrigger>
@@ -521,7 +528,7 @@ export default function Dashboard() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="analyses" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-primary/30 data-[state=active]:scale-105 data-[state=active]:border-2 data-[state=active]:border-primary/50 text-zinc-400 hover:text-white hover:bg-zinc-800 whitespace-nowrap text-sm font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2">
+                      <TabsTrigger value="analyses" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-500/30 data-[state=active]:scale-105 data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-zinc-800/60 whitespace-nowrap text-sm font-semibold px-5 py-3 rounded-xl transition-all duration-300 flex items-center gap-2">
                         <Bookmark className="w-4 h-4" />
                         <span className="hidden md:inline">Analysen</span>
                       </TabsTrigger>
@@ -530,7 +537,7 @@ export default function Dashboard() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="invoices" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-primary/30 data-[state=active]:scale-105 data-[state=active]:border-2 data-[state=active]:border-primary/50 text-zinc-400 hover:text-white hover:bg-zinc-800 whitespace-nowrap text-sm font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2">
+                      <TabsTrigger value="invoices" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-500/30 data-[state=active]:scale-105 data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-zinc-800/60 whitespace-nowrap text-sm font-semibold px-5 py-3 rounded-xl transition-all duration-300 flex items-center gap-2">
                         <Receipt className="w-4 h-4" />
                         <span className="hidden md:inline">Rechnungen</span>
                       </TabsTrigger>
@@ -539,7 +546,7 @@ export default function Dashboard() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="notes" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-primary/30 data-[state=active]:scale-105 data-[state=active]:border-2 data-[state=active]:border-primary/50 text-zinc-400 hover:text-white hover:bg-zinc-800 whitespace-nowrap text-sm font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2">
+                      <TabsTrigger value="notes" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-500/30 data-[state=active]:scale-105 data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-zinc-800/60 whitespace-nowrap text-sm font-semibold px-5 py-3 rounded-xl transition-all duration-300 flex items-center gap-2">
                         <StickyNote className="w-4 h-4" />
                         <span className="hidden md:inline">Notizen</span>
                       </TabsTrigger>
@@ -548,7 +555,7 @@ export default function Dashboard() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="affiliate" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-primary/30 data-[state=active]:scale-105 data-[state=active]:border-2 data-[state=active]:border-primary/50 text-zinc-400 hover:text-white hover:bg-zinc-800 whitespace-nowrap text-sm font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2">
+                      <TabsTrigger value="affiliate" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-500/30 data-[state=active]:scale-105 data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-zinc-800/60 whitespace-nowrap text-sm font-semibold px-5 py-3 rounded-xl transition-all duration-300 flex items-center gap-2">
                         <Share2 className="w-4 h-4" />
                         <span className="hidden md:inline">Affiliate</span>
                       </TabsTrigger>
@@ -558,7 +565,7 @@ export default function Dashboard() {
                   {/* Leaderboard Tab removed for privacy reasons */}
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="settings" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-primary/30 data-[state=active]:scale-105 data-[state=active]:border-2 data-[state=active]:border-primary/50 text-zinc-400 hover:text-white hover:bg-zinc-800 whitespace-nowrap text-sm font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2">
+                      <TabsTrigger value="settings" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-500/30 data-[state=active]:scale-105 data-[state=inactive]:text-zinc-400 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-zinc-800/60 whitespace-nowrap text-sm font-semibold px-5 py-3 rounded-xl transition-all duration-300 flex items-center gap-2">
                         <Settings className="w-4 h-4" />
                         <span className="hidden md:inline">Einstellungen</span>
                       </TabsTrigger>
@@ -1152,6 +1159,84 @@ export default function Dashboard() {
 
             {/* Settings Tab */}
             <TabsContent value="settings" className="space-y-6">
+              {/* Design Style Switcher */}
+              <Card className="glass-card">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Palette className="w-5 h-5 text-primary" />
+                    Design-Stil
+                  </CardTitle>
+                  <CardDescription>
+                    Wähle zwischen verschiedenen Design-Varianten
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Modern Design Option */}
+                    <button
+                      onClick={() => setDesignStyle('modern')}
+                      className={`relative p-4 rounded-xl border-2 transition-all duration-300 text-left ${
+                        designStyle === 'modern'
+                          ? 'border-primary bg-primary/10 shadow-lg shadow-primary/20'
+                          : 'border-border hover:border-primary/50 hover:bg-muted/50'
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className={`p-2 rounded-lg ${
+                          designStyle === 'modern' ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                        }`}>
+                          <Sparkle className="w-5 h-5" />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-semibold mb-1">Modern</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Lebendiges Design mit Gradients, Glow-Effekten und Animationen
+                          </p>
+                        </div>
+                      </div>
+                      {designStyle === 'modern' && (
+                        <div className="absolute top-2 right-2">
+                          <Check className="w-5 h-5 text-primary" />
+                        </div>
+                      )}
+                    </button>
+                    
+                    {/* Clean Pro Design Option */}
+                    <button
+                      onClick={() => setDesignStyle('clean-pro')}
+                      className={`relative p-4 rounded-xl border-2 transition-all duration-300 text-left ${
+                        designStyle === 'clean-pro'
+                          ? 'border-primary bg-primary/10 shadow-lg shadow-primary/20'
+                          : 'border-border hover:border-primary/50 hover:bg-muted/50'
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className={`p-2 rounded-lg ${
+                          designStyle === 'clean-pro' ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                        }`}>
+                          <Monitor className="w-5 h-5" />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-semibold mb-1">Clean Pro</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Minimalistisch, sauber und professionell - ideal für Anfänger
+                          </p>
+                        </div>
+                      </div>
+                      {designStyle === 'clean-pro' && (
+                        <div className="absolute top-2 right-2">
+                          <Check className="w-5 h-5 text-primary" />
+                        </div>
+                      )}
+                    </button>
+                  </div>
+                  
+                  <p className="text-xs text-muted-foreground mt-4 text-center">
+                    Die Änderung wird sofort angewendet und gespeichert.
+                  </p>
+                </CardContent>
+              </Card>
+              
               {/* Push-Benachrichtigungen */}
               {notificationsSupported && (
                 <Card className="glass-card">

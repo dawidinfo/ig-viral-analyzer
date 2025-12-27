@@ -1,10 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 type Theme = "light" | "dark";
+type DesignStyle = "modern" | "clean-pro";
 
 interface ThemeContextType {
   theme: Theme;
+  designStyle: DesignStyle;
   toggleTheme?: () => void;
+  setDesignStyle: (style: DesignStyle) => void;
   switchable: boolean;
 }
 
@@ -13,12 +16,14 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 interface ThemeProviderProps {
   children: React.ReactNode;
   defaultTheme?: Theme;
+  defaultDesignStyle?: DesignStyle;
   switchable?: boolean;
 }
 
 export function ThemeProvider({
   children,
-  defaultTheme = "light",
+  defaultTheme = "dark",
+  defaultDesignStyle = "modern",
   switchable = false,
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(() => {
@@ -27,6 +32,11 @@ export function ThemeProvider({
       return (stored as Theme) || defaultTheme;
     }
     return defaultTheme;
+  });
+
+  const [designStyle, setDesignStyleState] = useState<DesignStyle>(() => {
+    const stored = localStorage.getItem("designStyle");
+    return (stored as DesignStyle) || defaultDesignStyle;
   });
 
   useEffect(() => {
@@ -42,14 +52,27 @@ export function ThemeProvider({
     }
   }, [theme, switchable]);
 
+  useEffect(() => {
+    const root = document.documentElement;
+    // Remove all design style classes
+    root.classList.remove("design-modern", "design-clean-pro");
+    // Add current design style class
+    root.classList.add(`design-${designStyle}`);
+    localStorage.setItem("designStyle", designStyle);
+  }, [designStyle]);
+
   const toggleTheme = switchable
     ? () => {
         setTheme(prev => (prev === "light" ? "dark" : "light"));
       }
     : undefined;
 
+  const setDesignStyle = (style: DesignStyle) => {
+    setDesignStyleState(style);
+  };
+
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, switchable }}>
+    <ThemeContext.Provider value={{ theme, designStyle, toggleTheme, setDesignStyle, switchable }}>
       {children}
     </ThemeContext.Provider>
   );

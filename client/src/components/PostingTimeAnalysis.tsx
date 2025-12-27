@@ -126,8 +126,8 @@ export default function PostingTimeAnalysis({ username }: PostingTimeAnalysisPro
         
         <CardContent className="space-y-6">
           {/* Heatmap */}
-          <div className="overflow-x-auto">
-            <div className="min-w-[700px]">
+          <div className="overflow-x-auto overflow-y-hidden">
+            <div className="min-w-[700px] relative">
               {/* Hour labels */}
               <div className="flex mb-2">
                 <div className="w-12" /> {/* Spacer for day labels */}

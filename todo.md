@@ -1451,3 +1451,10 @@
 - [x] PDF-Export Funktion für Content-Pläne
 - [x] Content-Pläne direkt auf der Seite anzeigen statt im Popup
 - [x] Analyse-Navigation Design verbessern - aktive Buttons hervorheben
+- [x] Störenden Balken in Zeiten-Heatmap entfernen
+- [x] Dashboard-Navigation Design verbessern - aktive Tabs hervorheben
+- [x] Professionelles/Seriöses Design-Konzept erstellen (cleaner, minimalistischer Look)
+- [x] Theme-System mit umschaltbaren Designs erstellen (Modern vs Clean Pro)
+- [x] Clean Pro Theme CSS-Variablen definieren
+- [x] Theme-Switcher UI in Settings einbauen
+- [x] Komponenten für Clean Pro Theme anpassen
