@@ -1509,6 +1509,38 @@ export const appRouter = router({
         return await checkCacheHealthAndAlert(input.minHitRate);
       }),
 
+    // === DATABASE BACKUP ===
+    
+    // Create a new backup (admin only)
+    createBackup: publicProcedure
+      .mutation(async () => {
+        const { createBackup } = await import("./services/backupService");
+        return await createBackup();
+      }),
+
+    // Get list of all backups
+    getBackups: publicProcedure
+      .query(async () => {
+        const { getBackupList } = await import("./services/backupService");
+        return await getBackupList();
+      }),
+
+    // Get download URL for a backup
+    getBackupDownloadUrl: publicProcedure
+      .input(z.object({ backupId: z.string() }))
+      .query(async ({ input }) => {
+        const { getBackupDownloadUrl } = await import("./services/backupService");
+        return { url: await getBackupDownloadUrl(input.backupId) };
+      }),
+
+    // Delete a backup
+    deleteBackup: publicProcedure
+      .input(z.object({ backupId: z.string() }))
+      .mutation(async ({ input }) => {
+        const { deleteBackup } = await import("./services/backupService");
+        return { success: await deleteBackup(input.backupId) };
+      }),
+
     // Clear API caches only (Admin only) - User data (saved analyses, notes, etc.) is preserved
     clearAllCaches: publicProcedure
       .mutation(async () => {

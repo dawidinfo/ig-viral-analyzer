@@ -1472,3 +1472,8 @@
 
 ## Soft Dark Theme Optimierung
 - [x] Soft Dark Theme leichter und seriöser gemacht (hex-basierte Farben: #1a1c22 bis #242630)
+
+## Manueller Datenbank-Backup-Export (Neu)
+- [x] Backend: Backup-Service mit S3-Export erstellen
+- [x] Backend: API-Routen für Backup erstellen/auflisten/herunterladen
+- [x] Frontend: Backup-Tab im Admin-Panel einbauen

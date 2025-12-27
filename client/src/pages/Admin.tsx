@@ -55,6 +55,10 @@ import {
   Instagram,
   Youtube,
   Filter,
+  Download,
+  HardDrive,
+  Trash2,
+  FileJson,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -656,7 +660,10 @@ export default function Admin() {
               <Ban className="h-4 w-4" />
               Gesperrte User
             </TabsTrigger>
-            {/* Cache-Tab entfernt per User-Request */}
+            <TabsTrigger value="backup" className="gap-2">
+              <HardDrive className="h-4 w-4" />
+              Backups
+            </TabsTrigger>
           </TabsList>
 
           {/* Users Tab */}
@@ -1284,7 +1291,10 @@ export default function Admin() {
             <SuspendedUsersPanel adminId={user?.id || 0} />
           </TabsContent>
 
-          {/* Cache Dashboard Tab entfernt per User-Request */}
+          {/* Backup Tab */}
+          <TabsContent value="backup">
+            <BackupPanel />
+          </TabsContent>
         </Tabs>
       </main>
 
@@ -1500,5 +1510,191 @@ export default function Admin() {
         </DialogContent>
       </Dialog>
     </div>
+  );
+}
+
+// Backup Panel Component
+function BackupPanel() {
+  const utils = trpc.useUtils();
+  
+  const { data: backups, isLoading: loadingBackups, refetch: refetchBackups } = trpc.admin.getBackups.useQuery();
+  
+  const createBackupMutation = trpc.admin.createBackup.useMutation({
+    onSuccess: (data) => {
+      toast.success(`Backup erstellt: ${data.id}`);
+      refetchBackups();
+    },
+    onError: (error) => {
+      toast.error(`Backup fehlgeschlagen: ${error.message}`);
+    },
+  });
+  
+  const deleteBackupMutation = trpc.admin.deleteBackup.useMutation({
+    onSuccess: () => {
+      toast.success("Backup gelöscht");
+      refetchBackups();
+    },
+    onError: (error) => {
+      toast.error(`Löschen fehlgeschlagen: ${error.message}`);
+    },
+  });
+  
+  const handleDownload = async (backupId: string) => {
+    try {
+      const result = await utils.admin.getBackupDownloadUrl.fetch({ backupId });
+      window.open(result.url, '_blank');
+    } catch (error) {
+      toast.error("Download fehlgeschlagen");
+    }
+  };
+  
+  const formatSize = (bytes: number) => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+  };
+  
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleString('de-DE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+  
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <HardDrive className="h-5 w-5" />
+              Datenbank-Backups
+            </CardTitle>
+            <CardDescription>
+              Erstelle und verwalte manuelle Datenbank-Backups (gespeichert in S3)
+            </CardDescription>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => refetchBackups()}
+              disabled={loadingBackups}
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${loadingBackups ? 'animate-spin' : ''}`} />
+              Aktualisieren
+            </Button>
+            <Button
+              onClick={() => createBackupMutation.mutate()}
+              disabled={createBackupMutation.isPending}
+            >
+              {createBackupMutation.isPending ? (
+                <>
+                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                  Erstelle Backup...
+                </>
+              ) : (
+                <>
+                  <Database className="h-4 w-4 mr-2" />
+                  Neues Backup erstellen
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        {loadingBackups ? (
+          <div className="flex items-center justify-center py-8">
+            <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
+          </div>
+        ) : !backups || backups.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">
+            <FileJson className="h-12 w-12 mx-auto mb-4 opacity-50" />
+            <p>Noch keine Backups vorhanden</p>
+            <p className="text-sm">Erstelle dein erstes Backup mit dem Button oben</p>
+          </div>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Datum</TableHead>
+                <TableHead>Backup-ID</TableHead>
+                <TableHead>Größe</TableHead>
+                <TableHead>Tabellen</TableHead>
+                <TableHead>Datensätze</TableHead>
+                <TableHead className="text-right">Aktionen</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {backups.map((backup: any) => (
+                <TableRow key={backup.id}>
+                  <TableCell className="font-medium">
+                    {formatDate(backup.createdAt)}
+                  </TableCell>
+                  <TableCell>
+                    <code className="text-xs bg-muted px-2 py-1 rounded">
+                      {backup.id}
+                    </code>
+                  </TableCell>
+                  <TableCell>{formatSize(backup.size)}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline">{backup.tables?.length || 0} Tabellen</Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div className="text-xs text-muted-foreground">
+                      {backup.recordCounts && Object.entries(backup.recordCounts).map(([table, count]: [string, any]) => (
+                        <span key={table} className="mr-2">
+                          {table}: {count}
+                        </span>
+                      ))}
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDownload(backup.id)}
+                      >
+                        <Download className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          if (confirm(`Backup "${backup.id}" wirklich löschen?`)) {
+                            deleteBackupMutation.mutate({ backupId: backup.id });
+                          }
+                        }}
+                        disabled={deleteBackupMutation.isPending}
+                      >
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+        
+        <div className="mt-6 p-4 bg-muted/50 rounded-lg">
+          <h4 className="font-medium mb-2">Was wird gesichert?</h4>
+          <ul className="text-sm text-muted-foreground space-y-1">
+            <li>• <strong>users</strong> - Alle Benutzerkonten (Stripe-IDs anonymisiert)</li>
+            <li>• <strong>savedAnalyses</strong> - Gespeicherte Analysen der Benutzer</li>
+            <li>• <strong>creditTransactions</strong> - Credit-Transaktionen</li>
+            <li>• <strong>usageTracking</strong> - Nutzungsstatistiken</li>
+            <li>• <strong>followerSnapshots</strong> - Follower-Verlaufsdaten</li>
+            <li>• <strong>revenueTracking</strong> - Umsatzdaten</li>
+            <li>• <strong>adminAuditLog</strong> - Admin-Aktivitätslog</li>
+          </ul>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
